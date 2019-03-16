@@ -11,3 +11,11 @@ Installation
 -----------
 Please look here: [**ONI-Modloader**](https://github.com/javisar/ONI-Modloader)
 and then here: [**ONI-Modloader-Mods**](https://github.com/javisar/ONI-Modloader-Mods/blob/master/README.md#mods-installation)
+
+Mods
+--------------------
+| Name  | Description | ONI-Common |
+| ----- | ----------- | ---------- |
+|FasterTravelTube|Increases TubeSpeed, caps at animation limit.|Y|
+|LiquidReservoirSmart|Liquid Reservoir that allows for fetches, has adjustable full display, and gives logic output when over a threshold.|N|
+|ScaleGrowthAnyGas|Ignores air condition for (Glossy) Dreckos.|N|
