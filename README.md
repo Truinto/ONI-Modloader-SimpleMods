@@ -16,6 +16,6 @@ Mods
 --------------------
 | Name  | Description | ONI-Common |
 | ----- | ----------- | ---------- |
-|FasterTravelTube|Increases TubeSpeed, caps at animation limit.|Y|
+|FasterTravelTube|Increases TubeSpeed, caps at animation limit. Adjustable.|Y|
 |LiquidReservoirSmart|Liquid Reservoir that allows for fetches, has adjustable full display, and gives logic output when over a threshold.|N|
 |ScaleGrowthAnyGas|Ignores air condition for (Glossy) Dreckos.|N|
