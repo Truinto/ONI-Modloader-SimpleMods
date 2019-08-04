@@ -1,5 +1,8 @@
 README
 
+Settings here:
+Steam\SteamApps\common\OxygenNotIncluded\Mods\LessIrrigation\Config\LessIrrigationState.json
+
 The settings work with ingame IDs. These differ from the displayed name. Here some examples:
 Name                ID
 Nosh Sprout         BeanPlant
