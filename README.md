@@ -9,10 +9,19 @@ Disclaimers
 
 Installation
 -----------
-Please look here: [**ONI-Modloader**](https://github.com/javisar/ONI-Modloader)
-and then here: [**ONI-Modloader-Mods**](https://github.com/javisar/ONI-Modloader-Mods/blob/master/README.md#mods-installation)
+* Extract the zip file e.g. ONI-Modloader-SimpleMods/Mods/CustomizeBuildingsV6.zip into the mod folder: %userprofile%\Documents\Klei\OxygenNotIncluded\mods\local\CustomizeBuildings
+* Each such mod must be in it's own subfolder!
+* DONE
+* Klei's statement to this is [**here**](https://forums.kleientertainment.com/forums/topic/104533-modding-system-now-in-testing/)
 
 Mods
+-----------
+| Name  | Description | Steam Page |
+| ----- | ----------- | ---------- |
+|Custom Plants|Change stuff about plants, like irrigation and growth speed|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1818145851)|
+|Customize Buildings|Change stuff about buildings, like storage and duplicant operation|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1818138009)|
+
+Mods outdated, but might still work
 --------------------
 | Name  | Description | ONI-Common |
 | ----- | ----------- | ---------- |
