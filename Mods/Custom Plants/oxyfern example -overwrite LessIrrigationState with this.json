@@ -1,0 +1,89 @@
+{
+  "ExampleAllPlants": [
+    "BasicFabricPlant",
+    "BasicSingleHarvestPlant",
+    "BeanPlant",
+    "BulbPlant",
+    "CactusPlant",
+    "ColdBreather",
+    "ColdWheat",
+    "EvilFlower",
+    "ForestTree",
+    "GasGrass",
+    "LeafyPlant",
+    "MushroomPlant",
+    "Oxyfern",
+    "PrickleFlower",
+    "PrickleGrass",
+    "SaltPlant",
+    "SpiceVine",
+    "SwampLily"
+  ],
+  "RemoveIrrigationFromPlants": [
+    "ColdBreather",
+    "PrickleFlower",
+    "ColdWheat",
+    "SpiceVine",
+    "ForestTree",
+    "BeanPlant",
+    "Oxyfern"
+  ],
+  "AddIrrigiation": {
+    "PrickleFlower": {
+      "Water": 0.008333334
+    },
+    "ColdWheat": {
+      "Water": 0.008333334
+    },
+    "SpiceVine": {
+      "DirtyWater": 0.0116666667,
+      "Phosphorite": 0.00166666671
+    },
+    "ForestTree": {
+      "DirtyWater": 0.104166664,
+      "Dirt": 0.0166666675
+    },
+    "BeanPlant": {
+      "Ethanol": 0.008333334,
+      "Dirt": 0.008333334
+    },
+    "Oxyfern": {
+      "Water": 0.000833334
+    }
+  },
+  "SetIllumination": {
+    "Mushroom": -1,
+    "PrickleFlower": 1
+  },
+  "SetPlantTempAtmosphere": {
+    "PrickleFlower": {
+      "temperature_lethal_low": 218.15,
+      "temperature_warning_low": 273.15,
+      "temperature_warning_high": 308.15,
+      "temperature_lethal_high": 398.15,
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "pressure_sensitive": true,
+      "pressure_lethal_low": 0.0,
+      "pressure_warning_low": 0.1,
+      "crop_id": "",
+      "can_drown": true,
+      "can_tinker": true,
+      "require_solid_tile": true,
+      "should_grow_old": true,
+      "max_age": 2400.0
+    }
+  },
+  "SetPlantCrop": {
+    "ColdWheatSeed": {
+      "cropId": "ColdWheatSeed",
+      "cropDuration": 5400.0,
+      "numProduced": 9,
+      "renewable": true
+    }
+  },
+  "WheezewortTempDelta": -20.0
+}
