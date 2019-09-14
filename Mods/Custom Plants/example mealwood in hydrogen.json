@@ -1,0 +1,87 @@
+{
+  "RemoveIrrigationFromPlants": [
+    "ColdBreather",
+    "PrickleFlower",
+    "ColdWheat",
+    "SpiceVine",
+    "ForestTree",
+    "BeanPlant",
+    "Oxyfern",
+    "SeaLettuce"
+  ],
+  "AddIrrigation": {
+    "PrickleFlower": {
+      "Water": 5.0
+    },
+    "ColdWheat": {
+      "Water": 5.0
+    },
+    "SpiceVine": {
+      "DirtyWater": 7.0,
+      "Phosphorite": 1.0
+    },
+    "ForestTree": {
+      "DirtyWater": 62.5,
+      "Dirt": 10.0
+    },
+    "BeanPlant": {
+      "Ethanol": 5.0,
+      "Dirt": 5.0
+    },
+    "Oxyfern": {
+      "Water": 18.0
+    },
+    "SeaLettuce": {
+      "SaltWater": 18.0
+    }
+  },
+  "SetIllumination": {
+    "Mushroom": -1,
+    "PrickleFlower": 1
+  },
+  "SetPlantTempAtmosphere": {
+    "BasicSingleHarvestPlant": {
+      "temperature_lethal_low": 218.15,
+      "temperature_warning_low": 283.15,
+      "temperature_warning_high": 328.15,
+      "temperature_lethal_high": 418.15,
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide",
+        "Hydrogen"
+      ],
+      "pressure_sensitive": true,
+      "pressure_lethal_low": 0.0,
+      "pressure_warning_low": 0.1,
+      "crop_id": "",
+      "can_drown": true,
+      "can_tinker": true,
+      "require_solid_tile": true,
+      "should_grow_old": true,
+      "max_age": 2400.0
+    },
+    "SwampLily": {
+      "temperature_lethal_low": 258.15,
+      "temperature_warning_low": 308.15,
+      "temperature_warning_high": 358.15,
+      "temperature_lethal_high": 448.15,
+      "safe_elements": [
+        "Hydrogen",
+        "ChlorineGas"
+      ],
+      "pressure_sensitive": true,
+      "pressure_lethal_low": 0.0,
+      "pressure_warning_low": 0.1,
+      "crop_id": "",
+      "can_drown": true,
+      "can_tinker": true,
+      "require_solid_tile": true,
+      "should_grow_old": true,
+      "max_age": 2400.0
+    }
+  },
+  "SeedsGoIntoAnyFlowerPots": true,
+  "WheezewortTempDelta": -40.0,
+  "OxyfernOxygenPerSecond": 0.03125
+}
