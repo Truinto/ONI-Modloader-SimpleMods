@@ -1,0 +1,4 @@
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CarePackagesMod\bin\Release\CarePackagesMod.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CarePackagesMod\obj\Release\CarePackagesMod.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CarePackagesMod\bin\Release\CarePackagesMod.dll.config
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CarePackagesMod\obj\Release\CarePackagesMod.csprojResolveAssemblyReference.cache

@@ -1,28 +1,137 @@
 ﻿using Harmony;
-using ONI_Common;
+using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using System;
+using System.Reflection.Emit;
 
 namespace CarePackageMod
 {
     [HarmonyPatch(typeof(Immigration), "ConfigureCarePackages")]
-    internal class Immigration_ConfigureCarePackages
+    public class CarePackageMod
     {
-        private static bool Prefix(ref CarePackageInfo[] ___carePackages)
+        public static CarePackageInfo[] carePackages = null;
+
+        internal static bool Prefix(Immigration __instance, ref CarePackageInfo[] ___carePackages)
         {
-            if (! CarePackageState.StateManager.State.enabled) return true;
+            if (!CarePackageState.StateManager.State.enabled) return true;
 
-            List<CarePackageInfo> carePackages = new List<CarePackageInfo>();
-
-            Debug.Log("Setting up care packages:");
-            foreach (KeyValuePair<string, float> info in CarePackageState.StateManager.State.CarePackages)
+            if (carePackages == null)
             {
-                Debug.Log(" id: " + info.Key + " quantity: " + info.Value);
-                carePackages.Add(new CarePackageInfo(info.Key, info.Value, null));
+                List<CarePackageInfo> list = new List<CarePackageInfo>();
+				carePackages = new CarePackageInfo[CarePackageState.StateManager.State.CarePackages.Count()];
+                float multiplier = CarePackageState.StateManager.State.multiplier;
+				
+                Debug.Log("Setting up care packages:");
+				
+				for (int i = 0; i < carePackages.Count(); i++)
+				{
+					CarePackageContainer container = CarePackageState.StateManager.State.CarePackages[i];
+					container.amount = (int)Math.Max(Math.Round(container.amount * multiplier, 0), 1f);
+                    Debug.Log(" id: " + container.ID + " quantity: " + container.amount);
+					carePackages[i] = container.ToInfo();
+				}
+                // foreach (CarePackageContainer container in CarePackageState.StateManager.State.CarePackages)
+                // {
+                //     container.amount = (int)Math.Max(Math.Round(container.amount * multiplier, 0), 1f);
+                //     Debug.Log(" id: " + container.ID + " quantity: " + container.amount);
+                //     list.Add(container.ToInfo());
+                // }
+                // carePackages = list.ToArray();
             }
 
-            ___carePackages = carePackages.ToArray();
+            ___carePackages = carePackages;
 
             return false;
         }
     }
+	
+	public class CarePackageAPI
+	{
+		/// Loads the config State
+		public static bool Reload()
+		{
+			if (CarePackageState.StateManager == null || CarePackageState.StateManager.State == null) return false;
+			return OverridePackages(CarePackageState.StateManager.State.CarePackages);
+		}
+		
+		/// creates CarePackageInfo array and overrides vanilla values
+		/// should work at any point and persist loads
+		/// returns true when load successful
+		public static bool OverridePackages(List<CarePackageContainer> containerList)
+		{
+			return OverridePackages(containerList.ToArray());
+		}
+		
+		/// creates CarePackageInfo array and overrides vanilla values
+		/// should work at any point and persist loads
+		/// returns true when load successful
+		public static bool OverridePackages(CarePackageContainer[] containerList)
+		{
+			if (containerList == null) return false;
+			
+			CarePackageMod.carePackages = new CarePackageInfo[containerList.Count()];
+			
+			for (int i = 0; i < CarePackageMod.carePackages.Count(); i++)
+				CarePackageMod.carePackages[i] = containerList[i].ToInfo();
+			
+			OverridePackages(CarePackageMod.carePackages, false);	// doesn't need to save, since we loaded everything into the save already
+			return true;
+		}
+		
+		/// directly overrides values
+		/// if save == true will apply values whenever needed, otherwise might get overriden on load of a save-file
+		public static void OverridePackages(CarePackageInfo[] packageList, bool save = true)
+		{
+			if (save) CarePackageMod.carePackages = packageList;	// saves the list so the config doesn't override it back
+			
+			if (Immigration.Instance == null) return;	// instance must be loaded; if Instance == null and save == true then it will load it later
+			
+			AccessTools.Field(typeof(Immigration), "carePackages").SetValue(Immigration.Instance, packageList);
+		}
+		
+		/// returns the currently set CarePackageInfo array, is null if not initialized AND not set
+		public static CarePackageInfo[] GetPackages()
+		{
+			if (Immigration.Instance == null) return CarePackageMod.carePackages;
+			else return (CarePackageInfo[])AccessTools.Field(typeof(Immigration), "carePackages").GetValue(Immigration.Instance);
+		}
+	}
+	
+    [HarmonyPatch(typeof(CharacterSelectionController), "InitializeContainers")]
+    internal class CharacterSelectionController_InitializeContainers
+    {
+        private static bool Prepare()
+        {
+            return CarePackageState.StateManager.State.biggerRoster;
+        }
+
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
+        {
+            List<CodeInstruction> code = instr.ToList();
+
+            for (int i = 0; i < code.Count; i++)
+            {
+                CodeInstruction codeInstruction = code[i];
+                //Debug.Log(codeInstruction.ToString());
+
+                if (codeInstruction.opcode == OpCodes.Ldc_I4_4) //45	0093	ldc.i4.4
+                    codeInstruction.opcode = OpCodes.Ldc_I4_6;
+                else if (codeInstruction.opcode == OpCodes.Ldc_I4_2 && i == 40) //40    0086    ldc.i4.2
+                    codeInstruction.opcode = OpCodes.Ldc_I4_3;
+                else if (codeInstruction.opcode == OpCodes.Ldc_I4_1 && i == 42) //42	008C	ldc.i4.1
+                    codeInstruction.opcode = OpCodes.Ldc_I4_3;
+            }
+
+            if (CarePackageState.StateManager.State.rosterIsOrdered)
+            {
+                for (int i = 94; i <= 103; i++)
+                    code[i].opcode = OpCodes.Nop;
+            }
+
+            return (IEnumerable<CodeInstruction>)code;
+        }
+    }
+
+
 }
