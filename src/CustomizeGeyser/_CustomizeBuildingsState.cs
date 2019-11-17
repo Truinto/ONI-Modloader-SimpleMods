@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CustomizeGeyser
 {
     public class CustomizeGeyserState
     {
-        public int version { get; set; } = 1;
+        public int version { get; set; } = 2;
         public bool Enabled { get; set; } = true;
         
-        public List<GeyserStruct> Geysers = new List<GeyserStruct>() {
+        public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
             new GeyserStruct(id: "steam", temperature: 378.15f),
+            new GeyserStruct(id: "slimy_po2", temperature: 378.15f, DiseaseCount: 5000),
             new GeyserStruct(id: "molten_tungsten", anim: "geyser_molten_iron_kanim", element: "MoltenTungsten",
                 Name: "Tungsten Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Tungsten", "MOLTENTUNGSTEN") + ".",
                 temperature: 3773.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
@@ -38,10 +40,56 @@ namespace CustomizeGeyser
                 Name: "Ethanol Geyser", Description: "A highly pressurized geyser that periodically erupts with boiling " + STRINGS.UI.FormatAsLink("Ethanol", "ETHANOL") + ".",
                 temperature: 343.15f, minRatePerCycle: 2000f, maxRatePerCycle: 4000f, maxPressure: 500f, minIterationLength: 60f,
                 maxIterationLength: 1140f, minIterationPercent: 0.1f, maxIterationPercent: 0.9f, minYearLength: 15000f, maxYearLength: 135000f,
-                minYearPercent: 0.4f, maxYearPercent: 0.8f)
+                minYearPercent: 0.4f, maxYearPercent: 0.8f, Disease: "PollenGerms", DiseaseCount: 50)
         };
-        
-        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.Helper.CreatePath("Customize Geyser"), true);
+
+        public bool RandomizerEnabled { get; set; } = false;
+        public bool RandomizerUsesMapSeed { get; set; } = true;
+        public bool RandomizerRerollsCycleRate { get; set; } = true;
+        public bool RandomizerPopupGeyserDiscoveryInfo { get; set; } = true;
+        public Dictionary<string, int> RNGTable { get; set; } = new Dictionary<string, int> {
+            { "steam", 1 },
+            { "hot_steam", 1 },
+            { "hot_water", 1 },
+            { "slush_water", 1 },
+            { "filthy_water", 1 },
+            { "salt_water", 1 },
+            { "small_volcano", 1 },
+            { "big_volcano", 1 },
+            { "liquid_co2", 1 },
+            { "hot_co2", 1 },
+            { "hot_hydrogen", 1 },
+            { "hot_po2", 1 },
+            { "slimy_po2", 1 },
+            { "chlorine_gas", 1 },
+            { "methane", 1 },
+            { "molten_copper", 1 },
+            { "molten_iron", 1 },
+            { "molten_gold", 1 },
+            { "oil_drip", 1 },
+            { "molten_tungsten", 1 },
+            { "molten_aluminum", 1 },
+            { "molten_steel", 1 },
+            { "molten_glass", 1 },
+            { "liquid_coolant", 1 },
+            { "liquid_ethanol", 1 }
+        };
+
+        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.Helper.CreatePath("Customize Geyser"), true, UpdateFunction);
+
+        public static bool UpdateFunction(CustomizeGeyserState state)
+        {
+            switch(state.version)
+            {
+                case 1:
+                    state.RandomizerEnabled = false;
+                    break;
+                default:
+                    break;
+            }
+
+            return true;
+        }
 
         public class GeyserStruct
         {
@@ -64,6 +112,8 @@ namespace CustomizeGeyser
             public float? maxYearPercent;
             public string Name;
             public string Description;
+			public string Disease;
+			public int? DiseaseCount;
 
             public GeyserStruct(
                 string id,
@@ -84,7 +134,9 @@ namespace CustomizeGeyser
                 float? minYearPercent = null,
                 float? maxYearPercent = null,
                 string Name = null,
-                string Description = null)
+                string Description = null,
+				string Disease = null,
+				int? DiseaseCount = null)
             {
                 this.anim = anim;
                 this.width = width;
@@ -105,6 +157,8 @@ namespace CustomizeGeyser
                 this.maxYearPercent = maxYearPercent;
                 this.Name = Name;
                 this.Description = Description;
+				this.Disease = Disease;
+				this.DiseaseCount = DiseaseCount;
             }
         }
     }

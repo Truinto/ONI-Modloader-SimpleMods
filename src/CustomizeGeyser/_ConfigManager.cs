@@ -76,10 +76,9 @@ namespace Config
             }
             catch (Exception ex)
             {
-                const string Message = "Can't load configuration!";
-
                 Debug.LogWarning(ex);
-                Debug.LogWarning(Message);
+                Debug.LogWarning("Can't load configuration!");
+                BootDialog.PostBootDialog.ErrorList.Add("Error in config file: " + ex.Message);
 
                 state = (T)Activator.CreateInstance(typeof(T));
 
@@ -114,7 +113,7 @@ namespace Config
 
         private T _state;
 
-        public Func<T, bool> updateCallback = null;
+        public Func<T, bool> updateCallback;
 
         public T State
         {
@@ -164,7 +163,9 @@ namespace Config
             return false;
         }
 
-        //if not isAbsolute then path is the mods name
+        /// <summary>
+        /// if not isAbsolute then path is the mods name
+        /// </summary>
         public Manager(string path, bool isAbsolute, Func<T, bool> updateCallback = null)
         {
             bool errorFlag = false;
@@ -219,8 +220,10 @@ namespace Config
             }
         }
 
-        //value <name>: file name without extension
-        // returns file-path to save config, located in root mod folder; NOT TESTED
+        /// <summary>
+        /// name: file name without extension
+        /// returns file-path to save config, located in root mod folder; NOT TESTED
+        /// </summary>
         private static string GetKleiDocs(string name)
         {
             //return System.getProperty("user.home") + Path.DirectorySeparatorChar + "Documents" + Path.DirectorySeparatorChar
@@ -264,7 +267,10 @@ namespace Config
                 return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
             }
         }
-
+        
+        /// <summary>
+        /// returns absolute file-path
+        /// </summary>
         public static string CreatePath(string modName)
         {
             return ModsDirectory + Path.DirectorySeparatorChar + modName + ".json";

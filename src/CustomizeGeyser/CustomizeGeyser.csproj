@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="GeyserPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomizePatch.cs" />
+    <Compile Include="_BootDialog.cs" />
     <Compile Include="_ConfigManager.cs" />
     <Compile Include="_CustomizeBuildingsState.cs" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using System;
 using Harmony;
 using System.Collections.Generic;
+using static BootDialog.PostBootDialog;
 
 namespace CustomizeGeyser
 {
@@ -65,6 +66,24 @@ namespace CustomizeGeyser
                         __result[i].geyserType.minYearPercent = (float)modifier.minYearPercent;
                     if (modifier.maxYearPercent != null)
                         __result[i].geyserType.maxYearPercent = (float)modifier.maxYearPercent;
+					
+					if (modifier.Disease != null || modifier.DiseaseCount != null)
+					{						
+						byte diseaseIndex;
+						if (modifier.Disease == null)
+							diseaseIndex = __result[i].geyserType.diseaseInfo.idx;
+						else
+							diseaseIndex = Db.Get().Diseases.GetIndex((HashedString) modifier.Disease);
+						
+						if (modifier.DiseaseCount == null)
+							modifier.DiseaseCount = __result[i].geyserType.diseaseInfo.count;
+						
+						if (diseaseIndex == byte.MaxValue || modifier.DiseaseCount == 0)
+							__result[i].geyserType.diseaseInfo = Klei.SimUtil.DiseaseInfo.Invalid;
+						else
+							__result[i].geyserType.diseaseInfo = new Klei.SimUtil.DiseaseInfo() { idx = diseaseIndex, count = (int) modifier.DiseaseCount };
+					}
+						
 
                     Debug.Log("[GeyserModifier] Changed geyser with id: " + modifier.id);
                 }
@@ -72,13 +91,13 @@ namespace CustomizeGeyser
                 {
                     if (modifier.element == null)
                     {
-                        Debug.LogWarning("[GeyserModifier] Cannot add geyser with no element: " + modifier.id);
+                        Debug.LogWarning(ToDialog("[GeyserModifier] Cannot add geyser with no element: " + modifier.id));
                         continue;
                     }
 
                     if (ElementLoader.FindElementByName(modifier.element) == null)
                     {
-                        Debug.LogWarning("[GeyserModifier] Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element);
+                        Debug.LogWarning(ToDialog("[GeyserModifier] Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element));
                         continue;
                     }
 
@@ -145,12 +164,24 @@ namespace CustomizeGeyser
 
                     if (modifier.maxYearPercent == null || modifier.maxYearPercent < modifier.minYearPercent || modifier.maxYearPercent > 1f)
                         modifier.maxYearPercent = modifier.minYearPercent;
-
+					
                     if (modifier.Name != null)
                         Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".NAME", modifier.Name);
                     if (modifier.Description != null)
                         Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".DESC", modifier.Description);
 
+                    Klei.SimUtil.DiseaseInfo diseaseInfo;
+					if (modifier.Disease == null || modifier.DiseaseCount == null)
+						diseaseInfo = Klei.SimUtil.DiseaseInfo.Invalid;
+					else
+					{
+						byte diseaseIndex = Db.Get().Diseases.GetIndex((HashedString) modifier.Disease);
+						if (diseaseIndex == byte.MaxValue || modifier.DiseaseCount == 0)
+							diseaseInfo = Klei.SimUtil.DiseaseInfo.Invalid;
+						else
+							diseaseInfo = new Klei.SimUtil.DiseaseInfo() { idx = diseaseIndex, count = (int) modifier.DiseaseCount };
+					}
+					
                     __result.Add(
                         new GeyserGenericConfig.GeyserPrefabParams(
                             modifier.anim, //"geyser_liquid_oil_kanim",
@@ -170,8 +201,8 @@ namespace CustomizeGeyser
                                 (float)modifier.minYearLength,
                                 (float)modifier.maxYearLength,
                                 (float)modifier.minYearPercent,
-                                (float)modifier.maxYearPercent
-                    )));
+                                (float)modifier.maxYearPercent).AddDisease(diseaseInfo)
+						));
 
                     Debug.Log("[GeyserModifier] Added geyser " + modifier.id + " : " + modifier.element);
 
