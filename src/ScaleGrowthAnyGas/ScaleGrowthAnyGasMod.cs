@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Harmony;
 
-namespace FastTravelTube
+namespace ScaleGrowthAnyGas
 {
 	[HarmonyPatch(typeof(Game), "OnPrefabInit")]
 	internal class ScaleGrowthAnyGasMod_Game_OnPrefabInit

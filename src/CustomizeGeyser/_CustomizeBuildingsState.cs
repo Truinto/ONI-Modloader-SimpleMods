@@ -5,12 +5,12 @@ namespace CustomizeGeyser
 {
     public class CustomizeGeyserState
     {
-        public int version { get; set; } = 2;
+        public int version { get; set; } = 3;
         public bool Enabled { get; set; } = true;
         
         public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
             new GeyserStruct(id: "steam", temperature: 378.15f),
-            new GeyserStruct(id: "slimy_po2", temperature: 378.15f, DiseaseCount: 5000),
+            new GeyserStruct(id: "slimy_po2", temperature: 378.15f, Disease: "ZombieSpores", DiseaseCount: 5000),
             new GeyserStruct(id: "molten_tungsten", anim: "geyser_molten_iron_kanim", element: "MoltenTungsten",
                 Name: "Tungsten Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Tungsten", "MOLTENTUNGSTEN") + ".",
                 temperature: 3773.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
@@ -43,8 +43,8 @@ namespace CustomizeGeyser
                 minYearPercent: 0.4f, maxYearPercent: 0.8f, Disease: "PollenGerms", DiseaseCount: 50)
         };
 
-        public bool RandomizerEnabled { get; set; } = false;
-        public bool RandomizerUsesMapSeed { get; set; } = true;
+        public bool RandomizerEnabled { get; set; } = true;
+        public bool RandomizerUsesMapSeed { get; set; } = false;
         public bool RandomizerRerollsCycleRate { get; set; } = true;
         public bool RandomizerPopupGeyserDiscoveryInfo { get; set; } = true;
         public Dictionary<string, int> RNGTable { get; set; } = new Dictionary<string, int> {
@@ -75,6 +75,9 @@ namespace CustomizeGeyser
             { "liquid_ethanol", 1 }
         };
 
+        public bool GeyserMorphEnabled { get; set; } = true;
+        public int GeyserMorphWorktime { get; set; } = 300;
+
         public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.Helper.CreatePath("Customize Geyser"), true, UpdateFunction);
 
         public static bool UpdateFunction(CustomizeGeyserState state)
@@ -93,11 +96,11 @@ namespace CustomizeGeyser
 
         public class GeyserStruct
         {
+            public string id;
+            public string element;
             public string anim;
             public int? width;
             public int? height;
-            public string id;
-            public string element;
             public float? temperature;
             public float? minRatePerCycle;
             public float? maxRatePerCycle;
@@ -118,10 +121,10 @@ namespace CustomizeGeyser
             public GeyserStruct(
                 string id,
                 string element = null,
-                float? temperature = null,
                 string anim = null,
                 int? width = null,
                 int? height = null,
+                float? temperature = null,
                 float? minRatePerCycle = null,
                 float? maxRatePerCycle = null,
                 float? maxPressure = null,
@@ -138,11 +141,11 @@ namespace CustomizeGeyser
 				string Disease = null,
 				int? DiseaseCount = null)
             {
+                this.id = id;
+                this.element = element;
                 this.anim = anim;
                 this.width = width;
                 this.height = height;
-                this.id = id;
-                this.element = element;
                 this.temperature = temperature;
                 this.minRatePerCycle = minRatePerCycle;
                 this.maxRatePerCycle = maxRatePerCycle;

@@ -1,0 +1,5 @@
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\FasterTravelTube\bin\Release\FastTravelTube\Config\FastTravelTubeState.json
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\FasterTravelTube\bin\Release\FasterTravelTube.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\FasterTravelTube\bin\Release\FasterTravelTube.pdb
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\FasterTravelTube\obj\Release\FasterTravelTube.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\FasterTravelTube\obj\Release\FasterTravelTube.pdb

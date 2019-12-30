@@ -1,0 +1,4 @@
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\Mods\ScaleGrowthAnyGas\Config\ScaleGrowthAnyGasState.json
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\Mods\ScaleGrowthAnyGas.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\ScaleGrowthAnyGas\obj\Release\ScaleGrowthAnyGas.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\ScaleGrowthAnyGas\bin\Release\ScaleGrowthAnyGas.dll

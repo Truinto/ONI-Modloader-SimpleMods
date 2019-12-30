@@ -1,0 +1,5 @@
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\LiquidReservoirSmart\bin\Release\LiquidReservoirSmart.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\LiquidReservoirSmart\bin\Release\LiquidReservoirSmart.pdb
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\LiquidReservoirSmart\obj\Release\LiquidReservoirSmart.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\LiquidReservoirSmart\obj\Release\LiquidReservoirSmart.pdb
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\LiquidReservoirSmart\obj\Release\LiquidReservoirSmart.csprojResolveAssemblyReference.cache

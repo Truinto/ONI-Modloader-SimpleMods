@@ -6,14 +6,14 @@ using static BootDialog.PostBootDialog;
 
 namespace CustomizeGeyser
 {
-    internal class RandomizerTable
+    public class RandomizerTable
     {
-        internal static HashedString[] geysers = null;
-        internal static int[] weights = null;
-        internal static HashedString[] ignoreTypes = new HashedString[0];
-        internal static int sum = 0;
+        public static HashedString[] geysers = null;
+        public static int[] weights = null;
+        public static HashedString[] ignoreTypes = new HashedString[0];
+        public static int sum = 0;
 
-        private static void FixErrors()
+        public static void FixErrors()
         {
             List<GeyserConfigurator.GeyserType> geyserTypes = (List<GeyserConfigurator.GeyserType>)AccessTools.Field(typeof(GeyserConfigurator), "geyserTypes").GetValue(null);
 
@@ -33,7 +33,7 @@ namespace CustomizeGeyser
             }
         }
 
-        internal static void Initialize()
+        public static void Initialize()
         {
             FixErrors();
 
@@ -71,16 +71,15 @@ namespace CustomizeGeyser
         }
     }
 
-    //[HarmonyPatch(typeof(GeyserConfigurator), "CreateRandomInstance")]
-    internal class GeyserConfigurator_CreateRandomInstance
+    [HarmonyPatch(typeof(GeyserConfigurator), "CreateRandomInstance")]
+    public class GeyserConfigurator_CreateRandomInstance
     {
-
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeGeyserState.StateManager.State.RandomizerEnabled && CustomizeGeyserState.StateManager.State.RNGTable != null;
         }
 
-        internal static void Postfix(GeyserConfigurator __instance, ref GeyserConfigurator.GeyserInstanceConfiguration __result)
+        public static void Postfix(GeyserConfigurator __instance, ref GeyserConfigurator.GeyserInstanceConfiguration __result)
         {
             //if ( GeyserConfigurator.FindType(__result.typeId).id.StartsWith("GeyserGeneric_") ) Note: "GeyserGeneric_" is added later and never true here
 
@@ -103,17 +102,17 @@ namespace CustomizeGeyser
     }
 
     [HarmonyPatch(typeof(GeyserGenericConfig), "CreatePrefabs")]
-    internal class GeyserGenericConfig_CreatePrefabs
+    public class GeyserGenericConfig_CreatePrefabs
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeGeyserState.StateManager.State.RandomizerEnabled && CustomizeGeyserState.StateManager.State.RNGTable != null;
         }
-        
-        internal static bool Prefix(GeyserGenericConfig __instance, ref List<GameObject> __result)
+
+        public static bool Prefix(GeyserGenericConfig __instance, ref List<GameObject> __result)
         {
             List<GameObject> gameObjectList = new List<GameObject>();
-            List<GeyserGenericConfig.GeyserPrefabParams> configs = (List<GeyserGenericConfig.GeyserPrefabParams>) AccessTools.Method(typeof(GeyserGenericConfig), "GenerateConfigs").Invoke(__instance, null);
+            List<GeyserGenericConfig.GeyserPrefabParams> configs = (List<GeyserGenericConfig.GeyserPrefabParams>)AccessTools.Method(typeof(GeyserGenericConfig), "GenerateConfigs").Invoke(__instance, null);
             foreach (GeyserGenericConfig.GeyserPrefabParams geyserPrefabParams in configs)
                 gameObjectList.Add(__instance.CreateGeyser(geyserPrefabParams.id, geyserPrefabParams.anim, geyserPrefabParams.width, geyserPrefabParams.height, Strings.Get(geyserPrefabParams.nameStringKey), Strings.Get(geyserPrefabParams.descStringKey), geyserPrefabParams.geyserType.idHash));
             GameObject entity = EntityTemplates.CreateEntity("GeyserGeneric", "Random Geyser Spawner", true);
@@ -130,7 +129,7 @@ namespace CustomizeGeyser
             return false;
         }
 
-        internal static void PrefabInitForGeysers(GameObject go)
+        public static void PrefabInitForGeysers(GameObject go)
         {
             System.Random RNG;
             if (CustomizeGeyserState.StateManager.State.RandomizerUsesMapSeed)
@@ -153,19 +152,6 @@ namespace CustomizeGeyser
             ), go.transform.GetPosition(), Grid.SceneLayer.BuildingBack, (string)null, 0).SetActive(true);
             go.DeleteObject();
         }
-
-        internal static void NotPostfix(ref List<GameObject> __result)
-        {
-            for (int i = 0; i < __result.Count; i++)
-            {
-                GameObject entity = __result[i];
-                KPrefabID prefab = entity.GetComponent<KPrefabID>();
-                //prefab.prefabInitFn = null;
-                prefab.prefabInitFn += (KPrefabID.PrefabFn)(go =>
-                {
-                    PrefabInitForGeysers(go);
-                });
-            }
-        }
     }
+
 }
