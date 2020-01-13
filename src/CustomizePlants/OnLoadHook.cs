@@ -6,6 +6,8 @@ using System.Text;
 using Harmony;
 using UnityEngine;
 using static BootDialog.PostBootDialog;
+using System.Reflection;
+using System.IO;
 
 namespace CustomizePlants
 {
@@ -34,7 +36,7 @@ namespace CustomizePlants
             OxyfernConfig.ID
         };
 
-        public static readonly Type[] METHODS = {
+        public static readonly Type[] CLASSES = {
             typeof(BasicSingleHarvestPlantConfig),
             typeof(SeaLettuceConfig),
             typeof(BasicFabricMaterialPlantConfig),
@@ -71,7 +73,7 @@ namespace CustomizePlants
             var harmony = HarmonyInstance.Create("com.fumihiko.oni.customizeplants");
             var postfix = typeof(OnLoadPatch).GetMethod("PlantPostfix");
 
-            foreach (Type type in PLANTS.METHODS)
+            foreach (Type type in PLANTS.CLASSES)
             {
                 var original = type.GetMethod("CreatePrefab");
                 harmony.Patch(original, prefix: null, postfix: new HarmonyMethod(postfix));
@@ -80,17 +82,28 @@ namespace CustomizePlants
             }
 
             if (CustomizePlantsState.StateManager.State.ModPlants != null)
-            { 
+            {
                 foreach (string config in CustomizePlantsState.StateManager.State.ModPlants)
                 {
                     try
                     {
-                        var original = Type.GetType(config).GetMethod("CreatePrefab");
+                        string[] dlls = Directory.GetFiles(Config.Helper.ModsDirectory, config.Substring(0, config.IndexOf('.')) + ".dll", SearchOption.AllDirectories);
+
+                        foreach (string dll in dlls)
+                        {
+                            Debug.Log("ModPlants load external dll: " + dll);
+                            Assembly.LoadFile(dll);
+                        }
+
+                        Type type = Type.GetType(config, true);
+                        MethodInfo original = type.GetMethod("CreatePrefab");
+                        if (original == null) throw new NullReferenceException("ModPlants CreatePrefab is NULL");
                         harmony.Patch(original, prefix: null, postfix: new HarmonyMethod(postfix));
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        Debug.LogWarning(ToDialog("ModPlants: " + config + " is not a valid class."));
+                        Debug.LogWarning(e.Message);
+                        Debug.LogWarning(ToDialog("ModPlants: " + config + " is not a valid qualifier."));
                     }
                 }
             }

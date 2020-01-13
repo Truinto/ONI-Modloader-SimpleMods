@@ -18,16 +18,17 @@ namespace CustomizePlants
         
         public static void Prefix(GameObject template)
         {
-            MethodBase classBase = new System.Diagnostics.StackTrace().GetFrame(2).GetMethod();
+            Type classType = new System.Diagnostics.StackTrace().GetFrame(2).GetMethod().ReflectedType;
 
             string displayName = FindBetweenLink.Match(template.GetComponent<DecorProvider>()?.overrideName ?? "null")?.Groups[1]?.Value ?? "null";
-            string className = classBase.ReflectedType.Name;
+            string className = classType.AssemblyQualifiedName;
             string plantName = template.name;
 
-            Debug.Log("Debug CustomizePlants: '" + displayName + "' is " + plantName + " defined in " + className);
+            Debug.Log("[CustomizePlants] '" + displayName + "' is " + plantName + " defined in " + classType.FullName);
 
-            if (CustomizePlantsState.StateManager.State.AutomaticallyAddModPlants && !PLANTS.METHODS.Contains(classBase.GetType()))
+            if (CustomizePlantsState.StateManager.State.AutomaticallyAddModPlants && !PLANTS.CLASSES.Contains(classType) && !CustomizePlantsState.StateManager.State.ModPlants.Contains(className))
             {
+                Debug.Log("Found new mod plant and adding it to the list: " + className);
                 CustomizePlantsState.StateManager.State.ModPlants.Add(className);
                 CustomizePlantsState.StateManager.State.PlantSettings.Add(new PlantData(plantName));
                 CustomizePlantsState.StateManager.TrySaveConfigurationState();

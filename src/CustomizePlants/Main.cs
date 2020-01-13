@@ -6,6 +6,7 @@ using System.Text;
 using Harmony;
 using UnityEngine;
 using static BootDialog.PostBootDialog;
+using System.Runtime.Serialization;
 
 namespace CustomizePlants
 {
@@ -180,7 +181,8 @@ namespace CustomizePlants
         
         public static void ProcessPlant(GameObject plant)
         {
-            PlantData setting = CustomizePlantsState.StateManager.State.PlantSettings?.Find(t => t.id == plant.name);
+            PlantData setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.name);
+
             if (setting == null) return;
 
             #region decor plant fixes
@@ -251,16 +253,43 @@ namespace CustomizePlants
             #region illumination
             if (setting.illumination != null)
             {
-                IlluminationVulnerable illumination = plant.AddOrGet<IlluminationVulnerable>();
+                IlluminationVulnerable illumination = plant.GetComponent<IlluminationVulnerable>();
+                CropSleepingMonitor.Def cropSleep = plant.GetDef<CropSleepingMonitor.Def>();
 
                 if (setting.illumination == 0f)
-                    UnityEngine.Object.DestroyImmediate(illumination);
+                {
+                    if (illumination != null)
+                        UnityEngine.Object.DestroyImmediate(illumination);
+                    if (cropSleep != null)
+                        FumLib.FumTools.RemoveDef(plant, cropSleep);
+                }
                 else if (setting.illumination < 0f)
+                {
+                    if (illumination == null)
+                        illumination = plant.AddOrGet<IlluminationVulnerable>();
+                    if (cropSleep != null)
+                        FumLib.FumTools.RemoveDef(plant, cropSleep);
+
                     illumination.SetPrefersDarkness(true);
+                }
+                else if (setting.illumination == 1f)
+                {
+                    if (illumination == null)
+                        illumination = plant.AddOrGet<IlluminationVulnerable>();
+                    if (cropSleep != null)
+                        FumLib.FumTools.RemoveDef(plant, cropSleep);
+
+                    illumination.SetPrefersDarkness(false);
+                }
                 else
                 {
-                    illumination.SetPrefersDarkness(false);
-                    illumination.lightIntensityThreshold = (float)setting.illumination;
+                    if (illumination != null)
+                        UnityEngine.Object.DestroyImmediate(illumination);
+                    if (cropSleep == null)
+                        cropSleep = plant.AddOrGetDef<CropSleepingMonitor.Def>();
+
+                    cropSleep.lightIntensityThreshold = (float)setting.illumination;
+                    cropSleep.prefersDarkness = false;
                 }
             }
             #endregion
@@ -536,9 +565,27 @@ namespace CustomizePlants
             this.input_rate = input_rate;
             this.output_element = output_element;
             this.output_rate = output_rate;
-            
             //TODO: validate settings
         }
+
+        public PlantData()
+        { }
+        
+        public override bool Equals(object obj)
+        {
+            return this.GetHashCode() == (obj as PlantData)?.GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return Hash.SDBMLower(this.id);
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
     }
     
 }
