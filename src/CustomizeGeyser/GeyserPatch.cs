@@ -16,7 +16,7 @@ namespace CustomizeGeyser
 
 
     [HarmonyPatch(typeof(GeyserGenericConfig), "GenerateConfigs")]
-    internal class GeyserGenericConfig_GenerateConfigs
+    public class GeyserGenericConfig_GenerateConfigs
     {
         internal static bool Prepare()
         {
@@ -25,7 +25,7 @@ namespace CustomizeGeyser
 
         public static readonly string[] GeyserKAnims = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_liquid_oil_kanim" };
 
-        internal static void Postfix(ref List<GeyserGenericConfig.GeyserPrefabParams> __result)
+        public static void Postfix(ref List<GeyserGenericConfig.GeyserPrefabParams> __result)
         {
             GeyserInfo.config = __result;
 

@@ -5,7 +5,7 @@ namespace CustomizeGeyser
 {
     public class CustomizeGeyserState
     {
-        public int version { get; set; } = 3;
+        public int version { get; set; } = 4;
         public bool Enabled { get; set; } = true;
         
         public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
@@ -47,6 +47,8 @@ namespace CustomizeGeyser
         public bool RandomizerUsesMapSeed { get; set; } = false;
         public bool RandomizerRerollsCycleRate { get; set; } = true;
         public bool RandomizerPopupGeyserDiscoveryInfo { get; set; } = true;
+        public bool RandomizerHighlanderMode { get; set; } = false;
+        public bool RandomizerHighlanderRetroactive { get; set; } = false;
         public Dictionary<string, int> RNGTable { get; set; } = new Dictionary<string, int> {
             { "steam", 1 },
             { "hot_steam", 1 },
@@ -69,10 +71,10 @@ namespace CustomizeGeyser
             { "oil_drip", 1 },
             { "molten_tungsten", 1 },
             { "molten_aluminum", 1 },
-            { "molten_steel", 1 },
             { "molten_glass", 1 },
-            { "liquid_coolant", 1 },
-            { "liquid_ethanol", 1 }
+            { "liquid_ethanol", 1 },
+            { "molten_steel", 0 },
+            { "liquid_coolant", 0 }
         };
 
         public bool GeyserMorphEnabled { get; set; } = true;

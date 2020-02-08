@@ -16,7 +16,6 @@ namespace CustomizeGeyser
 
         public static void Postfix(GameObject __result)
         {
-            //UnityEngine.Object.DestroyImmediate(__result.GetComponent<Studyable>());
             __result.AddOrGet<GeyserMorph>();
         }
     }
@@ -123,21 +122,23 @@ namespace CustomizeGeyser
             base.OnCompleteWork(worker);
             this.CancelChore();
             //this.TriggerTextDialog();
-            this.ChangeGeyserElement(currentGeyserSelection);
+            ChangeGeyserElement(this.gameObject, currentGeyserSelection);
         }
 
-        public void ChangeGeyserElement(string new_id = null)
+		public static bool ChangeGeyserElement(GameObject go, string new_id = null)
         {
             if (new_id == null)
                 new_id = "GeyserGeneric";
 
             try
             {
-                GameUtil.KInstantiate(Assets.GetPrefab((Tag)new_id), this.gameObject.transform.GetPosition(), Grid.SceneLayer.BuildingBack, (string)null, 0).SetActive(true);
-                this.gameObject.DeleteObject();
+                GameUtil.KInstantiate(Assets.GetPrefab((Tag)new_id), go.transform.GetPosition(), Grid.SceneLayer.BuildingBack, (string)null, 0).SetActive(true);
+                go.DeleteObject();
             } catch (Exception e) {
                 Debug.LogWarning("ChangeGeyser critical failure: " + e.Message);
+				return false;
             }
+			return true;
         }
 
         public void TriggerTextDialog()
@@ -152,7 +153,7 @@ namespace CustomizeGeyser
 
                     GeyserConfigurator.GeyserType type = GeyserConfigurator.FindType((HashedString)name);
 
-                    ChangeGeyserElement(type?.id);
+                    ChangeGeyserElement(this.gameObject, type?.id);
                 }
             });
 
