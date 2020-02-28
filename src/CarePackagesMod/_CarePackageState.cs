@@ -11,6 +11,8 @@ namespace CarePackageMod
         public bool enabled { get; set; } = true;
 
         public bool biggerRoster { get; set; } = true;
+        public int rosterDupes { get; set; } = 3;
+        public int rosterPackages { get; set; } = 3;
 
         public float multiplier { get; set; } = 1f;
 

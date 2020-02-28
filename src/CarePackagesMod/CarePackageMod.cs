@@ -114,13 +114,27 @@ namespace CarePackageMod
             {
                 CodeInstruction codeInstruction = code[i];
                 //Debug.Log(codeInstruction.ToString());
-
-                if (codeInstruction.opcode == OpCodes.Ldc_I4_4) //45	0093	ldc.i4.4
-                    codeInstruction.opcode = OpCodes.Ldc_I4_6;
-                else if (codeInstruction.opcode == OpCodes.Ldc_I4_2 && i == 40) //40    0086    ldc.i4.2
-                    codeInstruction.opcode = OpCodes.Ldc_I4_3;
-                else if (codeInstruction.opcode == OpCodes.Ldc_I4_1 && i == 42) //42	008C	ldc.i4.1
-                    codeInstruction.opcode = OpCodes.Ldc_I4_3;
+                if (i >= 49)
+                    continue;
+                
+                if (codeInstruction.opcode == OpCodes.Ldc_I4_2)                 //40    0086    ldc.i4.2
+                {
+                    //codeInstruction.opcode = CarePackageState.StateManager.State.rosterPackages.ToOpCode();
+                    codeInstruction.opcode = OpCodes.Ldc_I4;
+                    codeInstruction.operand = CarePackageState.StateManager.State.rosterPackages;
+                }
+                else if (codeInstruction.opcode == OpCodes.Ldc_I4_1)            //42	008C	ldc.i4.1
+                {
+                    //codeInstruction.opcode = CarePackageState.StateManager.State.rosterPackages.ToOpCode();
+                    codeInstruction.opcode = OpCodes.Ldc_I4;
+                    codeInstruction.operand = CarePackageState.StateManager.State.rosterPackages;
+                }
+                else if (codeInstruction.opcode == OpCodes.Ldc_I4_4)            //45	007E	ldc.i4.4
+                {
+                    //codeInstruction.opcode = (CarePackageState.StateManager.State.rosterDupes + CarePackageState.StateManager.State.rosterPackages).ToOpCode();
+                    codeInstruction.opcode = OpCodes.Ldc_I4;
+                    codeInstruction.operand = CarePackageState.StateManager.State.rosterDupes + CarePackageState.StateManager.State.rosterPackages;
+                }
             }
 
             if (CarePackageState.StateManager.State.rosterIsOrdered)
@@ -131,7 +145,37 @@ namespace CarePackageMod
 
             return (IEnumerable<CodeInstruction>)code;
         }
+
     }
 
+    public static class MyExtensions
+    {
+        public static OpCode ToOpCode(this int integer)
+        {
+            switch (integer)
+            {
+                case 0:
+                    return OpCodes.Ldc_I4_0;
+                case 1:
+                    return OpCodes.Ldc_I4_1;
+                case 2:
+                    return OpCodes.Ldc_I4_2;
+                case 3:
+                    return OpCodes.Ldc_I4_3;
+                case 4:
+                    return OpCodes.Ldc_I4_4;
+                case 5:
+                    return OpCodes.Ldc_I4_5;
+                case 6:
+                    return OpCodes.Ldc_I4_6;
+                case 7:
+                    return OpCodes.Ldc_I4_7;
+                case 8:
+                    return OpCodes.Ldc_I4_8;
+                default:
+                    return OpCodes.Ldc_I4_1;
+            }
+        }
+    }
 
 }
