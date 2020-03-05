@@ -7,16 +7,16 @@ using UnityEngine;
 
 namespace CustomizeBuildings
 {
-
-
     [HarmonyPatch(typeof(LiquidReservoirConfig), "CreateBuildingDef")]
     internal class LiquidReservoirConfig_CreateBuildingDef
     {
         private static void Postfix(ref BuildingDef __result)
         {
-            if (!CustomizeBuildingsState.StateManager.State.ReservoirNoGround) return;
-            __result.BuildLocationRule = BuildLocationRule.Anywhere;
-            __result.ContinuouslyCheckFoundation = false;
+            if (CustomizeBuildingsState.StateManager.State.ReservoirNoGround)
+            {
+                __result.BuildLocationRule = BuildLocationRule.Anywhere;
+                __result.ContinuouslyCheckFoundation = false;
+            }
         }
     }
     [HarmonyPatch(typeof(LiquidReservoirConfig), "ConfigureBuildingTemplate")]
@@ -42,41 +42,6 @@ namespace CustomizeBuildings
             }
         }
     }
-    [HarmonyPatch(typeof(LiquidReservoirConfig), "DoPostConfigureComplete")]
-    internal class LiquidReservoirConfig_DoPostConfigureComplete
-    {
-        private static void Postfix(GameObject go)
-        {
-            if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
-            {
-                GeneratedBuildings.RegisterLogicPorts(go, ReservoirPort.OUTPUT_PORT);
-                go.AddOrGet<ReservoirPort>();
-            }
-        }
-    }
-    //[HarmonyPatch(typeof(LiquidReservoirConfig), "DoPostConfigurePreview")]
-    //internal class LiquidReservoirConfig_DoPostConfigurePreview
-    //{
-    //    private static void Postfix(GameObject go)
-    //    {
-    //        if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
-    //        {
-    //            //GeneratedBuildings.RegisterLogicPorts(go, ReservoirPort.OUTPUT_PORT);
-    //        }
-    //    }
-    //}
-    //[HarmonyPatch(typeof(LiquidReservoirConfig), "DoPostConfigureUnderConstruction")]
-    //internal class LiquidReservoirConfig_DoPostConfigureUnderConstruction
-    //{
-    //    private static void Postfix(GameObject go)
-    //    {
-    //        if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
-    //        {
-    //            GeneratedBuildings.RegisterLogicPorts(go, ReservoirPort.OUTPUT_PORT);
-    //        }
-    //    }
-    //}
-
 
 
     [HarmonyPatch(typeof(GasReservoirConfig), "CreateBuildingDef")]
@@ -112,61 +77,6 @@ namespace CustomizeBuildings
                 go.AddOrGet<StorageLocker>();
                 Prioritizable.AddRef(go);
             }
-        }
-    }
-    [HarmonyPatch(typeof(GasReservoirConfig), "DoPostConfigureComplete")]
-    internal class GasReservoirConfig_DoPostConfigureComplete
-    {
-        private static void Postfix(GameObject go)
-        {
-            if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
-            {
-                GeneratedBuildings.RegisterLogicPorts(go, ReservoirPort.OUTPUT_PORT);
-                go.AddOrGet<ReservoirPort>();
-            }
-        }
-    }
-    //[HarmonyPatch(typeof(GasReservoirConfig), "DoPostConfigurePreview")]
-    //internal class GasReservoirConfig_DoPostConfigurePreview
-    //{
-    //    private static void Postfix(GameObject go)
-    //    {
-    //        if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
-    //        {
-    //            //GeneratedBuildings.RegisterLogicPorts(go, ReservoirPort.OUTPUT_PORT);
-    //        }
-    //    }
-    //}
-    //[HarmonyPatch(typeof(GasReservoirConfig), "DoPostConfigureUnderConstruction")]
-    //internal class GasReservoirConfig_DoPostConfigureUnderConstruction
-    //{
-    //    private static void Postfix(GameObject go)
-    //    {
-    //        if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
-    //        {
-    //            GeneratedBuildings.RegisterLogicPorts(go, ReservoirPort.OUTPUT_PORT);
-    //        }
-    //    }
-    //}
-    
-
-    public class ReservoirPort : StorageLocker, ISim1000ms
-    {
-        public static readonly LogicPorts.Port OUTPUT_PORT = LogicPorts.Port.OutputPort(FilteredStorage.FULL_PORT_ID, new CellOffset(0, 1),
-            STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT_ACTIVE,
-            STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT_INACTIVE, false, false);
-        [MyCmpGet]
-        private LogicPorts port;
-
-        public void Sim1000ms(float dt)
-        {
-            UpdateLogic();
-        }
-
-        private void UpdateLogic()
-        {
-            float percent = this.AmountStored / this.UserMaxCapacity;
-            this.port.SendSignal(FilteredStorage.FULL_PORT_ID, percent >= 1 ? 1 : 0);
         }
     }
 

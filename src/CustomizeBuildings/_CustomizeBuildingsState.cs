@@ -123,6 +123,7 @@ namespace CustomizeBuildings
             public float? ExhaustKilowattsWhenActive;
             public float? SelfHeatKilowattsWhenActive;
             public float? GeneratorWattageRating;
+            public float? GeneratorBaseCapacity;
             public float? BaseDecor;
             public float? BaseDecorRadius;
             public BuildLocationRule? LocationRule;
@@ -134,7 +135,7 @@ namespace CustomizeBuildings
 
             public BuildingStruct(float? PowerConsumption = null, string[] MaterialCategory = null, float? OverheatTemperature = null,
                 float? ExhaustKilowattsWhenActive = null, float? SelfHeatKilowattsWhenActive = null, float? GeneratorWattageRating = null,
-                float? BaseDecor = null, float? BaseDecorRadius = null, BuildLocationRule? LocationRule = null,
+                float? GeneratorBaseCapacity = null, float? BaseDecor = null, float? BaseDecorRadius = null, BuildLocationRule? LocationRule = null,
                 PermittedRotations? Rotations = null, bool? Floodable = null, bool? IsFoundation = null, float? ConstructionMass = null,
                 float? ThermalConductivity = null)
             {
@@ -144,6 +145,7 @@ namespace CustomizeBuildings
                 this.ExhaustKilowattsWhenActive = ExhaustKilowattsWhenActive;
                 this.SelfHeatKilowattsWhenActive = SelfHeatKilowattsWhenActive;
                 this.GeneratorWattageRating = GeneratorWattageRating;
+                this.GeneratorBaseCapacity = GeneratorBaseCapacity;
                 this.BaseDecor = BaseDecor;
                 this.BaseDecorRadius = BaseDecorRadius;
                 this.LocationRule = LocationRule;
@@ -207,7 +209,7 @@ namespace CustomizeBuildings
             PipeLiquidMaxPressure = 10,
             PipeGasMaxPressure = 1,
             PipeLiquidPump = 10f,
-            PipeGasPump = 1f,
+            PipeGasPump = 0.5f,
             ConveyorRailPackageSize = 20f,
             AutoSweeperCapacity = 1000f,
             AutoSweeperRange = 4,

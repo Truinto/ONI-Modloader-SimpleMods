@@ -29,6 +29,7 @@ namespace CustomizeBuildings
             if (flag)
             {
                 #region checks
+                
 
                 if (entry.PowerConsumption != null)
                 {
@@ -59,6 +60,11 @@ namespace CustomizeBuildings
                 if (entry.GeneratorWattageRating != null)
                 {
                     buildingDef.GeneratorWattageRating = (float)entry.GeneratorWattageRating;
+                }
+
+                if (entry.GeneratorBaseCapacity != null)
+                {
+                    buildingDef.GeneratorBaseCapacity = (float)entry.GeneratorBaseCapacity;
                 }
 
                 if (entry.BaseDecor != null)
