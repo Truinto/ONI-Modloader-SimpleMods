@@ -7,7 +7,7 @@ namespace CustomizePlants
 {
     public class CustomizePlantsState
     {
-		public int version { get; set; } = 8;
+		public int version { get; set; } = 9;
         
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new PlantData(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }),
@@ -19,6 +19,7 @@ namespace CustomizePlants
             new PlantData(id: ForestTreeConfig.ID, irrigation: new Dictionary<string, float>() { {"DirtyWater", 62.5f }, {"Dirt", 10f} }),
             //new PlantData(id: OxyfernConfig.ID, fruitId: OxyfernConfig.SEED_ID, fruit_amount: 1, fruit_grow_time: 20*600, max_age: -1f),
             //new PlantData(id: ColdBreatherConfig.ID, irrigation: new Dictionary<string, float>() { }, fruitId: ColdBreatherConfig.SEED_ID, fruit_amount: 1, fruit_grow_time: 20*600, max_age: -1f),
+            new PlantData(id: ColdBreatherConfig.ID, irrigation: new Dictionary<string, float>() { }),
             new PlantData(id: GasGrassConfig.ID, illumination: 100f),
             new PlantData(id: PrickleGrassConfig.ID, safe_elements: new string[] { "Oxygen", "ContaminatedOxygen", "CarbonDioxide", "ChlorineGas" }, input_element: "ChlorineGas", input_rate: 0.01f),
             new PlantData(id: LeafyPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Water", 10f} }, fruitId: "placeholder1", fruit_grow_time: 4*600f),

@@ -191,7 +191,7 @@ namespace CustomizePlants
                 PrickleGrass grass = plant.GetComponent<PrickleGrass>();
                 if (grass != null || plant.name == ColdBreatherConfig.ID || plant.name == EvilFlowerConfig.ID)
                 {
-                    UnityEngine.Object.DestroyImmediate(grass);
+                    UnityEngine.Object.DestroyImmediate(grass); //what happens if this is null?
                     plant.AddOrGet<StandardCropPlant>();
 
                     KPrefabID prefab = plant.GetComponent<KPrefabID>();
@@ -209,21 +209,33 @@ namespace CustomizePlants
                     //kbatchedAnimController.initialAnim = "idle_empty";
                 }
 
-                SeedProducer seed = plant.AddOrGet<SeedProducer>();
-                seed.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
-                seed.seedInfo.newSeedsProduced = 1;
+                SeedProducer seed = plant.GetComponent<SeedProducer>();
+                if (seed != null)
+                {
+                    seed.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
+                    seed.seedInfo.newSeedsProduced = 1;
+                }
             }
             #endregion
             #region fruitId
-            if (setting.fruitId != null)    //actual setting fruit
+            if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
             {
+                Crop crop = plant.AddOrGet<Crop>();
+                Crop.CropVal cropval = crop.cropVal;   //this is a copy
+                if (setting.fruitId != null) cropval.cropId = setting.fruitId;
+                if (cropval.cropId == "") cropval.cropId = "WoodLog";
+                if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
+                if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
+                if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
+                if (cropval.numProduced < 1) cropval.numProduced = 1;
+                crop.Configure(cropval);
+
                 KPrefabID prefab = plant.GetComponent<KPrefabID>();
                 GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, prefab.PrefabID().ToString());
-                Crop.CropVal cropval = new Crop.CropVal(setting.fruitId, setting.fruit_grow_time ?? 600f, setting.fruit_amount ?? 1);   //TUNING.CROPS.CROP_TYPES.Find(m => m.cropId == setting.fruitId);
-                plant.AddOrGet<Crop>().Configure(cropval);
                 Growing growing = plant.AddOrGet<Growing>();
                 growing.growthTime = cropval.cropDuration;
-                plant.AddOrGet<Harvestable>();
+                if (setting.id != ForestTreeConfig.ID)  // don't harvest arbor trees directly
+                    plant.AddOrGet<Harvestable>();
                 plant.AddOrGet<HarvestDesignatable>();
                 plant.AddOrGet<StandardCropPlant>();
             }
