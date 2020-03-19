@@ -1,4 +1,4 @@
-README V7
+README V10
 
 Settings here:
 Windows: %userprofile%\documents\Klei\OxygenNotIncluded\mods\Customize Plants.json
@@ -73,6 +73,8 @@ Groups:
 --  safe_elements: List of gas elements plant has to be in. If empty all elements are suitable.
 --  temperatures: Array of temperatures in Kelvin. 1) death if lower 2) wilt if lower 3) wilt if higher 4) death if higher; entries after 4 are ignored; may have less than 4 entries
 --  pressures: Array of pressures in kg. 1) death if lower 2) wilt if lower 3) wilt if higher 4) death if higher; entries after 4 are ignored; may have less than 4 entries
+--  decor_value: Decor score.
+--  decor_radius: Range at which the decor score is applied to.
 --  submerged_threshold: If equal 0 ignores water. If less than 0 hates water. If higher than 0 needs water. Plant will wilt in bad conditions.
 --  can_tinker: Whenever plant can be interacted with farming station.
 --  require_solid_tile: Not sure...

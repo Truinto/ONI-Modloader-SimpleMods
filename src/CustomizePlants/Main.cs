@@ -340,6 +340,21 @@ namespace CustomizePlants
                 }
             }
             #endregion
+            #region decor
+            try {
+                if (setting.decor_value != null)
+                {
+                    plant.GetComponent<DecorProvider>().baseDecor = (float)setting.decor_value;
+                }
+
+                if (setting.decor_radius != null)
+                {
+                    plant.GetComponent<DecorProvider>().baseRadius = (float)setting.decor_radius;
+                }
+            } catch (Exception) {
+                Debug.LogWarning("[CustomizePlants] For some weird reason " + plant.name + " has no DecorProvider.");
+            }
+            #endregion
             #region temperatures
             if (setting.temperatures != null)
             {
@@ -489,6 +504,8 @@ namespace CustomizePlants
 
             }
             #endregion
+
+            
         }
         
         public static void RemoveIrrigation(GameObject plant)
@@ -523,6 +540,8 @@ namespace CustomizePlants
         public string[] safe_elements;
         public float[] temperatures;
         public float[] pressures;
+        public int? decor_value;
+        public int? decor_radius;
         public float? submerged_threshold;
         public bool? can_tinker;
         public bool? require_solid_tile;
@@ -546,6 +565,8 @@ namespace CustomizePlants
         /// <param name="safe_elements">List of gas elements plant has to be in. If empty all elements are suitable.</param>
         /// <param name="temperatures">Array of temperatures in Kelvin. 1) death if lower 2) wilt if lower 3) wilt if higher 4) death if higher; entries after 4 are ignored; may have less than 4 entries</param>
         /// <param name="pressures">Array of pressures in kg. 1) death if lower 2) wilt if lower 3) wilt if higher 4) death if higher; entries after 4 are ignored; may have less than 4 entries</param>
+        /// <param name="decor_value">Decor score.</param>
+        /// <param name="decor_radius">Range at which the decor score is applied to.</param>
         /// <param name="submerged_threshold">If equal 0 ignores water. If less than 0 hates water. If higher than 0 needs water. Plant will wilt in bad conditions.</param>
         /// <param name="can_tinker">Whenever plant can be interacted with farming station.</param>
         /// <param name="require_solid_tile">Not sure...</param>
@@ -556,7 +577,7 @@ namespace CustomizePlants
         /// <param name="input_rate">Amount absorbed per second.</param>
         /// <param name="output_element">Type of gas or liquid plant expels per second.</param>
         /// <param name="output_rate">Amount expelled per second.</param>
-        public PlantData(string id, string fruitId = null, float? fruit_grow_time = null, int? fruit_amount = null, Dictionary<string, float> irrigation = null, float? illumination = null, string[] safe_elements = null, float[] temperatures = null, float[] pressures = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string disease = null, int? disease_amount = null, string input_element = null, float? input_rate = null, string output_element = null, float? output_rate = null)
+        public PlantData(string id, string fruitId = null, float? fruit_grow_time = null, int? fruit_amount = null, Dictionary<string, float> irrigation = null, float? illumination = null, string[] safe_elements = null, float[] temperatures = null, float[] pressures = null, int? decor_value = null, int? decor_radius = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string disease = null, int? disease_amount = null, string input_element = null, float? input_rate = null, string output_element = null, float? output_rate = null)
         {
             this.id = id;
             this.fruitId = fruitId;
@@ -567,6 +588,8 @@ namespace CustomizePlants
             this.safe_elements = safe_elements;
             this.temperatures = temperatures;
             this.pressures = pressures;
+            this.decor_value = decor_value;
+            this.decor_radius = decor_radius;
             this.submerged_threshold = submerged_threshold;
             this.can_tinker = can_tinker;
             this.require_solid_tile = require_solid_tile;

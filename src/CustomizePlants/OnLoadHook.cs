@@ -87,17 +87,25 @@ namespace CustomizePlants
                 {
                     try
                     {
-                        string[] dlls = Directory.GetFiles(Config.Helper.ModsDirectory, config.Substring(0, config.IndexOf('.')) + ".dll", SearchOption.AllDirectories);
+                        int cStart = config.IndexOf(' ') + 1;
+                        int cLength = config.IndexOf(',', cStart) - cStart;
+                        string nameDll = config.Substring(cStart, cLength) + ".dll";
 
+                        if (nameDll == "Fervine-merged.dll") nameDll = "Fervine*.dll";
+
+                        string[] dlls = Directory.GetFiles(Config.Helper.ModsDirectory, nameDll, SearchOption.AllDirectories);
+
+                        if (dlls.Length == 0) throw new FileNotFoundException("ModPlants: could not find mod: " + nameDll);
+                        
                         foreach (string dll in dlls)
                         {
-                            Debug.Log("ModPlants load external dll: " + dll);
+                            Debug.Log("ModPlants: loading external dll: " + dll);
                             Assembly.LoadFile(dll);
                         }
 
                         Type type = Type.GetType(config, true);
                         MethodInfo original = type.GetMethod("CreatePrefab");
-                        if (original == null) throw new NullReferenceException("ModPlants CreatePrefab is NULL");
+                        if (original == null) throw new NullReferenceException("ModPlants: CreatePrefab is NULL");
                         harmony.Patch(original, prefix: null, postfix: new HarmonyMethod(postfix));
                     }
                     catch (Exception e)

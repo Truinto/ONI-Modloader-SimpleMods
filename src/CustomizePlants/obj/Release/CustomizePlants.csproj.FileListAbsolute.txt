@@ -1,0 +1,6 @@
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizePlants\bin\Release\CustomizePlants.dll.config
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizePlants\bin\Release\CustomizePlants.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizePlants\bin\Release\FumLib.dll
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizePlants\bin\Release\FumLib.pdb
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizePlants\obj\Release\CustomizePlants.csprojResolveAssemblyReference.cache
+C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizePlants\obj\Release\CustomizePlants.dll
