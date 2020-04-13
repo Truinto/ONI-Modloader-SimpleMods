@@ -18,7 +18,15 @@ namespace CustomizePlants
         
         public static void Prefix(GameObject template)
         {
-            Type classType = new System.Diagnostics.StackTrace().GetFrame(2).GetMethod().ReflectedType;
+            Type classType = null;
+            var frames = new System.Diagnostics.StackTrace().GetFrames();
+            for (int i = 2; i < frames.Length; i++)
+            {
+                classType = frames[i].GetMethod().ReflectedType;
+                var prefab = classType.GetMethod("CreatePrefab");
+                if (prefab != null)
+                    break;
+            }
 
             string displayName = FindBetweenLink.Match(template.GetComponent<DecorProvider>()?.overrideName ?? "null")?.Groups[1]?.Value ?? "null";
             string className = classType.AssemblyQualifiedName;
