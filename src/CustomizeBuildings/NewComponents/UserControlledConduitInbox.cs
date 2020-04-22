@@ -28,8 +28,8 @@ namespace CustomizeBuildings
 
         protected override void OnCleanUp()
         {
-            base.OnCleanUp();
             filteredStorage = null;
+            base.OnCleanUp();
         }
 
         public float AmountStored

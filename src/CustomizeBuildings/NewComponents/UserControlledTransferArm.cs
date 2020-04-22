@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KSerialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,8 @@ namespace CustomizeBuildings
 {
     public class UserControlledTransferArm : KMonoBehaviour, IUserControlledCapacity
     {
+        [Serialize]
+        public int UserValue = 4;
         public int Max = 10;
         public int Min = 1;
         public LocString Unit = "";
@@ -18,13 +21,26 @@ namespace CustomizeBuildings
         protected override void OnPrefabInit()
         {
             base.OnPrefabInit();
+            UserMaxCapacity = UserValue;
+        }
+
+        protected override void OnSpawn()
+        {
+            base.OnSpawn();
+        }
+
+        protected override void OnCleanUp()
+        {
+            visualizer = null;
+            transferArm = null;
+            base.OnCleanUp();
         }
 
         public float AmountStored
         {
             get
             {
-                return transferArm.pickupRange;
+                return UserValue;
             }
         }
 
@@ -56,15 +72,16 @@ namespace CustomizeBuildings
         {
             get
             {
-                return transferArm.pickupRange;
+                return UserValue;
             }
 
             set
             {
-                transferArm.pickupRange = Math.Min(Max, (int)value);
-                visualizer.x = -transferArm.pickupRange;
-                visualizer.y = -transferArm.pickupRange;
-                visualizer.width = transferArm.pickupRange * 2 + 1;
+                UserValue = Helper.MinMax(Min, (int)value, Max);
+                transferArm.pickupRange = UserValue;
+                visualizer.x = -UserValue;
+                visualizer.y = -UserValue;
+                visualizer.width = UserValue * 2 + 1;
                 visualizer.height = visualizer.width;
             }
         }
