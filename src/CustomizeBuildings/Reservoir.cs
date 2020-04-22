@@ -38,6 +38,7 @@ namespace CustomizeBuildings
                 storage.showInUI = true;
                 storage.showDescriptor = true;
                 storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
+                go.AddOrGet<StorageLocker>();
                 Prioritizable.AddRef(go);
             }
         }

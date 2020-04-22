@@ -31,6 +31,19 @@ namespace CustomizeBuildings
             go.AddOrGet<SolidTransferArm>().pickupRange = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
         }
     }
+    
+    [HarmonyPatch(typeof(SolidTransferArmConfig), "DoPostConfigureComplete")]
+    internal class SolidTransferArmConfig_DoPostConfigureComplete2
+    {
+        private static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperSlider;
+        }
+        private static void Postfix(GameObject go)
+        {
+            go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
+        }
+    }
 
     [HarmonyPatch(typeof(SolidTransferArmConfig), "AddVisualizer")]
     internal class SolidTransferArmConfig_AddVisualizer

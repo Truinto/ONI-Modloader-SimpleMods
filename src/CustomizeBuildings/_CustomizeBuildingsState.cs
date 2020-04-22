@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using ONI_Common.Json;
 
 namespace CustomizeBuildings
 {
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 16;
+        public int version { get; set; } = 18;
 
         public float BatterySmartKJ { get; set; } = 200000f;
         public bool BatterySmartNoRunOff { get; set; } = true;
@@ -49,8 +48,10 @@ namespace CustomizeBuildings
         public float PipeLiquidPump { get; set; } = 10f;
         public float PipeGasPump { get; set; } = 0.5f;
         public float ConveyorRailPackageSize { get; set; } = 20f;
+        public bool ConveyorLoaderHasSlider { get; set; } = true;
         public float AutoSweeperCapacity { get; set; } = 1000f;
         public int AutoSweeperRange { get; set; } = 4;
+        public bool AutoSweeperSlider { get; set; } = true;
         public int RoboMinerWidth { get; set; } = 16;
         public int RoboMinerHeight { get; set; } = 9;
         public int RoboMinerOffset { get; set; } = 0;
