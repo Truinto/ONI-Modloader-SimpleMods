@@ -93,7 +93,6 @@
   <PropertyGroup>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /i /e /y /f "$(TargetDir)*" "C:\Users\Fumihiko\Documents\Klei\OxygenNotIncluded\mods\dev\CustomizeBuildings"</PostBuildEvent>
   </PropertyGroup>
 </Project>

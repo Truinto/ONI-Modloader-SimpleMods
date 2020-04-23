@@ -4,7 +4,7 @@ namespace CustomizeBuildings
 {
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 18;
+        public int version { get; set; } = 20;
 
         public float BatterySmartKJ { get; set; } = 200000f;
         public bool BatterySmartNoRunOff { get; set; } = true;
