@@ -1,0 +1,152 @@
+{
+  "version": 16,
+  "BatterySmartKJ": 200000.0,
+  "BatterySmartNoRunOff": true,
+  "BatteryLargeKJ": 400000.0,
+  "LockerKG": 400000.0,
+  "LockerSmartKG": 400000.0,
+  "GasReservoirKG": 99000.0,
+  "LiquidReservoirKG": 99000.0,
+  "RationBoxKG": 400000.0,
+  "FridgeKG": 400000.0,
+  "CritterFeederKG": 400000.0,
+  "FishFeederKG": 400000.0,
+  "CanisterFillerKG": 400000.0,
+  "ConveyorLoaderKG": 400000.0,
+  "ConveyorReceptacleKG": 400000.0,
+  "ElectrolizerMaxPressure": 5.0,
+  "AirfilterDropsCanisters": true,
+  "NewRecipeRockCrusher": true,
+  "ReservoirNoGround": true,
+  "ReservoirManualDelivery": true,
+  "NoDupeValves": true,
+  "NoDupeSwitches": true,
+  "NoDupeToogleBuildings": true,
+  "NoDupeToogleDoors": true,
+  "ScannerInterferenceRadius": 5,
+  "ScannerWorstWarningTime": 30.0,
+  "ScannerBestWarningTime": 60.0,
+  "ScannerBestNetworkSize": 2,
+  "LadderCometInvincibility": true,
+  "SolarMaxPower": 600.0,
+  "SolarEnergyMultiplier": 1.0,
+  "PipeLiquidMaxPressure": 20,
+  "PipeGasMaxPressure": 10,
+  "PipeLiquidPump": 20.0,
+  "PipeGasPump": 10.0,
+  "ConveyorRailPackageSize": 20.0,
+  "AutoSweeperCapacity": 10000.0,
+  "AutoSweeperRange": 4,
+  "RoboMinerWidth": 4,
+  "RoboMinerHeight": 36,
+  "RoboMinerOffset": 3,
+  "RoboMinerRegolithTurbo": true,
+  "RoboMinerDigThroughGlass": true,
+  "RoboMinerDigAnyTile": true,
+  "WireSmallWatts": 2000,
+  "WireRefinedWatts": 10000,
+  "WireHeavyWatts": 20000,
+  "WireRefinedHeavyWatts": 50000,
+  "TransitTubeAnywhere": true,
+  "TransitTubeUTurns": true,
+  "TransitTubeJoulesPerLaunch": 1000.0,
+  "NoDupeBuildingsGlobal": true,
+  "NoDupeBuildings": {
+    "Apothecary": false,
+    "Textile Loom": false,
+    "Electric Grill": false,
+    "Egg Cracker": false,
+    "Glass Forge": true,
+    "Gas Range": false,
+    "Metal Refinery": true,
+    "Microbe Musher": true,
+    "Rock Crusher": true,
+    "Exosuit Forge": false,
+    "Molecular Forge": true,
+    "Oil Refinery": true,
+    "Oil Well": true,
+    "Ice Fan": true,
+    "Grooming Station": false,
+    "Shearing Station": false,
+    "Automated Compost": false
+  },
+  "BuildingBaseSettingGlobalFlag": true,
+  "BuildingBaseSettings": {
+    "WireRefinedHighWattage": {
+      "BaseDecor": -5.0,
+      "BaseDecorRadius": 1.0,
+      "LocationRule": 0
+    },
+    "Bed": {
+      "Rotations": 3
+    },
+    "LuxuryBed": {
+      "Rotations": 3
+    },
+    "StorageLocker": {
+      "LocationRule": 0,
+      "Rotations": 2
+    },
+    "LiquidReservoir": {
+      "LocationRule": 0,
+      "Rotations": 2
+    },
+    "GasReservoir": {
+      "LocationRule": 0,
+      "Rotations": 3
+    },
+    "LiquidMiniPump": {
+      "PowerConsumption": 1.0,
+      "MaterialCategory": [
+        "RefinedMetal"
+      ]
+    },
+    "GasMiniPump": {
+      "PowerConsumption": 1.0
+    },
+    "LiquidFilter": {
+      "PowerConsumption": 1.0
+    },
+    "GasFilter": {
+      "PowerConsumption": 1.0
+    },
+    "Refrigerator": {
+      "PowerConsumption": 1.0
+    },
+    "PressureDoor": {
+      "PowerConsumption": 0.0,
+      "MaterialCategory": [
+        "BuildableAny"
+      ],
+      "ThermalConductivity": 0.01
+    },
+    "LiquidConduit": {
+      "ConstructionMass": 25.0
+    },
+    "InsulatedLiquidConduit": {
+      "ConstructionMass": 50.0
+    },
+    "InsulatedGasConduit": {
+      "ConstructionMass": 50.0
+    },
+    "CreatureDeliveryPoint": {
+      "Floodable": false
+    },
+    "SpaceHeater": {
+      "OverheatTemperature": 743.15,
+      "ExhaustKilowattsWhenActive": 492.0,
+      "SelfHeatKilowattsWhenActive": 16.0
+    }
+  },
+  "MachineMultiplier": {
+    "EthanolDistillery": 4.0,
+    "Desalinator": 2.0
+  },
+  "Advanced": {
+    "RustDeoxidizer": {
+      "RustDeoxidizer": {
+        "maxMass": 10.0
+      }
+    }
+  }
+}
