@@ -49,7 +49,7 @@ namespace CustomizePlants
             {
                 ElementConsumer consumer = go.GetComponent<ElementConsumer>();
                 ElementConverter converter = go.GetComponent<ElementConverter>();
-                if (!replant.Replanted)
+                if (replant == null || !replant.Replanted)
                 {
                     if (consumer != null) consumer.consumptionRate *= 0.25f;        // NOTE: this doesn't seem to be applied...
                     if (converter != null) converter.SetWorkSpeedMultiplier(0.25f);
@@ -84,7 +84,7 @@ namespace CustomizePlants
             ElementConverter converter = __instance.gameObject.GetComponent<ElementConverter>();
             if (converter != null)
             {
-                if (__instance.GetComponent<ReceptacleMonitor>()?.Replanted ?? true)
+                if (__instance.GetComponent<ReceptacleMonitor>()?.Replanted ?? false)
                     converter.SetWorkSpeedMultiplier(1f);
                 else
                     converter.SetWorkSpeedMultiplier(0.25f);
