@@ -98,7 +98,7 @@ namespace CustomizeBuildings
         {
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.ConveyorReceptacleKG;
-            if (CustomizeBuildingsState.StateManager.State.ConveyorLoaderHasSlider)
+            if (CustomizeBuildingsState.StateManager.State.ConveyorReceptacleHasSlider)
                 go.AddOrGet<UserControlledStorage>();
         }
     }
