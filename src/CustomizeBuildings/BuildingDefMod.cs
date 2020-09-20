@@ -101,7 +101,10 @@ namespace CustomizeBuildings
 
                 if (entry.ConstructionMass != null)
                 {
-                    buildingDef.Mass = new float[1] { (float)entry.ConstructionMass };
+                    if (buildingDef.Mass.Length < 2)
+                        buildingDef.Mass = new float[1] { (float)entry.ConstructionMass };
+                    else
+                        buildingDef.Mass = new float[2] { (float)entry.ConstructionMass, buildingDef.Mass[1] };
                 }
 
                 if (entry.ThermalConductivity != null)

@@ -67,6 +67,7 @@
     <Compile Include="Helper.cs" />
     <Compile Include="Miscellaneous.cs" />
     <Compile Include="NewComponents\UserControlledConduitInbox.cs" />
+    <Compile Include="NewComponents\UserControlledStorage.cs" />
     <Compile Include="NewComponents\UserControlledTransferArm.cs" />
     <Compile Include="_BootDialog.cs" />
     <Compile Include="Solar.cs" />

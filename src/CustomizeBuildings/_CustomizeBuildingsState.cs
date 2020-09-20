@@ -4,7 +4,7 @@ namespace CustomizeBuildings
 {
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 20;
+        public int version { get; set; } = 22;
 
         public float BatterySmartKJ { get; set; } = 200000f;
         public bool BatterySmartNoRunOff { get; set; } = true;
@@ -20,6 +20,7 @@ namespace CustomizeBuildings
         public float CanisterFillerKG { get; set; } = 400000f;
         public float ConveyorLoaderKG { get; set; } = 400000f;
         public float ConveyorReceptacleKG { get; set; } = 400000f;
+        public float IUserControlledMax { get; set; } = 400000f;
 
         public float ElectrolizerMaxPressure { get; set; } = 5f;
         public bool AirfilterDropsCanisters { get; set; } = true;
@@ -49,6 +50,7 @@ namespace CustomizeBuildings
         public float PipeGasPump { get; set; } = 0.5f;
         public float ConveyorRailPackageSize { get; set; } = 20f;
         public bool ConveyorLoaderHasSlider { get; set; } = true;
+        public bool ConveyorReceptacleHasSlider { get; set; } = false;
         public float AutoSweeperCapacity { get; set; } = 1000f;
         public int AutoSweeperRange { get; set; } = 4;
         public bool AutoSweeperSlider { get; set; } = true;
