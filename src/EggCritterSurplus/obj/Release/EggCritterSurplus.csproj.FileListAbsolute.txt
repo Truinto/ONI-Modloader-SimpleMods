@@ -1,5 +1,0 @@
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EggCritterSurplus\bin\Release\EggCritterSurplus.dll
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EggCritterSurplus\bin\Release\EggCritterSurplus.pdb
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EggCritterSurplus\obj\Release\EggCritterSurplus.dll
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EggCritterSurplus\obj\Release\EggCritterSurplus.pdb
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EggCritterSurplus\obj\Release\EggCritterSurplus.csprojResolveAssemblyReference.cache

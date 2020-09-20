@@ -1,8 +1,0 @@
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EasierBuildings\bin\Release\CustomizeBuildings.dll
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EasierBuildings\obj\Release\CustomizeBuildings.dll
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EasierBuildings\bin\Release\CustomizeBuildings.dll.config
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\EasierBuildings\obj\Release\CustomizeBuildingsMod.csprojResolveAssemblyReference.cache
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeBuildings\bin\Release\CustomizeBuildings.dll.config
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeBuildings\bin\Release\CustomizeBuildings.dll
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeBuildings\obj\Release\CustomizeBuildingsMod.csprojResolveAssemblyReference.cache
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeBuildings\obj\Release\CustomizeBuildings.dll

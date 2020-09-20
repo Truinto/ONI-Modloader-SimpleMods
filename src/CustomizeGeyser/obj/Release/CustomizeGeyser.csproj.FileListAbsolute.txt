@@ -1,5 +1,0 @@
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeGeyser\bin\Release\CustomizeGeyser.dll
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeGeyser\bin\Release\CustomizeGeyser.pdb
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeGeyser\obj\Release\CustomizeGeyser.csprojResolveAssemblyReference.cache
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeGeyser\obj\Release\CustomizeGeyser.dll
-C:\Users\Fumihiko\Documents\Visual Studio 2015\Projects\ONI_Mod\CustomizeGeyser\obj\Release\CustomizeGeyser.pdb
