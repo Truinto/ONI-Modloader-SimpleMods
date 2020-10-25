@@ -69,6 +69,7 @@
     <Compile Include="NewComponents\UserControlledConduitInbox.cs" />
     <Compile Include="NewComponents\UserControlledStorage.cs" />
     <Compile Include="NewComponents\UserControlledTransferArm.cs" />
+    <Compile Include="SteamTurbine.cs" />
     <Compile Include="_BootDialog.cs" />
     <Compile Include="Solar.cs" />
     <Compile Include="Transportation.cs" />

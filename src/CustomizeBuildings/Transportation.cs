@@ -83,7 +83,7 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.TransitTubeJoulesPerLaunch != 10000f;
+            return CustomizeBuildingsState.StateManager.State.TransitTubeJoulesPerLaunch != 10000f || CustomizeBuildingsState.StateManager.State.TransitTubeJouleCapacity != 40000f;
         }
         private static void Postfix(GameObject go)
         {
@@ -91,6 +91,7 @@ namespace CustomizeBuildings
             if (travelTubeEntrance != null)
             {
                 travelTubeEntrance.joulesPerLaunch = CustomizeBuildingsState.StateManager.State.TransitTubeJoulesPerLaunch;
+                travelTubeEntrance.jouleCapacity = CustomizeBuildingsState.StateManager.State.TransitTubeJouleCapacity;
                 //travelTubeEntrance.jouleCapacity = 4000f;
             }
         }

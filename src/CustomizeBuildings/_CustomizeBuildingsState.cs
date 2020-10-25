@@ -4,7 +4,7 @@ namespace CustomizeBuildings
 {
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 23;
+        public int version { get; set; } = 24;
 
         public float BatterySmartKJ { get; set; } = 200000f;
         public bool BatterySmartNoRunOff { get; set; } = true;
@@ -44,6 +44,18 @@ namespace CustomizeBuildings
         public float SolarMaxPower { get; set; } = 600f;
         public float SolarEnergyMultiplier { get; set; } = 1f;
 
+        public bool SteamTurbineEnabled { get; set; } = false;
+        public float SteamTurbineWattage { get; set; } = 850f;
+        public string SteamTurbineSourceElement { get; set; } = "Steam";
+        public string SteamTurbineOutputElement { get; set; } = "Water";
+        public float SteamTurbinePumpRateKG { get; set; } = 2f;
+        public float SteamTurbineMaxSelfHeat { get; set; } = 64f;
+        public float SteamTurbineHeatTransferPercent { get; set; } = 0.1f;
+        public float SteamTurbineMinActiveTemperature { get; set; } = 398.15f;
+        public float SteamTurbineIdealTemperature { get; set; } = 473.15f;
+        public float SteamTurbineOutputTemperature { get; set; } = 368.15f;
+        public float SteamTurbineOverheatTemperature { get; set; } = 373.15f;
+
         public int PipeLiquidMaxPressure { get; set; } = 10;
         public int PipeGasMaxPressure { get; set; } = 1;
         public float PipeLiquidPump { get; set; } = 10f;
@@ -61,7 +73,6 @@ namespace CustomizeBuildings
         public bool RoboMinerDigThroughGlass { get; set; } = true;
         public bool RoboMinerDigAnyTile { get; set; } = true;
 
-
         public int WireSmallWatts { get; set; } = 1000;
         public int WireRefinedWatts { get; set; } = 2000;
         public int WireHeavyWatts { get; set; } = 20000;
@@ -70,6 +81,7 @@ namespace CustomizeBuildings
         public bool TransitTubeAnywhere { get; set; } = true;
         public bool TransitTubeUTurns { get; set; } = true;
         public float TransitTubeJoulesPerLaunch { get; set; } = 10000f;
+        public float TransitTubeJouleCapacity { get; set; } = 40000f;
         //public float TransitTubeSpeed { get; set; } = 18f;
 
         public bool NoDupeBuildingsGlobal { get; set; } = true;
@@ -193,6 +205,7 @@ namespace CustomizeBuildings
             CanisterFillerKG = 10f,
             ConveyorLoaderKG = 1000f,
             ConveyorReceptacleKG = 100f,
+            IUserControlledMax = 20000f,
             ElectrolizerMaxPressure = 1.8f,
             AirfilterDropsCanisters = false,
             NewRecipeRockCrusher = false,
@@ -209,13 +222,17 @@ namespace CustomizeBuildings
             LadderCometInvincibility = false,
             SolarMaxPower = 380f,
             SolarEnergyMultiplier = 1f,
+            SteamTurbineEnabled = false,
             PipeLiquidMaxPressure = 10,
             PipeGasMaxPressure = 1,
             PipeLiquidPump = 10f,
             PipeGasPump = 0.5f,
             ConveyorRailPackageSize = 20f,
+            ConveyorLoaderHasSlider = false,
+            ConveyorReceptacleHasSlider = false,
             AutoSweeperCapacity = 1000f,
             AutoSweeperRange = 4,
+            AutoSweeperSlider = false,
             RoboMinerWidth = 16,
             RoboMinerHeight = 9,
             RoboMinerOffset = 0,
@@ -229,6 +246,7 @@ namespace CustomizeBuildings
             TransitTubeAnywhere = false,
             TransitTubeUTurns = false,
             TransitTubeJoulesPerLaunch = 10000f,
+            TransitTubeJouleCapacity = 40000f,
             NoDupeBuildingsGlobal = false,
             BuildingBaseSettingGlobalFlag = false
         };

@@ -12,6 +12,7 @@ namespace CustomizeBuildings
     {
         [Serialize]
         public float userMaxCapacity = float.PositiveInfinity;
+#pragma warning disable 649
         [MyCmpReq]
         private Storage storage;
 
