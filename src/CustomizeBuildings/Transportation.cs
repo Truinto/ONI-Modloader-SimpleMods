@@ -17,9 +17,15 @@ namespace CustomizeBuildings
         }
         private static void Prefix(GameObject go)
         {
-            KPrefabID prefabID = go.AddOrGet<KPrefabID>();
-            if (prefabID != null)
-                prefabID.AddTag(GameTags.Bunker, false);
+            try
+            {
+                KPrefabID prefabID = go.GetComponent<KPrefabID>();
+                if (prefabID != null)
+                    prefabID.AddTag(GameTags.Bunker, false);
+            }
+            catch (Exception)
+            {
+            }
         }
     }
     [HarmonyPatch(typeof(Comet), "DamageThings")]
@@ -32,14 +38,20 @@ namespace CustomizeBuildings
 
         internal static bool Prefix(int cell)
         {
-            GameObject go = Grid.Objects[cell, 1];
-            if (go != null)
+            try
             {
-                KPrefabID id = go.GetComponent<KPrefabID>();
-                if (id != null)
+                GameObject go = Grid.Objects[cell, 1];
+                if (go != null)
                 {
-                    if (id.HasTag(GameTags.Bunker)) return false;
+                    KPrefabID id = go.GetComponent<KPrefabID>();
+                    if (id != null)
+                    {
+                        if (id.HasTag(GameTags.Bunker)) return false;
+                    }
                 }
+            }
+            catch (Exception)
+            {
             }
             return true;
         }

@@ -71,11 +71,16 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(GasBottlerConfig), "ConfigureBuildingTemplate")]
     internal class GasBottlerConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.CanisterFillerKG != 10f;
+        }
+
         private static void Postfix(GameObject go)
         {
-            GasBottler gasBottler = go.AddOrGet<GasBottler>();
-            Storage storage = gasBottler.storage;
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.CanisterFillerKG;
+            var conduit = go.AddOrGet<ConduitConsumer>();
+            conduit.storage.capacityKg = CustomizeBuildingsState.StateManager.State.CanisterFillerKG;
+            conduit.capacityKG = CustomizeBuildingsState.StateManager.State.CanisterFillerKG;
         }
     }
 
