@@ -115,6 +115,8 @@ namespace Config
 
         public Func<T, bool> updateCallback = null;
 
+        public System.Action<T> loadedCallback = null;
+
         public T State
         {
             get
@@ -133,6 +135,9 @@ namespace Config
                     JsonLoader.TrySaveConfiguration(this.StateFilePath, (T)Activator.CreateInstance(typeof(T)));
                 }
                 JsonLoader.TryLoadConfiguration(this.StateFilePath, out _state);
+
+                if (loadedCallback != null) loadedCallback(_state);
+
                 return _state;
             }
 
@@ -163,11 +168,23 @@ namespace Config
             return false;
         }
 
+        public bool TrySaveConfigurationState(T state)
+        {
+            _state = state;
+            if (_state != null)
+                return JsonLoader.TrySaveConfiguration(this.StateFilePath, _state);
+
+            return false;
+        }
+
         /// <summary>
         /// if not isAbsolute then path is the mods name
         /// </summary>
-        public Manager(string path, bool isAbsolute, Func<T, bool> updateCallback = null)
+        public Manager(string path, bool isAbsolute, Func<T, bool> updateCallback = null, System.Action<T> loadedCallback = null)
         {
+            this.updateCallback = updateCallback;
+            this.loadedCallback = loadedCallback;
+
             bool errorFlag = false;
             string resultPath = null;
 
@@ -186,9 +203,7 @@ namespace Config
 
             this.StateFilePath = resultPath;
             this.JsonLoader = new JsonFileManager(new JsonManager());
-
-            this.updateCallback = updateCallback;
-
+            
             UpdateVersion();
         }
 
@@ -197,8 +212,8 @@ namespace Config
             try
             {
                 object newObj = Activator.CreateInstance(typeof(T));
-                int newVersion = (int)newObj.GetType().GetProperty("version").GetValue(newObj, null);
-                int savedVersion = (int)State.GetType().GetProperty("version").GetValue(State, null);
+                int newVersion = (int)typeof(T).GetProperty("version").GetValue(newObj, null);
+                int savedVersion = (int)typeof(T).GetProperty("version").GetValue(State, null);
 
                 if (savedVersion != 0 && newVersion != 0)
                 {

@@ -4,7 +4,8 @@ namespace CustomizeBuildings
 {
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 25;
+        public int version { get; set; } = 26;
+        //public bool overwrite_all_with_Klei_default { get; set; } = false;
 
         public float BatterySmartKJ { get; set; } = 200000f;
         public bool BatterySmartNoRunOff { get; set; } = true;
@@ -56,8 +57,9 @@ namespace CustomizeBuildings
         public float SteamTurbineOutputTemperature { get; set; } = 368.15f;
         public float SteamTurbineOverheatTemperature { get; set; } = 373.15f;
 
-        public int PipeLiquidMaxPressure { get; set; } = 10;
-        public int PipeGasMaxPressure { get; set; } = 1;
+        public float PipeThroughputPercent { get; set; } = 1.0f;
+        public float PipeLiquidMaxPressure { get; set; } = 10f;
+        public float PipeGasMaxPressure { get; set; } = 1f;
         public float PipeLiquidPump { get; set; } = 10f;
         public float PipeGasPump { get; set; } = 0.5f;
         public float ConveyorRailPackageSize { get; set; } = 20f;
@@ -128,7 +130,15 @@ namespace CustomizeBuildings
         //}; // PrefabID, Component, Field, Value
 
         //public static BaseStateManager<CustomizeBuildingsState> StateManager = new BaseStateManager<CustomizeBuildingsState>(new ModFolderPathHelper("CustomizeBuildings", 1818138009L).path, ONI_Common.Paths.GetLogsPath() + ModFolderPathHelper.sep + "CustomizeBuildingsLog.txt");
-        public static Config.Manager<CustomizeBuildingsState> StateManager = new Config.Manager<CustomizeBuildingsState>(Config.Helper.CreatePath("CustomizeBuildings"), true);
+        public static Config.Manager<CustomizeBuildingsState> StateManager = new Config.Manager<CustomizeBuildingsState>(Config.Helper.CreatePath("CustomizeBuildings"), true, null, Loaded);
+
+        public static void Loaded(CustomizeBuildingsState state)
+        {
+            return;
+            Debug.Log("[CustomizeBuildings] Checking Default settings...");
+            //if (state.overwrite_all_with_Klei_default)
+                StateManager.TrySaveConfigurationState(KleiSettings);
+        }
 
         public class BuildingStruct
         {
@@ -171,7 +181,7 @@ namespace CustomizeBuildings
                 this.ThermalConductivity = ThermalConductivity;
             }
         }
-        
+
         public const string IDApothecary = "Apothecary";
         public const string IDClothingFabricator = "Textile Loom";
         public const string IDCookingStation = "Electric Grill";
@@ -190,7 +200,9 @@ namespace CustomizeBuildings
         public const string IDShearingStation = "Shearing Station";
         public const string IDRanchStation = "Grooming Station";
 
-        public static CustomizeBuildingsState KleiSettings = new CustomizeBuildingsState() {
+        public static CustomizeBuildingsState KleiSettings = new CustomizeBuildingsState()
+        {
+            //overwrite_all_with_Klei_default = false,
             BatterySmartKJ = 20000f,
             BatterySmartNoRunOff = false,
             BatteryLargeKJ = 40000f,
@@ -223,8 +235,19 @@ namespace CustomizeBuildings
             SolarMaxPower = 380f,
             SolarEnergyMultiplier = 1f,
             SteamTurbineEnabled = false,
-            PipeLiquidMaxPressure = 10,
-            PipeGasMaxPressure = 1,
+            SteamTurbineWattage = 850f,
+            SteamTurbineSourceElement = "Steam",
+            SteamTurbineOutputElement = "Water",
+            SteamTurbinePumpRateKG = 2f,
+            SteamTurbineMaxSelfHeat = 64f,
+            SteamTurbineHeatTransferPercent = 0.1f,
+            SteamTurbineMinActiveTemperature = 398.15f,
+            SteamTurbineIdealTemperature = 473.15f,
+            SteamTurbineOutputTemperature = 368.15f,
+            SteamTurbineOverheatTemperature = 373.15f,
+            PipeThroughputPercent = 1.0f,
+            PipeLiquidMaxPressure = 10f,
+            PipeGasMaxPressure = 1f,
             PipeLiquidPump = 10f,
             PipeGasPump = 0.5f,
             ConveyorRailPackageSize = 20f,
