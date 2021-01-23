@@ -13,13 +13,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(BuildingConfigManager), "RegisterBuilding")]
     public class BuildingConfigManager_RegisterBuilding
     {
-        public static System.Text.RegularExpressions.Regex FindBetweenLink = new System.Text.RegularExpressions.Regex(@">(.*)<", System.Text.RegularExpressions.RegexOptions.Compiled);
+        public static Regex FindBetweenLink = new Regex(@">(.*)<", RegexOptions.Compiled);
 
         public static void CreateBuildingDefOverride(BuildingDef buildingDef)
         {
-            //Debug.Log(buildingDef.PrefabID + "\t\tName: " + FindBetweenLink.Match(buildingDef.Name).Groups[1].Value);
-            //Debug.Log("HELLO WORLD: " + buildingDef.BuildLocationRule.GetType().FullName);
-            //Debug.Log("HELLO WORLD: " + buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
+            Helper.PrintDebug(buildingDef.PrefabID + "\t\tName: " + FindBetweenLink.Match(buildingDef.Name).Groups[1].Value);
+            //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
+            //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
             CustomizeBuildingsState.BuildingStruct entry;
 
             bool flag = CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out entry);
@@ -113,20 +113,29 @@ namespace CustomizeBuildings
                 }
 
                 #endregion
+            
+                // public bool Cancellable = true;
+                // public bool OnePerWorld = false;
+            
             }
         }
 
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.BuildingBaseSettingGlobalFlag;
         }
 
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
             List<CodeInstruction> code = instr.ToList();
 
-            code.Insert(3, new CodeInstruction(OpCodes.Ldloc_0));
-            code.Insert(4, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BuildingConfigManager_RegisterBuilding), "CreateBuildingDefOverride", new Type[] { typeof(BuildingDef) })));
+            int index = 0;
+            while (code[index++].opcode != OpCodes.Stloc_0);
+
+            Debug.Log("BuildingConfigManager_RegisterBuilding patched at index: " + index);
+
+            code.Insert(index++, new CodeInstruction(OpCodes.Ldloc_0));
+            code.Insert(index++, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BuildingConfigManager_RegisterBuilding), "CreateBuildingDefOverride", new Type[] { typeof(BuildingDef) })));
 
             //for (int i = 0; i < code.Count; i++)
             //{

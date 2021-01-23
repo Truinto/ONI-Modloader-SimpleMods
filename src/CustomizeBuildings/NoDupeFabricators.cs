@@ -60,9 +60,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(ApothecaryConfig), "ConfigureBuildingTemplate")]
     public class ApothecaryConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDApothecary);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDApothecary)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
         }
     }
@@ -70,9 +74,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(ClothingFabricatorConfig), "ConfigureBuildingTemplate")]
     internal class ClothingFabricatorConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDClothingFabricator);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDClothingFabricator)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
         }
     }
@@ -80,9 +88,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(CookingStationConfig), "ConfigureBuildingTemplate")]
     internal class CookingStationConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDCookingStation);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDCookingStation)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<CookingStation>());
         }
     }
@@ -90,9 +102,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(EggCrackerConfig), "ConfigureBuildingTemplate")]
     internal class EggCrackerConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDEggCracker);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDEggCracker)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
         }
     }
@@ -100,9 +116,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(GlassForgeConfig), "ConfigureBuildingTemplate")]
     internal class GlassForgeConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDGlassForge);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDGlassForge)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<GlassForge>());
         }
     }
@@ -110,9 +130,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(GourmetCookingStationConfig), "ConfigureBuildingTemplate")]
     internal class GourmetCookingStationConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDGourmetCookingStation);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDGourmetCookingStation)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<GourmetCookingStation>());
         }
     }
@@ -120,9 +144,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(MetalRefineryConfig), "ConfigureBuildingTemplate")]
     internal class MetalRefineryConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDMetalRefinery);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDMetalRefinery)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<LiquidCooledRefinery>());
         }
     }
@@ -130,9 +158,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(MicrobeMusherConfig), "ConfigureBuildingTemplate")]
     internal class MicrobeMusherConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDMicrobeMusher);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDMicrobeMusher)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<MicrobeMusher>());
         }
     }
@@ -140,9 +172,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
     internal class RockCrusherConfig_ConfigureBuildingTemplate2
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDRockCrusher);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDRockCrusher)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
         }
     }
@@ -150,9 +186,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(SuitFabricatorConfig), "ConfigureBuildingTemplate")]
     internal class SuitFabricatorConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDSuitFabricator);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDSuitFabricator)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
         }
     }
@@ -160,9 +200,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(SupermaterialRefineryConfig), "ConfigureBuildingTemplate")]
     internal class SupermaterialRefineryConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDSupermaterialRefinery);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDSupermaterialRefinery)) return;
             NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
         }
     }
@@ -170,11 +214,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(OilRefineryConfig), "ConfigureBuildingTemplate")]
     internal class OilRefineryConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDOilRefinery);
+        }
 
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDOilRefinery)) return;
-
             OilRefinery oilRefinery = go.GetComponent<OilRefinery>();            
             if (oilRefinery == null)
             {
@@ -192,10 +238,13 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(OilWellCapConfig), "ConfigureBuildingTemplate")]
     internal class OilWellCapConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDOilWellCap);
+        }
+
         public static void Postfix(GameObject go)
         {
-            if (!NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDOilWellCap)) return;
-
             OilWellCap oilWellCap = go.GetComponent<OilWellCap>();
             if (oilWellCap == null)
             {

@@ -54,11 +54,14 @@ namespace CustomizeBuildings
 
         public static void AddBuildingToTechnology(string tech, string buildingId)
         {
-            List<string> stringList = new List<string>(Database.Techs.TECH_GROUPING[tech])
-            {
-                buildingId
-            };
-            Database.Techs.TECH_GROUPING[tech] = stringList.ToArray();
+            //List<string> stringList = new List<string>(Database.Techs.TECH_GROUPING[tech])
+            //{
+            //    buildingId
+            //};
+            //Database.Techs.TECH_GROUPING[tech] = stringList.ToArray();
+
+            throw new NotImplementedException();
+            //Db.Get().Techs.
         }
     }
     

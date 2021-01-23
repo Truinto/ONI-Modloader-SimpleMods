@@ -7,6 +7,13 @@ namespace CustomizeBuildings
 {
     public static class Helper
     {
+        /// <summary>Prints text only if run in DEBUG.</summary>
+        [System.Diagnostics.Conditional("DEBUG")]
+        public static void PrintDebug(string text)
+        {
+            Debug.Log(text);
+        }
+
         /// <summary>Clamps the value between Min and Max.</summary>
         /// <param name="Min">the minimum the value must be</param>
         /// <param name="Value">value to be clamped</param>

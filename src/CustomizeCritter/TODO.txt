@@ -1,0 +1,12 @@
+TODO:
+Low priority:
+- fix lifespan
+- color_override by string
+
+New:
+- MoltStates
+
+Bugs:
+
+------------
+Special components:

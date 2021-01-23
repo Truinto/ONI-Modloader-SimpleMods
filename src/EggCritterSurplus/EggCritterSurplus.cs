@@ -21,7 +21,7 @@ namespace EggCritterSurplus
         }
     }
 
-    internal class EggCritterSurplusConfig : IBuildingConfig
+    public class EggCritterSurplusConfig : IBuildingConfig
     {
         public static string Id = "EggCritterSurplus";
         public static string DisplayName = "Ranching Bulletin Board";
@@ -38,6 +38,7 @@ namespace EggCritterSurplus
 
         public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
         {
+            Prioritizable.AddRef(go);
             go.AddOrGet<EggCritterSurplus>();
         }
 
@@ -46,7 +47,7 @@ namespace EggCritterSurplus
         }
     }
 
-    internal class EggCritterSurplus : KMonoBehaviour, IUserControlledCapacity, ICheckboxControl, ISim4000ms
+    public class EggCritterSurplus : KMonoBehaviour, IUserControlledCapacity, ICheckboxControl, ISim4000ms
     {
         private int _creatureCount;
         [Serialize]
@@ -285,9 +286,14 @@ namespace EggCritterSurplus
                             !capturable.gameObject.HasTag(GameTags.Stored) &&
                             !capturable.gameObject.HasTag(GameTags.Creatures.Bagged))
                         {
+                            var priority = this.GetComponent<Prioritizable>();
+
                             //bool flag = capturable.allowCapture;
                             capturable.allowCapture = true;
-                            capturable.MarkForCapture(true);
+                            if (priority == null)
+                                capturable.MarkForCapture(true);
+                            else
+                                capturable.MarkForCapture(true, priority.GetMasterPriority());
                             //capturable.allowCapture = flag;
                             critterCount--;
                             if (threshold >= eggCount + critterCount) return;
