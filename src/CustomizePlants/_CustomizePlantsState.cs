@@ -6,7 +6,7 @@ namespace CustomizePlants
 {
     public class CustomizePlantsState
     {
-		public int version { get; set; } = 13;
+		public int version { get; set; } = 15;
         
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new PlantData(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }),

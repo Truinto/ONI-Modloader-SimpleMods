@@ -6,12 +6,17 @@ using static BootDialog.PostBootDialog;
 
 namespace CustomizeGeyser
 {
-    public class GeyserInfo
+    public static class GeyserInfo
     {
-        /// <summary>
-        /// Reference to the geyser configs.
-        /// </summary>
-        public static List<GeyserGenericConfig.GeyserPrefabParams> config;
+        /// <summary>Reference to the geyser configs. Only after GeyserGenericConfig_GenerateConfigs.Postfix has executed.</summary>
+        public static List<GeyserGenericConfig.GeyserPrefabParams> Config;
+
+        public static List<GeyserConfigurator.GeyserType> GeyserTypes = (List<GeyserConfigurator.GeyserType>)AccessTools.Field(typeof(GeyserConfigurator), "geyserTypes").GetValue(null);
+
+        public static string ConvertGeyserId(this HashedString hash)
+        {
+            return GeyserTypes.Find(s => s.idHash == hash)?.id;
+        }
     }
 
 
@@ -23,18 +28,18 @@ namespace CustomizeGeyser
             return CustomizeGeyserState.StateManager.State.Enabled;
         }
 
-        public static readonly string[] GeyserKAnims = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_liquid_oil_kanim" };
+        public static readonly string[] GeyserKAnims = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_liquid_oil_kanim", "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_tungsten_kanim", "geyser_liquid_sulfur_kanim" };
 
         public static void Postfix(ref List<GeyserGenericConfig.GeyserPrefabParams> __result)
         {
-            GeyserInfo.config = __result;
+            GeyserInfo.Config = __result;
 
             for (int j = 0; j < CustomizeGeyserState.StateManager.State.Geysers.Count; j++)
             {
                 CustomizeGeyserState.GeyserStruct modifier = CustomizeGeyserState.StateManager.State.Geysers[j];
                 if (modifier.id == null) continue;
 
-                Debug.Log("[GeyserModifier] Processing " + modifier.id + " ...");
+                Debug.Log("[CustomizeGeyser] Processing " + modifier.id + " ...");
                 
                 #region Error checks
                 {
@@ -107,8 +112,7 @@ namespace CustomizeGeyser
 
                 int i = __result.FindIndex(x => x.geyserType.id == modifier.id);
 
-                #region existing geyser
-                if (i >= 0)  //edit existing geyser
+                if (i >= 0) //edit base
                 {
                     if (modifier.anim != null || modifier.width != null || modifier.height != null)
                     {
@@ -122,33 +126,39 @@ namespace CustomizeGeyser
 
                         __result[i] = copy;
                     }
+                }
 
+                GeyserConfigurator.GeyserType geyserType = GeyserInfo.GeyserTypes.Find(x => x.id == modifier.id);
+
+                #region existing geyser
+                if (geyserType != null)  //edit existing geyser
+                {
                     if (modifier.element != null)
-                        __result[i].geyserType.element = (SimHashes)Hash.SDBMLower(modifier.element);
+                        geyserType.element = (SimHashes)Hash.SDBMLower(modifier.element);
                     if (modifier.temperature != null)
-                        __result[i].geyserType.temperature = (float)modifier.temperature;
+                        geyserType.temperature = (float)modifier.temperature;
                     if (modifier.minRatePerCycle != null)
-                        __result[i].geyserType.minRatePerCycle = (float)modifier.minRatePerCycle;
+                        geyserType.minRatePerCycle = (float)modifier.minRatePerCycle;
                     if (modifier.maxRatePerCycle != null)
-                        __result[i].geyserType.maxRatePerCycle = Math.Max((float)modifier.maxRatePerCycle, __result[i].geyserType.minRatePerCycle);
+                        geyserType.maxRatePerCycle = Math.Max((float)modifier.maxRatePerCycle, geyserType.minRatePerCycle);
                     if (modifier.maxPressure != null)
-                        __result[i].geyserType.maxPressure = (float)modifier.maxPressure;
+                        geyserType.maxPressure = (float)modifier.maxPressure;
                     if (modifier.minIterationLength != null)
-                        __result[i].geyserType.minIterationLength = (float)modifier.minIterationLength;
+                        geyserType.minIterationLength = (float)modifier.minIterationLength;
                     if (modifier.maxIterationLength != null)
-                        __result[i].geyserType.maxIterationLength = Math.Max((float)modifier.maxIterationLength, __result[i].geyserType.minIterationLength);
+                        geyserType.maxIterationLength = Math.Max((float)modifier.maxIterationLength, geyserType.minIterationLength);
                     if (modifier.minIterationPercent != null)
-                        __result[i].geyserType.minIterationPercent = (float)modifier.minIterationPercent;
+                        geyserType.minIterationPercent = (float)modifier.minIterationPercent;
                     if (modifier.maxIterationPercent != null)
-                        __result[i].geyserType.maxIterationPercent = Math.Max((float)modifier.maxIterationPercent, __result[i].geyserType.minIterationPercent);
+                        geyserType.maxIterationPercent = Math.Max((float)modifier.maxIterationPercent, geyserType.minIterationPercent);
                     if (modifier.minYearLength != null)
-                        __result[i].geyserType.minYearLength = (float)modifier.minYearLength;
+                        geyserType.minYearLength = (float)modifier.minYearLength;
                     if (modifier.maxYearLength != null)
-                        __result[i].geyserType.maxYearLength = Math.Max((float)modifier.maxYearLength, __result[i].geyserType.minYearLength);
+                        geyserType.maxYearLength = Math.Max((float)modifier.maxYearLength, geyserType.minYearLength);
                     if (modifier.minYearPercent != null)
-                        __result[i].geyserType.minYearPercent = (float)modifier.minYearPercent;
+                        geyserType.minYearPercent = (float)modifier.minYearPercent;
                     if (modifier.maxYearPercent != null)
-                        __result[i].geyserType.maxYearPercent = Math.Max((float)modifier.maxYearPercent, __result[i].geyserType.minYearPercent);
+                        geyserType.maxYearPercent = Math.Max((float)modifier.maxYearPercent, geyserType.minYearPercent);
 
                     if (modifier.Name != null)
                     {
@@ -163,20 +173,20 @@ namespace CustomizeGeyser
                     {
                         byte diseaseIndex;
                         if (modifier.Disease == null)
-                            diseaseIndex = __result[i].geyserType.diseaseInfo.idx;
+                            diseaseIndex = geyserType.diseaseInfo.idx;
                         else
                             diseaseIndex = Db.Get().Diseases.GetIndex((HashedString)modifier.Disease);
 
                         if (modifier.DiseaseCount == null)
-                            modifier.DiseaseCount = __result[i].geyserType.diseaseInfo.count;
+                            modifier.DiseaseCount = geyserType.diseaseInfo.count;
 
                         if (diseaseIndex == byte.MaxValue || modifier.DiseaseCount <= 0)
-                            __result[i].geyserType.diseaseInfo = Klei.SimUtil.DiseaseInfo.Invalid;
+                            geyserType.diseaseInfo = Klei.SimUtil.DiseaseInfo.Invalid;
                         else
-                            __result[i].geyserType.diseaseInfo = new Klei.SimUtil.DiseaseInfo() { idx = diseaseIndex, count = (int)modifier.DiseaseCount };
+                            geyserType.diseaseInfo = new Klei.SimUtil.DiseaseInfo() { idx = diseaseIndex, count = (int)modifier.DiseaseCount };
                     }
 
-                    Debug.Log("[GeyserModifier] Changed geyser with id: " + modifier.id);
+                    Debug.Log("[CustomizeGeyser] Changed geyser with id: " + modifier.id);
                 }
                 #endregion
                 #region new geyser
@@ -184,13 +194,13 @@ namespace CustomizeGeyser
                 {
                     if (modifier.element == null)
                     {
-                        Debug.LogWarning(ToDialog("[GeyserModifier] Cannot add geyser with no element: " + modifier.id));
+                        Debug.LogWarning(ToDialog("[CustomizeGeyser] Cannot add geyser with no element: " + modifier.id));
                         continue;
                     }
 
                     if (ElementLoader.FindElementByName(modifier.element) == null)
                     {
-                        Debug.LogWarning(ToDialog("[GeyserModifier] Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element));
+                        Debug.LogWarning(ToDialog("[CustomizeGeyser] Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element));
                         continue;
                     }
 
@@ -299,7 +309,7 @@ namespace CustomizeGeyser
                                 (float)modifier.maxYearPercent).AddDisease(diseaseInfo)
                         ));
 
-                    Debug.Log("[GeyserModifier] Added geyser " + modifier.id + " : " + modifier.element);
+                    Debug.Log("[CustomizeGeyser] Added geyser " + modifier.id + " : " + modifier.element);
                 }
                 #endregion
             }

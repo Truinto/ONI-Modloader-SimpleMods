@@ -1,6 +1,7 @@
 ﻿using Harmony;
 using KSerialization;
 using System;
+using System.Linq;
 using TUNING;
 using UnityEngine;
 
@@ -74,10 +75,10 @@ namespace CustomizeGeyser
 
         public void NextGeyser()
         {
-            int index = GeyserInfo.config.FindIndex(x => x.id == this.currentGeyserSelection) + 1;
-            if (index >= GeyserInfo.config.Count) index = 0;
+            int index = GeyserInfo.Config.FindIndex(x => x.id == this.currentGeyserSelection) + 1;
+            if (index >= GeyserInfo.Config.Count) index = 0;
 
-            this.currentGeyserSelection = GeyserInfo.config[index].id;
+            this.currentGeyserSelection = GeyserInfo.Config[index].id;
             this.UpdateButton();
         }
 
@@ -96,8 +97,15 @@ namespace CustomizeGeyser
             //if (KMonoBehaviour.isLoadingScene) return;
             if (this.chore == null)
             {
-                this.chore = new WorkChore<GeyserMorph>(chore_type: Db.Get().ChoreTypes.Research, target: this, only_when_operational: false);
-                this.statusItemGuid = this.GetComponent<KSelectable>().AddStatusItem(this.workerStatusItem);
+                if (DebugHandler.InstantBuildMode)
+                {
+                    this.OnCompleteWork(null);
+                }
+                else
+                {
+                    this.chore = new WorkChore<GeyserMorph>(chore_type: Db.Get().ChoreTypes.Research, target: this, only_when_operational: false);
+                    this.statusItemGuid = this.GetComponent<KSelectable>().AddStatusItem(this.workerStatusItem);
+                }
             }
             else
             {
@@ -119,7 +127,6 @@ namespace CustomizeGeyser
         protected override void OnCompleteWork(Worker worker)
         {
             Debug.Log("DEBUG OnCompleteWork");
-            base.OnCompleteWork(worker);
             this.CancelChore();
             //this.TriggerTextDialog();
             ChangeGeyserElement(this.gameObject, currentGeyserSelection);

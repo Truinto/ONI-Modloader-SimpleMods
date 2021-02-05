@@ -1,4 +1,4 @@
-//#define DEBUG_1
+#define DEBUG_1
 
 using System;
 using Harmony;
@@ -17,13 +17,11 @@ namespace CustomizeGeyser
 
 		public static void FixErrors()
 		{
-			List<GeyserConfigurator.GeyserType> geyserTypes = (List<GeyserConfigurator.GeyserType>)AccessTools.Field(typeof(GeyserConfigurator), "geyserTypes").GetValue(null);
-
 			List<string> itemsToRemove = new List<string>();
 
 			foreach (string entry in CustomizeGeyserState.StateManager.State.RNGTable.Keys)
 			{
-				GeyserConfigurator.GeyserType geyserType = geyserTypes.Find((Predicate<GeyserConfigurator.GeyserType>)(t => t.id == entry));
+				GeyserConfigurator.GeyserType geyserType = GeyserInfo.GeyserTypes.Find(t => t.id == entry);
 
 				if (geyserType == null) itemsToRemove.Add(entry);
 			}
@@ -40,6 +38,11 @@ namespace CustomizeGeyser
 #if DEBUG_1
             Debug.Log("[CustomizeGeyser] Running Initialize()...");
 #endif
+			if (CustomizeGeyserState.StateManager.State.RNGTable == null)
+            {
+				CustomizeGeyserState.StateManager.State.RandomizerEnabled = false;
+				return;
+			}
 
             FixErrors();
 
@@ -47,12 +50,6 @@ namespace CustomizeGeyser
 			foreach (KeyValuePair<string, int> entry in CustomizeGeyserState.StateManager.State.RNGTable)
 			{
 				if (entry.Value > 0) count++;
-			}
-
-			if (count < 1)	//if the config has no allowed geysers, disable the mod
-			{
-				CustomizeGeyserState.StateManager.State.RandomizerEnabled = false;
-				return;
 			}
 
 			geysers = new HashedString[count];
@@ -78,11 +75,64 @@ namespace CustomizeGeyser
 		
 		public static void Reinitialize()
 		{
-			RandomizerTable.Initialize();
+			Initialize();
+		}
+	
+		public static string GetRandomGeyserType(Transform transform)
+        {
+			System.Random RNG = transform != null ? GetRNG(transform) : new System.Random();
+
+			int random = RNG.Next(sum);  // 0 <= random < sum
+			int pick = 0;
+			for (int j = 0; j <= random;) j += weights[pick++];
+			return GeyserConfigurator.FindType(geysers[pick - 1]).id;
+		}
+
+		public static System.Random GetRNG(Transform transform)
+        {
+#if DLC1
+			return new System.Random(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)transform.GetPosition().x + (int)transform.GetPosition().y);
+#else
+			return new System.Random(SaveLoader.Instance.worldDetailSave.globalWorldSeed + (int)transform.GetPosition().x + (int)transform.GetPosition().y);
+#endif
 		}
 	}
 
-    /// <summary> Patches the randomization of the geyers parameters. NOT the geyser type. </summary>
+	/// Only for debug.
+	[HarmonyPatch(typeof(Geyser), "OnSpawn")]
+	public class Geyser_OnSpawn
+	{
+		public static bool isFirst = true;
+
+		public static void Prefix(Geyser __instance)
+		{
+#if DEBUG_1
+			Debug.Log("[CustomizeGeyser] Geyser.OnSpawn " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
+#endif
+//			if (RandomizerTable.geysers == null) RandomizerTable.Initialize();
+//
+//			if (CustomizeGeyserState.StateManager.State.RandomizerEnabled && (__instance.configuration == null || __instance.configuration.typeId == HashedString.Invalid))
+//			{
+//				var config = __instance.GetComponent<GeyserConfigurator>();
+//
+//				config.presetType = RandomizerTable.GetRandomGeyserType(CustomizeGeyserState.StateManager.State.RandomizerUsesMapSeed ? __instance.transform : null);
+//
+//				if (isFirst)
+//					config.presetType = GeyserInfo.GeyserTypes.Find(x => x.id == CustomizeGeyserState.StateManager.State.RandomizerSetFirstGeyser)?.id ?? config.presetType;
+//#if DEBUG_1
+//				Debug.Log("[CustomizeGeyser] Changed geyser to: " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
+//#endif
+//				if (CustomizeGeyserState.StateManager.State.RandomizerPopupGeyserDiscoveryInfo)
+//				{
+//					KMod.Manager.Dialog(null, "Geysers discovered", "You just discovered a geyser: " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
+//				}
+//			}
+//
+//			isFirst = false;
+		}
+	}
+
+	/// <summary> Patches the randomization of the geyers parameters. NOT the geyser type. </summary>
 	[HarmonyPatch(typeof(GeyserConfigurator), "CreateRandomInstance")]
 	public class GeyserConfigurator_CreateRandomInstance
 	{
@@ -97,7 +147,11 @@ namespace CustomizeGeyser
 			{
 				System.Random RNG;
 				if (CustomizeGeyserState.StateManager.State.RandomizerUsesMapSeed)
+#if DLC1
+					RNG = new System.Random(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)__instance.transform.GetPosition().x + (int)__instance.transform.GetPosition().y);
+#else
 					RNG = new System.Random(SaveLoader.Instance.worldDetailSave.globalWorldSeed + (int)__instance.transform.GetPosition().x + (int)__instance.transform.GetPosition().y);
+#endif
 				else
 					RNG = new System.Random();
 
@@ -134,53 +188,35 @@ namespace CustomizeGeyser
                 return;
             }
 
-            //if (!CustomizeGeyserState.StateManager.State.RandomizerHighlanderMode)
-            //{
-            //    KPrefabID prefab = geyserGenericOrg.AddOrGet<KPrefabID>();
-            //    AccessTools.Field(typeof(KPrefabID), "prefabInitFn").SetValue(prefab, null);
-            //    prefab.prefabInitFn += PrefabInitForGeysers;
-            //}
             GameObject geyserGeneric = EntityTemplates.CreatePlacedEntity(id: "GeyserGeneric", name: "Random Geyser Spawner", desc: GeyserGenericDescription, mass: 2000f,
                 anim: Assets.GetAnim(GeyserGenericKAnim), initialAnim: GeyserGenericInitialState, sceneLayer: Grid.SceneLayer.BuildingBack,
                 width: 3, height: 3, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER1, noise: TUNING.NOISE_POLLUTION.NOISY.TIER6,
                 element: SimHashes.Katairite, additionalTags: null, defaultTemperature: 372.15f);
             geyserGeneric.AddOrGet<SaveLoadRoot>();
-            geyserGeneric.AddOrGet<KPrefabID>().prefabInitFn += PrefabInitForGeysers;
+            geyserGeneric.AddOrGet<KPrefabID>().prefabInitFn += PrefabInitGenericGeysers;
                 
             __result.Remove(geyserGenericOrg);
             __result.Add(geyserGeneric);
 
+#if DEBUG_1
+            Debug.Log("[CustomizeGeyser] Attached to GeyserGeneric");
+#endif
+
 			if (RandomizerTable.geysers == null) RandomizerTable.Initialize();
 		}
 
-        public static void PrefabInitForGeysers(GameObject go)
+        public static void PrefabInitGenericGeysers(GameObject go)
 		{
-			System.Random RNG;
-			if (CustomizeGeyserState.StateManager.State.RandomizerUsesMapSeed)
-			{
-				RNG = new System.Random(SaveLoader.Instance.worldDetailSave.globalWorldSeed + (int)go.transform.GetPosition().x + (int)go.transform.GetPosition().y);
-			}
-			else
-				RNG = new System.Random();
-
 #if DEBUG_1
-            Debug.Log("[CustomizeGeyser] Printout of RandomizerTable");
-            Debug.Log("\tsum is: " + RandomizerTable.sum);
-            for (int DEBUG1 = 0; DEBUG1 < RandomizerTable.geysers.Length; DEBUG1++)
-            {
-                Debug.Log("\t[" + DEBUG1 + "] " + RandomizerTable.geysers[DEBUG1] + " weight: " + RandomizerTable.weights[DEBUG1]);
-            }
+			Debug.Log("[CustomizeGeyser] PrefabInitGenericGeysers");
 #endif
-
             if (RandomizerTable.sum > 0)
 			{
-				int random = RNG.Next(RandomizerTable.sum);	 // 0 <= random < sum
-				int pick = 0;
-				for (int j = 0; j <= random;) j += RandomizerTable.weights[pick++];
-				string geyserTag = GeyserConfigurator.FindType(RandomizerTable.geysers[pick - 1]).id;
+				string geyserTag = RandomizerTable.GetRandomGeyserType(go.transform);
 
 				if (CustomizeGeyserState.StateManager.State.RandomizerPopupGeyserDiscoveryInfo)
 					KMod.Manager.Dialog(null, "Geysers discovered", "You just discovered a geyser: " + geyserTag);
+				Debug.Log("[CustomizeGeyser] Discovered a new geyser: " + geyserTag);
 
 				GameUtil.KInstantiate(Assets.GetPrefab(
 					(Tag)("GeyserGeneric_" + geyserTag)	 //change Tag to whatever you want to spawn; Tag is "GeyserGeneric_" + geyserType.id
@@ -189,15 +225,16 @@ namespace CustomizeGeyser
 			}
 			else
 			{
-				// empty geyser?
 				Debug.Log("[CustomizeGeyser] RandomizerTable was empty...");
 			}
 		}
 	}
 
+
+
     /// <summary> Attachs Init function to all Geysers, except GeyserGeneric. When called reduces weight of that geyser.
     /// May also retransform to GeyserGeneric if RandomizerHighlanderRetroactive option is enabled. </summary>
-    [HarmonyPatch(typeof(GeyserGenericConfig), "CreateGeyser")]
+    //[HarmonyPatch(typeof(GeyserGenericConfig), "CreateGeyser")]
     public class GeyserHighlander
     {
         public static bool Prepare()
@@ -207,50 +244,67 @@ namespace CustomizeGeyser
 
         public static void Postfix(GameObject __result)
         {
-            __result.AddOrGet<KPrefabID>().prefabInitFn += (go =>
-            {
-                if (CustomizeGeyserState.StateManager.State.RandomizerHighlanderMode || (bool)SaveGame.Instance?.BaseName?.Contains("Highlander"))
-                {
-                    HashedString id = go.GetComponent<GeyserConfigurator>()?.presetType ?? "none";
-                    int i;
-                    bool flag = false;
-                    for (i = 0; i < RandomizerTable.geysers.Length; i++)
-                    {
-                        if (RandomizerTable.geysers[i] == id)
-                        {
-                            flag = true;
-                            break;
-                        }
-                    }
+            __result.AddOrGet<KPrefabID>().prefabInitFn += PrefabInitIndividualGeyser;
 #if DEBUG_1
-                    Debug.Log("[CustomizeGeyser] Attached to geyser [" + i + "] id: " + id + " flag is " + flag);
+			Debug.Log("[CustomizeGeyser] Attached to geyser type " + __result.name);
+#endif
+		}
+
+		public static void PrefabInitIndividualGeyser(GameObject go)
+		{
+#if DEBUG_1
+			Debug.Log("[CustomizeGeyser] Running PrefabInitIndividualGeyser");
+#endif
+			try
+			{
+				if (CustomizeGeyserState.StateManager.State.RandomizerHighlanderMode || (bool)SaveGame.Instance?.BaseName?.Contains("Highlander"))
+				{
+					HashedString id = go.GetComponent<GeyserConfigurator>()?.presetType ?? "none";
+					int i;
+					bool flag = false;
+					for (i = 0; i < RandomizerTable.geysers.Length; i++)
+					{
+						if (RandomizerTable.geysers[i] == id)
+						{
+							flag = true;
+							break;
+						}
+					}
+#if DEBUG_1
+					Debug.Log("[CustomizeGeyser] Attached to geyser [" + i + "] id: " + id + " flag is " + flag);
 #endif
 
-                    if (flag && RandomizerTable.weights[i] >= 1)
-                    {
-                        RandomizerTable.weights[i]--;
-                        RandomizerTable.sum--;
+					if (flag && RandomizerTable.weights[i] >= 1)
+					{
+						RandomizerTable.weights[i]--;
+						RandomizerTable.sum--;
 #if DEBUG_1
-                        Debug.Log("[CustomizeGeyser] Reduced weight of [" + i + "] to " + RandomizerTable.weights[i]);
+						Debug.Log("[CustomizeGeyser] Reduced weight of [" + i + "] to " + RandomizerTable.weights[i]);
 #endif
-                    }
-                    else if (CustomizeGeyserState.StateManager.State.RandomizerHighlanderRetroactive)
-                    {
+					}
+					else if (CustomizeGeyserState.StateManager.State.RandomizerHighlanderRetroactive)
+					{
 #if DEBUG_1
-                        Debug.Log("[CustomizeGeyser] Weight of [" + i + "] is 0, changing back to GeyserGeneric");
+						Debug.Log("[CustomizeGeyser] Weight of [" + i + "] is 0, changing back to GeyserGeneric");
 #endif
-                        ChangeGeyserElement(go);    //changes geyser back to GeyserGeneric, which in turn rerolls again unless sum is 0
-                    }
-                }
-            });
-        }
+						ChangeGeyserElement(go);    //changes geyser back to GeyserGeneric, which in turn rerolls again unless sum is 0
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning(e.ToString());
+			}
+		}
 
-        public static bool ChangeGeyserElement(GameObject go, string new_id = null)
+		public static bool ChangeGeyserElement(GameObject go, string new_id = null)
         {
             return GeyserMorph.ChangeGeyserElement(go, new_id);
         }
     }
 	
+
+
 	[HarmonyPatch(typeof(SaveLoader), "Load", new Type[] { typeof(string) })]
 	public class OnSaveLoad
 	{

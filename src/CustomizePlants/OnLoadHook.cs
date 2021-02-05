@@ -33,7 +33,15 @@ namespace CustomizePlants
             SpiceVineConfig.ID,
             SwampLilyConfig.ID,
             ColdBreatherConfig.ID,
-            OxyfernConfig.ID
+            OxyfernConfig.ID,
+            SuperWormPlantConfig.ID,
+            WormPlantConfig.ID,
+            SwampHarvestPlantConfig.ID,
+            ToePlantConfig.ID,
+            WineCupsConfig.ID,
+            CritterTrapPlantConfig.ID,
+            CylindricaConfig.ID,
+            FilterPlantConfig.ID
         };
 
         public static readonly Type[] CLASSES = {
@@ -56,7 +64,15 @@ namespace CustomizePlants
             typeof(SpiceVineConfig),
             typeof(SwampLilyConfig),
             typeof(ColdBreatherConfig),
-            typeof(OxyfernConfig)
+            typeof(OxyfernConfig),
+            typeof(SuperWormPlantConfig),
+            typeof(WormPlantConfig),
+            typeof(SwampHarvestPlantConfig),
+            typeof(ToePlantConfig),
+            typeof(WineCupsConfig),
+            typeof(CritterTrapPlantConfig),
+            typeof(CylindricaConfig),
+            typeof(FilterPlantConfig)
         };
     }
     

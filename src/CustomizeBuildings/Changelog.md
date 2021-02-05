@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.28.0] EX1 S6-449549
+
+### Added
+- pressured valve option that adds a button to limit the output pressure; very niche application
+
 ## [1.0.27.0] EX1 S6-448916
 
 ### Fixed

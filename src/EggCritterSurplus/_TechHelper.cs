@@ -1,61 +1,200 @@
-﻿using System.Collections.Generic;
+﻿using Harmony;
+using STRINGS;
+using System;
+using System.Collections.Generic;
 
 
 namespace EggCritterSurplus
 {
-    public class TechHelper
+    public enum PlanScreens
     {
-        public const string Base = "Base";
-        public const string Oxygen = "Oxygen";
-        public const string Power = "Generators";
-        public const string Food = "Food";
-        public const string Plumbing = "Plumbing Structures";
-        public const string Ventilation = "Ventilation Structures";
-        public const string Refining = "Refining";
-        public const string Medicine = "Medical";
-        public const string Furniture = "Decor";
-        public const string Stations = "Refining";
-        public const string Utilities = "Utilities";
-        public const string Automation = "LogicWiring";
-        public const string Shipping = "Logistics";
-        public const string Rocketry = "Rocketry";
+        Base,
+        Oxygen,
+        Power,
+        Food,
+        Plumbing,
+        HVAC,
+        Refining,
+        Medical,
+        Furniture,
+        Equipment,
+        Utilities,
+        Automation,
+        Conveyance,
+        Rocketry,
+    }
 
-        public const string FarmingTech = "FarmingTech";
-        public const string RanchingTech = "Ranching";
+    public enum TechGroups
+    {
+        FarmingTech,
+        FineDining,
+        FoodRepurposing,
+        FinerDining,
+        Agriculture,
+        Ranching,
+        AnimalControl,
+        ImprovedOxygen,
+        GasPiping,
+        ImprovedGasPiping,
+        PressureManagement,
+        PortableGasses,
+        DirectedAirStreams,
+        LiquidFiltering,
+        MedicineI,
+        MedicineII,
+        MedicineIII,
+        MedicineIV,
+        LiquidPiping,
+        ImprovedLiquidPiping,
+        PrecisionPlumbing,
+        SanitationSciences,
+        FlowRedirection,
+        AdvancedFiltration,
+        Distillation,
+        Catalytics,
+        PowerRegulation,
+        AdvancedPowerRegulation,
+        PrettyGoodConductors,
+        RenewableEnergy,
+        Combustion,
+        ImprovedCombustion,
+        InteriorDecor,
+        Artistry,
+        Clothing,
+        Acoustics,
+        NuclearRefinement,
+        FineArt,
+        EnvironmentalAppreciation,
+        Luxury,
+        RefractiveDecor,
+        GlassFurnishings,
+        Screens,
+        RenaissanceArt,
+        Plastics,
+        ValveMiniaturization,
+        HydrocarbonPropulsion,
+        Suits,
+        Jobs,
+        AdvancedResearch,
+        SpaceProgram,
+        CrashPlan,
+        DurableLifeSupport,
+        NuclearResearch,
+        NotificationSystems,
+        ArtificialFriends,
+        RoboticTools,
+        BasicRefinement,
+        RefinedObjects,
+        Smelting,
+        HighTempForging,
+        RadiationProtection,
+        TemperatureModulation,
+        HVAC,
+        LiquidTemperature,
+        LogicControl,
+        GenericSensors,
+        LogicCircuits,
+        ParallelAutomation,
+        DupeTrafficControl,
+        Multiplexing,
+        SkyDetectors,
+        TravelTubes,
+        SmartStorage,
+        SolidTransport,
+        SolidManagement,
+        BasicRocketry,
+        CargoI,
+        CargoII,
+        CargoIII,
+        EnginesI,
+        EnginesII,
+        EnginesIII,
+        Jetpacks,
+    }
 
-        public static void AddBuildingToPlanScreen(HashedString category, string buildingId, string afterBuildingId)
+    public class TechContainer
+    {
+        public string BuildingId;
+        public TechGroups TechGroup;
+
+        public TechContainer(string BuildingId, TechGroups TechGroup)
         {
-            int index = TUNING.BUILDINGS.PLANORDER.FindIndex(x => x.category == category);
-            if (index < 0)
-                return;
-            IList<string> data = TUNING.BUILDINGS.PLANORDER[index].data as IList<string>;
-            if (data == null)
-            {
-                Debug.LogWarning("Could not add " + buildingId);
-            }
-            else
-            {
-                int num = data.IndexOf(afterBuildingId);
-                if (num != -1)
-                    data.Insert(num + 1, buildingId);
-                else
-                    data.Add(buildingId);
-            }
-        }
-
-        public static void AddBuildingToPlanScreen(HashedString category, string buildingId)
-        {
-            ModUtil.AddBuildingToPlanScreen(category, buildingId);
-        }
-
-        public static void AddBuildingToTechnology(string tech, string buildingId)
-        {
-            List<string> stringList = new List<string>(Database.Techs.TECH_GROUPING[tech])
-            {
-                buildingId
-            };
-            Database.Techs.TECH_GROUPING[tech] = stringList.ToArray();
+            this.BuildingId = BuildingId;
+            this.TechGroup = TechGroup;
         }
     }
     
+    public class TechHelper
+    {
+        public static void AddBuildingStrings(string buildingId, string name, string description, string effect)
+        {
+            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{buildingId.ToUpperInvariant()}.NAME", UI.FormatAsLink(name, buildingId));
+            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{buildingId.ToUpperInvariant()}.DESC", description);
+            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{buildingId.ToUpperInvariant()}.EFFECT", effect);
+        }
+
+        public static void AddPlantStrings(string plantId, string name, string description, string domesticatedDescription)
+        {
+            Strings.Add($"STRINGS.CREATURES.SPECIES.{plantId.ToUpperInvariant()}.NAME", UI.FormatAsLink(name, plantId));
+            Strings.Add($"STRINGS.CREATURES.SPECIES.{plantId.ToUpperInvariant()}.DESC", description);
+            Strings.Add($"STRINGS.CREATURES.SPECIES.{plantId.ToUpperInvariant()}.DOMESTICATEDDESC", domesticatedDescription);
+        }
+
+        public static void AddPlantSeedStrings(string plantId, string name, string description)
+        {
+            Strings.Add($"STRINGS.CREATURES.SPECIES.SEEDS.{plantId.ToUpperInvariant()}.NAME", UI.FormatAsLink(name, plantId));
+            Strings.Add($"STRINGS.CREATURES.SPECIES.SEEDS.{plantId.ToUpperInvariant()}.DESC", description);
+        }
+
+        public static string ConvertCategory(HashedString hash)
+        {
+            foreach (var obj in Enum.GetValues(typeof(PlanScreens)))
+            {
+                if (hash == obj.ToString())
+                    return obj.ToString();
+            }
+            return null;
+        }
+
+        public static void AddBuildingToPlanScreen(string buildingId, PlanScreens category)
+        {
+            //ModUtil.AddBuildingToPlanScreen(buildingId, category.ToString());
+            //Debug.Log("HELLO WORLD: Printout Planorder");
+            //foreach (var order in TUNING.BUILDINGS.PLANORDER)
+            //    Debug.Log($"Category={order.category} as string {ConvertCategory(order.category)}; {order.data.Join()}");
+
+            bool flag = false;
+            for (int i = 0; i < TUNING.BUILDINGS.PLANORDER.Count; i++)
+            {
+                if (TUNING.BUILDINGS.PLANORDER[i].category == category.ToString())
+                {
+                    TUNING.BUILDINGS.PLANORDER[i].data.Add(buildingId);
+                    Debug.Log($"[TECHHELPER] Added {buildingId} to {category}");
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag)
+                Debug.Log($"[TECHHELPER] Category {category} not found");
+        }
+
+        public static void AddBuildingToTechnology(string buildingId, TechGroups group)
+        {
+            var tech = Db.Get().Techs.TryGet(group.ToString());//"Ranching"
+            tech.unlockedItemIDs.Add(buildingId);
+        }
+
+        public static List<TechContainer> AddOnLoad = new List<TechContainer>();
+
+        [HarmonyPatch(typeof(Db), nameof(Db.Initialize))]
+        public static class Db_Initialize_Patch
+        {
+            public static void Postfix()
+            {
+                foreach (var tech in AddOnLoad)
+                    AddBuildingToTechnology(tech.BuildingId, tech.TechGroup);
+            }
+        }
+    }
 }

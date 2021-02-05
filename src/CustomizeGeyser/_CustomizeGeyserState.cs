@@ -5,22 +5,22 @@ namespace CustomizeGeyser
 {
     public class CustomizeGeyserState
     {
-        public int version { get; set; } = 4;
+        public int version { get; set; } = 5;
         public bool Enabled { get; set; } = true;
         
         public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
             new GeyserStruct(id: "steam", temperature: 378.15f),
             new GeyserStruct(id: "slimy_po2", temperature: 378.15f, Disease: "ZombieSpores", DiseaseCount: 5000),
-            new GeyserStruct(id: "molten_tungsten", anim: "geyser_molten_iron_kanim", element: "MoltenTungsten",
-                Name: "Tungsten Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Tungsten", "MOLTENTUNGSTEN") + ".",
-                temperature: 3773.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
-                maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
-                minYearPercent: 0.4f, maxYearPercent: 0.8f),
-            new GeyserStruct(id: "molten_aluminum", anim: "geyser_molten_iron_kanim", element: "MoltenAluminum",
-                Name: "Aluminum Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Aluminum", "MOLTENALUMINUM") + ".",
-                temperature: 2273.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
-                maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
-                minYearPercent: 0.4f, maxYearPercent: 0.8f),
+            //new GeyserStruct(id: "molten_tungsten", anim: "geyser_molten_iron_kanim", element: "MoltenTungsten",
+            //    Name: "Tungsten Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Tungsten", "MOLTENTUNGSTEN") + ".",
+            //    temperature: 3773.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
+            //    maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
+            //    minYearPercent: 0.4f, maxYearPercent: 0.8f),
+            //new GeyserStruct(id: "molten_aluminum", anim: "geyser_molten_iron_kanim", element: "MoltenAluminum",
+            //    Name: "Aluminum Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Aluminum", "MOLTENALUMINUM") + ".",
+            //    temperature: 2273.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
+            //    maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
+            //    minYearPercent: 0.4f, maxYearPercent: 0.8f),
             new GeyserStruct(id: "molten_steel", anim: "geyser_molten_iron_kanim", element: "MoltenSteel",
                 Name: "Steel Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Steel", "MOLTENSTEEL") + ".",
                 temperature: 2773.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
@@ -44,6 +44,7 @@ namespace CustomizeGeyser
         };
 
         public bool RandomizerEnabled { get; set; } = true;
+        //public string RandomizerSetFirstGeyser { get; set; } = "slush_water";
         public bool RandomizerUsesMapSeed { get; set; } = false;
         public bool RandomizerRerollsCycleRate { get; set; } = true;
         public bool RandomizerPopupGeyserDiscoveryInfo { get; set; } = true;
@@ -73,6 +74,8 @@ namespace CustomizeGeyser
             { "molten_aluminum", 1 },
             { "molten_glass", 1 },
             { "liquid_ethanol", 1 },
+            { "liquid_sulfur", 1 },
+            { "molten_niobium", 1 },
             { "molten_steel", 0 },
             { "liquid_coolant", 0 }
         };

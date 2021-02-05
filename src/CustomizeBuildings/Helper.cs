@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Harmony;
 
 namespace CustomizeBuildings
 {
@@ -40,8 +41,35 @@ namespace CustomizeBuildings
 
             if (ElementLoader.GetElementIndex(result) < 0)
                 return fallback;
-            
+
             return result;
         }
+
+        public static FastGetter CreateGetter(this Type type, string name)
+        {
+            return new FastGetter(FastAccess.CreateGetterHandler(AccessTools.Field(type, name)));
+        }
+        public static FastSetter CreateSetter(this Type type, string name)
+        {
+            return new FastSetter(FastAccess.CreateSetterHandler(AccessTools.Field(type, name)));
+        }
+        public static FastGetter CreateGetterProperty(this Type type, string name)
+        {
+            return new FastGetter(FastAccess.CreateGetterHandler(AccessTools.Property(type, name)));
+        }
+        public static FastSetter CreateSetterProperty(this Type type, string name)
+        {
+            return new FastSetter(FastAccess.CreateSetterHandler(AccessTools.Property(type, name)));
+        }
+        public static FastInvoke CreateInvoker(this Type type, string methodName, Type[] args = null, Type[] typeArgs = null)
+        {
+            if (args == null && typeArgs == null)
+                return new FastInvoke(MethodInvoker.GetHandler(AccessTools.Method(type, methodName)));
+            return new FastInvoke(MethodInvoker.GetHandler(AccessTools.Method(type, methodName, args, typeArgs)));
+        }
     }
+
+    public delegate void FastSetter(object source, object value);
+    public delegate object FastGetter(object source);
+    public delegate object FastInvoke(object target, params object[] paramters);
 }

@@ -53,21 +53,21 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(Door), "QueueStateChange")]
-    internal class Door_QueueStateChange
+    public class Door_QueueStateChange
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.NoDupeToogleDoors;
         }
 
-        private static bool Prefix(Door.ControlState nextState, Door __instance, ref Door.ControlState ___requestedState, ref Door.ControlState ___controlState)
+        public static bool Prefix(Door.ControlState nextState, Door __instance, ref Door.ControlState ___requestedState, ref Door.ControlState ___controlState)
         {
             //Debug.Log( nextState.ToString() +" : "+ ___requestedState.ToString() + " : " + ___controlState.ToString() + " : " + __instance.ToString() );
             //if (!CustomizeBuildingsState.StateManager.State.NoDupeToogleDoors) return true;
-            
+
             if (___requestedState == nextState || ___controlState == nextState) return true;
-            
-            ___requestedState = ___requestedState == nextState ? ___controlState : nextState;
+
+            ___requestedState =  nextState;
             ___controlState = nextState;
             AccessTools.Method(typeof(Door), "RefreshControlState").Invoke(__instance, null);
             AccessTools.Method(typeof(Door), "OnOperationalChanged").Invoke(__instance, new object[] { null });

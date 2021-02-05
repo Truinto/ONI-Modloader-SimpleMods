@@ -76,10 +76,9 @@ namespace Config
             }
             catch (Exception ex)
             {
-                const string Message = "Can't load configuration!";
-
                 Debug.LogWarning(ex);
-                Debug.LogWarning(Message);
+                Debug.LogWarning("Can't load configuration!");
+                BootDialog.PostBootDialog.ErrorList.Add("Error in config file: " + ex.Message);
 
                 state = (T)Activator.CreateInstance(typeof(T));
 
@@ -114,6 +113,10 @@ namespace Config
 
         private T _state;
 
+        public Func<T, bool> updateCallback = null;
+
+        public System.Action<T> loadedCallback = null;
+
         public T State
         {
             get
@@ -132,6 +135,9 @@ namespace Config
                     JsonLoader.TrySaveConfiguration(this.StateFilePath, (T)Activator.CreateInstance(typeof(T)));
                 }
                 JsonLoader.TryLoadConfiguration(this.StateFilePath, out _state);
+
+                if (loadedCallback != null) loadedCallback(_state);
+
                 return _state;
             }
 
@@ -162,9 +168,23 @@ namespace Config
             return false;
         }
 
-        //if not isAbsolute then path is the mods name
-        public Manager(string path, bool isAbsolute)
+        public bool TrySaveConfigurationState(T state)
         {
+            _state = state;
+            if (_state != null)
+                return JsonLoader.TrySaveConfiguration(this.StateFilePath, _state);
+
+            return false;
+        }
+
+        /// <summary>
+        /// if not isAbsolute then path is the mods name
+        /// </summary>
+        public Manager(string path, bool isAbsolute, Func<T, bool> updateCallback = null, System.Action<T> loadedCallback = null)
+        {
+            this.updateCallback = updateCallback;
+            this.loadedCallback = loadedCallback;
+
             bool errorFlag = false;
             string resultPath = null;
 
@@ -183,7 +203,7 @@ namespace Config
 
             this.StateFilePath = resultPath;
             this.JsonLoader = new JsonFileManager(new JsonManager());
-
+            
             UpdateVersion();
         }
 
@@ -192,16 +212,18 @@ namespace Config
             try
             {
                 object newObj = Activator.CreateInstance(typeof(T));
-                int newVersion = (int)newObj.GetType().GetProperty("version").GetValue(newObj, null);
-                int savedVersion = (int)State.GetType().GetProperty("version").GetValue(State, null);
+                int newVersion = (int)typeof(T).GetProperty("version").GetValue(newObj, null);
+                int savedVersion = (int)typeof(T).GetProperty("version").GetValue(State, null);
 
                 if (savedVersion != 0 && newVersion != 0)
                 {
                     if (savedVersion != newVersion)
                     {
                         Debug.Log("Updating version...");
+                        bool shouldSave = true;
+                        if (updateCallback != null) shouldSave = updateCallback(State);
                         State.GetType().GetProperty("version").SetValue(State, newVersion, null);
-                        this.TrySaveConfigurationState();
+                        if (shouldSave) this.TrySaveConfigurationState();
                     }
                 }
             }
@@ -213,8 +235,10 @@ namespace Config
             }
         }
 
-        //value <name>: file name without extension
-        // returns file-path to save config, located in root mod folder; NOT TESTED
+        /// <summary>
+        /// name: file name without extension
+        /// returns file-path to save config, located in root mod folder; NOT TESTED
+        /// </summary>
         private static string GetKleiDocs(string name)
         {
             //return System.getProperty("user.home") + Path.DirectorySeparatorChar + "Documents" + Path.DirectorySeparatorChar
@@ -240,7 +264,7 @@ namespace Config
     public class Helper
     {
         //https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in
-        public static string AssemblyDirectory
+        public static string AssemblyDirectoryOld
         {
             get
             {
@@ -251,17 +275,28 @@ namespace Config
             }
         }
 
+        public static string AssemblyDirectory
+        {
+            get => Directory.GetParent(Assembly.GetExecutingAssembly().Location)?.FullName;//GetCallingAssembly
+        }
+
         public static string ModsDirectory
         {
             get
             {
-                return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
+                return Path.Combine(Util.RootFolder(), "mods");
+                //return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
             }
         }
-
-        public static string CreatePath(string modName)
+        
+        /// <summary>
+        /// returns absolute file-path
+        /// </summary>
+        public static string CreatePath(string modName, bool setName = true)
         {
-            return ModsDirectory + Path.DirectorySeparatorChar + modName + ".json";
+            if (setName)
+                BootDialog.PostBootDialog.ModName = modName;
+            return Path.Combine(ModsDirectory, modName + ".json");
         }
     }
 

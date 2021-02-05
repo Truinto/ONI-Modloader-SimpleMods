@@ -16,8 +16,10 @@ namespace EggCritterSurplus
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.NAME", EggCritterSurplusConfig.DisplayName);
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.DESC", EggCritterSurplusConfig.Description);
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.EFFECT", EggCritterSurplusConfig.Effect);
-            TechHelper.AddBuildingToPlanScreen(TechHelper.Food, EggCritterSurplusConfig.Id);
-            TechHelper.AddBuildingToTechnology(TechHelper.RanchingTech, EggCritterSurplusConfig.Id);
+            //TechHelper.AddBuildingStrings(EggCritterSurplusConfig.Id, EggCritterSurplusConfig.DisplayName, EggCritterSurplusConfig.Description, EggCritterSurplusConfig.Effect);
+
+            TechHelper.AddBuildingToPlanScreen(EggCritterSurplusConfig.Id, PlanScreens.Food);
+            TechHelper.AddOnLoad.Add(new TechContainer(EggCritterSurplusConfig.Id, TechGroups.Ranching));
         }
     }
 

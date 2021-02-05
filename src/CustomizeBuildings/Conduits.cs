@@ -8,7 +8,6 @@ using System;
 
 namespace CustomizeBuildings
 {
-
     [HarmonyPatch(typeof(Game), "OnPrefabInit")]
     internal class Game_OnPrefabInit
     {
@@ -32,12 +31,18 @@ namespace CustomizeBuildings
     {
         internal static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f;
+            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f
+                && !LiquidValveConfig_ConfigureBuildingTemplate2.Prepare();
         }
 
         internal static void Postfix(GameObject go)
         {
-            go.AddOrGet<ValveBase>().maxFlow = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
+            if (go.GetComponent<ValvePressure>() == null)
+            {
+                var valveBase = go.AddOrGet<ValveBase>();
+                if (valveBase != null)
+                    valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
+            }
         }
     }
 
@@ -46,12 +51,18 @@ namespace CustomizeBuildings
     {
         internal static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1;
+            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1
+                && !GasValveConfig_ConfigureBuildingTemplate2.Prepare();
         }
 
         internal static void Postfix(GameObject go)
         {
-            go.AddOrGet<ValveBase>().maxFlow = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
+            if (go.GetComponent<ValvePressure>() == null)
+            {
+                var valveBase = go.AddOrGet<ValveBase>();
+                if (valveBase != null)
+                    valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
+            }
         }
     }
 
@@ -100,7 +111,7 @@ namespace CustomizeBuildings
             storage.capacityKg = conduitConsumer.consumptionRate * 2f;
         }
     }
-    
+
     [HarmonyPatch(typeof(AirConditionerConfig), "ConfigureBuildingTemplate")]
     internal class AirConditionerConfig_ConfigureBuildingTemplate
     {
@@ -185,7 +196,7 @@ namespace CustomizeBuildings
         private static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize != 20f;
-        } 
+        }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
@@ -206,5 +217,5 @@ namespace CustomizeBuildings
             return list;
         }
     }
-    
+
 }
