@@ -32,7 +32,7 @@ namespace CarePackageMod
         public static void OnRefreshUserMenu(object data)
         {
             if (go != null)
-                Game.Instance.userMenu.AddButton(go, new KIconButtonMenu.ButtonInfo("", "Carepackage Option", new System.Action(ButtonPress), tooltipText: ""), 20f);
+                Helper.AddButton(go, "Carepackage Option", "", ButtonPress, 20f);
         }
 
         public static void ButtonPress()

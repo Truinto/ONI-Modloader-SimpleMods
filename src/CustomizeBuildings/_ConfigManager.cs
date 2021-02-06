@@ -264,7 +264,7 @@ namespace Config
     public class Helper
     {
         //https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in
-        public static string AssemblyDirectory
+        public static string AssemblyDirectoryOld
         {
             get
             {
@@ -275,20 +275,28 @@ namespace Config
             }
         }
 
+        public static string AssemblyDirectory
+        {
+            get => Directory.GetParent(Assembly.GetExecutingAssembly().Location)?.FullName;//GetCallingAssembly
+        }
+
         public static string ModsDirectory
         {
             get
             {
-                return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
+                return Path.Combine(Util.RootFolder(), "mods");
+                //return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
             }
         }
         
         /// <summary>
         /// returns absolute file-path
         /// </summary>
-        public static string CreatePath(string modName)
+        public static string CreatePath(string modName, bool setName = true)
         {
-            return ModsDirectory + Path.DirectorySeparatorChar + modName + ".json";
+            if (setName)
+                BootDialog.PostBootDialog.ModName = modName;
+            return Path.Combine(ModsDirectory, modName + ".json");
         }
     }
 

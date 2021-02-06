@@ -19,7 +19,6 @@ namespace CarePackageMod
             if (carePackages == null)
             {
                 List<CarePackageInfo> list = new List<CarePackageInfo>();
-                carePackages = new CarePackageInfo[CarePackageState.StateManager.State.CarePackages.Count()];
 
                 Debug.Log("Setting up care packages:");
 
@@ -27,9 +26,19 @@ namespace CarePackageMod
                 {
                     CarePackageContainer container = CarePackageState.StateManager.State.CarePackages[i];
                     container.multiplier = CarePackageState.StateManager.State.multiplier;
-                    Debug.Log($" id: {container.ID} quantity: {container.amount} multiplier: {container.multiplier}");
-                    carePackages[i] = container.ToInfo();
+
+                    if (Assets.TryGetPrefab(container.ID) != null)
+                    {
+                        Debug.Log($" id: {container.ID} quantity: {container.amount} multiplier: {container.multiplier}");
+                        list.Add(container.ToInfo());
+                    }
+                    else
+                    {
+                        Debug.Log("[CarePackageMod] Illegal Prefab: " + container.ID);
+                    }
                 }
+
+                carePackages = list.ToArray();
             }
 
             ___carePackages = carePackages;

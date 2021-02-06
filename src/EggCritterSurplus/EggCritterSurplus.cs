@@ -13,6 +13,8 @@ namespace EggCritterSurplus
     {
         public static void OnLoad()
         {
+            TUNING.STORAGEFILTERS.BAGABLE_CREATURES.AddRange(TUNING.STORAGEFILTERS.SWIMMING_CREATURES); // makes all critters deliverable to dropoff point
+
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.NAME", EggCritterSurplusConfig.DisplayName);
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.DESC", EggCritterSurplusConfig.Description);
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.EFFECT", EggCritterSurplusConfig.Effect);
@@ -253,7 +255,7 @@ namespace EggCritterSurplus
 
                 if (!attackSurplus) return;
 
-                for (int i = 0; i < room.creatures.Count; i++) //foreach (KPrefabID creature in room.creatures)
+                for (int i = 0; i < room.creatures.Count; i++)
                 {
                     GameObject creature = null;
                     try { creature = room.creatures[i].gameObject; } catch (Exception) { Debug.Log("creature.gameObject was null"); }
@@ -274,7 +276,7 @@ namespace EggCritterSurplus
                     }
                 }
 
-                for (int i = 0; i < room.creatures.Count; i++) //foreach (KPrefabID creature in room.creatures)
+                for (int i = 0; i < room.creatures.Count; i++)
                 {
                     GameObject creature = null;
                     try { creature = room.creatures[i].gameObject; } catch (Exception) { Debug.Log("creature.gameObject was null"); }

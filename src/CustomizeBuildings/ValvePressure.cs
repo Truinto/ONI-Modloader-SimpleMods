@@ -110,7 +110,7 @@ namespace CustomizeBuildings
 
     [SerializationConfig(MemberSerialization.OptIn)]
     //[AddComponentMenu("KMonoBehaviour/scripts/ValveBase")]
-    public class ValvePressure : ValveBase
+    public class ValvePressure : ValveBase, IActivationRangeTarget
     {
         protected override void OnPrefabInit()
         {
@@ -203,7 +203,7 @@ namespace CustomizeBuildings
 
         private void OnRefreshUserMenu(object data)
         {
-            Game.Instance.userMenu.AddButton(this.gameObject, new KIconButtonMenu.ButtonInfo("", limitPressure ? "Pressure Limited" : "Pressure Unlimited", new System.Action(this.ButtonPressureMode), tooltipText: "Click to toggle pressure mode."), 2f);
+            Game.Instance.userMenu.AddButton(this.gameObject, new KIconButtonMenu.ButtonInfo("", limitPressure ? "Pressure Limited" : "Pressure Unlimited", new System.Action(this.ButtonPressureMode), tooltipText: "Click to toggle pressure mode."), 10f);
         }
 
         private void ButtonPressureMode()
@@ -217,6 +217,18 @@ namespace CustomizeBuildings
         private int inputCell;
         private int outputCell;
         private int curFlowIdx = -1;
+
+
+        public float ActivateValue { get; set; }
+        public float DeactivateValue { get; set; }
+        public float MinValue => 0f;
+        public float MaxValue => 1273.15f;
+        public bool UseWholeNumbers => false;
+        public string ActivationRangeTitleText => "ActivationRangeTitleText";
+        public string ActivateSliderLabelText => "ActivateSliderLabelText";
+        public string DeactivateSliderLabelText => "DeactivateSliderLabelText";
+        public string ActivateTooltip => "ActivateTooltip";
+        public string DeactivateTooltip => "DeactivateTooltip";
     }
 
 }

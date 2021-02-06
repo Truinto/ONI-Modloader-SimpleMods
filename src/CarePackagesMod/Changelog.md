@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.9.0] EX1 S6-449549 CS-449460
+
+### Fixed
+- fixed bug that would crash the vanilla game when a custom button was displayed
+- added filter for illegal prefab IDs
+
 ## [1.0.8.0] EX1 S6-449549 CS-449460
 
 ### Added

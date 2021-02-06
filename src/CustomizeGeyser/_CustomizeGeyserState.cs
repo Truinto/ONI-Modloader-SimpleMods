@@ -1,13 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CustomizeGeyser
 {
     public class CustomizeGeyserState
     {
+        public static void OnLoad()
+        {
+            try
+            {
+                string temp = Path.Combine(Config.Helper.AssemblyDirectory, "templates");
+                string temp2 = Path.Combine(Config.Helper.AssemblyDirectory, "templates2");
+
+                if (CustomizeGeyserState.StateManager.State.RandomizerEnabled)
+                {
+                    if (Directory.Exists(temp2))
+                    {
+                        Directory.Move(temp2, temp);
+                    }
+                }
+                else
+                {
+                    if (Directory.Exists(temp))
+                    {
+                        Directory.Move(temp, temp2);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[CustomizeGeyser] " + e.ToString());
+            }
+        }
+
         public int version { get; set; } = 5;
         public bool Enabled { get; set; } = true;
-        
+
         public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
             new GeyserStruct(id: "steam", temperature: 378.15f),
             new GeyserStruct(id: "slimy_po2", temperature: 378.15f, Disease: "ZombieSpores", DiseaseCount: 5000),
@@ -56,6 +85,7 @@ namespace CustomizeGeyser
             { "hot_water", 1 },
             { "slush_water", 1 },
             { "filthy_water", 1 },
+            { "slush_salt_water", 1 },
             { "salt_water", 1 },
             { "small_volcano", 1 },
             { "big_volcano", 1 },
@@ -87,7 +117,7 @@ namespace CustomizeGeyser
 
         public static bool UpdateFunction(CustomizeGeyserState state)
         {
-            switch(state.version)
+            switch (state.version)
             {
                 case 1:
                     state.RandomizerEnabled = false;
@@ -120,8 +150,8 @@ namespace CustomizeGeyser
             public float? maxYearPercent;
             public string Name;
             public string Description;
-			public string Disease;
-			public int? DiseaseCount;
+            public string Disease;
+            public int? DiseaseCount;
 
             public GeyserStruct(
                 string id,
@@ -143,8 +173,8 @@ namespace CustomizeGeyser
                 float? maxYearPercent = null,
                 string Name = null,
                 string Description = null,
-				string Disease = null,
-				int? DiseaseCount = null)
+                string Disease = null,
+                int? DiseaseCount = null)
             {
                 this.id = id;
                 this.element = element;
@@ -165,8 +195,8 @@ namespace CustomizeGeyser
                 this.maxYearPercent = maxYearPercent;
                 this.Name = Name;
                 this.Description = Description;
-				this.Disease = Disease;
-				this.DiseaseCount = DiseaseCount;
+                this.Disease = Disease;
+                this.DiseaseCount = DiseaseCount;
             }
         }
     }

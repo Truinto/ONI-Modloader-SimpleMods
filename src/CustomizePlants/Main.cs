@@ -308,14 +308,19 @@ namespace CustomizePlants
             #region safe_elements
             if (setting.safe_elements != null)
             {
-                plant.GetComponent<KPrefabID>().prefabInitFn += (inst =>
-                {
-                    PressureVulnerable pressure = inst.GetComponent<PressureVulnerable>();
-                    pressure.safe_atmospheres.Clear();
+                PressureVulnerable pressure = plant.AddOrGet<PressureVulnerable>();
+                pressure.safe_atmospheres.Clear();
+                foreach (string safe_element in setting.safe_elements)
+                    pressure.safe_atmospheres.Add(ElementLoader.FindElementByName(safe_element));
 
-                    foreach (string safe_element in setting.safe_elements)
-                        pressure.safe_atmospheres.Add(ElementLoader.FindElementByName(safe_element));
-                });
+                //plant.GetComponent<KPrefabID>().prefabInitFn += (inst =>
+                //{
+                //    PressureVulnerable pressure = inst.GetComponent<PressureVulnerable>();
+                //    pressure.safe_atmospheres.Clear();
+
+                //    foreach (string safe_element in setting.safe_elements)
+                //        pressure.safe_atmospheres.Add(ElementLoader.FindElementByName(safe_element));
+                //});
             }
             #endregion
             #region pressure

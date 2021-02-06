@@ -21,6 +21,61 @@ namespace CustomizeBuildings
         }
     }
 
+    public class Time_test
+    {
+        public static float daylength = 6000f;
+
+        public static void OnXXXLoad()
+        {
+            var harmony = HarmonyInstance.Create("test");
+            var transpiler = new HarmonyMethod(typeof(Time_test).GetMethod(nameof(Transpiler)));
+
+            var originals = AccessTools.GetDeclaredMethods(typeof(GameClock));
+            originals.AddRange(AccessTools.GetDeclaredMethods(typeof(TimerSideScreen)));
+            originals.AddRange(AccessTools.GetDeclaredMethods(typeof(ReportManager)));
+            //originals.AddRange(AccessTools.GetDeclaredMethods(typeof(EconomyDetails)));
+            originals.AddRange(AccessTools.GetDeclaredMethods(typeof(TimeRangeSideScreen)));
+
+            originals.Add(AccessTools.Method(typeof(GameUtil), nameof(GameUtil.ApplyTimeSlice)));
+            originals.Add(AccessTools.Method("ColonyDiagnosticScreen.DiagnosticRow:DiagnosticRow"));
+
+            foreach (var original in originals)
+            {
+                if (original == null)
+                {
+                    Debug.Log("wups it's a null");
+                    continue;
+                }
+
+                try
+                {
+                    Debug.Log("[CustomGameClock] Patching " + original.Name);
+                    harmony.Patch(original, transpiler: transpiler);
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            Debug.Log("[CustomGameClock] DONE");
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
+        {
+            int i = 0;
+            foreach (var line in instr)
+            {
+                if (line.opcode == OpCodes.Ldc_R4 && line.operand != null && (float)line.operand == 600f)
+                {
+                    line.operand = daylength;
+                    Debug.Log("[CustomGameClock] Patched at line: " + i);
+                }
+                i++;
+            }
+            return instr;
+        }
+    }
+
     //[HarmonyPatch(typeof(TileConfig), "ConfigureBuildingTemplate")]
     //internal class TileDryWallReplacement
     //{

@@ -26,7 +26,7 @@ namespace CustomizeBuildings
         {
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = Math.Min((float)CustomizeBuildingsState.StateManager.State.LiquidReservoirKG, (float)100000f);
-            //storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
+            storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.capacityKG = storage.capacityKg;
 
@@ -37,7 +37,6 @@ namespace CustomizeBuildings
                 storage.storageFullMargin = TUNING.STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
                 storage.showInUI = true;
                 storage.showDescriptor = true;
-                storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
                 go.AddOrGet<StorageLocker>();
                 Prioritizable.AddRef(go);
             }
@@ -63,7 +62,7 @@ namespace CustomizeBuildings
         {
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = Math.Min((float)CustomizeBuildingsState.StateManager.State.GasReservoirKG, (float)100000f);
-            //storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
+            storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.capacityKG = storage.capacityKg;
 
@@ -74,7 +73,6 @@ namespace CustomizeBuildings
                 storage.storageFullMargin = TUNING.STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
                 storage.showInUI = true;
                 storage.showDescriptor = true;
-                storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
                 go.AddOrGet<StorageLocker>();
                 Prioritizable.AddRef(go);
             }

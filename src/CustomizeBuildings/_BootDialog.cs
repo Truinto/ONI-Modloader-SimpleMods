@@ -10,6 +10,8 @@ namespace BootDialog
     [HarmonyPatch(typeof(KMod.Manager), "Report")]
     public class PostBootDialog
     {
+        public static string ModName = "Customize X";
+
         public static List<string> ErrorList = new List<string>();
 
         public static string ToDialog(string log)
@@ -18,7 +20,7 @@ namespace BootDialog
             return log;
         }
 
-        internal static void Prefix()
+        public static void Prefix()
         {
             if (CustomizeBuildingsState.StateManager.State.AdvancedSettings != null)
             {
@@ -31,9 +33,9 @@ namespace BootDialog
 
             if (ErrorList.Count != 0)
             {
-                ErrorList.Insert(0, "Customize Buildings encountered an issue with your configuration:");
+                ErrorList.Insert(0, ModName + " encountered an issue with your configuration:");
                 string output = string.Join("\n  ", ErrorList.ToArray());
-                KMod.Manager.Dialog(null, "Customize Buildings ERROR", output);
+                KMod.Manager.Dialog(null, ModName + " WARNING", output);
                 Debug.LogWarning(output);
                 ErrorList.Clear();
             }
