@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace EggCritterSurplus
+namespace Techs
 {
     public enum PlanScreens
     {
@@ -123,7 +123,7 @@ namespace EggCritterSurplus
             this.TechGroup = TechGroup;
         }
     }
-    
+
     public class TechHelper
     {
         public static void AddBuildingStrings(string buildingId, string name, string description, string effect)
@@ -168,7 +168,7 @@ namespace EggCritterSurplus
             {
                 if (TUNING.BUILDINGS.PLANORDER[i].category == category.ToString())
                 {
-                    TUNING.BUILDINGS.PLANORDER[i].data.Add(buildingId);
+                    (TUNING.BUILDINGS.PLANORDER[i].data as IList<string>).Add(buildingId);
                     Debug.Log($"[TECHHELPER] Added {buildingId} to {category}");
                     flag = true;
                     break;
@@ -181,11 +181,19 @@ namespace EggCritterSurplus
 
         public static void AddBuildingToTechnology(string buildingId, TechGroups group)
         {
+#if DLC1
             var tech = Db.Get().Techs.TryGet(group.ToString());//"Ranching"
             tech.unlockedItemIDs.Add(buildingId);
+#else
+            List<string> stringList = new List<string>(Database.Techs.TECH_GROUPING[group.ToString()])
+            {
+                buildingId
+            };
+            Database.Techs.TECH_GROUPING[group.ToString()] = stringList.ToArray();
+#endif
         }
 
-        public static List<TechContainer> AddOnLoad = new List<TechContainer>();
+        public static List<TechContainer> AddOnLoad { get; set; } = new List<TechContainer>();
 
         [HarmonyPatch(typeof(Db), nameof(Db.Initialize))]
         public static class Db_Initialize_Patch
