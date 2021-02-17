@@ -235,16 +235,22 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(OilWellCapConfig), "ConfigureBuildingTemplate")]
-    internal class OilWellCapConfig_ConfigureBuildingTemplate
+    [HarmonyPatch(typeof(OilWellCapConfig), nameof(OilWellCapConfig.ConfigureBuildingTemplate))]
+    public class OilWellCapConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
             return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDOilWellCap);
         }
 
+        [HarmonyPriority(Priority.LowerThanNormal)]
         public static void Postfix(GameObject go)
         {
+            //foreach (var mod in Global.Instance.modManager.mods) Debug.Log($"id={mod.label.id} title={mod.label.title} enabled={mod.IsEnabledForActiveDlc()}");
+
+            if (Helper.IsModActive("Piped output"))
+                return;
+
             OilWellCap oilWellCap = go.GetComponent<OilWellCap>();
             if (oilWellCap == null)
             {

@@ -9,46 +9,6 @@ using KSerialization;
 
 namespace CustomizeBuildings
 {
-    //[HarmonyPatch(typeof(ValveBase), "ConduitUpdate")]
-    public class Valve_PressureMode
-    {
-        public static bool Prefix(float dt, ValveBase __instance, float ___currentFlow, int ___outputCell, int ___inputCell, HandleVector<int>.Handle ___flowAccumulator)
-        {
-            ConduitFlow flowManager = Conduit.GetFlowManager(__instance.conduitType);
-            if (!flowManager.HasConduit(___inputCell) || !flowManager.HasConduit(___outputCell))
-            {
-                __instance.UpdateAnim();
-            }
-            else
-            {
-                ConduitFlow.ConduitContents input_content = flowManager.GetConduit(___inputCell).GetContents(flowManager);
-                ConduitFlow.ConduitContents output_content = flowManager.GetConduit(___outputCell).GetContents(flowManager);
-
-                float mass_input = Mathf.Min(input_content.mass, ___currentFlow * dt);
-                float mass_output = output_content.mass;
-
-                float mass_limit = Mathf.Max(___currentFlow - mass_output, 0);  // mass on output cannot exceed flow setting
-                mass_input = Mathf.Min(mass_input, mass_limit);                 // set new input mass
-
-                if (mass_input > 0f)
-                {
-                    float disease_percent = mass_input / input_content.mass;
-                    int disease_count = (int)(disease_percent * input_content.diseaseCount);
-                    float mass_moved = flowManager.AddElement(___outputCell, input_content.element, mass_input, input_content.temperature, input_content.diseaseIdx, disease_count);
-                    Game.Instance.accumulators.Accumulate(___flowAccumulator, mass_moved);
-                    if (mass_moved > 0f)
-                    {
-                        flowManager.RemoveElement(___inputCell, mass_moved);
-                    }
-                }
-                __instance.UpdateAnim();
-            }
-
-            return false;
-        }
-    }
-
-    [HarmonyPriority(Priority.High)]
     [HarmonyPatch(typeof(LiquidValveConfig), nameof(LiquidValveConfig.ConfigureBuildingTemplate))]
     public class LiquidValveConfig_ConfigureBuildingTemplate2
     {
@@ -57,6 +17,7 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.PipeValvePressureButtonShow;
         }
 
+        [HarmonyPriority(Priority.High)]
         public static bool Prefix(GameObject go, Tag prefab_tag)
         {
             GeneratedBuildings.MakeBuildingAlwaysOperational(go);
@@ -78,7 +39,6 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPriority(Priority.High)]
     [HarmonyPatch(typeof(GasValveConfig), nameof(GasValveConfig.ConfigureBuildingTemplate))]
     public class GasValveConfig_ConfigureBuildingTemplate2
     {
@@ -87,6 +47,7 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.PipeValvePressureButtonShow;
         }
 
+        [HarmonyPriority(Priority.High)]
         public static bool Prefix(GameObject go, Tag prefab_tag)
         {
             GeneratedBuildings.MakeBuildingAlwaysOperational(go);
@@ -109,8 +70,7 @@ namespace CustomizeBuildings
     }
 
     [SerializationConfig(MemberSerialization.OptIn)]
-    //[AddComponentMenu("KMonoBehaviour/scripts/ValveBase")]
-    public class ValvePressure : ValveBase, IActivationRangeTarget
+    public class ValvePressure : ValveBase//, IActivationRangeTarget
     {
         protected override void OnPrefabInit()
         {
@@ -231,4 +191,39 @@ namespace CustomizeBuildings
         public string DeactivateTooltip => "DeactivateTooltip";
     }
 
+
+    //[HarmonyPatch(typeof(ValveBase), "ConduitUpdate")]
+    // public class Valve_PressureMode
+    // {
+    //     public static bool Prefix(float dt, ValveBase __instance, float ___currentFlow, int ___outputCell, int ___inputCell, HandleVector<int>.Handle ___flowAccumulator)
+    //     {
+    //         ConduitFlow flowManager = Conduit.GetFlowManager(__instance.conduitType);
+    //         if (!flowManager.HasConduit(___inputCell) || !flowManager.HasConduit(___outputCell))
+    //         {
+    //             __instance.UpdateAnim();
+    //         }
+    //         else
+    //         {
+    //             ConduitFlow.ConduitContents input_content = flowManager.GetConduit(___inputCell).GetContents(flowManager);
+    //             ConduitFlow.ConduitContents output_content = flowManager.GetConduit(___outputCell).GetContents(flowManager);
+    //             float mass_input = Mathf.Min(input_content.mass, ___currentFlow * dt);
+    //             float mass_output = output_content.mass;
+    //             float mass_limit = Mathf.Max(___currentFlow - mass_output, 0);  // mass on output cannot exceed flow setting
+    //             mass_input = Mathf.Min(mass_input, mass_limit);                 // set new input mass
+    //             if (mass_input > 0f)
+    //             {
+    //                 float disease_percent = mass_input / input_content.mass;
+    //                 int disease_count = (int)(disease_percent * input_content.diseaseCount);
+    //                 float mass_moved = flowManager.AddElement(___outputCell, input_content.element, mass_input, input_content.temperature, input_content.diseaseIdx, disease_count);
+    //                 Game.Instance.accumulators.Accumulate(___flowAccumulator, mass_moved);
+    //                 if (mass_moved > 0f)
+    //                 {
+    //                     flowManager.RemoveElement(___inputCell, mass_moved);
+    //                 }
+    //             }
+    //             __instance.UpdateAnim();
+    //         }
+    //         return false;
+    //     }
+    // }
 }

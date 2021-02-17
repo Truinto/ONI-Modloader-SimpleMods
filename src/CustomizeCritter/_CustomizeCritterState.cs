@@ -50,7 +50,6 @@ namespace CustomizeCritter
 
         public CustomizeCritterState()
         {
-            //Debug.Log("DEBUG HELLO 1");
             if (wildEffect == null)
             {
                 wildEffect = new List<TraitContainer.Attribute>();
@@ -66,12 +65,10 @@ namespace CustomizeCritter
                 tameEffect.Add(new TraitContainer.Attribute("Metabolism", 100f, false));
             }
 
-
             if (happyWildEffect == null)
             {
                 happyWildEffect = new List<TraitContainer.Attribute>();
             }
-
 
             if (happyTameEffect == null)
             {
@@ -84,6 +81,7 @@ namespace CustomizeCritter
                 unhappyWildEffect = new List<TraitContainer.Attribute>();
                 unhappyWildEffect.Add(new TraitContainer.Attribute("Metabolism", -15f, false));
             }
+            
             if (unhappyTameEffect == null)
             {
                 unhappyTameEffect = new List<TraitContainer.Attribute>();

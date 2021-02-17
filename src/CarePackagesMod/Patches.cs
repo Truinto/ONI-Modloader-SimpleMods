@@ -34,7 +34,7 @@ namespace CarePackageMod
     [HarmonyPatch(typeof(MinionStartingStats), "GenerateTraits")]
     public class Reshuffle3
     {
-        public static void Prefix(ref int __result)
+        public static void Postfix(ref int __result)
         {
             __result += CarePackageState.StateManager.State.attributeBonusChance;
         }

@@ -1,12 +1,16 @@
-﻿using System;
+﻿//#define DEBUG
+
+using System;
 using System.IO;
 
 namespace versioncontrol_ONI
 {
     // reads changelog and updates AssemblyInfo and info.json with new version
-    class Program
+    public class Program
     {
-        static int Main(string[] args)
+        public static int versionLength = 6;
+
+        public static int Main(string[] args)
         {
 #if DEBUG
             args = new string[]
@@ -14,7 +18,7 @@ namespace versioncontrol_ONI
                 "-md",
                 @"C:\Users\Fumihiko\Documents\Visual Studio Projects\ONI_Mod\CustomizeBuildings\Changelog.md",
                 "-info",
-                @"C:\Users\Fumihiko\Documents\Visual Studio Projects\ONI_Mod\CustomizeBuildings\mod_info.yaml",
+                @"C:\Users\Fumihiko\Documents\Klei\OxygenNotIncluded\mods\dev\CarePackageMod\mod_info.yaml",
                 "-asbly",
                 @"C:\Users\Fumihiko\Documents\Visual Studio Projects\ONI_Mod\CustomizeBuildings\Properties\AssemblyInfo.cs"
             };
@@ -22,11 +26,12 @@ namespace versioncontrol_ONI
 
             try
             {
-                string path_log = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\..\LocalLow\Klei\Oxygen Not Included\Player.log";
+                string path_log = null;
                 string path_md = null;
                 string path_info = null;
                 string path_assembly = null;
                 string gameversion = null;
+                string gameversionprefix = null;
                 string assemblyversion = null;
                 int int_gameversion = 0;
                 bool b_exp1 = false;
@@ -52,6 +57,7 @@ namespace versioncontrol_ONI
                 }
 
                 // read current version from log
+                path_log = path_log ?? (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\..\LocalLow\Klei\Oxygen Not Included\Player.log");
                 using (var log = File.OpenText(path_log))
                 {
                     //Console.WriteLine("Reading log file...");
@@ -71,7 +77,8 @@ namespace versioncontrol_ONI
                         {
                             index += 22;
                             gameversion = line[index..];
-                            int.TryParse(gameversion[^6..], out int_gameversion);
+                            gameversionprefix = gameversion[..^versionLength];
+                            int.TryParse(gameversion[^versionLength..], out int_gameversion);
                             Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}");
                         }
                     }
@@ -84,17 +91,22 @@ namespace versioncontrol_ONI
                     var changelog = File.ReadAllLines(path_md);
                     for (int i = 0; i < changelog.Length; i++)
                     {
-                        if (changelog[i].StartsWith("## [", StringComparison.Ordinal))
+                        if (changelog[i].Contains("[", StringComparison.Ordinal))
                         {
                             changelog[i] = changelog[i].TrimEnd();
-                            int index = changelog[i].LastIndexOf(']');
-                            if (index > 5)
+                            int indexopen = changelog[i].IndexOf('[') + 1;
+                            int indexclose = changelog[i].IndexOf(']');
+                            if (indexclose > indexopen && indexopen > 0)
                             {
-                                assemblyversion = changelog[i][4..index];
+                                assemblyversion = changelog[i][indexopen..indexclose];
                                 Console.WriteLine("read assembly version as: " + assemblyversion);
                                 if (gameversion != null)
                                 {
-                                    changelog[i] = changelog[i][..(index+1)] + " " + gameversion;
+                                    int indexversion = changelog[i].IndexOf(gameversionprefix, StringComparison.Ordinal);
+                                    if (indexversion < 0)
+                                        changelog[i] += (" " + gameversion);
+                                    else
+                                        changelog[i] = changelog[i][..indexversion] + gameversion + changelog[i][(indexversion + gameversion.Length)..];
                                 }
                             }
                             break;
@@ -106,11 +118,22 @@ namespace versioncontrol_ONI
                 // update version to mod_info.yaml
                 if (path_info != null && int_gameversion != 0)
                 {
-                    var modinfo = new string[]
+                    string[] modinfo;
+                    if (File.Exists(path_info))
                     {
-                        "supportedContent: " + (b_exp1 ? "EXPANSION1_ID" : "VANILLA_ID"),
-                        "lastWorkingBuild: " + int_gameversion
-                    };
+                        modinfo = File.ReadAllLines(path_info);
+                        for (int i = 0; i < modinfo.Length; i++)
+                            if (modinfo[i].StartsWith("lastWorkingBuild:", StringComparison.Ordinal))
+                                modinfo[i] = "lastWorkingBuild: " + int_gameversion;
+                    }
+                    else
+                    {
+                        modinfo = new string[]
+                        {
+                            "supportedContent: " + (b_exp1 ? "EXPANSION1_ID" : "VANILLA_ID"),
+                            "lastWorkingBuild: " + int_gameversion
+                        };
+                    }
                     File.WriteAllLines(path_info, modinfo);
                 }
 

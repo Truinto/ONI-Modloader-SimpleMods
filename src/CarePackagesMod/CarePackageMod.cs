@@ -22,7 +22,7 @@ namespace CarePackageMod
 
                 Debug.Log("Setting up care packages:");
 
-                for (int i = 0; i < carePackages.Count(); i++)
+                for (int i = 0; i < CarePackageState.StateManager.State.CarePackages.Count(); i++)
                 {
                     CarePackageContainer container = CarePackageState.StateManager.State.CarePackages[i];
                     container.multiplier = CarePackageState.StateManager.State.multiplier;

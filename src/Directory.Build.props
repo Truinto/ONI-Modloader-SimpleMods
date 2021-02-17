@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ItemDefinitionGroup>
+    <Reference Private="false" />
+    <ProjectReference Private="false" />
+  </ItemDefinitionGroup>
+  
+  <PropertyGroup>
+    <SteamFolder>D:\Programme\Steam</SteamFolder>
+    <ONIManaged Condition="Exists('$(SteamFolder)')">$(SteamFolder)\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</ONIManaged>
+    <ONIManaged Condition="!Exists('$(SteamFolder)')">..\..\$non-backup\ONI sources</ONIManaged>
+    <ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev</ModFolder>
+    
+    <DefineConstants Condition="Exists('$(ONIManaged)\_IsDLC1')">DLC1</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup Condition="'$(ProjectName)' != 'versioncontrol_ONI'">
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony" HintPath="$(ONIManaged)\0Harmony.dll" />
+    <Reference Include="Assembly-CSharp" HintPath="$(ONIManaged)\Assembly-CSharp.dll" />
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="$(ONIManaged)\Assembly-CSharp-firstpass.dll" />
+    <Reference Include="Newtonsoft.Json" HintPath="$(ONIManaged)\Newtonsoft.Json.dll" />
+    <Reference Include="UnityEngine" HintPath="$(ONIManaged)\UnityEngine.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(ONIManaged)\UnityEngine.CoreModule.dll" />
+    <Reference Include="UnityEngine.UI" HintPath="$(ONIManaged)\UnityEngine.UI.dll" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <Product>FumihikoONIMods</Product>
+    <Authors>Fumihiko</Authors>
+    <Copyright>Copyright ©Fumihiko 2021</Copyright>
+  </PropertyGroup>
+</Project>
+

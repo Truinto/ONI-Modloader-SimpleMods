@@ -15,9 +15,10 @@ General settings:
 - print_verbose: During the 'print_all' procedure, it will print the chore_table as well (which isn't needed for normal use).
 - alwaysHungry: Any food intake will have critters stomach set to 50%, causing them to constantly eat.
 - cantStarve: Tame critters cannot starve.
-- eggWildness: Disabled if negativ. Otherwise sets wildness on newly hatched eggs to this percentage, regardless of parents (0.0 to 100.0)
+- eggWildness: Disabled if negativ. Otherwise increase wildness on newly hatched eggs by this percentage (0.0 to 100.0).
 - babyGrowupTime_inDays: Disabled if 0 or negative. Otherwise time for babies to mature into adulthood in days.
 - acceleratedLifecycle: Reduces incubation time and fertility time to almost 0. Caution: This is only for testing. Critters will multiply exponentially, causing huge lag and crashes after a couple minutes.
+
 
 critter_settings: (properties of all critter types, including robots)
 - id: unique id of critter
@@ -29,7 +30,7 @@ critter_settings: (properties of all critter types, including robots)
 - traitId: id of trait to be used (may define new trait in trait_settings)
 - override_prefix: prefix of KAnim and CreatureBrain (behavior)
 - space_requirement: tile needed before critter is overcrowded
-- lifespan: negative values makes critter immortal; for actual life time see traits
+- lifespan: negative values makes critter immortal; positive values do nothing; for actual life time see traits
 - mass: weight of critter
 - width: horizontal space
 - height: vertical space
@@ -72,7 +73,7 @@ critter_settings: (properties of all critter types, including robots)
 - species: creature type the critter belongs to (interacts with other logics)
 - lures: list of elements the critter can be lured by
 - attackValue: attack value; note: whenever a critter uses this attack is dependend on the chore_table
-- chore_table: "chore_table" is a list of logic components applied to the critter; if automatically_populate is true, the mod will fill out missing components automatically; Sweepbot is disabled because of bugs; note: use print_all and print_verbose to extract the chore_table
+- chore_table: "chore_table" is a list of logic components applied to the critter; if automatically_populate is true, the mod will fill out missing components automatically; Sweepbot is disabled because of bugs; note: use print_all and print_verbose to extract the chore_table; note2: due to bugs a lot doesn't work as intended, use OVERRIDE_ID to copy a working chore_table from base creature
 - adultId: only is_baby; critter the baby will evolve into
 - eggId: only relevant for discover (so it shows up in menus)
 - babyId: only relevant for discover (so it shows up in menus)

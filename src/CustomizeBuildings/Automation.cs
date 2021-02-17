@@ -6,13 +6,13 @@ namespace CustomizeBuildings
 {
 
     [HarmonyPatch(typeof(SolidTransferArm), "OnPrefabInit")]
-    internal class SolidTransferArm_OnPrefabInit
+    public class SolidTransferArm_OnPrefabInit
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.AutoSweeperCapacity != 1000f;
         }
-        private static void Prefix(ref float ___max_carry_weight)
+        public static void Prefix(ref float ___max_carry_weight)
         {
             ___max_carry_weight = CustomizeBuildingsState.StateManager.State.AutoSweeperCapacity;
             //__instance.pickupRange = 12;

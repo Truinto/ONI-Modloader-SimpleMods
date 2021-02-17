@@ -35,6 +35,11 @@ namespace CustomizeBuildings
             return Math.Max(Math.Min(Max, Value), Min);
         }
 
+        public static bool IsModActive(string title)
+        {
+            return Global.Instance.modManager.mods.FirstOrDefault(s => s.title == title)?.IsEnabledForActiveDlc() ?? false;
+        }
+
         public static SimHashes ToSimHash(this string str, SimHashes fallback = SimHashes.Vacuum)
         {
             SimHashes result = (SimHashes)Hash.SDBMLower(str);
@@ -43,6 +48,30 @@ namespace CustomizeBuildings
                 return fallback;
 
             return result;
+        }
+
+        public static HashSet<Tag> RemoveRange(this HashSet<Tag> set, IEnumerable<Tag> itemsToRemove)
+        {
+            var result = new HashSet<Tag>();
+
+            foreach (Tag item in set)
+                if (!itemsToRemove.Contains(item))
+                    result.Add(item);
+
+            return result;
+        }
+
+        public static LocString GetTemperatureUnit()
+        {
+            switch (GameUtil.temperatureUnit)
+            {
+                case GameUtil.TemperatureUnit.Celsius:
+                    return STRINGS.UI.UNITSUFFIXES.TEMPERATURE.CELSIUS;
+                case GameUtil.TemperatureUnit.Fahrenheit:
+                    return STRINGS.UI.UNITSUFFIXES.TEMPERATURE.FAHRENHEIT;
+                default:
+                    return STRINGS.UI.UNITSUFFIXES.TEMPERATURE.KELVIN;
+            }
         }
 
         public static FastGetter CreateGetter(this Type type, string name)

@@ -24,7 +24,8 @@ namespace CustomizeCritter
 
         public static void Postfix(GameObject __state)
         {
-            __state.GetAmounts().Get(Db.Get().Amounts.Wildness.Id).value = CustomizeCritterState.StateManager.State.eggWildness;
+            __state.GetAmounts().Get(Db.Get().Amounts.Wildness.Id).SetValue(
+                __state.GetAmounts().Get(Db.Get().Amounts.Wildness.Id).value - CustomizeCritterState.StateManager.State.eggWildness);
         }
     }
 

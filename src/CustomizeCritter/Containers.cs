@@ -1,5 +1,6 @@
 using Harmony;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -118,7 +119,7 @@ namespace CustomizeCritter
             egg_chances = new List<KeyValuePair<string, float>>();
             egg_chances.Add(new KeyValuePair<string, float>("HatchHardEgg", 1f));
             is_ranchable = true;
-            
+
             diet_list = new List<DietContainer>();
             diet_list.Add(new DietContainer(100f, TUNING.CREATURES.CONVERSION_EFFICIENCY.NORMAL, null, 0f, "Carbon", "SedimentaryRock", "IgneousRock"));
             feedsOnPickupables = true;
@@ -153,7 +154,7 @@ namespace CustomizeCritter
 
             return this;
         }
-        
+
     }
 
     public class EggContainer
@@ -227,7 +228,7 @@ namespace CustomizeCritter
             public float value;
             public bool? multiplier;
 
-            public Attribute() {}
+            public Attribute() { }
 
             public Attribute(string id, float value, bool? multiplier = null)
             {
@@ -310,7 +311,8 @@ namespace CustomizeCritter
 
     public class ChoreContainer
     {
-        public bool automatically_populate;
+        public string OVERRIDE_ID;  // if this is set, use this critter as a template, instead of generating new component
+        public bool automatically_populate; // try to fix missing chores; unfortunately unreliable, recommend override instead
 
         public bool can_attack;
         public bool can_flee;
@@ -320,7 +322,6 @@ namespace CustomizeCritter
         public float? bag_escape_time;
         public string nesting_poop;
 
-        public string copy_from_ID; // idea: copy chore_table from another critter, instead of making a new one
         public List<StateMachine.BaseDef> chore_table; // TODO: fix exception with constructor
 
         public void PopulateDefs(GameObject go)
@@ -487,6 +488,68 @@ namespace CustomizeCritter
                 Debug.Log("Wups, elements are not loaded yet.");
         }
 
+        public void OverrideDefs(GameObject go, ChoreTable.Builder chore_table)
+        {
+            if (go == null)
+                Debug.LogError("PopulateDefs go shouldn't be null!");
+
+            if (this.bag_escape_time != null)
+            {
+                ChoreTableRemove(chore_table, typeof(BaggedStates.Def));
+                ChoreTableAdd(chore_table, new BaggedStates.Def() { escapeTime = this.bag_escape_time.Value });
+            }
+
+            //can drown
+            if (go.GetComponent<DrowningMonitor>() != null)
+                ChoreTableAdd(chore_table, new DrowningStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(DrowningStates.Def));
+
+            //eats solid
+            if (go.GetDef<SolidConsumerMonitor.Def>() != null)
+                ChoreTableAdd(chore_table, new EatStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(EatStates.Def));
+
+            //eats gas/liquids
+            if (go.GetDef<GasAndLiquidConsumerMonitor.Def>() != null)
+                ChoreTableAdd(chore_table, new InhaleStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(InhaleStates.Def));
+
+            //can get lured
+            if (go.GetDef<LureableMonitor.Def>() != null)
+                ChoreTableAdd(chore_table, new MoveToLureStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(MoveToLureStates.Def));
+
+            //can expulse
+            if (go.GetDef<ElementDropperMonitor.Def>() != null)
+                ChoreTableAdd(chore_table, new DropElementStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(DropElementStates.Def));
+
+            if (this.can_attack)
+                ChoreTableAdd(chore_table, new AttackStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(AttackStates.Def));
+
+            if (this.can_flee)
+                ChoreTableAdd(chore_table, new FleeStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(FleeStates.Def));
+
+            if (this.can_sleep)
+                ChoreTableAdd(chore_table, new CreatureSleepStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(CreatureSleepStates.Def));
+
+            if (this.can_call)
+                ChoreTableAdd(chore_table, new CallAdultStates.Def());
+            else
+                ChoreTableRemove(chore_table, typeof(CallAdultStates.Def));
+        }
+
         //makes sure not to add duplicates
         public void Add(StateMachine.BaseDef def)
         {
@@ -514,15 +577,26 @@ namespace CustomizeCritter
 
         public ChoreTable.Builder Get(GameObject go)
         {
-            if (go == null || chore_table == null) return null;
+            ChoreTable.Builder result = null;
+            if (OVERRIDE_ID != null)
+            {
+                Patch_AddCreatureBrain.CreatureBrains.TryGetValue(OVERRIDE_ID, out result);
+                if (result != null)
+                {
+                    result = Clone(result);
+                    if (automatically_populate)
+                        OverrideDefs(go, result);
+                }
+            }
+            else
+            {
+                if (automatically_populate)
+                    PopulateDefs(go);
+                result = new ChoreTable.Builder();
 
-            if (automatically_populate)
-                PopulateDefs(go);
-
-            var result = new ChoreTable.Builder();
-
-            foreach (var def in chore_table)
-                result.Add(def);
+                foreach (var def in chore_table)
+                    result.Add(def);
+            }
 
             return result;
         }
@@ -534,7 +608,7 @@ namespace CustomizeCritter
             var chore = go.GetComponent<ChoreConsumer>();
             if (chore == null || chore.choreTable == null) return null;
 
-            var entries = (ChoreTable.Entry[])AccessTools.Field(typeof(ChoreTable), "entries").GetValue(chore.choreTable);
+            var entries = (ChoreTable.Entry[])_entries.GetValue(chore.choreTable);
             if (entries == null) return null;
 
             if (chore_table == null)
@@ -559,9 +633,66 @@ namespace CustomizeCritter
             can_call = entries.Any(s => s.stateMachineDef is CallAdultStates.Def);
 
             if (go.HasTag("Mole")) nesting_poop = "Regolith";
-            
+
             return this;
         }
+
+        public ChoreTable.Builder Clone(ChoreTable.Builder source)
+        {
+            var result = new ChoreTable.Builder();
+            _interruptGroupId.SetValue(result, _interruptGroupId.GetValue(source)); //int interruptGroupId
+            _interruptGroupId.SetValue(result, _interruptGroupId.GetValue(source));
+
+            IList infos = (IList)_infos.GetValue(source);    //List<ChoreTable.Builder.Info> infos
+            IList infos2 = (IList)Activator.CreateInstance(infos.GetType());
+            foreach (object obj in infos)
+                infos2.Add(obj);
+            _infos.SetValue(result, infos2);
+
+            return result;
+        }
+
+        public bool ChoreTableContains(ChoreTable.Builder chore_table, Type type)
+        {
+            IList infos = (IList)_infos.GetValue(chore_table);
+
+            foreach (object obj in infos)
+            {
+                if (_def.GetValue(obj).GetType() == type)
+                    return true;
+            }
+            return false;
+        }
+
+        public bool ChoreTableAdd(ChoreTable.Builder chore_table, StateMachine.BaseDef def)
+        {
+            if (!ChoreTableContains(chore_table, def.GetType()))
+            {
+                chore_table.Add(def);
+                return true;
+            }
+            return false;
+        }
+
+        public int ChoreTableRemove(ChoreTable.Builder chore_table, Type type)
+        {
+            IList infos = (IList)_infos.GetValue(chore_table);
+            int num = 0;
+            for (int i = infos.Count; i >= 0; i--)
+            {
+                if (_def.GetValue(infos[i]).GetType() == type)
+                {
+                    infos.RemoveAt(i);
+                    num++;
+                }
+            }
+            return num;
+        }
+
+        private static FieldInfo _interruptGroupId = AccessTools.Field(typeof(ChoreTable.Builder), "interruptGroupId");
+        private static FieldInfo _infos = AccessTools.Field(typeof(ChoreTable.Builder), "infos");
+        private static FieldInfo _def = AccessTools.Field(Type.GetType("ChoreTable.Builder.Info, Assembly-CSharp"), "def");
+        private static FieldInfo _entries = AccessTools.Field(typeof(ChoreTable), "entries");
 
         private static Func<FallStates.Instance, string> _pacu_fall = (Func<FallStates.Instance, string>)Delegate.CreateDelegate(typeof(Func<FallStates.Instance, string>), AccessTools.Method(typeof(BasePacuConfig), "GetLandAnim"));
         private static string GetLandAnim(FallStates.Instance smi)

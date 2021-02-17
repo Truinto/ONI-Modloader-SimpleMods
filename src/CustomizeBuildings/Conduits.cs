@@ -51,7 +51,7 @@ namespace CustomizeBuildings
     {
         internal static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1
+            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f
                 && !GasValveConfig_ConfigureBuildingTemplate2.Prepare();
         }
 
