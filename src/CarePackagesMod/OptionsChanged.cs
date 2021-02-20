@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using System.Reflection.Emit;
 using System.Reflection;
+using Common;
 
 namespace CarePackageMod
 {
@@ -32,7 +33,7 @@ namespace CarePackageMod
         public static void OnRefreshUserMenu(object data)
         {
             if (go != null)
-                Helper.AddButton(go, "Carepackage Option", "", ButtonPress, 20f);
+                Helpers.AddButton(go, "Carepackage Option", "", ButtonPress, 20f);
         }
 
         public static void ButtonPress()

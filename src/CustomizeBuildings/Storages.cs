@@ -7,9 +7,26 @@ using UnityEngine;
 
 namespace CustomizeBuildings
 {
+    [HarmonyPatch(typeof(SolidConduitInboxConfig), "DoPostConfigureComplete")]
+    public class SolidConduitInbox_AcceptAny
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.ConveyorLoaderAcceptLiquidsGas;
+        }
+
+        public static void Postfix(GameObject go)
+        {
+            Storage storage = go.AddOrGet<Storage>();
+            storage.storageFilters.AddRange(TUNING.STORAGEFILTERS.LIQUIDS);
+            storage.storageFilters.AddRange(TUNING.STORAGEFILTERS.GASES);
+
+            //Debug.Log($"Debug: version={UnityEngine.Application.version} unityVersion={UnityEngine.Application.unityVersion}");
+        }
+    }
 
     [HarmonyPatch(typeof(StorageLockerConfig), "ConfigureBuildingTemplate")]
-    internal class StorageLockerConfig_ConfigureBuildingTemplate
+    public class StorageLockerConfig_ConfigureBuildingTemplate
     {
         private static void Postfix(GameObject go)
         {
@@ -19,7 +36,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(StorageLockerSmartConfig), "DoPostConfigureComplete")]
-    internal class StorageLockerSmartConfig_DoPostConfigureComplete
+    public class StorageLockerSmartConfig_DoPostConfigureComplete
     {
         private static void Postfix(GameObject go)
         {
@@ -29,7 +46,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(RationBoxConfig), "ConfigureBuildingTemplate")]
-    internal class RationBoxConfig_ConfigureBuildingTemplate
+    public class RationBoxConfig_ConfigureBuildingTemplate
     {
         private static void Postfix(GameObject go)
         {
@@ -39,7 +56,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(RefrigeratorConfig), "DoPostConfigureComplete")]
-    internal class RefrigeratorConfig_DoPostConfigureComplete
+    public class RefrigeratorConfig_DoPostConfigureComplete
     {
         private static void Postfix(GameObject go)
         {
@@ -49,7 +66,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(CreatureFeederConfig), "ConfigureBuildingTemplate")]
-    internal class CreatureFeederConfig_ConfigureBuildingTemplate
+    public class CreatureFeederConfig_ConfigureBuildingTemplate
     {
         private static void Postfix(GameObject go)
         {
@@ -59,7 +76,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(FishFeederConfig), "ConfigureBuildingTemplate")]
-    internal class FishFeederConfig_ConfigureBuildingTemplate
+    public class FishFeederConfig_ConfigureBuildingTemplate
     {
         private static void Postfix(GameObject go)
         {
@@ -69,7 +86,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(GasBottlerConfig), "ConfigureBuildingTemplate")]
-    internal class GasBottlerConfig_ConfigureBuildingTemplate
+    public class GasBottlerConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
@@ -85,7 +102,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(SolidConduitInboxConfig), "DoPostConfigureComplete")]
-    internal class SolidConduitInboxConfig_DoPostConfigureComplete
+    public class SolidConduitInboxConfig_DoPostConfigureComplete
     {
         private static void Postfix(GameObject go)
         {
@@ -97,7 +114,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(SolidConduitOutboxConfig), "ConfigureBuildingTemplate")]
-    internal class SolidConduitOutboxConfig_ConfigureBuildingTemplate
+    public class SolidConduitOutboxConfig_ConfigureBuildingTemplate
     {
         private static void Postfix(GameObject go)
         {
@@ -109,7 +126,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(Storage), "OnQueueDestroyObject")]
-    internal class Storage_OnQueueDestroyObject
+    public class Storage_OnQueueDestroyObject
     {
         private static void Prefix(Storage __instance)
         {

@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EggCritterSurplus", "EggCri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeGeyser", "CustomizeGeyser\CustomizeGeyser.csproj", "{7580D3F4-9B4B-4AEE-B51B-6535043742ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FumLib", "FumLib\FumLib.csproj", "{B6154817-F628-40FC-9870-FA3487750075}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoRemains", "NoRemains\NoRemains.csproj", "{971DA6B5-A67D-45DC-93DF-450F0884CCFC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeModifier", "CustomizeModifier\CustomizeModifier.csproj", "{81C1EFCB-8443-4DE3-ACD8-E1AECB550633}"
@@ -53,10 +51,6 @@ Global
 		{7580D3F4-9B4B-4AEE-B51B-6535043742ED}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{7580D3F4-9B4B-4AEE-B51B-6535043742ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7580D3F4-9B4B-4AEE-B51B-6535043742ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6154817-F628-40FC-9870-FA3487750075}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{B6154817-F628-40FC-9870-FA3487750075}.Debug|Any CPU.Build.0 = Release|Any CPU
-		{B6154817-F628-40FC-9870-FA3487750075}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6154817-F628-40FC-9870-FA3487750075}.Release|Any CPU.Build.0 = Release|Any CPU
 		{971DA6B5-A67D-45DC-93DF-450F0884CCFC}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{971DA6B5-A67D-45DC-93DF-450F0884CCFC}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{971DA6B5-A67D-45DC-93DF-450F0884CCFC}.Release|Any CPU.ActiveCfg = Release|Any CPU

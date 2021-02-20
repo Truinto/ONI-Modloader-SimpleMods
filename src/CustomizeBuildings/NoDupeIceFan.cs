@@ -222,7 +222,7 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeBuildingsGlobal && CustomizeBuildingsState.StateManager.State.NoDupeBuildings.GetValueSafe(CustomizeBuildingsState.IDIceCooledFan);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
         }
 
         private static void Postfix(BuildingDef __result)
@@ -240,7 +240,7 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeBuildingsGlobal && CustomizeBuildingsState.StateManager.State.NoDupeBuildings.GetValueSafe(CustomizeBuildingsState.IDIceCooledFan);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
         }
 
         private static bool Prefix(GameObject go, Tag prefab_tag)
@@ -282,7 +282,7 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeBuildingsGlobal && CustomizeBuildingsState.StateManager.State.NoDupeBuildings.GetValueSafe(CustomizeBuildingsState.IDIceCooledFan);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
         }
 
         private static bool Prefix(GameObject go)

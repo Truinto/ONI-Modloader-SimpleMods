@@ -1,4 +1,5 @@
-﻿using KSerialization;
+﻿using Common;
+using KSerialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,7 +78,7 @@ namespace CustomizeBuildings
 
             set
             {
-                UserValue = Helper.MinMax(Min, (int)value, Max);
+                UserValue = Helpers.MinMax(Min, (int)value, Max);
                 transferArm.pickupRange = UserValue;
                 visualizer.x = -UserValue;
                 visualizer.y = -UserValue;

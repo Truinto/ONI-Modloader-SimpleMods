@@ -8,19 +8,20 @@ using System;
 using KSerialization;
 using TUNING;
 using Klei.AI;
+using Common;
 
 namespace CustomizeBuildings
 {
-    public static class SkillStationCosts
+    internal static class SkillStationCosts
     {
-        public static bool IsEnabled = true;
-        public static float CostTime = 2f;
-        public static float CostReset = 0f;
-        public static float CostRemoveTrait = 100f;
-        public static float CostAddTrait = 100f;
-        public static float CostBadTrait = -100f;
-        public static float CostAddAptitude = 100f;
-        public static float CostAddAttribute = 100f;
+        internal static bool IsEnabled => CustomizeBuildingsState.StateManager.State.SkillStationEnabled;
+        internal static float CostTime => CustomizeBuildingsState.StateManager.State.SkillStationCostTime;
+        internal static float CostReset => CustomizeBuildingsState.StateManager.State.SkillStationCostReset;
+        internal static float CostRemoveTrait => CustomizeBuildingsState.StateManager.State.SkillStationCostRemoveTrait;
+        internal static float CostAddTrait => CustomizeBuildingsState.StateManager.State.SkillStationCostAddTrait;
+        internal static float CostBadTrait => CustomizeBuildingsState.StateManager.State.SkillStationCostBadTrait;
+        internal static float CostAddAptitude => CustomizeBuildingsState.StateManager.State.SkillStationCostAddAptitude;
+        internal static float CostAddAttribute => CustomizeBuildingsState.StateManager.State.SkillStationCostAddAttribute;
     }
 
     [HarmonyPatch(typeof(Filterable), nameof(Filterable.GetTagOptions))]
@@ -239,6 +240,9 @@ namespace CustomizeBuildings
 
                 Debug.Log("[SkillStation] " + tooltip);
                 worker.GetComponent<Notifier>().Add(new Notification(
+#if !DLC1
+                    group: HashedString.Invalid,
+#endif
                     title: "Skills Station",
                     type: NotificationType.Good,
                     tooltip: (List<Notification> notificationList, object data) =>

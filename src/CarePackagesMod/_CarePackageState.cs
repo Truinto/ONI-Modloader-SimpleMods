@@ -48,13 +48,10 @@ namespace CarePackageMod
 
         public CarePackageContainer[] CarePackages { get; set; } = CarePackageList.GetPackages();
 
-        public static Config.Manager<CarePackageState> StateManager = new Config.Manager<CarePackageState>(Config.Helper.CreatePath("Care Package Manager"), true, UpdateFunction);
+        public static Config.Manager<CarePackageState> StateManager = new Config.Manager<CarePackageState>(Config.PathHelper.CreatePath("Care Package Manager"), true, UpdateFunction);
 
         public static bool UpdateFunction(CarePackageState state)
         {
-            if (state.version <= 7)
-                state.CarePackages = CarePackageList.GetPackages();
-
             return true;
         }
     }

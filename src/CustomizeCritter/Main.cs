@@ -1,4 +1,4 @@
-#define DLC1
+//#define DLC1
 
 using Harmony;
 using System;

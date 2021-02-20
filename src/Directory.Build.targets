@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>  
+  <!-- Pre-build script; updates versioning -->
+  <PropertyGroup Condition="Exists('$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe')">
+    <PreBuildEvent>"$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\mod_info.yaml"</PreBuildEvent>
+  </PropertyGroup>
+  
+  <!-- Post-build script; execute ILMERGE and copy files to dev\ -->
+  <!-- True==$(DefineConstants.Contains('MERGE')) -->
+  <PropertyGroup>
+    <PostBuildEvent>if True==Exists('$(ProjectDir)_MERGE') (
+  echo Merging PLibOptions...
+  "$(ILMergeEXE)" /ndebug /out:"$(TargetName)Merged.dll" "$(TargetName).dll" "$(MSBuildThisFileDirectory)packages\PLibOptions.dll" /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /lib:"$(ONIManaged)"
+  move /y "$(TargetName)Merged.dll" "$(TargetName).dll"
+)
+xcopy /i /e /y /f "$(TargetDir)*" "$(ModFolder)\$(TargetName)\"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
+
+

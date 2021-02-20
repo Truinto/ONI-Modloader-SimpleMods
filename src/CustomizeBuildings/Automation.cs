@@ -4,6 +4,21 @@ using System;
 
 namespace CustomizeBuildings
 {
+    #region Autosweeper
+    [HarmonyPatch(typeof(SolidTransferArm), "IsPickupableRelevantToMyInterests")]
+    public class SolidTransferarm_MoveAnything
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperPickupAnything;
+        }
+
+        public static bool Prefix(ref bool __result)
+        {
+            __result = true;
+            return false;
+        }
+    }
 
     [HarmonyPatch(typeof(SolidTransferArm), "OnPrefabInit")]
     public class SolidTransferArm_OnPrefabInit
@@ -31,7 +46,7 @@ namespace CustomizeBuildings
             go.AddOrGet<SolidTransferArm>().pickupRange = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
         }
     }
-    
+
     [HarmonyPatch(typeof(SolidTransferArmConfig), "DoPostConfigureComplete")]
     internal class SolidTransferArmConfig_DoPostConfigureComplete2
     {
@@ -64,7 +79,9 @@ namespace CustomizeBuildings
             return false;
         }
     }
+    #endregion
 
+    #region Robominer
     [HarmonyPatch(typeof(AutoMinerConfig), "DoPostConfigureComplete")]
     internal class AutoMinerConfig_OnPrefabInit
     {
@@ -117,7 +134,7 @@ namespace CustomizeBuildings
             }
         }
     }
-    
+
     [HarmonyPatch(typeof(AutoMiner), "DigBlockingCB")]
     internal class AutoMiner_DigBlockingCB
     {
@@ -148,10 +165,12 @@ namespace CustomizeBuildings
 
         internal static bool Prefix(int cell, ref bool __result)
         {
-            try {
-                __result = Grid.Solid[cell] && !Grid.Foundation[cell] && Grid.Element[cell].hardness < (byte) 255;
+            try
+            {
+                __result = Grid.Solid[cell] && !Grid.Foundation[cell] && Grid.Element[cell].hardness < (byte)255;
                 return false;
-            } catch (Exception) { }
+            }
+            catch (Exception) { }
             return true;
         }
     }
@@ -167,11 +186,14 @@ namespace CustomizeBuildings
 
         internal static void Prefix(ref float dt, int ___dig_cell)
         {
-            try {
+            try
+            {
                 if (Grid.Element[___dig_cell].id == SimHashes.Regolith)
                     dt *= 6f;
-            } catch (Exception) { }
+            }
+            catch (Exception) { }
         }
     }
+    #endregion
 
 }

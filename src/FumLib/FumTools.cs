@@ -106,22 +106,22 @@ namespace FumLib
             }
         }
 
-        public static unsafe float GetCellTemperature(int cell)
-        {
-            try
-            {
-                return Grid.temperature[cell];
-            }
-            catch (Exception) { return 293.15f; }
-        }
+        //public static unsafe float GetCellTemperature(int cell)
+        //{
+        //    try
+        //    {
+        //        return Grid.temperature[cell];
+        //    }
+        //    catch (Exception) { return 293.15f; }
+        //}
 
-        public static unsafe void SetCellTemperature(int cell, float temperature)
-        {
-            try
-            {
-                if (temperature > 0f && temperature < 10000f)
-                    Grid.temperature[cell] = temperature;
-            } catch (Exception) { }
-        }
+        //public static unsafe void SetCellTemperature(int cell, float temperature)
+        //{
+        //    try
+        //    {
+        //        if (temperature > 0f && temperature < 10000f)
+        //            Grid.temperature[cell] = temperature;
+        //    } catch (Exception) { }
+        //}
     }
 }

@@ -5,44 +5,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Harmony;
 using System.Reflection;
-using Newtonsoft.Json.Serialization;
-using System.Linq;
 
 namespace Config
 {
-    public class MyContractResolver : DefaultContractResolver
-    {
-        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
-        {
-
-            var props1 = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)//.Where(s => s.IsPublic || Attribute.IsDefined(s, typeof(SerializeField)))
-                        .Select(f => base.CreateProperty(f, memberSerialization))
-                        .ToList();
-            props1.ForEach(p => { p.Writable = true; p.Readable = true; });
-            return props1;
-
-            // var props2 = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            //             .Select(p => base.CreateProperty(p, memberSerialization))
-            //         .Union(type.GetFields(BindingFlags.Public |/* BindingFlags.NonPublic |*/ BindingFlags.Instance)//.Where(s => s.IsPublic || Attribute.IsDefined(s, typeof(SerializeField)))
-            //             .Select(f => base.CreateProperty(f, memberSerialization)))
-            //         .ToList();
-            // props2.ForEach(p => { p.Writable = true; p.Readable = true; });
-            // props2.AddRange(props1);
-            // return props2;
-        }
-    }
-
     public class JsonManager
     {
         public JsonSerializer Serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
-            ObjectCreationHandling = ObjectCreationHandling.Replace,
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            TypeNameHandling = TypeNameHandling.Auto,
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-            ContractResolver = new MyContractResolver()
+            ObjectCreationHandling = ObjectCreationHandling.Replace
         });
 
         public T Deserialize<T>(string path)
@@ -106,7 +78,7 @@ namespace Config
             {
                 Debug.LogWarning(ex);
                 Debug.LogWarning("Can't load configuration!");
-                BootDialog.PostBootDialog.ErrorList.Add("Error in config file: " + ex.Message);
+                PostBootDialog.ErrorList.Add("Error in config file: " + ex.Message);
 
                 state = (T)Activator.CreateInstance(typeof(T));
 
@@ -143,6 +115,8 @@ namespace Config
 
         public Func<T, bool> updateCallback = null;
 
+        public System.Action<T> loadedCallback = null;
+
         public T State
         {
             get
@@ -161,6 +135,9 @@ namespace Config
                     JsonLoader.TrySaveConfiguration(this.StateFilePath, (T)Activator.CreateInstance(typeof(T)));
                 }
                 JsonLoader.TryLoadConfiguration(this.StateFilePath, out _state);
+
+                if (loadedCallback != null) loadedCallback(_state);
+
                 return _state;
             }
 
@@ -191,11 +168,23 @@ namespace Config
             return false;
         }
 
+        public bool TrySaveConfigurationState(T state)
+        {
+            _state = state;
+            if (_state != null)
+                return JsonLoader.TrySaveConfiguration(this.StateFilePath, _state);
+
+            return false;
+        }
+
         /// <summary>
         /// if not isAbsolute then path is the mods name
         /// </summary>
-        public Manager(string path, bool isAbsolute, Func<T, bool> updateCallback = null)
+        public Manager(string path, bool isAbsolute, Func<T, bool> updateCallback = null, System.Action<T> loadedCallback = null)
         {
+            this.updateCallback = updateCallback;
+            this.loadedCallback = loadedCallback;
+
             bool errorFlag = false;
             string resultPath = null;
 
@@ -214,9 +203,7 @@ namespace Config
 
             this.StateFilePath = resultPath;
             this.JsonLoader = new JsonFileManager(new JsonManager());
-
-            this.updateCallback = updateCallback;
-
+            
             UpdateVersion();
         }
 
@@ -224,9 +211,9 @@ namespace Config
         {
             try
             {
-                T newObj = Activator.CreateInstance<T>();
-                int newVersion = (int)typeof(T).GetField("version").GetValue(newObj);
-                int savedVersion = (int)typeof(T).GetField("version").GetValue(State);
+                object newObj = Activator.CreateInstance(typeof(T));
+                int newVersion = (int)typeof(T).GetProperty("version").GetValue(newObj, null);
+                int savedVersion = (int)typeof(T).GetProperty("version").GetValue(State, null);
 
                 if (savedVersion != 0 && newVersion != 0)
                 {
@@ -235,7 +222,7 @@ namespace Config
                         Debug.Log("Updating version...");
                         bool shouldSave = true;
                         if (updateCallback != null) shouldSave = updateCallback(State);
-                        typeof(T).GetField("version").SetValue(State, newVersion);
+                        State.GetType().GetProperty("version").SetValue(State, newVersion, null);
                         if (shouldSave) this.TrySaveConfigurationState();
                     }
                 }
@@ -274,10 +261,10 @@ namespace Config
         }
     }
 
-    public class Helper
+    public class PathHelper
     {
         //https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in
-        public static string AssemblyDirectory
+        public static string AssemblyDirectoryOld
         {
             get
             {
@@ -288,20 +275,31 @@ namespace Config
             }
         }
 
+        public static string AssemblyDirectory
+        {
+            get => Directory.GetParent(Assembly.GetExecutingAssembly().Location)?.FullName;//GetCallingAssembly
+        }
+
         public static string ModsDirectory
         {
             get
             {
-                return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
+                return Path.Combine(Util.RootFolder(), "mods");
+                //return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
             }
         }
-
+        
         /// <summary>
         /// returns absolute file-path
         /// </summary>
-        public static string CreatePath(string modName)
+        public static string CreatePath(string modName, bool setName = true)
         {
-            return ModsDirectory + Path.DirectorySeparatorChar + modName + ".json";
+            if (setName)
+            {
+                PostBootDialog.ModName = modName;
+                Common.Helpers.ModName = modName;
+            }
+            return Path.Combine(ModsDirectory, modName + ".json");
         }
     }
 

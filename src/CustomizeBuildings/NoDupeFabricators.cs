@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-
+using Common;
 
 namespace CustomizeBuildings
 {
@@ -27,42 +27,16 @@ namespace CustomizeBuildings
             go.AddOrGet<BuildingComplete>().isManuallyOperated = false;
             fabricator.duplicantOperated = false;
         }
-
-        public static bool CheckConfig(Dictionary<string, bool> state, string key)
-        {
-            try
-            {
-                bool result = state[key];
-                Debug.Log("CheckConfig " + key + " resulted in " + result.ToString());
-                return result;
-            }
-            catch (Exception) { Debug.LogWarning("CheckSetting could not resolve: " + key); }
-            return false;
-        }
-
-        public static bool CheckConfig(string key)
-        {
-            if (!CustomizeBuildingsState.StateManager.State.NoDupeBuildingsGlobal) return false;
-
-            try
-            {
-                bool result = CustomizeBuildingsState.StateManager.State.NoDupeBuildings[key];
-                Debug.Log("CheckConfig " + key + " resulted in " + result.ToString());
-                return result;
-            }
-            catch (Exception) { Debug.LogWarning("CheckConfig could not resolve: " + key); }
-            return false;
-        }
     }
 
-    #region Postfixes
+    #region ComplexFabricator
 
     [HarmonyPatch(typeof(ApothecaryConfig), "ConfigureBuildingTemplate")]
     public class ApothecaryConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDApothecary);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeApothecary;
         }
 
         public static void Postfix(GameObject go)
@@ -72,11 +46,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(ClothingFabricatorConfig), "ConfigureBuildingTemplate")]
-    internal class ClothingFabricatorConfig_ConfigureBuildingTemplate
+    public class ClothingFabricatorConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDClothingFabricator);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeClothingFabricator;
         }
 
         public static void Postfix(GameObject go)
@@ -86,11 +60,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(CookingStationConfig), "ConfigureBuildingTemplate")]
-    internal class CookingStationConfig_ConfigureBuildingTemplate
+    public class CookingStationConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDCookingStation);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeCookingStation;
         }
 
         public static void Postfix(GameObject go)
@@ -100,11 +74,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(EggCrackerConfig), "ConfigureBuildingTemplate")]
-    internal class EggCrackerConfig_ConfigureBuildingTemplate
+    public class EggCrackerConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDEggCracker);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeEggCracker;
         }
 
         public static void Postfix(GameObject go)
@@ -114,11 +88,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(GlassForgeConfig), "ConfigureBuildingTemplate")]
-    internal class GlassForgeConfig_ConfigureBuildingTemplate
+    public class GlassForgeConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDGlassForge);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeGlassForge;
         }
 
         public static void Postfix(GameObject go)
@@ -128,11 +102,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(GourmetCookingStationConfig), "ConfigureBuildingTemplate")]
-    internal class GourmetCookingStationConfig_ConfigureBuildingTemplate
+    public class GourmetCookingStationConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDGourmetCookingStation);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeGourmetCookingStation;
         }
 
         public static void Postfix(GameObject go)
@@ -142,11 +116,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(MetalRefineryConfig), "ConfigureBuildingTemplate")]
-    internal class MetalRefineryConfig_ConfigureBuildingTemplate
+    public class MetalRefineryConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDMetalRefinery);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeMetalRefinery;
         }
 
         public static void Postfix(GameObject go)
@@ -156,11 +130,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(MicrobeMusherConfig), "ConfigureBuildingTemplate")]
-    internal class MicrobeMusherConfig_ConfigureBuildingTemplate
+    public class MicrobeMusherConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDMicrobeMusher);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeMicrobeMusher;
         }
 
         public static void Postfix(GameObject go)
@@ -170,11 +144,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
-    internal class RockCrusherConfig_ConfigureBuildingTemplate2
+    public class RockCrusherConfig_ConfigureBuildingTemplate2
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDRockCrusher);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeRockCrusher;
         }
 
         public static void Postfix(GameObject go)
@@ -184,11 +158,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(SuitFabricatorConfig), "ConfigureBuildingTemplate")]
-    internal class SuitFabricatorConfig_ConfigureBuildingTemplate
+    public class SuitFabricatorConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDSuitFabricator);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeSuitFabricator;
         }
 
         public static void Postfix(GameObject go)
@@ -198,11 +172,11 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(SupermaterialRefineryConfig), "ConfigureBuildingTemplate")]
-    internal class SupermaterialRefineryConfig_ConfigureBuildingTemplate
+    public class SupermaterialRefineryConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDSupermaterialRefinery);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeSupermaterialRefinery;
         }
 
         public static void Postfix(GameObject go)
@@ -211,17 +185,34 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(OilRefineryConfig), "ConfigureBuildingTemplate")]
-    internal class OilRefineryConfig_ConfigureBuildingTemplate
+#if DLC1
+    [HarmonyPatch(typeof(SludgePressConfig), "ConfigureBuildingTemplate")]
+    public class SludgePressConfig_ConfigureBuildingTemplate
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDOilRefinery);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeSludgePress;
         }
 
         public static void Postfix(GameObject go)
         {
-            OilRefinery oilRefinery = go.GetComponent<OilRefinery>();            
+            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
+        }
+    }
+#endif
+#endregion
+
+    [HarmonyPatch(typeof(OilRefineryConfig), "ConfigureBuildingTemplate")]
+    public class OilRefineryConfig_ConfigureBuildingTemplate
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeOilRefinery;
+        }
+
+        public static void Postfix(GameObject go)
+        {
+            OilRefinery oilRefinery = go.GetComponent<OilRefinery>();
             if (oilRefinery == null)
             {
                 Debug.LogWarning("oilRefinery was null");
@@ -240,7 +231,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return NoDupeHelper.CheckConfig(CustomizeBuildingsState.IDOilWellCap);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeOilWellCap;
         }
 
         [HarmonyPriority(Priority.LowerThanNormal)]
@@ -248,7 +239,7 @@ namespace CustomizeBuildings
         {
             //foreach (var mod in Global.Instance.modManager.mods) Debug.Log($"id={mod.label.id} title={mod.label.title} enabled={mod.IsEnabledForActiveDlc()}");
 
-            if (Helper.IsModActive("Piped output"))
+            if (Helpers.IsModActive("Piped output"))
                 return;
 
             OilWellCap oilWellCap = go.GetComponent<OilWellCap>();
@@ -269,5 +260,59 @@ namespace CustomizeBuildings
         }
     }
 
+    #region StateMachine Patches
+    [HarmonyPatch(typeof(Compost.States), nameof(Compost.States.InitializeStates))]
+    public class Compost_States_Patch
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.NoDupeCompost;
+        }
+
+        public static void Postfix(Compost.States __instance)
+        {
+            // remove ToggleChore
+            __instance.inert.enterActions.RemoveAll(f => f.name == "ToggleChoreEnter()");
+            __instance.inert.exitActions.RemoveAll(f => f.name == "ToggleChoreExit()");
+
+            // remove ToggleStatusItem
+            __instance.inert.enterActions.RemoveAll(f => f.name.StartsWith("AddStatusItem(", StringComparison.Ordinal));
+            __instance.inert.exitActions.RemoveAll(f => f.name.StartsWith("RemoveStatusItem(", StringComparison.Ordinal));
+
+            __instance.inert.GoTo(__instance.composting);
+
+            __instance.composting.enterActions.RemoveAll(f => f.name.StartsWith("ScheduleGoTo(", StringComparison.Ordinal));
+        }
+    }
+
+    [HarmonyPatch(typeof(Desalinator.States), nameof(Desalinator.States.InitializeStates))]
+    public class Desalinator_Patch
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.NoDupeDesalinator;
+        }
+
+        public static void Postfix(Desalinator.States __instance)
+        {
+            __instance.full.enterActions.Clear();   // remove PlayAnims
+            __instance.full.transitions.Clear();    // remove OnAnimQueueComplete
+
+            __instance.full.Enter(smi =>            // OnEmptyComplete
+            {
+                smi.emptyChore = null;
+                Tag tag = GameTagExtensions.Create(SimHashes.Salt);
+                ListPool<GameObject, Desalinator>.PooledList salt = ListPool<GameObject, Desalinator>.Allocate();
+                Storage storage = smi.master.GetComponent<Storage>();
+                storage.Find(tag, salt);
+                foreach (GameObject go in salt)
+                {
+                    storage.Drop(go, true);
+                }
+                salt.Recycle();
+            });
+            __instance.full.GoTo(__instance.empty);    // go back to normal operation
+        }
+    }
     #endregion
 }

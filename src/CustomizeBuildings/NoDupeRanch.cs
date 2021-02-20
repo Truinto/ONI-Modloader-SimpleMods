@@ -10,7 +10,7 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeBuildingsGlobal && CustomizeBuildingsState.StateManager.State.NoDupeBuildings.GetValueSafe(CustomizeBuildingsState.IDRanchStation);
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeRanchStation;
         }
 
         private static void Postfix(ModifierSet __instance)

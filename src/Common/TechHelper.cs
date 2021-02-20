@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Techs
+namespace Common
 {
     public enum PlanScreens
     {
@@ -128,22 +128,25 @@ namespace Techs
     {
         public static void AddBuildingStrings(string buildingId, string name, string description, string effect)
         {
-            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{buildingId.ToUpperInvariant()}.NAME", UI.FormatAsLink(name, buildingId));
-            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{buildingId.ToUpperInvariant()}.DESC", description);
-            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{buildingId.ToUpperInvariant()}.EFFECT", effect);
+            string str = buildingId.ToUpperInvariant();
+            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{str}.NAME", UI.FormatAsLink(name, buildingId));
+            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{str}.DESC", description);
+            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{str}.EFFECT", effect);
         }
 
         public static void AddPlantStrings(string plantId, string name, string description, string domesticatedDescription)
         {
-            Strings.Add($"STRINGS.CREATURES.SPECIES.{plantId.ToUpperInvariant()}.NAME", UI.FormatAsLink(name, plantId));
-            Strings.Add($"STRINGS.CREATURES.SPECIES.{plantId.ToUpperInvariant()}.DESC", description);
-            Strings.Add($"STRINGS.CREATURES.SPECIES.{plantId.ToUpperInvariant()}.DOMESTICATEDDESC", domesticatedDescription);
+            string str = plantId.ToUpperInvariant();
+            Strings.Add($"STRINGS.CREATURES.SPECIES.{str}.NAME", UI.FormatAsLink(name, plantId));
+            Strings.Add($"STRINGS.CREATURES.SPECIES.{str}.DESC", description);
+            Strings.Add($"STRINGS.CREATURES.SPECIES.{str}.DOMESTICATEDDESC", domesticatedDescription);
         }
 
         public static void AddPlantSeedStrings(string plantId, string name, string description)
         {
-            Strings.Add($"STRINGS.CREATURES.SPECIES.SEEDS.{plantId.ToUpperInvariant()}.NAME", UI.FormatAsLink(name, plantId));
-            Strings.Add($"STRINGS.CREATURES.SPECIES.SEEDS.{plantId.ToUpperInvariant()}.DESC", description);
+            string str = plantId.ToUpperInvariant();
+            Strings.Add($"STRINGS.CREATURES.SPECIES.SEEDS.{str}.NAME", UI.FormatAsLink(name, plantId));
+            Strings.Add($"STRINGS.CREATURES.SPECIES.SEEDS.{str}.DESC", description);
         }
 
         public static string ConvertCategory(HashedString hash)

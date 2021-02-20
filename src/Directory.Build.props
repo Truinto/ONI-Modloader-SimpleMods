@@ -5,15 +5,42 @@
     <ProjectReference Private="false" />
   </ItemDefinitionGroup>
   
+  <!-- Common build properties -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  
+  <!-- Source folders -->
   <PropertyGroup>
     <SteamFolder>D:\Programme\Steam</SteamFolder>
     <ONIManaged Condition="Exists('$(SteamFolder)')">$(SteamFolder)\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</ONIManaged>
     <ONIManaged Condition="!Exists('$(SteamFolder)')">..\..\$non-backup\ONI sources</ONIManaged>
     <ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev</ModFolder>
-    
-    <DefineConstants Condition="Exists('$(ONIManaged)\_IsDLC1')">DLC1</DefineConstants>
+    <ILMergeEXE>$(MSBuildThisFileDirectory)packages\ILMerge.3.0.41\tools\net452\ILMerge.exe</ILMergeEXE>
   </PropertyGroup>
   
+  <!-- DLCs installed (put empty file '_IsDLC1' into Managed folder) -->
+  <PropertyGroup>
+    <DefineConstants Condition="Exists('$(ONIManaged)\_IsDLC1')">$(DefineConstants);DLC1</DefineConstants>
+  </PropertyGroup>
+  
+  <!-- Common references -->
   <ItemGroup Condition="'$(ProjectName)' != 'versioncontrol_ONI'">
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -28,6 +55,7 @@
     <Reference Include="UnityEngine" HintPath="$(ONIManaged)\UnityEngine.dll" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(ONIManaged)\UnityEngine.CoreModule.dll" />
     <Reference Include="UnityEngine.UI" HintPath="$(ONIManaged)\UnityEngine.UI.dll" />
+    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)packages\PLibOptions.dll" Condition="Exists('$(MSBuildThisFileDirectory)packages\PLibOptions.dll')" />
   </ItemGroup>
   
   <PropertyGroup>

@@ -8,7 +8,7 @@ using KSerialization;
 
 namespace CustomizeBuildings
 {
-    class UserControlledStorage : KMonoBehaviour, IUserControlledCapacity
+    public class UserControlledStorage : KMonoBehaviour, IUserControlledCapacity
     {
         [Serialize]
         public float userMaxCapacity = float.PositiveInfinity;

@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Linq;
 using System;
 using KSerialization;
+using Common;
 
 namespace CustomizeBuildings
 {
@@ -25,29 +26,46 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(LiquidConditionerConfig), "ConfigureBuildingTemplate")]
-    public class TEST_LiquidConditionerConfig_Patch
+    public class LiquidConditionerConfig_Patch
     {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+        }
+
         public static void Postfix(GameObject go)
         {
             go.AddOrGet<AirConditionerSliders>();
+            go.AddOrGet<Storage>().capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * 2f;
         }
     }
 
     [HarmonyPatch(typeof(AirConditionerConfig), "ConfigureBuildingTemplate")]
     public class AirConditionerConfig_Patch
     {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+        }
+        
         public static void Postfix(GameObject go)
         {
             go.AddOrGet<AirConditionerSliders>();
+            go.AddOrGet<Storage>().capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * 2f;
         }
     }
 
     [HarmonyPatch(typeof(AirConditioner), "UpdateState")]
-    public class AirConditionerSecond
+    public class AirConditioner_Patch
     {
-        public static FastSetter lastEnvTemp = Helper.CreateSetterProperty(typeof(AirConditioner), "lastEnvTemp");
-        public static FastSetter lastGasTemp = Helper.CreateSetterProperty(typeof(AirConditioner), "lastGasTemp");
-        public static FastInvoke UpdateStatus = Helper.CreateInvoker(typeof(AirConditioner), "UpdateStatus");
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+        }
+        
+        public static FastSetter lastEnvTemp = Helpers.CreateSetterProperty(typeof(AirConditioner), "lastEnvTemp");
+        public static FastSetter lastGasTemp = Helpers.CreateSetterProperty(typeof(AirConditioner), "lastGasTemp");
+        public static FastInvoke UpdateStatus = Helpers.CreateInvoker(typeof(AirConditioner), "UpdateStatus");
         public static Func<int, object, bool> UpdateStateCbDelegate = (Func<int, object, bool>)AccessTools.Field(typeof(AirConditioner), "UpdateStateCbDelegate").GetValue(null);
 
         [HarmonyPriority(Priority.Low)]
@@ -147,10 +165,10 @@ namespace CustomizeBuildings
 
         #region IUserControlledCapacity
         public float CurrentDPU;
-        public const float MaxDPU = 100000f;
-        [Serialize] public float SetDPU = 1000f;
+        public const float MaxDPU = 10000f;
+        [Serialize] public float SetDPU = 100f;
 
-        LocString IUserControlledCapacity.CapacityUnits => "DPU";
+        LocString IUserControlledCapacity.CapacityUnits => "kDPU";
         float IUserControlledCapacity.UserMaxCapacity
         {
             get { return SetDPU; }
@@ -181,7 +199,7 @@ namespace CustomizeBuildings
         NonLinearSlider.Range[] IThresholdSwitch.GetRanges => NonLinearSlider.GetDefaultRange(((IThresholdSwitch)this).RangeMax);
         float IThresholdSwitch.GetRangeMinInputField() => GameUtil.GetConvertedTemperature(((IThresholdSwitch)this).RangeMin, false);
         float IThresholdSwitch.GetRangeMaxInputField() => GameUtil.GetConvertedTemperature(((IThresholdSwitch)this).RangeMax, false);
-        LocString IThresholdSwitch.ThresholdValueUnits() => Helper.GetTemperatureUnit();
+        LocString IThresholdSwitch.ThresholdValueUnits() => Helpers.GetTemperatureUnit();
         string IThresholdSwitch.Format(float value, bool units) => GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, units, false);
         float IThresholdSwitch.ProcessedSliderValue(float input) => Mathf.Round(input);
         float IThresholdSwitch.ProcessedInputValue(float input) => GameUtil.GetTemperatureConvertedToKelvin(input);
@@ -201,7 +219,7 @@ namespace CustomizeBuildings
             if (CurrentDPU > 0f)
             {
                 var energy = this.GetComponent<EnergyConsumer>();
-                energy.BaseWattageRating = energy.BaseWattsNeededWhenActive * CurrentDPU / (MaxDPU * 0.1f);
+                energy.BaseWattageRating = energy.BaseWattsNeededWhenActive * Math.Min(1f, CurrentDPU / (MaxDPU * 0.1f));
             }
         }
 
@@ -244,15 +262,26 @@ namespace CustomizeBuildings
         #endregion
     }
 
+
     [HarmonyPatch(typeof(SpaceHeaterConfig), "ConfigureBuildingTemplate")]
     public class SpaceHeater_Patch
     {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
+        }
+        
         public static void Postfix(GameObject go) => go.AddOrGet<SpaceHeaterSlider>();
     }
 
     [HarmonyPatch(typeof(LiquidHeaterConfig), "ConfigureBuildingTemplate")]
     public class SpaceHeater_Patch2
     {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
+        }
+        
         public static void Postfix(GameObject go) => go.AddOrGet<SpaceHeaterSlider>();
     }
 
@@ -287,7 +316,7 @@ namespace CustomizeBuildings
         NonLinearSlider.Range[] IThresholdSwitch.GetRanges => NonLinearSlider.GetDefaultRange(((IThresholdSwitch)this).RangeMax);
         float IThresholdSwitch.GetRangeMinInputField() => GameUtil.GetConvertedTemperature(((IThresholdSwitch)this).RangeMin, false);
         float IThresholdSwitch.GetRangeMaxInputField() => GameUtil.GetConvertedTemperature(((IThresholdSwitch)this).RangeMax, false);
-        LocString IThresholdSwitch.ThresholdValueUnits() => Helper.GetTemperatureUnit();
+        LocString IThresholdSwitch.ThresholdValueUnits() => Helpers.GetTemperatureUnit();
         string IThresholdSwitch.Format(float value, bool units) => GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, units, false);
         float IThresholdSwitch.ProcessedSliderValue(float input) => Mathf.Round(input);
         float IThresholdSwitch.ProcessedInputValue(float input) => GameUtil.GetTemperatureConvertedToKelvin(input);
@@ -313,30 +342,5 @@ namespace CustomizeBuildings
             this.CurrentTemperature = Grid.Temperature[Grid.PosToCell(this)];
         }
     }
-
-
-    [HarmonyPatch(typeof(SolidConduitInboxConfig), "DoPostConfigureComplete")]
-    public class SolidConduitInbox_AcceptAny
-    {
-        public static void Postfix(GameObject go)
-        {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.storageFilters.AddRange(TUNING.STORAGEFILTERS.LIQUIDS);
-            storage.storageFilters.AddRange(TUNING.STORAGEFILTERS.GASES);
-
-            //Debug.Log($"Debug: version={UnityEngine.Application.version} unityVersion={UnityEngine.Application.unityVersion}");
-        }
-    }
-
-    [HarmonyPatch(typeof(SolidTransferArm), "IsPickupableRelevantToMyInterests")]
-    public class SolidTransferarm_MoveAnything
-    {
-        public static bool Prefix(ref bool __result)
-        {
-            __result = true;
-            return false;
-        }
-    }
-
 
 }

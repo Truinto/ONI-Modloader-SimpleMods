@@ -4,9 +4,9 @@ using System.Reflection.Emit;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using KSerialization;
 using System.Text.RegularExpressions;
-using BootDialog;
+using Common;
+using Config;
 
 namespace CustomizeBuildings
 {
@@ -17,7 +17,7 @@ namespace CustomizeBuildings
 
         public static void CreateBuildingDefOverride(BuildingDef buildingDef)
         {
-            Helper.PrintDebug(buildingDef.PrefabID + "\t\tName: " + FindBetweenLink.Match(buildingDef.Name).Groups[1].Value);
+            Helpers.PrintDebug(buildingDef.PrefabID + "\t\tName: " + FindBetweenLink.Match(buildingDef.Name).Groups[1].Value);
             //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
             //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
             CustomizeBuildingsState.BuildingStruct entry;
@@ -29,22 +29,17 @@ namespace CustomizeBuildings
             if (flag)
             {
                 #region checks
-                
+
 
                 if (entry.PowerConsumption != null)
                 {
-                    buildingDef.EnergyConsumptionWhenActive = (float) entry.PowerConsumption;
+                    buildingDef.EnergyConsumptionWhenActive = (float)entry.PowerConsumption;
                     buildingDef.RequiresPowerInput = entry.PowerConsumption != 0f;
                 }
 
                 if (entry.OverheatTemperature != null)
                 {
                     buildingDef.OverheatTemperature = (float)entry.OverheatTemperature;
-                }
-
-                if (entry.MaterialCategory != null)
-                {
-                    buildingDef.MaterialCategory = entry.MaterialCategory;
                 }
 
                 if (entry.ExhaustKilowattsWhenActive != null)
@@ -99,12 +94,14 @@ namespace CustomizeBuildings
                     buildingDef.IsFoundation = (bool)entry.IsFoundation;
                 }
 
+                if (entry.MaterialCategory != null)
+                {
+                    buildingDef.MaterialCategory = entry.MaterialCategory.Split(' ');
+                }
+
                 if (entry.ConstructionMass != null)
                 {
-                    if (buildingDef.Mass.Length < 2)
-                        buildingDef.Mass = new float[1] { (float)entry.ConstructionMass };
-                    else
-                        buildingDef.Mass = new float[2] { (float)entry.ConstructionMass, buildingDef.Mass[1] };
+                    buildingDef.Mass = entry.ConstructionMass;
                 }
 
                 if (entry.ThermalConductivity != null)
@@ -113,10 +110,10 @@ namespace CustomizeBuildings
                 }
 
                 #endregion
-            
+
                 // public bool Cancellable = true;
                 // public bool OnePerWorld = false;
-            
+
             }
         }
 
@@ -130,7 +127,7 @@ namespace CustomizeBuildings
             List<CodeInstruction> code = instr.ToList();
 
             int index = 0;
-            while (code[index++].opcode != OpCodes.Stloc_0);
+            while (code[index++].opcode != OpCodes.Stloc_0) ;
 
             Debug.Log("BuildingConfigManager_RegisterBuilding patched at index: " + index);
 
@@ -179,17 +176,13 @@ namespace CustomizeBuildings
                 ElementConverter[] converters = buildingDef.BuildingComplete.GetComponents<ElementConverter>();
                 for (int j = 0; j < converters.Count(); j++)
                 {
-                    ElementConverter converter = converters[j];
-                    
-                    for (int i = 0; i < converter.consumedElements.Count(); i++)
-                        converter.consumedElements[i].massConsumptionRate *= (float)multiplier;
-                    for (int i = 0; i < converter.outputElements.Count(); i++)
-                        converter.outputElements[i].massGenerationRate *= (float)multiplier;
-                    //converter.SetWorkSpeedMultiplier((float)multiplier);
+                    for (int i = 0; i < converters[j].consumedElements.Count(); i++)
+                        converters[j].consumedElements[i].massConsumptionRate *= multiplier;
+                    for (int i = 0; i < converters[j].outputElements.Count(); i++)
+                        converters[j].outputElements[i].massGenerationRate *= multiplier;
                     Debug.Log("Multiplier: " + buildingDef.PrefabID + " x" + multiplier);
                 }
-                //if(converters.Count() == 0) Debug.Log("Muliplier: converter was null for " + buildingDef.PrefabID);
-                
+
                 Storage[] storages = buildingDef.BuildingComplete.GetComponents<Storage>();
                 for (int i = 0; i < storages.Count(); i++)
                 {
@@ -202,35 +195,36 @@ namespace CustomizeBuildings
                     manualDeliveryKGs[i].capacity *= multiplier;
                 }
 
-                ConduitConsumer conduitConsumer = buildingDef.BuildingComplete.GetComponent<ConduitConsumer>();
-                if (conduitConsumer != null)
+                ConduitConsumer[] conduitConsumer = buildingDef.BuildingComplete.GetComponents<ConduitConsumer>();
+                for (int i = 0; i < conduitConsumer.Count(); i++)
                 {
-                    conduitConsumer.capacityKG *= multiplier;
+                    conduitConsumer[i].capacityKG *= multiplier;
+                    conduitConsumer[i].consumptionRate *= multiplier;
                 }
 
-                PassiveElementConsumer elementConsumer = buildingDef.BuildingComplete.GetComponent<PassiveElementConsumer>();
-                if (elementConsumer != null)
+                PassiveElementConsumer[] elementConsumer = buildingDef.BuildingComplete.GetComponents<PassiveElementConsumer>();
+                for (int i = 0; i < elementConsumer.Count(); i++)
                 {
-                    elementConsumer.consumptionRate *= multiplier;
-                    elementConsumer.capacityKG *= multiplier;
+                    elementConsumer[i].consumptionRate *= multiplier;
+                    elementConsumer[i].capacityKG *= multiplier;
                 }
 
-                BuildingElementEmitter buildingElementEmitter = buildingDef.BuildingComplete.GetComponent<BuildingElementEmitter>();
-                if (buildingElementEmitter != null)
+                BuildingElementEmitter[] buildingElementEmitter = buildingDef.BuildingComplete.GetComponents<BuildingElementEmitter>();
+                for (int i = 0; i < elementConsumer.Count(); i++)
                 {
-                    buildingElementEmitter.emitRate *= multiplier;
+                    buildingElementEmitter[i].emitRate *= multiplier;
                 }
 
-                AlgaeDistillery algaeDistillery = buildingDef.BuildingComplete.GetComponent<AlgaeDistillery>();
-                if (algaeDistillery != null)
+                AlgaeDistillery[] algaeDistillery = buildingDef.BuildingComplete.GetComponents<AlgaeDistillery>();
+                for (int i = 0; i < elementConsumer.Count(); i++)
                 {
-                    algaeDistillery.emitMass *= multiplier;
+                    algaeDistillery[i].emitMass *= multiplier;
                 }
 
-                ElementDropper elementDropper = buildingDef.BuildingComplete.GetComponent<ElementDropper>();
-                if (elementDropper != null)
+                ElementDropper[] elementDropper = buildingDef.BuildingComplete.GetComponents<ElementDropper>();
+                for (int i = 0; i < elementConsumer.Count(); i++)
                 {
-                    elementDropper.emitMass *= multiplier;
+                    elementDropper[i].emitMass *= multiplier;
                 }
 
             }
@@ -340,7 +334,7 @@ namespace CustomizeBuildings
                         object setValue = fieldEntry.Value;
                         Debug.Log("PROCESSING: value=" + setValue.ToString() + " type=" + setValue.GetType().ToString());
 
-                        
+
                         if (setValue.GetType() == typeof(double))
                         {
                             setValue = Convert.ToSingle((double)setValue);
