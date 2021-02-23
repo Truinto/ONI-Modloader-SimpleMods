@@ -13,13 +13,19 @@ namespace CustomizeBuildings
         public static void OnLoad()
         {
 #if DLC1
-            TUNING.EQUIPMENT.SUITS.ATMOSUIT_DECAY = 0f;
-            TUNING.EQUIPMENT.SUITS.ATMOSUIT_ATHLETICS = -2;
-            TUNING.EQUIPMENT.SUITS.OXYGEN_MASK_DECAY = 0f;
+            if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitDecay))
+                TUNING.EQUIPMENT.SUITS.ATMOSUIT_DECAY = CustomizeBuildingsState.StateManager.State.TuningAtmosuitDecay;
+            if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitAthletics))
+                TUNING.EQUIPMENT.SUITS.ATMOSUIT_ATHLETICS = (int)CustomizeBuildingsState.StateManager.State.TuningAtmosuitAthletics;
+            if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningOxygenMaskDecay))
+                TUNING.EQUIPMENT.SUITS.OXYGEN_MASK_DECAY = CustomizeBuildingsState.StateManager.State.TuningOxygenMaskDecay;
 #endif
-            TUNING.EQUIPMENT.SUITS.ATMOSUIT_SCALDING = 4000;
-            TUNING.EQUIPMENT.SUITS.ATMOSUIT_INSULATION = 4000;
-            TUNING.EQUIPMENT.SUITS.ATMOSUIT_THERMAL_CONDUCTIVITY_BARRIER = 1f;
+            if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitScalding))
+                TUNING.EQUIPMENT.SUITS.ATMOSUIT_SCALDING = (int)CustomizeBuildingsState.StateManager.State.TuningAtmosuitScalding;
+            if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitInsulation))
+                TUNING.EQUIPMENT.SUITS.ATMOSUIT_INSULATION = (int)CustomizeBuildingsState.StateManager.State.TuningAtmosuitInsulation;
+            if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitThermalConductivityBarrier))
+                TUNING.EQUIPMENT.SUITS.ATMOSUIT_THERMAL_CONDUCTIVITY_BARRIER = CustomizeBuildingsState.StateManager.State.TuningAtmosuitThermalConductivityBarrier;
         }
     }
 

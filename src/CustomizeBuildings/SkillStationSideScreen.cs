@@ -165,7 +165,7 @@ namespace CustomizeBuildings
             if (minion != null)
             {
                 Debug.Log($"[SkillStation] Dupe={minion.GetProperName()} Exp={minion.TotalExperienceGained} Points={minion.TotalSkillPointsGained}");
-                string tooltip = $"{minion.GetProperName()} wasted time getting their brain fried - Make sure you have enough EXP to trade in";
+                string tooltip = $"{minion.GetProperName()} wasted time getting their brain fried - Make sure you have enough EXP to trade in"; //SkillStationFailure
 
                 var filter = __instance.GetComponent<Filterable>();
                 if (filter == null || filter.SelectedTag.Name == null || filter.SelectedTag.Name == "Void")
@@ -175,7 +175,7 @@ namespace CustomizeBuildings
                     minion.SetHats(minion.CurrentHat, null);
                     minion.ApplyTargetHat();
                     minion.AddExperience(-SkillStationCosts.CostReset);
-                    tooltip = $"{minion.GetProperName()} got their <style=\"KKeyword\">Skill Points</style> refunded";
+                    tooltip = $"{minion.GetProperName()} got their <style=\"KKeyword\">Skill Points</style> refunded";  //SkillStationReset
                 }
                 else
                 {
@@ -191,13 +191,13 @@ namespace CustomizeBuildings
                                 minion.AddExperience(-SkillStationCosts.CostBadTrait);
                             else
                                 minion.AddExperience(-SkillStationCosts.CostAddTrait);
-                            tooltip = $"{minion.GetProperName()} gained a new trait '{trait.Name}'";
+                            tooltip = $"{minion.GetProperName()} gained a new trait '{trait.Name}'";    //SkillStationAddTrait
                         }
                         else
                         {
                             traits.Remove(trait);
                             minion.AddExperience(-SkillStationCosts.CostRemoveTrait);
-                            tooltip = $"{minion.GetProperName()} lost a trait '{trait.Name}'";
+                            tooltip = $"{minion.GetProperName()} lost a trait '{trait.Name}'";  //SkillStationRemoveTrait
                         }
 
                     }
@@ -211,7 +211,7 @@ namespace CustomizeBuildings
                             int level = attribute.GetLevel();
                             attribute.SetLevel(level + 1);
                             minion.AddExperience(-SkillStationCosts.CostAddAttribute);
-                            tooltip = $"{minion.GetProperName()} improved their {attributeId} from {level} to {level + 1}.";
+                            tooltip = $"{minion.GetProperName()} improved their {attributeId} from {level} to {level + 1}.";    //SkillStationAttributeUp
                         }
                     }
                     else if (Db.Get().SkillGroups.resources.Any(s => s.Id == filter.SelectedTag.Name)) // if Aptitude ID
@@ -219,7 +219,7 @@ namespace CustomizeBuildings
                         //minion.AptitudeBySkillGroup[filter.SelectedTag.Name] = 1f;
                         minion.SetAptitude(filter.SelectedTag.Name, 1f);
                         minion.AddExperience(-SkillStationCosts.CostAddAptitude);
-                        tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.Name}";
+                        tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.Name}";   //SkillStationAptitude
                     }
                     else
                     {

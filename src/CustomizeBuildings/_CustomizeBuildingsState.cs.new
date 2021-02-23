@@ -11,12 +11,14 @@ namespace CustomizeBuildings
         public static void OnLoad()
         {
             PeterHan.PLib.Options.POptions.RegisterOptions(typeof(CustomizeBuildingsState));
+            Common.Helpers.Localization(typeof(LOCSTRINGS.OPTIONS), "Options.pot");
+            Common.Helpers.Localization(typeof(LOCSTRINGS.BUILDINGS), "Buildings.pot");
         }
 
         public int version { get; set; } = 29;
 
         #region Reset Button
-        [Option("Reset To Klei Default", "Leave Menu with the CANCEL button!")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ResetToKleiDefault_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ResetToKleiDefault_ToolTip")]
         [JsonIgnore]
         public System.Action ResetToKleiDefault
         {
@@ -126,7 +128,7 @@ namespace CustomizeBuildings
             };
         }
 
-        [Option("Reset To Custom Default", "Leave Menu with the CANCEL button!")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ResetToCustomDefault_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ResetToCustomDefault_ToolTip")]
         [JsonIgnore]
         public System.Action ResetToCustomDefault
         {
@@ -139,262 +141,262 @@ namespace CustomizeBuildings
         #endregion
 
         #region Power
-        [Option("Smart Battery KJ", "", "Power")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.BatterySmartKJ_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.BatterySmartKJ_ToolTip", "Power")]
         public float BatterySmartKJ { get; set; } = 200000f;
-        [Option("Smart Battery remove runoff", "If true, smart battery won't lose charge over time.", "Power")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.BatterySmartNoRunOff_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.BatterySmartNoRunOff_ToolTip", "Power")]
         public bool BatterySmartNoRunOff { get; set; } = true;
-        [Option("Large Battery KJ", "", "Power")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.BatteryLargeKJ_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.BatteryLargeKJ_ToolTip", "Power")]
         public float BatteryLargeKJ { get; set; } = 400000f;
 
-        [Option("Solar Max Power", "Limit of how much light can be converted. Does not increase energy per lumen.", "Power")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SolarMaxPower_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SolarMaxPower_ToolTip", "Power")]
         public float SolarMaxPower { get; set; } = 600f;
-        [Option("Solar Energy Multiplier", "Multiplies power generation. Limited up to 'Solar Max Power'.", "Power")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SolarEnergyMultiplier_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SolarEnergyMultiplier_ToolTip", "Power")]
         public float SolarEnergyMultiplier { get; set; } = 1f;
         #endregion
 
         #region Storage
-        [Option("Storage Locker Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.LockerKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.LockerKG_ToolTip", "Storage")]
         public float LockerKG { get; set; } = 400000f;
-        [Option("Smart Storage Locker Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.LockerSmartKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.LockerSmartKG_ToolTip", "Storage")]
         public float LockerSmartKG { get; set; } = 400000f;
-        [Option("Gas Reservoir Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.GasReservoirKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.GasReservoirKG_ToolTip", "Storage")]
         public float GasReservoirKG { get; set; } = 99000f;
-        [Option("Liquid Reservoir Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.LiquidReservoirKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.LiquidReservoirKG_ToolTip", "Storage")]
         public float LiquidReservoirKG { get; set; } = 99000f;
-        [Option("Ration Box Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.RationBoxKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.RationBoxKG_ToolTip", "Storage")]
         public float RationBoxKG { get; set; } = 400000f;
-        [Option("Fridge Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.FridgeKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.FridgeKG_ToolTip", "Storage")]
         public float FridgeKG { get; set; } = 400000f;
-        [Option("Critter Feeder Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.CritterFeederKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.CritterFeederKG_ToolTip", "Storage")]
         public float CritterFeederKG { get; set; } = 400000f;
-        [Option("Fish Feeder Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.FishFeederKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.FishFeederKG_ToolTip", "Storage")]
         public float FishFeederKG { get; set; } = 400000f;
-        [Option("Canister Filler Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.CanisterFillerKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.CanisterFillerKG_ToolTip", "Storage")]
         public float CanisterFillerKG { get; set; } = 400000f;
-        [Option("Conveyor Loader Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorLoaderKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorLoaderKG_ToolTip", "Storage")]
         public float ConveyorLoaderKG { get; set; } = 400000f;
-        [Option("Conveyor Receptacle Capacity", "", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorReceptacleKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorReceptacleKG_ToolTip", "Storage")]
         public float ConveyorReceptacleKG { get; set; } = 400000f;
-        [Option("Conveyor Receptacle Controller", "Set same as in Conveyor Receptacle Capacity.", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.IUserControlledMax_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.IUserControlledMax_ToolTip", "Storage")]
         public float IUserControlledMax { get; set; } = 400000f;
 
-        [Option("Reservoir No Ground", "Reservoirs can be placed in the air.", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ReservoirNoGround_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ReservoirNoGround_ToolTip", "Storage")]
         public bool ReservoirNoGround { get; set; } = true;
-        [Option("Reservoir Manual Delivery", "Dupes may store material in reservoirs.\n- dupes will deliver selected liquids/gases until the capacity is at the slider amount\n- liquid/gas pipes can still deliver any element and will ignore the slider limit\n- activating, then deactivating an element checkbox drops it on the floor, for easy removal of rogue elements", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ReservoirManualDelivery_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ReservoirManualDelivery_ToolTip", "Storage")]
         public bool ReservoirManualDelivery { get; set; } = true;
         #endregion
 
         #region Miscellaneous
-        [Option("Electrolizer Max Pressure", "Pressure the electrolizer will stop producing oxygen/hydrogen.", "Miscellaneous")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ElectrolizerMaxPressure_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ElectrolizerMaxPressure_ToolTip", "Miscellaneous")]
         public float ElectrolizerMaxPressure { get; set; } = 5f;
-        [Option("Airfilter Canisters", "On deconstruction, air-filters (as well as all other buildings) drop gas canisters instead of venting stored gases.", "Miscellaneous")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.AirfilterDropsCanisters_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.AirfilterDropsCanisters_ToolTip", "Miscellaneous")]
         public bool AirfilterDropsCanisters { get; set; } = true;
 
-        [Option("New Recipe: Rock-Crusher", "Adds regolith to sand recipe.", "Miscellaneous")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NewRecipeRockCrusher_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NewRecipeRockCrusher_ToolTip", "Miscellaneous")]
         public bool NewRecipeRockCrusher { get; set; } = true;
 
-        [Option("Air Conditioner Absolute Output", "If true, Air Conditioner and Aquatuner get a temperature setting. Output temperature will always be that temperature, instead of -14°C. Also adds a DPU setting, which limits how fast the building heats up. Energy consumption will scale on cooling factor.", "Miscellaneous")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.AirConditionerAbsoluteOutput_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.AirConditionerAbsoluteOutput_ToolTip", "Miscellaneous")]
         public bool AirConditionerAbsoluteOutput { get; set; } = true;
-        [Option("Space Heater Target Temperature", "If true, Space Heater gets a temperature setting to control target temperature.", "Miscellaneous")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SpaceHeaterTargetTemperature_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SpaceHeaterTargetTemperature_ToolTip", "Miscellaneous")]
         public bool SpaceHeaterTargetTemperature { get; set; } = true;
         #endregion
 
         #region Switches
-        [Option("No Dupe Valves", "Valves are set instantly without dupe interaction.", "Switches")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeValves_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeValves_ToolTip", "Switches")]
         public bool NoDupeValves { get; set; } = true;
-        [Option("No Dupe Switches", "Switches are set instantly without dupe interaction.", "Switches")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSwitches_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSwitches_ToolTip", "Switches")]
         public bool NoDupeSwitches { get; set; } = true;
-        [Option("No Dupe Toogle Buildings", "Buildings are disabled instantly without dupe interaction.", "Switches")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeToogleBuildings_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeToogleBuildings_ToolTip", "Switches")]
         public bool NoDupeToogleBuildings { get; set; } = true;
-        [Option("No Dupe Toogle Doors", "Doors open/close instantly without dupe interaction.", "Switches")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeToogleDoors_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeToogleDoors_ToolTip", "Switches")]
         public bool NoDupeToogleDoors { get; set; } = true;
         #endregion
 
         #region Space Scanner
-        [Option("Scanner Interference Radius", "Radius looking for heavy machinery and free sky tiles.", "Space Scanner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerInterferenceRadius_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerInterferenceRadius_ToolTip", "Space Scanner")]
         public int ScannerInterferenceRadius { get; set; } = 5;
-        [Option("Scanner Worst Warning Time", "Worst time before a network will detect incoming meteors.", "Space Scanner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerWorstWarningTime_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerWorstWarningTime_ToolTip", "Space Scanner")]
         public float ScannerWorstWarningTime { get; set; } = 30f;
-        [Option("Scanner Best Warning Time", "Best time before a network will detect incoming meteors.", "Space Scanner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerBestWarningTime_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerBestWarningTime_ToolTip", "Space Scanner")]
         public float ScannerBestWarningTime { get; set; } = 60f;
-        [Option("Scanner Best Network Size", "Amount of scanners needed for best warning time.", "Space Scanner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerBestNetworkSize_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ScannerBestNetworkSize_ToolTip", "Space Scanner")]
         public int ScannerBestNetworkSize { get; set; } = 2;
-        [Option("Ladder Comet Invincibility", "Comets will no longer deal damage to standard ladders (does not include plastic ones). Known to cause issues on Linux.", "Space Scanner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.LadderCometInvincibility_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.LadderCometInvincibility_ToolTip", "Space Scanner")]
         public bool LadderCometInvincibility { get; set; } = true;
         #endregion
 
         #region Steam Turbine
-        [Option("Steam Turbine Enabled", "Whenever or not to change the steam turbine at all. If false, ignores other settings.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineEnabled_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineEnabled_ToolTip", "Steam Turbine")]
         public bool SteamTurbineEnabled { get; set; } = false;
-        [Option("Steam Turbine Wattage", "Wattage produced by Steam Turbine under optimal conditions.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineWattage_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineWattage_ToolTip", "Steam Turbine")]
         public float SteamTurbineWattage { get; set; } = 850f;
-        [Option("Steam Turbine Source Element", "Steam Turbine input element.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineSourceElement_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineSourceElement_ToolTip", "Steam Turbine")]
         public string SteamTurbineSourceElement { get; set; } = "Steam";
-        [Option("Steam Turbine Output Element", "Steam Turbine output element.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineOutputElement_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineOutputElement_ToolTip", "Steam Turbine")]
         public string SteamTurbineOutputElement { get; set; } = "Water";
-        [Option("Steam Turbine Pump-Rate", "Steam Turbine amount of gas absorbed at once.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbinePumpRateKG_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbinePumpRateKG_ToolTip", "Steam Turbine")]
         public float SteamTurbinePumpRateKG { get; set; } = 2f;
-        [Option("Steam Turbine Max Self-Heat", "Steam Turbine maximum amount of heat tranfered from gas to machine.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineMaxSelfHeat_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineMaxSelfHeat_ToolTip", "Steam Turbine")]
         public float SteamTurbineMaxSelfHeat { get; set; } = 64f;
-        [Option("Steam Turbine Heat Transfer Percent", "Steam Turbine percent of heat transfered. Limited up to MAX.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineHeatTransferPercent_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineHeatTransferPercent_ToolTip", "Steam Turbine")]
         public float SteamTurbineHeatTransferPercent { get; set; } = 0.1f;
-        [Option("Steam Turbine Min Active Temperature", "Minimal temperature at which Steam Turbine turns on.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineMinActiveTemperature_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineMinActiveTemperature_ToolTip", "Steam Turbine")]
         public float SteamTurbineMinActiveTemperature { get; set; } = 398.15f;
-        [Option("Steam Turbine Ideal Temperature", "Best temperature at which Steam Turbine produces full energy.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineIdealTemperature_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineIdealTemperature_ToolTip", "Steam Turbine")]
         public float SteamTurbineIdealTemperature { get; set; } = 473.15f;
-        [Option("Steam Turbine Output Temperature", "Steam Turbine pipe output temperature.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineOutputTemperature_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineOutputTemperature_ToolTip", "Steam Turbine")]
         public float SteamTurbineOutputTemperature { get; set; } = 368.15f;
-        [Option("Steam Turbine Overheat Temperature", "Temperature where the Steam Turbine shuts off.", "Steam Turbine")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineOverheatTemperature_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SteamTurbineOverheatTemperature_ToolTip", "Steam Turbine")]
         public float SteamTurbineOverheatTemperature { get; set; } = 373.15f;
         #endregion
 
         #region Pipes
-        [Option("Pipe Throughput Percent", "Percent of pipe usage for Aquatuner and Air Conditioner.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeThroughputPercent_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeThroughputPercent_ToolTip", "Pipes")]
         public float PipeThroughputPercent { get; set; } = 1.0f;
-        [Option("Pipe Liquid Max Pressure", "Liquid pipe pressure.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeLiquidMaxPressure_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeLiquidMaxPressure_ToolTip", "Pipes")]
         public float PipeLiquidMaxPressure { get; set; } = 10f;
-        [Option("Pipe Gas Max Pressure", "Gas pipe pressure.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeGasMaxPressure_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeGasMaxPressure_ToolTip", "Pipes")]
         public float PipeGasMaxPressure { get; set; } = 1f;
-        [Option("Pipe Valve Pressure Button Show", "If true, will display a 'limit' button in the building window. While limited, output tile cannot exceed flow rate.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeValvePressureButtonShow_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeValvePressureButtonShow_ToolTip", "Pipes")]
         public bool PipeValvePressureButtonShow { get; set; } = false;
-        [Option("Pipe Liquid Pump", "Amount of liquid pumped at once from Liquid Pumps.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeLiquidPump_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeLiquidPump_ToolTip", "Pipes")]
         public float PipeLiquidPump { get; set; } = 10f;
-        [Option("Pipe Gas Pump", "Amount of gas pumped at once from Gas Pumps.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeGasPump_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.PipeGasPump_ToolTip", "Pipes")]
         public float PipeGasPump { get; set; } = 0.5f;
-        [Option("Conveyor Rail Package Size", "Maximum size of packages on Conveyor Rails.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorRailPackageSize_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorRailPackageSize_ToolTip", "Pipes")]
         public float ConveyorRailPackageSize { get; set; } = 20f;
-        [Option("Conveyor Loader Has Slider", "If true, will show the capacity slider for Conveyor Loaders.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorLoaderHasSlider_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorLoaderHasSlider_ToolTip", "Pipes")]
         public bool ConveyorLoaderHasSlider { get; set; } = true;
-        [Option("Conveyor Receptacle Has Slider", "If true, will show the capacity slider for Conveyor Receptacles.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorReceptacleHasSlider_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorReceptacleHasSlider_ToolTip", "Pipes")]
         public bool ConveyorReceptacleHasSlider { get; set; } = false;
 
-        [Option("Conveyor Loader Accepts Liquids Gases", "If true, add liquids and gases to the filter list.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorLoaderAcceptLiquidsGas_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "Pipes")]
         public bool ConveyorLoaderAcceptLiquidsGas { get; set; } = false;
         #endregion
 
         #region Auto Sweeper
-        [Option("Auto Sweeper Capacity", "Storage capacity of auto sweepers.", "Auto Sweeper")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperCapacity_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperCapacity_ToolTip", "Auto Sweeper")]
         public float AutoSweeperCapacity { get; set; } = 1000f;
-        [Option("Auto Sweeper Range", "Range of Auto Sweeper. Very large numbers will cause lag.", "Auto Sweeper")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperRange_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperRange_ToolTip", "Auto Sweeper")]
         public int AutoSweeperRange { get; set; } = 4;
-        [Option("Auto Sweeper Slider", "If true, will show a slider to reduce the Sweeper's range.", "Auto Sweeper")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperSlider_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperSlider_ToolTip", "Auto Sweeper")]
         public bool AutoSweeperSlider { get; set; } = true;
-        [Option("Auto Sweeper Pickup Anything", "If true, Auto Sweeper can move/store anything that dupes can.", "Auto Sweeper")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperPickupAnything_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.AutoSweeperPickupAnything_ToolTip", "Auto Sweeper")]
         public bool AutoSweeperPickupAnything { get; set; } = false;
         #endregion
 
         #region Robo Miner
-        [Option("Robo Miner Width", "Mining width.", "Robo Miner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerWidth_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerWidth_ToolTip", "Robo Miner")]
         public int RoboMinerWidth { get; set; } = 16;
-        [Option("Robo Miner Height", "Mining height.", "Robo Miner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerHeight_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerHeight_ToolTip", "Robo Miner")]
         public int RoboMinerHeight { get; set; } = 9;
-        [Option("Robo Miner Offset", "Offset at which the Robo Miner works (negative numbers allowed).", "Robo Miner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerOffset_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerOffset_ToolTip", "Robo Miner")]
         public int RoboMinerOffset { get; set; } = 0;
-        [Option("Robo Miner Regolith Turbo", "If true, Regolith will be mined 6 times faster.", "Robo Miner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerRegolithTurbo_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerRegolithTurbo_ToolTip", "Robo Miner")]
         public bool RoboMinerRegolithTurbo { get; set; } = true;
-        [Option("Robo Miner Dig Through Glass", "Robo Miner dig through glass tiles, but only from glass (not diamonds)", "Robo Miner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerDigThroughGlass_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerDigThroughGlass_ToolTip", "Robo Miner")]
         public bool RoboMinerDigThroughGlass { get; set; } = true;
-        [Option("Robo Miner Dig Any Tile", "Robo Miner can dig any material.", "Robo Miner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerDigAnyTile_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.RoboMinerDigAnyTile_ToolTip", "Robo Miner")]
         public bool RoboMinerDigAnyTile { get; set; } = true;
         #endregion
 
         #region Power Cable
-        [Option("Wire Small Watts", "", "Power Cable")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.WireSmallWatts_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.WireSmallWatts_ToolTip", "Power Cable")]
         public int WireSmallWatts { get; set; } = 1000;
-        [Option("Wire Refined Watts", "", "Power Cable")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.WireRefinedWatts_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.WireRefinedWatts_ToolTip", "Power Cable")]
         public int WireRefinedWatts { get; set; } = 2000;
-        [Option("Wire Heavy Watts", "", "Power Cable")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.WireHeavyWatts_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.WireHeavyWatts_ToolTip", "Power Cable")]
         public int WireHeavyWatts { get; set; } = 20000;
-        [Option("Wire Refined Heavy Watts", "", "Power Cable")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.WireRefinedHeavyWatts_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.WireRefinedHeavyWatts_ToolTip", "Power Cable")]
         public int WireRefinedHeavyWatts { get; set; } = 50000;
         #endregion
 
         #region Transit Tube
-        [Option("Transit Tube Anywhere", "Transit Tubes can be placed in the background.", "Transit Tubes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeAnywhere_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeAnywhere_ToolTip", "Transit Tubes")]
         public bool TransitTubeAnywhere { get; set; } = true;
-        [Option("Transit Tube U-Turns", "Removes all transit tube layout restrictions.", "Transit Tubes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeUTurns_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeUTurns_ToolTip", "Transit Tubes")]
         public bool TransitTubeUTurns { get; set; } = true;
-        [Option("Transit Tube Joules Per Launch", "Cost per launch, normally 10000 joules.", "Transit Tubes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeJoulesPerLaunch_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeJoulesPerLaunch_ToolTip", "Transit Tubes")]
         public float TransitTubeJoulesPerLaunch { get; set; } = 10000f;
-        [Option("Transit Tube Joule Capacity", "Capacity, normally 40000 joules.", "Transit Tubes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeJouleCapacity_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TransitTubeJouleCapacity_ToolTip", "Transit Tubes")]
         public float TransitTubeJouleCapacity { get; set; } = 40000f;
         //public float TransitTubeSpeed { get; set; } = 18f;
         #endregion
 
         #region No Dupe
-        [Option("No Dupe Global", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeGlobal_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeGlobal_ToolTip", "No Dupe")]
         public bool NoDupeGlobal { get; set; } = true;
-        [Option("No Dupe Apothecary", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeApothecary_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeApothecary_ToolTip", "No Dupe")]
         public bool NoDupeApothecary { get; set; } = true;
-        [Option("No Dupe ClothingFabricator", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeClothingFabricator_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeClothingFabricator_ToolTip", "No Dupe")]
         public bool NoDupeClothingFabricator { get; set; } = true;
-        [Option("No Dupe Cooking Station", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeCookingStation_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeCookingStation_ToolTip", "No Dupe")]
         public bool NoDupeCookingStation { get; set; } = false;
-        [Option("No Dupe Gourmet Cooking Station", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeGourmetCookingStation_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeGourmetCookingStation_ToolTip", "No Dupe")]
         public bool NoDupeGourmetCookingStation { get; set; } = false;
-        [Option("No Dupe Egg Cracker", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeEggCracker_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeEggCracker_ToolTip", "No Dupe")]
         public bool NoDupeEggCracker { get; set; } = true;
-        [Option("No Dupe Glass Forge", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeGlassForge_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeGlassForge_ToolTip", "No Dupe")]
         public bool NoDupeGlassForge { get; set; } = true;
-        [Option("No Dupe Metal Refinery", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeMetalRefinery_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeMetalRefinery_ToolTip", "No Dupe")]
         public bool NoDupeMetalRefinery { get; set; } = true;
-        [Option("No Dupe Microbe Musher", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeMicrobeMusher_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeMicrobeMusher_ToolTip", "No Dupe")]
         public bool NoDupeMicrobeMusher { get; set; } = true;
-        [Option("No Dupe Rock Crusher", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeRockCrusher_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeRockCrusher_ToolTip", "No Dupe")]
         public bool NoDupeRockCrusher { get; set; } = true;
-        [Option("No Dupe Suit Fabricator", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSuitFabricator_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSuitFabricator_ToolTip", "No Dupe")]
         public bool NoDupeSuitFabricator { get; set; } = true;
-        [Option("No Dupe Supermaterial Refinery", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSupermaterialRefinery_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSupermaterialRefinery_ToolTip", "No Dupe")]
         public bool NoDupeSupermaterialRefinery { get; set; } = true;
-        [Option("No Dupe Sludge Press", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSludgePress_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeSludgePress_ToolTip", "No Dupe")]
         public bool NoDupeSludgePress { get; set; } = true;
-        [Option("No Dupe Compost", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeCompost_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeCompost_ToolTip", "No Dupe")]
         public bool NoDupeCompost { get; set; } = true;
-        [Option("No Dupe Desalinator", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeDesalinator_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeDesalinator_ToolTip", "No Dupe")]
         public bool NoDupeDesalinator { get; set; } = true;
-        [Option("No Dupe Oil Refinery", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeOilRefinery_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeOilRefinery_ToolTip", "No Dupe")]
         public bool NoDupeOilRefinery { get; set; } = true;
-        [Option("No Dupe Oil Well Cap", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeOilWellCap_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeOilWellCap_ToolTip", "No Dupe")]
         public bool NoDupeOilWellCap { get; set; } = true;
-        [Option("No Dupe Ice Cooled Fan", "If true, will replace the dupe requirement with 120W power inlet. Ice consumption is different.", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeIceCooledFan_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeIceCooledFan_ToolTip", "No Dupe")]
         public bool NoDupeIceCooledFan { get; set; } = false; // TODO: revisit
-        [Option("No Dupe Ranch Station", "If true, will buff the standard duration of grooming to 100 cycles.", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeRanchStation_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.NoDupeRanchStation_ToolTip", "No Dupe")]
         public bool NoDupeRanchStation { get; set; } = false; // TODO: revisit
         //public bool NoDupeShearingStation { get; set; } = true;
         //public bool NoDupeCompost { get; set; } = true;
         #endregion
 
         #region Skill Station
-        [Option("Skill Station Enabled", "If true, will repurpose the Skill Scrubber to change traits/interests/attributes of dupes. If false, fully disables this feature.", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationEnabled_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationEnabled_ToolTip", "Skill Station")]
         public bool SkillStationEnabled { get; set; } = true;
-        [Option("Skill Station Time", "Time Skill Scrubber needs.", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostTime_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostTime_ToolTip", "Skill Station")]
         public float SkillStationCostTime { get; set; } = 20f;
-        [Option("Skill Station Reset", "Exp cost to reset Skill Points", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostReset_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostReset_ToolTip", "Skill Station")]
         public float SkillStationCostReset { get; set; } = 0f;
-        [Option("Skill Station Remove Trait", "Exp cost to remove any Trait.", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostRemoveTrait_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostRemoveTrait_ToolTip", "Skill Station")]
         public float SkillStationCostRemoveTrait { get; set; } = 10000f;
-        [Option("Skill Station Add Trait", "Exp cost to add a new good Trait.", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostAddTrait_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostAddTrait_ToolTip", "Skill Station")]
         public float SkillStationCostAddTrait { get; set; } = 10000f;
-        [Option("Skill Station Bad Trait", "Exp cost to add a new bad Trait (usually grants Exp).", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostBadTrait_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostBadTrait_ToolTip", "Skill Station")]
         public float SkillStationCostBadTrait { get; set; } = -10000f;
-        [Option("Skill Station Add Aptitude", "Exp cost to add a new interest.", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostAddAptitude_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostAddAptitude_ToolTip", "Skill Station")]
         public float SkillStationCostAddAptitude { get; set; } = 10000f;
-        [Option("Skill Station Add Attribute", "Exp cost to improve an attribute by 1.", "Skill Station")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostAddAttribute_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.SkillStationCostAddAttribute_ToolTip", "Skill Station")]
         public float SkillStationCostAddAttribute { get; set; } = 5000f;
         #endregion
 
         #region Tuning
-        [Option("Atmosuit Decay", "Default: -0.1", "Tuning")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitDecay_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitDecay_ToolTip", "Tuning")]
         public float TuningAtmosuitDecay { get; set; } = 0f;
-        [Option("Oxygen Mask Decay", "Default: -0.2", "Tuning")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningOxygenMaskDecay_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningOxygenMaskDecay_ToolTip", "Tuning")]
         public float TuningOxygenMaskDecay { get; set; } = 0f;
-        [Option("Atmosuit Athletics", "Default: -6", "Tuning")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitAthletics_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitAthletics_ToolTip", "Tuning")]
         public float TuningAtmosuitAthletics { get; set; } = float.NaN;
-        [Option("Atmosuit Scalding", "Default: 1000", "Tuning")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitScalding_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitScalding_ToolTip", "Tuning")]
         public float TuningAtmosuitScalding { get; set; } = float.NaN;
-        [Option("Atmosuit Insulation", "Default: 50", "Tuning")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitInsulation_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitInsulation_ToolTip", "Tuning")]
         public float TuningAtmosuitInsulation { get; set; } = float.NaN;
-        [Option("Atmosuit Thermal Conductivity Barrier", "Default: 0.2", "Tuning")]
+        [Option("CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitThermalConductivityBarrier_Title", "CustomizeBuildings.LOCSTRINGS.OPTIONS.TuningAtmosuitThermalConductivityBarrier_ToolTip", "Tuning")]
         public float TuningAtmosuitThermalConductivityBarrier { get; set; } = float.NaN;
         #endregion
 

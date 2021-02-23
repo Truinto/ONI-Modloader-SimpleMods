@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.29.0] EX1 S6-449549 CS-449460
+
+### Added
+- added missing options for TUNING values (mostly atmosuit)
+
+### Fixed
+- disabled AutoSweeperPickupAnything on default, as it was causing issues
+- changed AutoSweeperPickupAnything so it respects IsCellReachable; this might fix the former issue
+
 ## [1.0.28.0] EX1 S6-449549 CS-449460
 
 ### Added

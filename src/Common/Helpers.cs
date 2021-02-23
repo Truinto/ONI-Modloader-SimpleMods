@@ -8,6 +8,7 @@ using System.Diagnostics;
 using UnityEngine;
 using System.Reflection;
 using Config;
+using System.IO;
 
 namespace Common
 {
@@ -125,6 +126,26 @@ namespace Common
                     return STRINGS.UI.UNITSUFFIXES.TEMPERATURE.KELVIN;
             }
         }
+
+        public static void Localization(Type type, string path = null)
+        {
+            string typename = type.FullName.Replace('+', '.');
+            using (StreamWriter sw = new StreamWriter(path ?? "STRINGS.pot", true))
+            {
+                foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
+                {
+                    if (field.FieldType == typeof(LocString))
+                    {
+                        var loc = (LocString)field.GetValue(null);
+                        sw.WriteLine($"#. {typename}.{field.Name}");
+                        sw.WriteLine($"msgctxt \"{typename}.{field.Name}\"");
+                        sw.WriteLine($"msgid \"{loc.text}\"");
+                        sw.WriteLine($"msgstr \"\"\n");
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Components

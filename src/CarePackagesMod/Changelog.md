@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.11.0]
+
+### Added
+- added localization support
+
 ## [1.0.10.0] EX1 S6-449549 CS-449460
 
 ### Fixed

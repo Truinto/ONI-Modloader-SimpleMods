@@ -13,9 +13,9 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.AutoSweeperPickupAnything;
         }
 
-        public static bool Prefix(ref bool __result)
+        public static bool Prefix(ref bool __result, int storage_cell, SolidTransferArm __instance)
         {
-            __result = true;
+            __result = __instance.IsCellReachable(storage_cell);
             return false;
         }
     }
