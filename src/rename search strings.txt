@@ -1,0 +1,35 @@
+public static LocString 
+Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.
+
+ = new LocString(
+", 
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.biggerRoster_Title", "Change amount");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.biggerRoster_ToolTip", "If true apply amount changes. Set to false, if mod crashes. Game must be restarted to apply setting!");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterDupes_Title", "Amount of Duplicants");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterDupes_ToolTip", "Best less than 6 packages total.");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterPackages_Title", "Amount of Care-Packages");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterPackages_ToolTip", "Best less than 6 packages total.");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.attributeBonusChance_Title", "Attribute Bonus Chance");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.attributeBonusChance_ToolTip", "Positive number increases overall attributes, negative number reduces them.");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.always3Interests_Title", "Always 3 Interests");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.always3Interests_ToolTip", "If true will always roll 3 interests.");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.removeStarterRestriction_Title", "Remove Starter Restriction");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.removeStarterRestriction_ToolTip", "If true duplicants can start with more than 2 traits and more names are available.");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.allowReshuffle_Title", "Allow Reshuffle");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.allowReshuffle_ToolTip", "If true shows reroll button when using the printing pot (duplicants only).");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterIsOrdered_Title", "In Order");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterIsOrdered_ToolTip", "(Only DLC) If true duplicants and care packages will be ordered by type. Game must be restarted to apply setting!");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.multiplier_Title", "Multiplier");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.multiplier_ToolTip", "Multiply all care packages by amount.");
+
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.labelPackages_Title", "Care Packages must be edited manually");
+        Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.labelPackages_ToolTip", "Open config file to edit Care Packages.");

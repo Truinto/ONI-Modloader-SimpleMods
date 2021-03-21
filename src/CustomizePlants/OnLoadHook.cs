@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Harmony;
 using UnityEngine;
-using static BootDialog.PostBootDialog;
+using static Config.PostBootDialog;
 using System.Reflection;
 using System.IO;
 
@@ -41,7 +41,7 @@ namespace CustomizePlants
             WineCupsConfig.ID,
             CritterTrapPlantConfig.ID,
             CylindricaConfig.ID,
-            FilterPlantConfig.ID
+            FilterPlantConfig.ID,
         };
 
         public static readonly Type[] CLASSES = {
@@ -72,29 +72,41 @@ namespace CustomizePlants
             typeof(WineCupsConfig),
             typeof(CritterTrapPlantConfig),
             typeof(CylindricaConfig),
-            typeof(FilterPlantConfig)
+            typeof(FilterPlantConfig),
+        };
+
+        public static readonly Type[] CLASSES_NOPREVIEW = {
+            typeof(ForestTreeBranchConfig),
+            typeof(SuperWormPlantConfig),
         };
     }
-    
-    [HarmonyPatch(typeof(KMod.Mod), "Load")]
+
+    [HarmonyPatch(typeof(EntityTemplates), nameof(EntityTemplates.CreateAndRegisterPreviewForPlant))]
+    public static class PlantPreviewHook
+    {
+        public static void Postfix(GameObject __result)
+        {
+            if (!CustomizePlantsState.StateManager.State.IgnoreList.Contains(__result.name))
+                PlantHelper.ProcessPlant(__result);
+        }
+    }
+
     public static class OnLoadPatch
-	{
+    {
         public static bool IsPatched = false;
 
-        public static void Prefix()
+        public static void OnLoad()
         {
             if (IsPatched) return;
             IsPatched = true;
 
             var harmony = HarmonyInstance.Create("com.fumihiko.oni.customizeplants");
-            var postfix = typeof(OnLoadPatch).GetMethod("PlantPostfix");
+            var postfix = new HarmonyMethod(typeof(OnLoadPatch).GetMethod(nameof(OnLoadPatch.PlantPostfix)));
 
-            foreach (Type type in PLANTS.CLASSES)
+            foreach (Type type in PLANTS.CLASSES_NOPREVIEW)
             {
                 var original = type.GetMethod("CreatePrefab");
-                harmony.Patch(original, prefix: null, postfix: new HarmonyMethod(postfix));
-
-                //FumLib.FumTools.PrintAllPatches(type, "CreatePrefab");
+                harmony.Patch(original, prefix: null, postfix: postfix);
             }
 
             if (CustomizePlantsState.StateManager.State.ModPlants != null)
@@ -106,23 +118,23 @@ namespace CustomizePlants
                         int cStart = config.IndexOf(' ') + 1;
                         int cLength = config.IndexOf(',', cStart) - cStart;
                         string nameDll = config.Substring(cStart, cLength) + ".dll";
-
-                        if (nameDll == "Fervine-merged.dll") nameDll = "Fervine*.dll";
-
-                        string[] dlls = Directory.GetFiles(Config.Helper.ModsDirectory, nameDll, SearchOption.AllDirectories);
-
-                        if (dlls.Length == 0) throw new FileNotFoundException("ModPlants: could not find mod: " + nameDll);
-                        
-                        foreach (string dll in dlls)
+                        if (nameDll != "Assembly-CSharp.dll")
                         {
-                            Debug.Log("ModPlants: loading external dll: " + dll);
-                            Assembly.LoadFile(dll);
+                            nameDll = nameDll.Replace("-merged.dll", "*.dll");
+                            string[] dlls = Directory.GetFiles(Config.PathHelper.ModsDirectory, nameDll, SearchOption.AllDirectories);
+                            if (dlls.Length == 0) throw new FileNotFoundException("ModPlants: could not find mod: " + nameDll);
+
+                            foreach (string dll in dlls)
+                            {
+                                Debug.Log("ModPlants: loading external dll: " + dll);
+                                Assembly.LoadFile(dll);
+                            }
                         }
 
                         Type type = Type.GetType(config, true);
                         MethodInfo original = type.GetMethod("CreatePrefab");
                         if (original == null) throw new NullReferenceException("ModPlants: CreatePrefab is NULL");
-                        harmony.Patch(original, prefix: null, postfix: new HarmonyMethod(postfix));
+                        harmony.Patch(original, prefix: null, postfix: postfix);
                     }
                     catch (Exception e)
                     {
@@ -132,12 +144,12 @@ namespace CustomizePlants
                 }
             }
         }
-        
+
         public static void PlantPostfix(GameObject __result)
         {
             PlantHelper.ProcessPlant(__result);
         }
 
     }
-    
+
 }

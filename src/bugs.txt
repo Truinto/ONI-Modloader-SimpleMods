@@ -1,0 +1,3 @@
+cbuilding:
+- can select dupe with exp, choose upgrade, select a different dupe without exp
+- exp can be negative

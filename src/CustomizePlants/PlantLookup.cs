@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Harmony;
 using UnityEngine;
-using static BootDialog.PostBootDialog;
+using static Config.PostBootDialog;
 using System.Reflection;
 
 namespace CustomizePlants
@@ -32,11 +32,16 @@ namespace CustomizePlants
             string className = classType.AssemblyQualifiedName;
             string plantName = template.name;
 
-            Debug.Log("[CustomizePlants] '" + displayName + "' is " + plantName + " defined in " + classType.FullName);
+            Debug.Log($"[CustomizePlants] '{displayName}' is {plantName} defined in '{className}'");
 
-            if (CustomizePlantsState.StateManager.State.AutomaticallyAddModPlants && !PLANTS.CLASSES.Contains(classType) && !CustomizePlantsState.StateManager.State.ModPlants.Contains(className))
+            int index_c = className.IndexOf(", Version=");
+            if (index_c > 0)
+                className.Substring(0, index_c);
+
+            if (CustomizePlantsState.StateManager.State.AutomaticallyAddModPlants && !className.Contains(", Assembly-CSharp") && !CustomizePlantsState.StateManager.State.ModPlants.Contains(className))
             {
                 Debug.Log("Found new mod plant and adding it to the list: " + className);
+                CustomizePlantsState.StateManager.State.IgnoreList.Add(plantName);
                 CustomizePlantsState.StateManager.State.ModPlants.Add(className);
                 CustomizePlantsState.StateManager.State.PlantSettings.Add(new PlantData(plantName));
                 CustomizePlantsState.StateManager.TrySaveConfigurationState();

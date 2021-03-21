@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Harmony;
 using UnityEngine;
-using static BootDialog.PostBootDialog;
+using static Config.PostBootDialog;
 using System.Runtime.Serialization;
 
 namespace CustomizePlants
@@ -273,14 +273,14 @@ namespace CustomizePlants
                     if (illumination != null)
                         UnityEngine.Object.DestroyImmediate(illumination);
                     if (cropSleep != null)
-                        FumLib.FumTools.RemoveDef(plant, cropSleep);
+                        Common.Helpers.RemoveDef(plant, cropSleep);
                 }
                 else if (setting.illumination < 0f)
                 {
                     if (illumination == null)
                         illumination = plant.AddOrGet<IlluminationVulnerable>();
                     if (cropSleep != null)
-                        FumLib.FumTools.RemoveDef(plant, cropSleep);
+                        Common.Helpers.RemoveDef(plant, cropSleep);
 
                     illumination.SetPrefersDarkness(true);
                 }
@@ -289,7 +289,7 @@ namespace CustomizePlants
                     if (illumination == null)
                         illumination = plant.AddOrGet<IlluminationVulnerable>();
                     if (cropSleep != null)
-                        FumLib.FumTools.RemoveDef(plant, cropSleep);
+                        Common.Helpers.RemoveDef(plant, cropSleep);
 
                     illumination.SetPrefersDarkness(false);
                 }
@@ -435,7 +435,7 @@ namespace CustomizePlants
                     def.singleEmitQuantity = (int)setting.disease_amount;
 
                 if (def.diseaseIdx == byte.MaxValue || def.singleEmitQuantity == 0)
-                    FumLib.FumTools.RemoveDef(plant, def);
+                    Common.Helpers.RemoveDef(plant, def);
             }
             #endregion
             #region input_element

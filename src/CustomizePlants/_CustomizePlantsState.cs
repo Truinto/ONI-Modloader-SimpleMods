@@ -6,8 +6,8 @@ namespace CustomizePlants
 {
     public class CustomizePlantsState
     {
-		public int version { get; set; } = 15;
-        
+        public int version { get; set; } = 17;
+
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new PlantData(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }),
             new PlantData(id: MushroomPlantConfig.ID, irrigation: new Dictionary<string, float>() { }, fruitId: MushroomConfig.ID, fruit_amount: 1, fruit_grow_time: 6*600, input_element: "CarbonDioxide", input_rate: 0.001f),
@@ -34,24 +34,23 @@ namespace CustomizePlants
         public float WheezewortTempDelta { get; set; } = -20f;
         public float OxyfernOxygenPerSecond { get; set; } = 0.03125f;
         public bool CheatFlowerVase { get; set; } = false;
+        public bool WildFlowerVase { get; set; } = false;
 
         public bool ApplyBugFixes { get; set; } = true;
 
         public bool AutomaticallyAddModPlants { get; set; } = false;
 
+        public HashSet<string> IgnoreList { get; set; } = new HashSet<string>();
         public HashSet<string> ModPlants { get; set; } = new HashSet<string>();
 
-        public static Config.Manager<CustomizePlantsState> StateManager = new Config.Manager<CustomizePlantsState>(Config.Helper.CreatePath("Customize Plants"), true, UpdateFunction);
-        
+        public static Config.Manager<CustomizePlantsState> StateManager = new Config.Manager<CustomizePlantsState>(Config.PathHelper.CreatePath("Customize Plants"), true, UpdateFunction);
+
         public static bool UpdateFunction(CustomizePlantsState state)
         {
-            switch(state.version)
+            if (state.version < 17)
             {
-                case 7:
-                    state.PlantSettings.RemoveWhere(x => x.id == "Oxyfern");
-                    state.PlantSettings.RemoveWhere(x => x.id == "ColdBreather");
-                    state.PlantSettings.Add(new PlantData(id: GasGrassConfig.ID, illumination: 100f));
-                    break;
+                state.AutomaticallyAddModPlants = false;
+                state.ModPlants.Clear();
             }
             return true;
         }

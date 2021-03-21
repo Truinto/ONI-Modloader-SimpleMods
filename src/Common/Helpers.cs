@@ -1,3 +1,4 @@
+//#define LOCALE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,6 +89,7 @@ namespace Common
         }
         #endregion
 
+        #region UI
         public static void AddButton(GameObject go, string title, string tooltip, System.Action onPress, float order)
         {
             Game.Instance.userMenu.AddButton(go, new KIconButtonMenu.ButtonInfo(text: title,
@@ -96,7 +98,9 @@ namespace Common
                                                                                 tooltipText: tooltip),
                                                                                 sort_order: order);
         }
+        #endregion
 
+        #region Utility
         public static bool IsModActive(string title)
         {
             return Global.Instance.modManager.mods.FirstOrDefault(s => s.title == title)?.IsEnabledForActiveDlc() ?? false;
@@ -112,6 +116,7 @@ namespace Common
 
             return result;
         }
+        #endregion
 
         #region Strings
         public static LocString GetTemperatureUnit()
@@ -127,7 +132,109 @@ namespace Common
             }
         }
 
-        public static void Localization(Type type, string path = null)
+        public static string PathLocale => Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + Localization.GetLocale()?.Code + ".pot");
+#if LOCALE
+        public static Dictionary<string, string> StringsDic = new Dictionary<string, string>();
+
+        /// Use this to create a translation file. Only works, if you have used StringsAdd or StringsTag to add to the list.
+        /// Can be called multiple times. Consecutive calls will appended. Must #define LOCALE to be used.
+        public static bool StringsAppend = false;
+        public static void StringsPrint(string path = null)
+        {
+            using (StreamWriter sw = new StreamWriter(path ?? PathLocale, StringsAppend))
+            {
+                foreach (var keyPair in StringsDic)
+                {
+                    sw.WriteLine($"#. {keyPair.Key}");
+                    sw.WriteLine($"msgctxt \"{keyPair.Key}\"");
+                    sw.WriteLine($"msgid \"{keyPair.Value}\"");
+                    sw.WriteLine($"msgstr \"\"\n");
+                }
+            }
+
+            StringsAppend = true;
+            StringsDic.Clear();
+        }
+#endif
+
+        /// Adds string to 'Strings' table.
+        public static void StringsAdd(string key, string text)
+        {
+#if LOCALE
+            StringsDic[key] = text;
+#endif
+            Strings.Add(key, text);
+        }
+
+        /// Adds string to TagManager.
+        public static void StringsTag(string key, string id, string proper = null)
+        {
+#if LOCALE
+            key = key.Replace(' ', '_');
+            StringsDic[key] = id;
+#endif
+            TagManager.Create(id, proper ?? id);
+        }
+
+        public static void StringsLoad(string path = null)
+        {
+            if (Localization.GetLocale()?.Code == null)
+                return;
+
+            try
+            {
+                if (path == null)
+                    path = PathLocale;
+
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    string line;
+                    string key = "";
+                    string id = "";
+                    string proper = "";
+                    bool isTag = false;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        if (line.StartsWith("msgctxt", StringComparison.Ordinal))
+                        {
+                            isTag = line.Contains(".TAG.");
+                            key = GetQuotationString(line);
+                        }
+                        else if (line.StartsWith("msgid", StringComparison.Ordinal))
+                        {
+                            id = GetQuotationString(line);
+                        }
+                        else if (line.StartsWith("msgstr", StringComparison.Ordinal))
+                        {
+                            proper = GetQuotationString(line);
+                            
+                            if (proper != null)
+                            {
+                                if (!isTag)
+                                    Strings.Add(key, proper);
+                                else
+                                    TagManager.Create(id, proper);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                PrintDialog("Error reading language file: " + path + "\n" + e.Message);
+            }
+        }
+
+        public static string GetQuotationString(string line)
+        {
+            int index1 = line.IndexOf('"') + 1;
+            int index2 = line.LastIndexOf('"');
+            if (index1 > 0 && index2 > index1)
+                return line.Substring(index1, index2 - index1);
+            return null;
+        }
+
+        public static void LocalizeTypeToPOT(Type type, string path = null)
         {
             string typename = type.FullName.Replace('+', '.');
             using (StreamWriter sw = new StreamWriter(path ?? "STRINGS.pot", true))

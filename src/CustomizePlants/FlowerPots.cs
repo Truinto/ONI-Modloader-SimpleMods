@@ -28,6 +28,26 @@ namespace CustomizePlants
         }
     }
 
+    [HarmonyPatch(typeof(PlantablePlot), "RegisterWithPlant")]
+    public class FlowerVase_Wild
+    {
+        public static bool Prepare()
+        {
+            return CustomizePlants.CustomizePlantsState.StateManager.State.WildFlowerVase;
+        }
+
+        public static bool Prefix(PlantablePlot __instance)
+        {
+            if (__instance.PrefabID() == FlowerVaseConfig.ID)
+            {
+                //Debug.Log($"prevented link to {__instance.PrefabID()}");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(FlowerVaseConfig), "ConfigureBuildingTemplate")]
     public static class FlowerVaseConfig_ConfigureBuildingTemplate
     {

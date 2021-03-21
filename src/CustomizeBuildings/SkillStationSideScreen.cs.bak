@@ -1,4 +1,3 @@
-//#define LOCALE
 using Harmony;
 using UnityEngine;
 using System.Reflection;
@@ -62,6 +61,7 @@ namespace CustomizeBuildings
          * [20:49:38.541] [1] [INFO] [SkillStation] Dupe aptitudes: Building, Hauling
          */
 
+        public static FieldInfo attributes_levels;
         public static HashSet<Tag> GoodTraits;
         public static HashSet<Tag> BadTraits;
         public static HashSet<Tag> GeneTraits;
@@ -70,50 +70,19 @@ namespace CustomizeBuildings
         public static HashSet<Tag> JoyTraits;
         public static HashSet<Tag> Aptitudes;
         public static HashSet<Tag> Attributes;
-        //public static FieldInfo _Attributes_levels;
 
         public static void Init()
         {
-#if LOCALE
-            _ProperNames = (Dictionary<Tag, string>)AccessTools.Field(typeof(TagManager), "ProperNames").GetValue(null);
-#endif
-            //_Attributes_levels = AccessTools.Field(typeof(AttributeLevels), "levels");
-            GoodTraits = new HashSet<Tag>(DUPLICANTSTATS.GOODTRAITS.Select(x => GetTag(x.id)));
-            BadTraits = new HashSet<Tag>(DUPLICANTSTATS.BADTRAITS.Select(x => GetTag(x.id)));
-            GeneTraits = new HashSet<Tag>(DUPLICANTSTATS.GENESHUFFLERTRAITS.Select(x => GetTag(x.id)));
-            CongenitalTraits = new HashSet<Tag>(DUPLICANTSTATS.CONGENITALTRAITS.Select(x => GetTag(x.id)));
-            StressTraits = new HashSet<Tag>(DUPLICANTSTATS.STRESSTRAITS.Select(x => GetTag(x.id)));
-            JoyTraits = new HashSet<Tag>(DUPLICANTSTATS.JOYTRAITS.Select(x => GetTag(x.id)));
-            Aptitudes = new HashSet<Tag>(Db.Get().SkillGroups.resources.Select(x => GetTag(x.Id)));
-            Attributes = new HashSet<Tag>(DUPLICANTSTATS.ALL_ATTRIBUTES.Select(x => GetTag("Attribute " + x)));
-#if LOCALE
-            Helpers.StringsTag("CustomizeBuildings.TAG.Bad_Traits", "Bad Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Remove_Traits", "Remove Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Good_Traits", "Good Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Gene_Traits", "Gene Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Congenital_Traits", "Congenital Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Stress_Traits", "Stress Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Joy_Traits", "Joy Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Aptitudes", "Aptitudes");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Attributes", "Attributes");
-            Helpers.StringsPrint();
-#endif
+            attributes_levels = AccessTools.Field(typeof(AttributeLevels), "levels");
+            GoodTraits = new HashSet<Tag>(DUPLICANTSTATS.GOODTRAITS.Select(x => (Tag)x.id));
+            BadTraits = new HashSet<Tag>(DUPLICANTSTATS.BADTRAITS.Select(x => (Tag)x.id));
+            GeneTraits = new HashSet<Tag>(DUPLICANTSTATS.GENESHUFFLERTRAITS.Select(x => (Tag)x.id));
+            CongenitalTraits = new HashSet<Tag>(DUPLICANTSTATS.CONGENITALTRAITS.Select(x => (Tag)x.id));
+            StressTraits = new HashSet<Tag>(DUPLICANTSTATS.STRESSTRAITS.Select(x => (Tag)x.id));
+            JoyTraits = new HashSet<Tag>(DUPLICANTSTATS.JOYTRAITS.Select(x => (Tag)x.id));
+            Aptitudes = new HashSet<Tag>(Db.Get().SkillGroups.resources.Select(x => (Tag)x.Id));
+            Attributes = new HashSet<Tag>(DUPLICANTSTATS.ALL_ATTRIBUTES.Select(x => (Tag)("Attribute " + x)));
         }
-
-#if LOCALE
-        private static Dictionary<Tag, string> _ProperNames;
-        private static Tag GetTag(string id)
-        {
-            Tag result = (Tag)id;
-            if (!_ProperNames.ContainsKey(result))
-            {
-                Helpers.StringsTag("CustomizeBuildings.TAG." + id, id);
-            }
-            return result;
-        }
-#else
-        private static Tag GetTag(string id) => (Tag)id;
-#endif
 
         public static string ConvertAptitude(HashedString hashed)
         {
@@ -127,7 +96,7 @@ namespace CustomizeBuildings
 
         public static bool Prefix(ref Dictionary<Tag, HashSet<Tag>> __result, Filterable __instance)
         {
-            if (GoodTraits == null) Init();
+            if (attributes_levels == null) Init();
 
             if (__instance.filterElementState == Filterable.ElementState.None && __instance.gameObject.PrefabID() == "ResetSkillsStation")
             {
@@ -196,20 +165,20 @@ namespace CustomizeBuildings
             if (minion != null)
             {
                 Debug.Log($"[SkillStation] Dupe={minion.GetProperName()} Exp={minion.TotalExperienceGained} Points={minion.TotalSkillPointsGained}");
-                //string tooltip = $"{minion.GetProperName()} wasted time getting their brain fried - Make sure you have enough EXP to trade in"; //SkillStationFailure
-                string tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationFailure"), minion.GetProperName());
+                string tooltip = $"{minion.GetProperName()} wasted time getting their brain fried - Make sure you have enough EXP to trade in"; //SkillStationFailure
 
                 var filter = __instance.GetComponent<Filterable>();
+                var index = filter?.SelectedTag.Name?.IndexOf('|') ?? -1;
+                string selected = index < 1 ? filter?.SelectedTag.Name : filter.SelectedTag.Name.Substring(0, index - 1);
 
-                if (filter == null || !filter.SelectedTag.IsValid || filter.SelectedTag == (Tag)"Void")
+                if (filter == null || filter.SelectedTag.Name == null || filter.SelectedTag.Name == "Void")
                 {
                     Debug.Log("[SkillStation] Tag execute: Void");
                     minion.ResetSkillLevels(true);
                     minion.SetHats(minion.CurrentHat, null);
                     minion.ApplyTargetHat();
                     minion.AddExperience(-SkillStationCosts.CostReset);
-                    //tooltip = $"{minion.GetProperName()} got their <style=\"KKeyword\">Skill Points</style> refunded";  //SkillStationReset
-                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationReset"), minion.GetProperName());
+                    tooltip = $"{minion.GetProperName()} got their <style=\"KKeyword\">Skill Points</style> refunded";  //SkillStationReset
                 }
                 else
                 {
@@ -225,15 +194,13 @@ namespace CustomizeBuildings
                                 minion.AddExperience(-SkillStationCosts.CostBadTrait);
                             else
                                 minion.AddExperience(-SkillStationCosts.CostAddTrait);
-                            //tooltip = $"{minion.GetProperName()} gained a new trait '{trait.Name}'";    //SkillStationAddTrait
-                            tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), trait.Name);
+                            tooltip = $"{minion.GetProperName()} gained a new trait '{trait.Name}'";    //SkillStationAddTrait
                         }
                         else
                         {
                             traits.Remove(trait);
                             minion.AddExperience(-SkillStationCosts.CostRemoveTrait);
-                            //tooltip = $"{minion.GetProperName()} lost a trait '{trait.Name}'";  //SkillStationRemoveTrait
-                            tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait"), minion.GetProperName(), trait.Name);
+                            tooltip = $"{minion.GetProperName()} lost a trait '{trait.Name}'";  //SkillStationRemoveTrait
                         }
 
                     }
@@ -247,8 +214,7 @@ namespace CustomizeBuildings
                             int level = attribute.GetLevel();
                             attribute.SetLevel(level + 1);
                             minion.AddExperience(-SkillStationCosts.CostAddAttribute);
-                            //tooltip = $"{minion.GetProperName()} improved their {attributeId} from {level} to {level + 1}.";    //SkillStationAttributeUp
-                            tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), attributeId, level, level + 1);
+                            tooltip = $"{minion.GetProperName()} improved their {attributeId} from {level} to {level + 1}.";    //SkillStationAttributeUp
                         }
                     }
                     else if (Db.Get().SkillGroups.resources.Any(s => s.Id == filter.SelectedTag.Name)) // if Aptitude ID
@@ -256,8 +222,7 @@ namespace CustomizeBuildings
                         //minion.AptitudeBySkillGroup[filter.SelectedTag.Name] = 1f;
                         minion.SetAptitude(filter.SelectedTag.Name, 1f);
                         minion.AddExperience(-SkillStationCosts.CostAddAptitude);
-                        //tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.ProperName()}";   //SkillStationAptitude
-                        tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude"), minion.GetProperName(), filter.SelectedTag.ProperName());
+                        tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.Name}";   //SkillStationAptitude
                     }
                     else
                     {
@@ -290,12 +255,12 @@ namespace CustomizeBuildings
                             text = text + (string)notification.tooltipData + "\n";
                         return text;
                     },
-                    tooltip_data: tooltip,
-                    expires: true,
-                    delay: 0f,
-                    custom_click_callback: null,
-                    custom_click_data: null,
-                    click_focus: null,
+                    tooltip_data: tooltip, 
+                    expires: true, 
+                    delay: 0f, 
+                    custom_click_callback: null, 
+                    custom_click_data: null, 
+                    click_focus: null, 
                     volume_attenuation: true),
                     suffix: "");
             }
@@ -352,7 +317,7 @@ namespace CustomizeBuildings
             try
             {
                 DetailsScreen.Instance.Refresh(__instance.gameObject);
-                Debug.Log("[SkillStation] OnAssign Refresh");
+            Debug.Log("[SkillStation] OnAssign Refresh");
             }
             catch (System.Exception)
             {

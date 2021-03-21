@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#define LOCALE
+using System.Collections.Generic;
 using UnityEngine;
 using System;
 using PeterHan.PLib.Options;
+using Common;
 
 namespace CarePackageMod
 {
@@ -10,6 +12,43 @@ namespace CarePackageMod
     {
         public static void OnLoad()
         {
+            #region LOCSTRINGS
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.biggerRoster_Title", "Change amount");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.biggerRoster_ToolTip", "If true apply amount changes. Set to false, if mod crashes. Game must be restarted to apply setting!");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterDupes_Title", "Amount of Duplicants");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterDupes_ToolTip", "Best less than 6 packages total.");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterPackages_Title", "Amount of Care-Packages");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterPackages_ToolTip", "Best less than 6 packages total.");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.attributeBonusChance_Title", "Attribute Bonus Chance");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.attributeBonusChance_ToolTip", "Positive number increases overall attributes, negative number reduces them.");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.always3Interests_Title", "Always 3 Interests");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.always3Interests_ToolTip", "If true will always roll 3 interests.");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.removeStarterRestriction_Title", "Remove Starter Restriction");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.removeStarterRestriction_ToolTip", "If true duplicants can start with more than 2 traits and more names are available.");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.allowReshuffle_Title", "Allow Reshuffle");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.allowReshuffle_ToolTip", "If true shows reroll button when using the printing pot (duplicants only).");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterIsOrdered_Title", "In Order");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.rosterIsOrdered_ToolTip", "(Only DLC) If true duplicants and care packages will be ordered by type. Game must be restarted to apply setting!");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.multiplier_Title", "Multiplier");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.multiplier_ToolTip", "Multiply all care packages by amount.");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.labelPackages_Title", "Care Packages must be edited manually");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.labelPackages_ToolTip", "Open config file to edit Care Packages.");
+            #endregion
+#if LOCALE
+            //Helpers.LocalizeTypeToPOT(typeof(LOCSTRINGS), Config.PathHelper.AssemblyDirectory + Localization.GetLocale().Code + ".pot");
+            Helpers.StringsPrint();
+#else
+            Helpers.StringsLoad();
+#endif
             POptions.RegisterOptions(typeof(CarePackageState));
         }
 
@@ -17,37 +56,37 @@ namespace CarePackageMod
 
         public bool enabled { get; set; } = true;
 
-        [PeterHan.PLib.Option("Change amount", "If true apply amount changes. Set to false, if mod crashes. Game must be restarted to apply setting!")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.biggerRoster_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.biggerRoster_ToolTip")]
         public bool biggerRoster { get; set; } = true;
 
-        [PeterHan.PLib.Option("Amount of Duplicants", "Best less than 6 packages total.")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.rosterDupes_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.rosterDupes_ToolTip")]
         [PeterHan.PLib.Limit(0, 6)]
         public int rosterDupes { get; set; } = 3;
 
-        [PeterHan.PLib.Option("Amount of Care-Packages", "Best less than 6 packages total.")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.rosterPackages_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.rosterPackages_ToolTip")]
         [PeterHan.PLib.Limit(0, 6)]
         public int rosterPackages { get; set; } = 3;
 
-        [PeterHan.PLib.Option("Attribute Bonus Chance", "Positive number increases overall attributes, negative number reduces them.")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.attributeBonusChance_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.attributeBonusChance_ToolTip")]
         public int attributeBonusChance { get; set; } = 0;
 
-        [PeterHan.PLib.Option("Always 3 Interests", "If true will always roll 3 interests.")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.always3Interests_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.always3Interests_ToolTip")]
         public bool always3Interests { get; set; } = true;
 
-        [PeterHan.PLib.Option("Remove Starter Restriction", "If true duplicants can start with more than 2 traits and more names are available.")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.removeStarterRestriction_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.removeStarterRestriction_ToolTip")]
         public bool removeStarterRestriction { get; set; } = true;
 
-        [PeterHan.PLib.Option("Allow Reshuffle", "If true shows reroll button when using the printing pot (duplicants only).")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.allowReshuffle_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.allowReshuffle_ToolTip")]
         public bool allowReshuffle { get; set; } = false;
 
-        [PeterHan.PLib.Option("In Order", "If true duplicants and care packages will be ordered by type. Game must be restarted to apply setting!")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.rosterIsOrdered_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.rosterIsOrdered_ToolTip")]
         public bool rosterIsOrdered { get; set; } = false;
 
-        [PeterHan.PLib.Option("Multiplier", "Multiply all care packages by amount.")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.multiplier_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.multiplier_ToolTip")]
         public float multiplier { get; set; } = 1f;
 
 
-        [PeterHan.PLib.Option("asdf", "")]
+        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.labelPackages_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.labelPackages_ToolTip")]
         public LocString labelPackages { get; set; }
 
         public CarePackageContainer[] CarePackages { get; set; } = CarePackageList.GetPackages();

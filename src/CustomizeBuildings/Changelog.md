@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.30.0] EX1 S8-456169 CS-455509
+
+### Added
+- added localization support
+- added tuning for leadsuits
+- added tuning for rockets
+
+### Changed
+- material categories can now read two entries (separate by space)
+
+### Fixed
+- fixed options menu not showing up without DLC
+
 ## [1.0.29.0] EX1 S6-449549 CS-449460
 
 ### Added

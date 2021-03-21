@@ -8,6 +8,16 @@ using System;
 
 namespace CustomizeBuildings
 {
+    [HarmonyPatch(typeof(ConduitFlow), nameof(ConduitFlow.AddElement))]
+    public class ConduitFlow_AddElement
+    {
+        public static float limit = 100000f;
+        public static void Prefix(ref float mass)
+        {
+            mass = Math.Min(mass, limit);
+        }
+    }
+
     [HarmonyPatch(typeof(Game), "OnPrefabInit")]
     internal class Game_OnPrefabInit
     {
