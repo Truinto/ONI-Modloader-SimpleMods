@@ -536,6 +536,7 @@ namespace CustomizePlants
     
     public class PlantData
     {
+        private int hash;
         public string id;
         public string fruitId;
         public float? fruit_grow_time;
@@ -618,7 +619,9 @@ namespace CustomizePlants
 
         public override int GetHashCode()
         {
-            return Hash.SDBMLower(this.id);
+            if (hash == 0)
+                hash = Hash.SDBMLower(this.id);
+            return hash;
         }
 
         public override string ToString()

@@ -4,7 +4,7 @@ using System;
 using Harmony;
 using System.Collections.Generic;
 using UnityEngine;
-using static BootDialog.PostBootDialog;
+using static Config.PostBootDialog;
 
 namespace CustomizeGeyser
 {

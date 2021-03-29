@@ -34,6 +34,7 @@ namespace CustomizePlants
             SwampLilyConfig.ID,
             ColdBreatherConfig.ID,
             OxyfernConfig.ID,
+#if DLC1
             SuperWormPlantConfig.ID,
             WormPlantConfig.ID,
             SwampHarvestPlantConfig.ID,
@@ -42,6 +43,7 @@ namespace CustomizePlants
             CritterTrapPlantConfig.ID,
             CylindricaConfig.ID,
             FilterPlantConfig.ID,
+#endif
         };
 
         public static readonly Type[] CLASSES = {
@@ -65,6 +67,7 @@ namespace CustomizePlants
             typeof(SwampLilyConfig),
             typeof(ColdBreatherConfig),
             typeof(OxyfernConfig),
+#if DLC1
             typeof(SuperWormPlantConfig),
             typeof(WormPlantConfig),
             typeof(SwampHarvestPlantConfig),
@@ -73,11 +76,14 @@ namespace CustomizePlants
             typeof(CritterTrapPlantConfig),
             typeof(CylindricaConfig),
             typeof(FilterPlantConfig),
+#endif
         };
 
         public static readonly Type[] CLASSES_NOPREVIEW = {
             typeof(ForestTreeBranchConfig),
+#if DLC1
             typeof(SuperWormPlantConfig),
+#endif
         };
     }
 

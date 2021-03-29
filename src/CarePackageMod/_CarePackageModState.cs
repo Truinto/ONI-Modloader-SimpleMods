@@ -1,4 +1,4 @@
-﻿#define LOCALE
+﻿//#define LOCALE
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -12,7 +12,7 @@ namespace CarePackageMod
     {
         public static void OnLoad()
         {
-            #region LOCSTRINGS
+            #region $Settings
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.biggerRoster_Title", "Change amount");
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.biggerRoster_ToolTip", "If true apply amount changes. Set to false, if mod crashes. Game must be restarted to apply setting!");
 
@@ -44,7 +44,6 @@ namespace CarePackageMod
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.labelPackages_ToolTip", "Open config file to edit Care Packages.");
             #endregion
 #if LOCALE
-            //Helpers.LocalizeTypeToPOT(typeof(LOCSTRINGS), Config.PathHelper.AssemblyDirectory + Localization.GetLocale().Code + ".pot");
             Helpers.StringsPrint();
 #else
             Helpers.StringsLoad();
@@ -56,6 +55,7 @@ namespace CarePackageMod
 
         public bool enabled { get; set; } = true;
 
+        #region $Settings
         [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.biggerRoster_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.biggerRoster_ToolTip")]
         public bool biggerRoster { get; set; } = true;
 
@@ -90,6 +90,7 @@ namespace CarePackageMod
         public LocString labelPackages { get; set; }
 
         public CarePackageContainer[] CarePackages { get; set; } = CarePackageList.GetPackages();
+        #endregion
 
         public static Config.Manager<CarePackageState> StateManager = new Config.Manager<CarePackageState>(Config.PathHelper.CreatePath("Care Package Manager"), true, UpdateFunction);
 

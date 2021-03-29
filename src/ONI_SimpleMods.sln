@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeBuildingsMod", "Cu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeCritter", "CustomizeCritter\CustomizeCritter.csproj", "{DA085F9F-AB2C-4BF3-B28A-10891FD4020E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarePackageMod", "CarePackagesMod\CarePackageMod.csproj", "{4C0CBB9B-C5D4-4F04-B686-2357062CC11B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarePackageMod", "CarePackageMod\CarePackageMod.csproj", "{4C0CBB9B-C5D4-4F04-B686-2357062CC11B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EggCritterSurplus", "EggCritterSurplus\EggCritterSurplus.csproj", "{6991E751-278E-4086-B415-9C7A164C2F43}"
 EndProject

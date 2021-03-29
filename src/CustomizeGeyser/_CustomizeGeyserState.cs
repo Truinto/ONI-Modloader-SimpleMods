@@ -10,8 +10,8 @@ namespace CustomizeGeyser
         {
             try
             {
-                string temp = Path.Combine(Config.Helper.AssemblyDirectory, "templates");
-                string temp2 = Path.Combine(Config.Helper.AssemblyDirectory, "templates2");
+                string temp = Path.Combine(Config.PathHelper.AssemblyDirectory, "templates");
+                string temp2 = Path.Combine(Config.PathHelper.AssemblyDirectory, "templates2");
 
                 if (CustomizeGeyserState.StateManager.State.RandomizerEnabled)
                 {
@@ -113,7 +113,7 @@ namespace CustomizeGeyser
         public bool GeyserMorphEnabled { get; set; } = true;
         public int GeyserMorphWorktime { get; set; } = 300;
 
-        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.Helper.CreatePath("Customize Geyser"), true, UpdateFunction);
+        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.PathHelper.CreatePath("Customize Geyser"), true, UpdateFunction);
 
         public static bool UpdateFunction(CustomizeGeyserState state)
         {

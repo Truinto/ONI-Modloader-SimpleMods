@@ -12,7 +12,7 @@ namespace CustomizeBuildings
     {
         public static void OnLoad()
         {
-            #region Reset Button
+            #region $Reset Button
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "Reset To Klei Default");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_ToolTip", "This will discard all changes and set all options to 'off'.");
 
@@ -330,6 +330,9 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1.");
             #endregion
             #region Tuning
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_Title", "Tuning Global");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_ToolTip", "If false, will disable all settings in this category.");
+
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitDecay_Title", "Atmosuit Decay");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitDecay_ToolTip", "");
 
@@ -515,9 +518,9 @@ namespace CustomizeBuildings
             PeterHan.PLib.Options.POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 30;
+        public int version { get; set; } = 31;
 
-        #region Reset Button
+        #region $Reset Button
         [Option("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_ToolTip")]
         [JsonIgnore]
         public System.Action ResetToKleiDefault
@@ -953,6 +956,8 @@ namespace CustomizeBuildings
         #endregion
 
         #region Tuning
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningGlobal_Title", "CustomizeBuildings.LOCSTRINGS.TuningGlobal_ToolTip", "Tuning")]
+        public bool TuningGlobal { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitDecay_Title", "CustomizeBuildings.LOCSTRINGS.TuningAtmosuitDecay_ToolTip", "Tuning", "F2")]
         [Limit(-1, 0)]
         public float TuningAtmosuitDecay { get; set; } = 0f;

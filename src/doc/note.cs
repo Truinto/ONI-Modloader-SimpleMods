@@ -37,22 +37,6 @@
 
 */
 
-void x(List<string> line)
-{
-	for (int i = 1; i < line.Count; i++)
-	{
-		if (line[i].StartsWith("-----------"))
-		{
-			line[i-1] = "[h1]"+ line[i-1] +"[/h1]";
-			line.RemoveAt(i);
-			i--;
-		}
-		// \[\*\*(.*?)\*\*\]\((.*?)\)
-		Regex rx = new Regex(@"\[\*\*(.*?)\*\*\]\((.*?)\)", RegexOptions.Compiled);
-	}
-}
-
-
 
 
 

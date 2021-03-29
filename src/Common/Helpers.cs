@@ -116,6 +116,55 @@ namespace Common
 
             return result;
         }
+
+        /// <summary>Returns string inside quotation marks. Respects escape character.</summary>
+        public static string GetQuotationString(this string line, int occurrence)
+        {
+            occurrence++;
+
+            bool isEscape = false;
+            int start = -1;
+            int stop = -1;
+            int count = 0;
+            for (int i = 0; i < line.Length; i++)
+            {
+                if (isEscape)
+                {
+                    isEscape = false;
+                }
+                else if (line[i] == '\\')
+                {
+                    isEscape = true;
+                    continue;
+                }
+                else if (line[i] == '"')
+                {
+                    if (occurrence == count / 2)
+                    {
+                        if (0 == count % 2)
+                        {
+                            start = i + 1;
+                        }
+                        else
+                        {
+                            stop = i;
+                            break;
+                        }
+                    }
+                    // o = 0; c = 0 -> start
+                    // o = 0; c = 1 -> stop
+                    // o = 1; c = 2 -> start
+                    // o = 1; c = 3 -> stop
+                    // o = 2; c = 4 -> start
+                    // o = 2; c = 5 -> stop
+                    count++;
+                }
+            }
+
+            if (start >= 0 && stop >= start)
+                return line.Substring(start, stop - start); //"str"; start=1, stop=4
+            return null;
+        }
         #endregion
 
         #region Strings
@@ -138,9 +187,19 @@ namespace Common
 
         /// Use this to create a translation file. Only works, if you have used StringsAdd or StringsTag to add to the list.
         /// Can be called multiple times. Consecutive calls will appended. Must #define LOCALE to be used.
-        public static bool StringsAppend = false;
+        public static bool StringsAppend = true;
         public static void StringsPrint(string path = null)
         {
+            using (StreamReader sr = new StreamReader(path ?? PathLocale))
+            {
+                while (!sr.EndOfStream)
+                {
+                    string key = sr.ReadLine().GetQuotationString(1);
+                    if (key != null)
+                        StringsDic.Remove(key);
+                }
+            }
+
             using (StreamWriter sw = new StreamWriter(path ?? PathLocale, StringsAppend))
             {
                 foreach (var keyPair in StringsDic)
@@ -207,7 +266,7 @@ namespace Common
                         else if (line.StartsWith("msgstr", StringComparison.Ordinal))
                         {
                             proper = GetQuotationString(line);
-                            
+
                             if (proper != null)
                             {
                                 if (!isTag)
@@ -221,7 +280,7 @@ namespace Common
             }
             catch (System.Exception e)
             {
-                PrintDialog("Error reading language file: " + path + "\n" + e.Message);
+                Print("Error reading language file: " + e.Message);
             }
         }
 

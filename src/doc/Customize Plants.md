@@ -70,4 +70,8 @@ If Steam Download does not work or you need an older version, you find the files
 
 
 Notes to patch order:
-CustomizePlants will try to modify the plant early while it is generated. This works fine for all the game's plants. Plants added from mods may be not fully compatible, depending on how the code was structured. In that case, activate AutomaticallyAddModPlants and boot the game once. It will generate ModPlants. From here you can pick which plants should be patched early or late. It's patched early, if it's not on IgnoreList. It's patched late, if its class is present in ModPlants. In theory you can patch it early and late, but that's pointless. Remember to disable AutomaticallyAddModPlants afterwards.
+CustomizePlants will try to modify the plant early while it is generated. This works fine for all the game's plants. Plants added from mods may be not fully compatible, depending on how the code was structured. In that case, activate AutomaticallyAddModPlants and boot the game once. It will generate ModPlants. From here you can pick which plants should be patched early or late. It's patched early, if it's not on IgnoreList. It's patched late, if its class is present in ModPlants. In theory you can patch it early and late, but that's pointless. AutomaticallyAddModPlants disables itself after it ran and added at least one entry.
+
+
+Notes to PlantLookup:
+- the disadvantage is the assembly can be hard to find, e.g. if the author renamed the assembly (mostly suffix '-merged' due to ILMerge)

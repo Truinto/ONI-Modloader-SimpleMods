@@ -21,7 +21,7 @@ Mods
 | ----- | ----------- | ---------- |
 |Customize Buildings|Change stuff about buildings, like storage and duplicant operation.|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1818138009)|
 |Customize Plants|Change stuff about plants, like irrigation and growth speed.|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1818145851)|
-|Customize Geyser|Change probabilty of geysers. Edit all properties of existing geysers or add new ones.|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1861107947)|
+|Customize Geyser|Change probability of geysers. Edit all properties of existing geysers or add new ones.|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1861107947)|
 |Care Package Manager|Change content and mass of care packages. Change duplicant generation.|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1833878154)|
 |Sweep Those Eggs|Marks eggs over threshold for sweeping, young to old, for optimal food production.|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1856796585)|
 |No Remains|No support.|[**Link**](https://steamcommunity.com/sharedfiles/filedetails/?id=1963545305)|

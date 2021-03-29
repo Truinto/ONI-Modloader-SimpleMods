@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.31.0] EX1 S8-456169
+
+### Added
+- added tuning global flag to disable the feature altogether
+
+### Fixed
+- removed error message when language file is missing
+
 ## [1.0.30.0] EX1 S8-456169 CS-455509
 
 ### Added

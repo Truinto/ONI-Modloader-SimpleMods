@@ -2,7 +2,7 @@
 using System.Linq;
 using Harmony;
 using System.Collections.Generic;
-using static BootDialog.PostBootDialog;
+using static Config.PostBootDialog;
 
 namespace CustomizeGeyser
 {

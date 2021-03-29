@@ -2,7 +2,7 @@
 <Project>  
   <!-- Pre-build script; updates versioning -->
   <PropertyGroup Condition="Exists('$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe')">
-    <PreBuildEvent>"$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\mod_info.yaml"</PreBuildEvent>
+    <PreBuildEvent>"$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\mod_info.yaml" -state "$(ProjectDir)_$(TargetName)State.cs"</PreBuildEvent>
   </PropertyGroup>
   
   <!-- Post-build script; execute ILMERGE and copy files to dev\ -->

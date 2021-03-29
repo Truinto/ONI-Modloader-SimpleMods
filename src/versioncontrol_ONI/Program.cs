@@ -30,13 +30,16 @@ namespace versioncontrol_ONI
                 string path_md = null;
                 string path_info = null;
                 string path_assembly = null;
+                string path_state = null;
                 string gameversion = null;
                 string gameversionprefix = null;
                 string assemblyversion = null;
                 int int_gameversion = 0;
                 bool b_exp1 = false;
+                bool overwrite_state = false;
 
                 // read args
+                #region args
                 for (int i = 0; i+1 < args.Length; i++)
                 {
                     switch (args[i])
@@ -53,10 +56,18 @@ namespace versioncontrol_ONI
                         case "-asbly":
                             path_assembly = args[i + 1];
                             break;
+                        case "-state":
+                            path_state = args[i + 1];
+                            break;
+                        case "-stateoverwrite":
+                            overwrite_state = true;
+                            break;
                     }
                 }
+                #endregion
 
                 // read current version from log
+                #region log
                 path_log = path_log ?? (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\..\LocalLow\Klei\Oxygen Not Included\Player.log");
                 using (var log = File.OpenText(path_log))
                 {
@@ -83,8 +94,10 @@ namespace versioncontrol_ONI
                         }
                     }
                 }
+                #endregion
 
                 // read assemblyversion and update gameversion to changelog
+                #region md
                 if (path_md != null)
                 {
                     //Console.WriteLine("Reading changelog...");
@@ -114,8 +127,10 @@ namespace versioncontrol_ONI
                     }
                     File.WriteAllLines(path_md, changelog);
                 }
+                #endregion
 
                 // update version to mod_info.yaml
+                #region info
                 if (path_info != null && int_gameversion != 0)
                 {
                     string[] modinfo;
@@ -136,8 +151,10 @@ namespace versioncontrol_ONI
                     }
                     File.WriteAllLines(path_info, modinfo);
                 }
+                #endregion
 
                 // update assemblyversion to assembly
+                #region assembly
                 if (path_assembly != null && assemblyversion != null)
                 {
                     //Console.WriteLine("Reading assembly...");
@@ -151,6 +168,12 @@ namespace versioncontrol_ONI
                     }
                     File.WriteAllLines(path_assembly, assembly);
                 }
+                #endregion
+
+                // auto complete state source
+                #region language
+                LanguageFillOut.Main(path_state, overwrite_state);
+                #endregion
 
                 Console.WriteLine("versioncontrol done!");
                 return 0;

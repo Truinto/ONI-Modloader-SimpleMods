@@ -15,9 +15,17 @@ namespace CustomizePlants
     public static class PlantLookupPatch
     {
         public static System.Text.RegularExpressions.Regex FindBetweenLink = new System.Text.RegularExpressions.Regex(@">(.*)<", System.Text.RegularExpressions.RegexOptions.Compiled);
-        
+
+        public static bool AutomaticallyAdd = false;
+
         public static void Prefix(GameObject template)
         {
+            if (CustomizePlantsState.StateManager.State.AutomaticallyAddModPlants == true)
+            {
+                AutomaticallyAdd = true;
+                CustomizePlantsState.StateManager.State.AutomaticallyAddModPlants = false;
+            }
+
             Type classType = null;
             var frames = new System.Diagnostics.StackTrace().GetFrames();
             for (int i = 2; i < frames.Length; i++)
@@ -38,7 +46,7 @@ namespace CustomizePlants
             if (index_c > 0)
                 className.Substring(0, index_c);
 
-            if (CustomizePlantsState.StateManager.State.AutomaticallyAddModPlants && !className.Contains(", Assembly-CSharp") && !CustomizePlantsState.StateManager.State.ModPlants.Contains(className))
+            if (AutomaticallyAdd && !className.Contains(", Assembly-CSharp") && !CustomizePlantsState.StateManager.State.ModPlants.Contains(className))
             {
                 Debug.Log("Found new mod plant and adding it to the list: " + className);
                 CustomizePlantsState.StateManager.State.IgnoreList.Add(plantName);

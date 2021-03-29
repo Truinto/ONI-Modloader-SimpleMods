@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.17.0]
+## [1.0.16.0] EX1 S8-456169 CS-455509
 
 ### Added
 - FlowerVaseWild: plants in Flower Vase become wild, reducing productivity to 25% and not needing irrigation
@@ -10,8 +10,6 @@
 - added IgnoreList to not patch certain plants with the former 'early' patch
 - plants can still be added to ModPlants and it works as before; I leave this for compatibility reasons, although I am not aware of plants that require this
 - shortend AssemblyQualifiedName of ModPlants
-
-## [1.0.16.0] EX1 S6-449549
 
 ### Fixed
 - fixed safe_elements not being applied
