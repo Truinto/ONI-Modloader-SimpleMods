@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.17.0] EX1 S9-458490 CS-455509
+
+### Fixed
+- fixed fruits again
+- fixed illumination
+- fixed whatever was wrong with vanilla version
+
+## [1.0.16.1] EX1 S9-458490 CS-455509
+
+### Fixed
+- patched for new update
+- fixed fruits now working with traits; not validated
+- fixed hook not working
+
 ## [1.0.16.0] EX1 S8-456169 CS-455509
 
 ### Added

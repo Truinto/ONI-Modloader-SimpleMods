@@ -155,7 +155,7 @@ namespace CustomizeBuildings
                         __result["Aptitudes"] = Aptitudes.RemoveRange(dupeAptitudes);
                     if (exp >= SkillStationCosts.CostAddAttribute)
                         __result["Attributes"] = Attributes;
-#if DEBUG
+#if false
                     Debug.Log("[SkillStation] Good Traits: " + DUPLICANTSTATS.GOODTRAITS.Select(x => x.id).Join());
                     Debug.Log("[SkillStation] Bad Traits: " + DUPLICANTSTATS.BADTRAITS.Select(x => x.id).Join());
                     Debug.Log("[SkillStation] Gene Traits: " + DUPLICANTSTATS.GENESHUFFLERTRAITS.Select(x => x.id).Join());

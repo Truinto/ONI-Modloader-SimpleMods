@@ -11,7 +11,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>$(DefineConstants);DEBUG;TRACE;LOCALE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;LOCALE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -19,7 +19,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -38,6 +38,7 @@
   <!-- DLCs installed (put empty file '_IsDLC1' into Managed folder) -->
   <PropertyGroup>
     <DefineConstants Condition="Exists('$(ONIManaged)\_IsDLC1')">$(DefineConstants);DLC1</DefineConstants>
+    <DefineConstants Condition="Exists('$(ProjectDir)_MERGE')">$(DefineConstants);MERGE</DefineConstants>
   </PropertyGroup>
   
   <!-- Common references -->
@@ -55,7 +56,7 @@
     <Reference Include="UnityEngine" HintPath="$(ONIManaged)\UnityEngine.dll" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(ONIManaged)\UnityEngine.CoreModule.dll" />
     <Reference Include="UnityEngine.UI" HintPath="$(ONIManaged)\UnityEngine.UI.dll" />
-    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)packages\PLibOptions.dll" Condition="Exists('$(MSBuildThisFileDirectory)packages\PLibOptions.dll')" />
+    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)packages\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
   </ItemGroup>
   
   <PropertyGroup>

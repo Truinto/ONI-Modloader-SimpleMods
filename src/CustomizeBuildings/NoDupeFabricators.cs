@@ -266,7 +266,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeCompost;
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeCompost;
         }
 
         public static void Postfix(Compost.States __instance)
@@ -290,7 +290,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeDesalinator;
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeDesalinator;
         }
 
         public static void Postfix(Desalinator.States __instance)

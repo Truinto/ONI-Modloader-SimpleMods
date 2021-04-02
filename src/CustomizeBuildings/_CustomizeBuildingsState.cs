@@ -8,6 +8,7 @@ namespace CustomizeBuildings
 {
     [PeterHan.PLib.Options.ConfigFile("CustomizeBuildings.json", true, true)]
     [PeterHan.PLib.Options.RestartRequired]
+    [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState
     {
         public static void OnLoad()
@@ -90,6 +91,9 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_Title", "Air Conditioner Absolute Output");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "If true, Air Conditioner and Aquatuner get a temperature setting. Output temperature will always be that temperature, instead of -14°C. Also adds a DPU setting, which limits how fast the building heats up. Energy consumption will scale on cooling factor.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "Air Conditioner Absolute Power Factor");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "% of MaxDPU the Air Conditioner takes full power. Default: 0.1");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "Space Heater Target Temperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "If true, Space Heater gets a temperature setting to control target temperature.");
@@ -247,7 +251,7 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeJouleCapacity_ToolTip", "Capacity, normally 40000 joules.");
             #endregion
             #region No Dupe
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGlobal_Title", "No Dupe Global");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGlobal_Title", "<b><color=red>!!! Unlock No Dupe !!!</color></b>");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGlobal_ToolTip", "If false, will disable all settings in this category.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeApothecary_Title", "No Dupe Apothecary");
@@ -330,7 +334,7 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1.");
             #endregion
             #region Tuning
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_Title", "Tuning Global");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_Title", "<b><color=red>!!! Unlock Tuning !!!</color></b>");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_ToolTip", "If false, will disable all settings in this category.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitDecay_Title", "Atmosuit Decay");
@@ -382,10 +386,10 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningResearchBasic_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDiscovered_Title", "Analysis Discovered");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDiscovered_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDiscovered_ToolTip", "At what point/percentage, will the analysis found things (i.e. asteroid). Should not be higher than Analysis Complete.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisComplete_Title", "Analysis Complete");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisComplete_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisComplete_ToolTip", "At what point/percentage, will the analysis completed and proceed to next Starmap hex.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDefaultCyclesPerDiscovery_Title", "Analysis Default Cycles Per Discovery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDefaultCyclesPerDiscovery_ToolTip", "");
@@ -420,13 +424,13 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyBooster_Title", "Engine Efficiency Booster");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyBooster_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyVeryLow_Title", "Oxidizer Efficiency Very Low");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyVeryLow_Title", "Oxidizer Efficiency: Fertilizer");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyVeryLow_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyLow_Title", "Oxidizer Efficiency Low");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyLow_Title", "Oxidizer Efficiency: Oxylite");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyLow_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyHigh_Title", "Oxidizer Efficiency High");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyHigh_Title", "Oxidizer Efficiency: Liquid Oxygen");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyHigh_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningCargoContainerMassStaticMass_Title", "Cargo Container Mass Static Mass");
@@ -439,66 +443,66 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenInsignificant_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinor_Title", "Burden Minor");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinor_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinor_ToolTip", "Value applicable to:\n- Small Solid Oxidizer Tank\n- Battery Module\n- Basic Nosecone\n- Gas Cargo Canister");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinorPlus_Title", "Burden Minor Plus");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinorPlus_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinorPlus_ToolTip", "Value applicable to:\n- Sugar Engine\n- Solo Spacefarer Nosecone\n- CO2 Engine\n- Liquid Cargo Tank\n- Cargographic Module");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModerate_Title", "Burden Moderate");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModerate_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModerate_ToolTip", "Value applicable to:\n- Orbital Cargo Module\n- Rover Module\n- Trailblazer Module\n- Large Gas Cargo Canister\n- Cargo Bay\n- Steam Engine");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModeratePlus_Title", "Burden Moderate Plus");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModeratePlus_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModeratePlus_ToolTip", "Value applicable to:\n- Small Petroleum Engine\n- Large Liquid Fuel Tank\n- Large Liquid Cargo Tank\n- Lange Solid Oxidizer Tank\n- Liquid Oxidizer Tank");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajor_Title", "Burden Major");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajor_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajor_ToolTip", "Value applicable to:\n- Large Cargo Bay\n- Petroleum Engine\n- Spacefarer Module");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajorPlus_Title", "Burden Major Plus");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajorPlus_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajorPlus_ToolTip", "Value applicable to:\n- Hydrogen Engine");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMega_Title", "Burden Mega");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMega_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMega_ToolTip", "This value have no use in game.");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyWeak_Title", "Engine Power Early Weak");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyWeak_Title", "Engine Power: Steam Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyWeak_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyStrong_Title", "Engine Power Early Strong");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyStrong_Title", "Engine Power: Carbon Dioxide Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidVeryStrong_Title", "Engine Power Mid Very Strong");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidVeryStrong_Title", "Engine Power: Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidVeryStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidStrong_Title", "Engine Power Mid Strong");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidStrong_Title", "Engine Power: Small Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidWeak_Title", "Engine Power Mid Weak");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidWeak_Title", "Engine Power: Sugar Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidWeak_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateWeak_Title", "Engine Power Late Weak");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateWeak_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateWeak_ToolTip", "Not used currently in game");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateStrong_Title", "Engine Power Late Strong");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateStrong_Title", "Engine Power: Hydrogen Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateStrong_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryLow_Title", "Fuel Cost Per Distance Very Low");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryLow_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryLow_ToolTip", "Not utilized in game");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceLow_Title", "Fuel Cost Per Distance Low");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceLow_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceLow_ToolTip", "Not utilized in game");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceMedium_Title", "Fuel Cost Per Distance Medium");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceMedium_Title", "Fuel Cost Per Distance: Small Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceMedium_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceHigh_Title", "Fuel Cost Per Distance High");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceHigh_Title", "Fuel Cost Per Distance: Hydrogen Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceHigh_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryHigh_Title", "Fuel Cost Per Distance Very High");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryHigh_Title", "Fuel Cost Per Distance: Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryHigh_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_Title", "Fuel Cost Per Distance Gas Low");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_Title", "Fuel Cost Per Distance: Gas Low");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_ToolTip", "Not utilized in game");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasHigh_Title", "Fuel Cost Per Distance Gas High");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasHigh_Title", "Fuel Cost Per Distance: Steam and CO2 Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasHigh_ToolTip", "");
             #endregion
             #region SkillStation
@@ -510,8 +514,7 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude", "{0} sparked new Interests in {1}");
             #endregion
 #if LOCALE
-            //Helpers.LocalizeTypeToPOT(typeof(LOCSTRINGS), Config.PathHelper.AssemblyDirectory + Localization.GetLocale().Code + ".pot");
-            //Helpers.StringsPrint();
+            Helpers.StringsPrint();
 #else
             //Helpers.StringsLoad();
 #endif
@@ -765,6 +768,8 @@ namespace CustomizeBuildings
 
         [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "Miscellaneous")]
         public bool AirConditionerAbsoluteOutput { get; set; } = true;
+        [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "Miscellaneous")]
+        public float AirConditionerAbsolutePowerFactor { get; set; } = 0.1f;
         [Option("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "Miscellaneous")]
         public bool SpaceHeaterTargetTemperature { get; set; } = true;
         #endregion

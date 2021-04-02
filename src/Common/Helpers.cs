@@ -1,4 +1,4 @@
-//#define LOCALE
+#define LOCALE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,7 +120,7 @@ namespace Common
         /// <summary>Returns string inside quotation marks. Respects escape character.</summary>
         public static string GetQuotationString(this string line, int occurrence)
         {
-            occurrence++;
+            occurrence--;
 
             bool isEscape = false;
             int start = -1;
@@ -165,9 +165,27 @@ namespace Common
                 return line.Substring(start, stop - start); //"str"; start=1, stop=4
             return null;
         }
+
+        public static string GetQuotationString(this string line)
+        {
+            int index1 = line.IndexOf('"') + 1;
+            int index2 = line.LastIndexOf('"');
+            if (index1 > 0 && index2 > index1)
+                return line.Substring(index1, index2 - index1);
+            return null;
+        }
+
+        public static string GetLiteralString(this string line)
+        {
+            line = line.Replace("\\", "\\\\");
+            line = line.Replace("\"", "\\\"");
+            line = line.Replace("\t", "\\t");
+            line = line.Replace("\n", "\\n");
+            return line;
+        }
         #endregion
 
-        #region Strings
+        #region Locale
         public static LocString GetTemperatureUnit()
         {
             switch (GameUtil.temperatureUnit)
@@ -181,7 +199,7 @@ namespace Common
             }
         }
 
-        public static string PathLocale => Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + Localization.GetLocale()?.Code + ".pot");
+        public static string PathLocale => Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + (Localization.GetLocale()?.Code ?? "en") + ".pot");
 #if LOCALE
         public static Dictionary<string, string> StringsDic = new Dictionary<string, string>();
 
@@ -190,14 +208,25 @@ namespace Common
         public static bool StringsAppend = true;
         public static void StringsPrint(string path = null)
         {
-            using (StreamReader sr = new StreamReader(path ?? PathLocale))
+            try
             {
-                while (!sr.EndOfStream)
+                using (StreamReader sr = new StreamReader(path ?? PathLocale))
                 {
-                    string key = sr.ReadLine().GetQuotationString(1);
-                    if (key != null)
-                        StringsDic.Remove(key);
+                    while (!sr.EndOfStream)
+                    {
+                        string line = sr.ReadLine();
+                        if (line.StartsWith("msgctxt ", StringComparison.Ordinal))
+                        {
+                            line = line.GetQuotationString();
+                            //Debug.Log($"key '{key}'");
+                            if (line != null)
+                                StringsDic.Remove(line);
+                        }
+                    }
                 }
+            }
+            catch (Exception)
+            {
             }
 
             using (StreamWriter sw = new StreamWriter(path ?? PathLocale, StringsAppend))
@@ -206,7 +235,7 @@ namespace Common
                 {
                     sw.WriteLine($"#. {keyPair.Key}");
                     sw.WriteLine($"msgctxt \"{keyPair.Key}\"");
-                    sw.WriteLine($"msgid \"{keyPair.Value}\"");
+                    sw.WriteLine($"msgid \"{keyPair.Value.GetLiteralString()}\"");
                     sw.WriteLine($"msgstr \"\"\n");
                 }
             }
@@ -237,8 +266,7 @@ namespace Common
 
         public static void StringsLoad(string path = null)
         {
-            if (Localization.GetLocale()?.Code == null)
-                return;
+            //if (Localization.GetLocale()?.Code == null)return;
 
             try
             {
@@ -284,14 +312,6 @@ namespace Common
             }
         }
 
-        public static string GetQuotationString(string line)
-        {
-            int index1 = line.IndexOf('"') + 1;
-            int index2 = line.LastIndexOf('"');
-            if (index1 > 0 && index2 > index1)
-                return line.Substring(index1, index2 - index1);
-            return null;
-        }
 
         public static void LocalizeTypeToPOT(Type type, string path = null)
         {
@@ -311,7 +331,6 @@ namespace Common
                 }
             }
         }
-
         #endregion
 
         #region Components

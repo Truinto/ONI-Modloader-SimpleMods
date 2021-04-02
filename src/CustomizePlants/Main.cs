@@ -7,6 +7,9 @@ using Harmony;
 using UnityEngine;
 using static Config.PostBootDialog;
 using System.Runtime.Serialization;
+using Common;
+using Klei.AI;
+using System.Reflection;
 
 namespace CustomizePlants
 {
@@ -37,7 +40,7 @@ namespace CustomizePlants
         {
             __instance.Subscribe((int)GameHashes.PlanterStorage, OnReplanted);
         }
-        
+
         public static void OnReplanted(object data = null)
         {
             GameObject go = (data as Storage)?.gameObject;
@@ -95,8 +98,12 @@ namespace CustomizePlants
     #endregion
 
     #region Multi-Fruit
+#if DLC1
+    [HarmonyPatch(typeof(Crop), "SpawnConfiguredFruit")]
+#else
     [HarmonyPatch(typeof(Crop), "SpawnFruit")]
-    public static class Crop_SpawnFruit
+#endif
+    public static class Crop_SpawnConfiguredFruit
     {
         public static bool Prefix(Crop __instance)
         {
@@ -105,9 +112,13 @@ namespace CustomizePlants
                 CustomizePlantsState.StateManager.State.SpecialCropSettings.TryGetValue(__instance.cropId, out setting) == false)
                 return true;
 
-            foreach(KeyValuePair<string, int> entry in setting)
+            foreach (KeyValuePair<string, int> entry in setting)
             {
+#if DLC1
+                __instance.SpawnSomeFruit(entry.Key, entry.Value);
+#else
                 SpawnFruit(__instance, entry.Key, entry.Value);
+#endif
             }
 
             __instance.Trigger((int)GameHashes.CropPicked);
@@ -136,14 +147,14 @@ namespace CustomizePlants
                 Debug.LogWarning("Tried to spawn an invalid crop prefab: " + fruitId);
         }
     }
-    
+
     [HarmonyPatch(typeof(Crop), "InformationDescriptors")]
     public static class Crop_InformationDescriptors
     {
         public static bool Prefix(Crop __instance, ref List<Descriptor> __result)
         {
             Dictionary<string, int> setting;
-            if (CustomizePlantsState.StateManager.State.SpecialCropSettings == null || 
+            if (CustomizePlantsState.StateManager.State.SpecialCropSettings == null ||
                 CustomizePlantsState.StateManager.State.SpecialCropSettings.TryGetValue(__instance.cropId, out setting) == false)
                 return true;
 
@@ -163,13 +174,13 @@ namespace CustomizePlants
                 if (infoDescription != null)
                     str1 = infoDescription.description;
                 string str2 = !GameTags.DisplayAsCalories.Contains(tag) ? (!GameTags.DisplayAsUnits.Contains(tag) ? GameUtil.GetFormattedMass(entry.Value, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}") : GameUtil.GetFormattedUnits(entry.Value, GameUtil.TimeSlice.None, false)) : GameUtil.GetFormattedCalories(calories2, GameUtil.TimeSlice.None, true);
-                
+
                 __result.Add(new Descriptor(string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.YIELD, prefab.GetProperName(), str2), string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.TOOLTIPS.YIELD, str1, GameUtil.GetFormattedCalories(calories1, GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories(calories2, GameUtil.TimeSlice.None, true)), Descriptor.DescriptorType.Effect, false));
             }
 
             if ((__instance.GetComponent<SeedProducer>()?.seedInfo.productionType ?? SeedProducer.ProductionType.DigOnly) == SeedProducer.ProductionType.Harvest)
                 __result.Add(new Descriptor(string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.TOOLTIPS.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Effect, false));
-            
+
             return false;
         }
     }
@@ -177,19 +188,39 @@ namespace CustomizePlants
 
     public static class PlantHelper
     {
+        public static PropertyInfo _AttributeModifierValue = AccessTools.Property(typeof(AttributeModifier), "Value");
         public static StandardCropPlant.AnimSet DecorAnim = new StandardCropPlant.AnimSet() { grow = "idle", grow_pst = "idle", harvest = "idle", idle_full = "idle", wilt_base = "wilt1" };   //wilt1, grow_seed
-        
+
         public static void ProcessPlant(GameObject plant)
         {
-            PlantData setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.name);
-
+            PlantData setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.PrefabID());
             if (setting == null) return;
 
+            #region trait fix
+#if DLC1
+            plant.AddOrGet<Traits>();
+            Modifiers modifiers = plant.AddOrGet<Modifiers>();
+            Trait baseTrait;
+            {
+                string traitName = modifiers.initialTraits.FirstOrDefault();
+                if (traitName == null)
+                {
+                    traitName = plant.PrefabID() + "Modded";
+                    modifiers.initialTraits.Add(traitName);
+                    baseTrait = Db.Get().CreateTrait(traitName, plant.name, plant.name, null, false, null, true, true);
+                }
+                else
+                {
+                    baseTrait = Db.Get().traits.Get(traitName) ?? throw new Exception(plant.PrefabID() + " adds a trait that doesn't exist.");
+                }
+            }
+#endif
+            #endregion
             #region decor plant fixes
             if (setting.fruitId != null)    //decor plant fixes
             {
                 PrickleGrass grass = plant.GetComponent<PrickleGrass>();
-                if (grass != null || plant.name == ColdBreatherConfig.ID || plant.name == EvilFlowerConfig.ID)
+                if (grass != null || plant.PrefabID() == ColdBreatherConfig.ID || plant.PrefabID() == EvilFlowerConfig.ID)
                 {
                     UnityEngine.Object.DestroyImmediate(grass); //what happens if this is null?
                     plant.AddOrGet<StandardCropPlant>();
@@ -217,7 +248,32 @@ namespace CustomizePlants
                 }
             }
             #endregion
+
             #region fruitId
+#if DLC1
+            if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
+            {
+                Crop crop = plant.AddOrGet<Crop>();
+                Crop.CropVal cropval = crop.cropVal;   //this is a copy
+                if (setting.fruitId != null) cropval.cropId = setting.fruitId;
+                if (cropval.cropId == "") cropval.cropId = "WoodLog";
+                if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
+                if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
+                if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
+                if (cropval.numProduced < 1) cropval.numProduced = 1;
+                crop.Configure(cropval);
+
+                EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
+                EnsureAttribute(modifiers, baseTrait, Db.Get().Amounts.Maturity.maxAttribute.Id, cropval.cropDuration / 600f);
+
+                GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, plant.PrefabID().ToString());
+                plant.AddOrGet<Growing>();
+                if (setting.id != ForestTreeConfig.ID)  // don't harvest arbor trees directly
+                    plant.AddOrGet<Harvestable>();
+                plant.AddOrGet<HarvestDesignatable>();
+                plant.AddOrGet<StandardCropPlant>();
+            }
+#else
             if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
             {
                 Crop crop = plant.AddOrGet<Crop>();
@@ -239,19 +295,20 @@ namespace CustomizePlants
                 plant.AddOrGet<HarvestDesignatable>();
                 plant.AddOrGet<StandardCropPlant>();
             }
+#endif
             #endregion
             #region irrigation
             if (setting.irrigation != null)
             {
                 RemoveIrrigation(plant);
-                
+
                 List<PlantElementAbsorber.ConsumeInfo> irrigation = new List<PlantElementAbsorber.ConsumeInfo>(3);
                 List<PlantElementAbsorber.ConsumeInfo> fertilization = new List<PlantElementAbsorber.ConsumeInfo>(3);
                 foreach (KeyValuePair<string, float> entry in setting.irrigation)
                 {
                     if (GameTags.LiquidElements.Contains(entry.Key))
                         irrigation.Add(new PlantElementAbsorber.ConsumeInfo(entry.Key, entry.Value / 600f));
-                    else if(GameTags.SolidElements.Contains(entry.Key))
+                    else if (GameTags.SolidElements.Contains(entry.Key))
                         fertilization.Add(new PlantElementAbsorber.ConsumeInfo(entry.Key, entry.Value / 600f));
                     else
                         Debug.Log(ToDialog("Irrigation for " + setting.id + " defines bad element: " + entry.Key));
@@ -299,9 +356,12 @@ namespace CustomizePlants
                         UnityEngine.Object.DestroyImmediate(illumination);
                     if (cropSleep == null)
                         cropSleep = plant.AddOrGetDef<CropSleepingMonitor.Def>();
-
-                    cropSleep.lightIntensityThreshold = (float)setting.illumination;
                     cropSleep.prefersDarkness = false;
+#if DLC1
+                    EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.MinLightLux.Id, setting.illumination.Value);
+#else
+                    cropSleep.lightIntensityThreshold = (float)setting.illumination;
+#endif
                 }
             }
             #endregion
@@ -346,7 +406,8 @@ namespace CustomizePlants
             }
             #endregion
             #region decor
-            try {
+            try
+            {
                 if (setting.decor_value != null)
                 {
                     plant.GetComponent<DecorProvider>().baseDecor = (float)setting.decor_value;
@@ -356,8 +417,10 @@ namespace CustomizePlants
                 {
                     plant.GetComponent<DecorProvider>().baseRadius = (float)setting.decor_radius;
                 }
-            } catch (Exception) {
-                Debug.LogWarning("[CustomizePlants] For some weird reason " + plant.name + " has no DecorProvider.");
+            }
+            catch (Exception)
+            {
+                Debug.LogWarning("[CustomizePlants] For some weird reason " + plant.PrefabID() + " has no DecorProvider.");
             }
             #endregion
             #region temperatures
@@ -365,15 +428,38 @@ namespace CustomizePlants
             {
                 TemperatureVulnerable temperature = plant.AddOrGet<TemperatureVulnerable>();
 
-                for (int i = 0; i < setting.temperatures.Length; i++)
+                switch (setting.temperatures.Length)
                 {
-                    switch (i)
-                    {
-                        case 0: temperature.internalTemperatureLethal_Low = setting.temperatures[i]; break;
-                        case 1: temperature.internalTemperatureWarning_Low = setting.temperatures[i]; break;
-                        case 2: temperature.internalTemperatureWarning_High = setting.temperatures[i]; break;
-                        case 3: temperature.internalTemperatureLethal_High = setting.temperatures[i]; break;
-                    }
+                    case 1:
+                        temperature.Configure(
+                            tempLethalLow: setting.temperatures[0],
+                            tempWarningLow: setting.temperatures[0],
+                            tempWarningHigh: 9999f,
+                            tempLethalHigh: 9999f);
+                        break;
+                    case 2:
+                        temperature.Configure(
+                            tempLethalLow: setting.temperatures[0],
+                            tempWarningLow: setting.temperatures[1],
+                            tempWarningHigh: 9999f,
+                            tempLethalHigh: 9999f);
+                        break;
+                    case 3:
+                        temperature.Configure(
+                            tempLethalLow: setting.temperatures[0],
+                            tempWarningLow: setting.temperatures[1],
+                            tempWarningHigh: setting.temperatures[2],
+                            tempLethalHigh: 9999f);
+                        break;
+                    case 4:
+                        temperature.Configure(
+                            tempLethalLow: setting.temperatures[0],
+                            tempWarningLow: setting.temperatures[1],
+                            tempWarningHigh: setting.temperatures[2],
+                            tempLethalHigh: setting.temperatures[3]);
+                        break;
+                    default:
+                        break;
                 }
             }
             #endregion
@@ -384,7 +470,7 @@ namespace CustomizePlants
 
                 if (setting.submerged_threshold == 0f)   //doesn't care about water
                     UnityEngine.Object.DestroyImmediate(drowning);
-                else if(setting.submerged_threshold < 0f)   //needs water
+                else if (setting.submerged_threshold < 0f)   //needs water
                 {
                     drowning.livesUnderWater = true;
                     drowning.canDrownToDeath = false;
@@ -510,9 +596,9 @@ namespace CustomizePlants
             }
             #endregion
 
-            
+
         }
-        
+
         public static void RemoveIrrigation(GameObject plant)
         {
             StateMachineController controller = plant.GetComponent<StateMachineController>();
@@ -531,9 +617,21 @@ namespace CustomizePlants
             foreach (ManualDeliveryKG deliver in delivers)
                 UnityEngine.Object.DestroyImmediate(deliver);
         }
+#if DLC1
+        public static void EnsureAttribute(Modifiers modifiers, Trait baseTrait, string attributeId, float value, bool isMultiplier = false)
+        {
+            if (!modifiers.initialAttributes.Contains(attributeId))
+                modifiers.initialAttributes.Add(attributeId);
 
+            var attribute = baseTrait.SelfModifiers.Find(s => s.AttributeId == attributeId);
+            if (attribute == null)
+                baseTrait.Add(new AttributeModifier(attributeId, value, null, isMultiplier, false, false));
+            else
+                _AttributeModifierValue.SetValue(attribute, value, null);
+        }
+#endif
     }
-    
+
     public class PlantData
     {
         private int hash;
@@ -611,7 +709,7 @@ namespace CustomizePlants
 
         public PlantData()
         { }
-        
+
         public override bool Equals(object obj)
         {
             return this.GetHashCode() == (obj as PlantData)?.GetHashCode();
@@ -630,5 +728,5 @@ namespace CustomizePlants
         }
 
     }
-    
+
 }

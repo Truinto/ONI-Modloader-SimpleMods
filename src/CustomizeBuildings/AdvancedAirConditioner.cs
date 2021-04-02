@@ -47,7 +47,7 @@ namespace CustomizeBuildings
         {
             return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
         }
-        
+
         public static void Postfix(GameObject go)
         {
             go.AddOrGet<AirConditionerSliders>();
@@ -62,7 +62,7 @@ namespace CustomizeBuildings
         {
             return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
         }
-        
+
         public static FastSetter lastEnvTemp = Helpers.CreateSetterProperty(typeof(AirConditioner), "lastEnvTemp");
         public static FastSetter lastGasTemp = Helpers.CreateSetterProperty(typeof(AirConditioner), "lastGasTemp");
         public static FastInvoke UpdateStatus = Helpers.CreateInvoker(typeof(AirConditioner), "UpdateStatus");
@@ -161,7 +161,19 @@ namespace CustomizeBuildings
     [SerializationConfig(MemberSerialization.OptIn)]
     public class AirConditionerSliders : KMonoBehaviour, IUserControlledCapacity, IThresholdSwitch, ISim200ms    //IActivationRangeTarget
     {
-        //go.GetComponent<EnergyConsumer>().BaseWattageRating = 120f;
+        #region OnSpawn
+        private EnergyConsumer energyConsumer;
+        private float factorDPU;
+
+        protected override void OnSpawn()
+        {
+            base.OnSpawn();
+            energyConsumer = this.GetComponent<EnergyConsumer>();
+            if (CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor <= 0f)
+                CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor = 0.001f;
+            factorDPU = energyConsumer.BaseWattsNeededWhenActive / (MaxDPU * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
+        }
+        #endregion
 
         #region IUserControlledCapacity
         public float CurrentDPU;
@@ -218,8 +230,8 @@ namespace CustomizeBuildings
 
             if (CurrentDPU > 0f)
             {
-                var energy = this.GetComponent<EnergyConsumer>();
-                energy.BaseWattageRating = energy.BaseWattsNeededWhenActive * Math.Min(1f, CurrentDPU / (MaxDPU * 0.1f));
+                //energyConsumer.BaseWattageRating = energyConsumer.BaseWattsNeededWhenActive * Math.Min(1f, CurrentDPU / (MaxDPU * 0.1f));
+                energyConsumer.BaseWattageRating = Math.Min(energyConsumer.BaseWattsNeededWhenActive, CurrentDPU * factorDPU);
             }
         }
 
@@ -270,7 +282,7 @@ namespace CustomizeBuildings
         {
             return CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
         }
-        
+
         public static void Postfix(GameObject go) => go.AddOrGet<SpaceHeaterSlider>();
     }
 
@@ -281,7 +293,7 @@ namespace CustomizeBuildings
         {
             return CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
         }
-        
+
         public static void Postfix(GameObject go) => go.AddOrGet<SpaceHeaterSlider>();
     }
 

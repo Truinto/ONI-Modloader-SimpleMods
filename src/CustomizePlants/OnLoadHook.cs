@@ -87,13 +87,13 @@ namespace CustomizePlants
         };
     }
 
-    [HarmonyPatch(typeof(EntityTemplates), nameof(EntityTemplates.CreateAndRegisterPreviewForPlant))]
-    public static class PlantPreviewHook
+    [HarmonyPatch(typeof(Assets), nameof(Assets.AddPrefab))]
+    public static class Assets_AddPrefabPatch
     {
-        public static void Postfix(GameObject __result)
+        public static void Prefix(KPrefabID prefab)
         {
-            if (!CustomizePlantsState.StateManager.State.IgnoreList.Contains(__result.name))
-                PlantHelper.ProcessPlant(__result);
+            if (prefab != null && !CustomizePlantsState.StateManager.State.IgnoreList.Contains(prefab.gameObject.name))
+                PlantHelper.ProcessPlant(prefab.gameObject);
         }
     }
 
