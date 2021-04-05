@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.31.0] EX1 S8-456169 EX1 S9-458490
+## [1.0.31.0] EX1 S8-456169 EX1 S9-458490 CS-455509
 
 ### Added
 - added tuning global flag to disable the feature altogether
@@ -10,6 +10,9 @@
 - removed error message when language file is missing
 - fixed English language file not loading
 - fixed condition NoDupeGlobal to be true for NoDupeCompost and NoDupeDesalinator (NoDupeGlobal must be true for any NoDupe feature to work)
+
+### Removed
+- removed tuning settings that were removed from the game and caused crashes
 
 ### Changed
 - options categories start collapsed

@@ -117,6 +117,63 @@ namespace Common
             return result;
         }
 
+        public static T[] AppendAndReplace<T>(ref T[] orig, params T[] objs)
+        {
+            if (orig == null) orig = new T[0];
+
+            int i, j;
+            T[] result = new T[orig.Length + objs.Length];
+            for (i = 0; i < orig.Length; i++)
+                result[i] = orig[i];
+            for (j = 0; i < result.Length; i++)
+                result[i] = objs[j++];
+            orig = result;
+            return result;
+        }
+
+        public static T[] AddToArray<T>(this T[] array, params T[] objs)
+        {
+            if (array == null) array = new T[0];
+
+            int i, j;
+            T[] result = new T[array.Length + objs.Length];
+            for (i = 0; i < array.Length; i++)
+                result[i] = array[i];
+            for (j = 0; i < result.Length; i++)
+                result[i] = objs[j++];
+            return result;
+        }
+
+        public static T[] RemoveFromArray<T>(this T[] array, params T[] objs)
+        {
+            int count = 0;
+            for (int i = 0; i < array.Length; i++)
+                if (objs.Contains(array[i]))
+                    count++;
+
+            T[] result = new T[array.Length - count];
+            for (int i = 0; i < array.Length; i++)
+                if (!objs.Contains(array[i]))
+                    result[i] = array[i];
+            return result;
+        }
+
+        public static T[] RemoveFromArray<T>(this IEnumerable<T> array, params T[] objs)
+        {
+            int count = array.Count();
+
+            foreach (var entry in array)
+                if (objs.Contains(entry))
+                    count--;
+
+            T[] result = new T[count];
+            int j = 0;
+            foreach (var entry in array)
+                if (!objs.Contains(entry))
+                    result[j++] = entry;
+            return result;
+        }
+
         /// <summary>Returns string inside quotation marks. Respects escape character.</summary>
         public static string GetQuotationString(this string line, int occurrence)
         {

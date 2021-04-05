@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.19.0] EX1 S9-458490 CS-455509
+
+### Added
+- added warning when safe_element cannot be resolved (aka typo)
+
+### Fixed
+- non-DLC not applying safe_elements
+
+## [1.0.18.0] EX1 S9-458490
+
+### Fixed
+- fixed decor plants with fruits causing a crash
+- fixed safe_elements being overwritten
+
 ## [1.0.17.0] EX1 S9-458490 CS-455509
 
 ### Fixed

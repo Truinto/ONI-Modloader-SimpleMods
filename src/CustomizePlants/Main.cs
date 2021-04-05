@@ -186,6 +186,17 @@ namespace CustomizePlants
     }
     #endregion
 
+    //[HarmonyPatch(typeof(Growing.StatesInstance), MethodType.Constructor, typeof(Growing))]
+    public class TEST
+    {
+        public static void Prefix(Growing master)
+        {
+            var x = AccessTools.Field(typeof(Growing), "maturity").GetValue(master) as AmountInstance;
+
+            Helpers.Print($"HELLO WORLD {master.gameObject.PrefabID()} x is {x}");
+        }
+    }
+
     public static class PlantHelper
     {
         public static PropertyInfo _AttributeModifierValue = AccessTools.Property(typeof(AttributeModifier), "Value");
@@ -208,6 +219,7 @@ namespace CustomizePlants
                     traitName = plant.PrefabID() + "Modded";
                     modifiers.initialTraits.Add(traitName);
                     baseTrait = Db.Get().CreateTrait(traitName, plant.name, plant.name, null, false, null, true, true);
+                    Helpers.Print("New trait: " + traitName);
                 }
                 else
                 {
@@ -253,6 +265,7 @@ namespace CustomizePlants
 #if DLC1
             if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
             {
+                GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, plant.PrefabID().ToString());
                 Crop crop = plant.AddOrGet<Crop>();
                 Crop.CropVal cropval = crop.cropVal;   //this is a copy
                 if (setting.fruitId != null) cropval.cropId = setting.fruitId;
@@ -264,13 +277,14 @@ namespace CustomizePlants
                 crop.Configure(cropval);
 
                 EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
-                EnsureAttribute(modifiers, baseTrait, Db.Get().Amounts.Maturity.maxAttribute.Id, cropval.cropDuration / 600f);
+                EnsureAttribute(modifiers, baseTrait, Db.Get().Amounts.Maturity.Id, cropval.cropDuration / 600f);
 
-                GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, plant.PrefabID().ToString());
                 plant.AddOrGet<Growing>();
                 if (setting.id != ForestTreeConfig.ID)  // don't harvest arbor trees directly
                     plant.AddOrGet<Harvestable>();
                 plant.AddOrGet<HarvestDesignatable>();
+                if (DlcManager.FeaturePlantMutationsEnabled())
+                    plant.AddOrGet<MutantPlant>();
                 plant.AddOrGet<StandardCropPlant>();
             }
 #else
@@ -371,16 +385,28 @@ namespace CustomizePlants
                 PressureVulnerable pressure = plant.AddOrGet<PressureVulnerable>();
                 pressure.safe_atmospheres.Clear();
                 foreach (string safe_element in setting.safe_elements)
-                    pressure.safe_atmospheres.Add(ElementLoader.FindElementByName(safe_element));
+                {
+                    Element element = ElementLoader.FindElementByName(safe_element);
+                    if (element == null)
+                        Helpers.PrintDialog("Element for safe_element does not exist: " + safe_element);
+                    else
+                        pressure.safe_atmospheres.Add(element);
+                }
 
-                //plant.GetComponent<KPrefabID>().prefabInitFn += (inst =>
-                //{
-                //    PressureVulnerable pressure = inst.GetComponent<PressureVulnerable>();
-                //    pressure.safe_atmospheres.Clear();
-
-                //    foreach (string safe_element in setting.safe_elements)
-                //        pressure.safe_atmospheres.Add(ElementLoader.FindElementByName(safe_element));
-                //});
+                plant.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject inst)
+                {
+                    PressureVulnerable pressure2 = inst.GetComponent<PressureVulnerable>();
+                    if (pressure2 != null)
+                    {
+                        pressure2.safe_atmospheres.Clear();
+                        foreach (var sh in setting.safe_elements)
+                        {
+                            Element element = ElementLoader.FindElementByName(sh);
+                            if (element != null)
+                                pressure2.safe_atmospheres.Add(element);
+                        }
+                    }
+                };
             }
             #endregion
             #region pressure
@@ -620,12 +646,28 @@ namespace CustomizePlants
 #if DLC1
         public static void EnsureAttribute(Modifiers modifiers, Trait baseTrait, string attributeId, float value, bool isMultiplier = false)
         {
-            if (!modifiers.initialAttributes.Contains(attributeId))
-                modifiers.initialAttributes.Add(attributeId);
+            Helpers.PrintDebug($"EnsureAttribute {modifiers.PrefabID()}");
+
+            if (attributeId == Db.Get().Amounts.Maturity.Id)
+            {
+                if (!modifiers.initialAmounts.Contains(attributeId))
+                {
+                    modifiers.initialAmounts.Add(attributeId);
+                    Helpers.PrintDebug($" add Amount {attributeId}");
+                }
+            }
+            else
+            {
+                if (!modifiers.initialAttributes.Contains(attributeId))
+                {
+                    modifiers.initialAttributes.Add(attributeId);
+                    Helpers.PrintDebug($" add Attribute {attributeId}");
+                }
+            }
 
             var attribute = baseTrait.SelfModifiers.Find(s => s.AttributeId == attributeId);
             if (attribute == null)
-                baseTrait.Add(new AttributeModifier(attributeId, value, null, isMultiplier, false, false));
+                baseTrait.Add(new AttributeModifier(attributeId, value, null, isMultiplier, false, true));
             else
                 _AttributeModifierValue.SetValue(attribute, value, null);
         }

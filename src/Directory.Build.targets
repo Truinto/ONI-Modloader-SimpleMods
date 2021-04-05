@@ -5,6 +5,7 @@
     <PreBuildEvent>if True==$(DefineConstants.Contains('DLC1')) (
   "$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\mod_info.yaml" -state "$(ProjectDir)_$(TargetName)State.cs"
 ) else (
+  mkdir "$(ModFolder)\$(TargetName)\vanilla\"
   "$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\vanilla\mod_info.yaml" -state "$(ProjectDir)_$(TargetName)State.cs"
 )</PreBuildEvent>
   </PropertyGroup>
