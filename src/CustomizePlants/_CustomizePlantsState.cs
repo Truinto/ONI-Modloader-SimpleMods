@@ -6,7 +6,7 @@ namespace CustomizePlants
 {
     public class CustomizePlantsState
     {
-        public int version { get; set; } = 19;
+        public int version { get; set; } = 21;
 
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new PlantData(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }),
@@ -33,6 +33,7 @@ namespace CustomizePlants
         public bool SeedsGoIntoAnyFlowerPots { get; set; } = true;
         public float WheezewortTempDelta { get; set; } = -20f;
         public float OxyfernOxygenPerSecond { get; set; } = 0.03125f;
+        public bool CheatMutationAnalyze { get; set; } = false;
         public bool CheatFlowerVase { get; set; } = false;
         public bool WildFlowerVase { get; set; } = false;
 

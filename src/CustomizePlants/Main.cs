@@ -252,11 +252,13 @@ namespace CustomizePlants
                     //kbatchedAnimController.initialAnim = "idle_empty";
                 }
 
-                SeedProducer seed = plant.GetComponent<SeedProducer>();
-                if (seed != null)
+                SeedProducer seedProducer = plant.GetComponent<SeedProducer>();
+                if (seedProducer != null)
                 {
-                    seed.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
-                    seed.seedInfo.newSeedsProduced = 1;
+                    seedProducer.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
+                    seedProducer.seedInfo.newSeedsProduced = 1;
+
+                    Assets.TryGetPrefab(seedProducer.seedInfo.seedId)?.AddOrGet<MutantPlant>(); // this fixes the missing mutantion on deco plant seeds
                 }
             }
             #endregion
@@ -284,7 +286,11 @@ namespace CustomizePlants
                     plant.AddOrGet<Harvestable>();
                 plant.AddOrGet<HarvestDesignatable>();
                 if (DlcManager.FeaturePlantMutationsEnabled())
+                {
+                    SymbolOverrideControllerUtil.AddToPrefab(plant);
                     plant.AddOrGet<MutantPlant>();
+                }
+
                 plant.AddOrGet<StandardCropPlant>();
             }
 #else

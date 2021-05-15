@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.21.0] EX1 S11-464102
+
+### Added
+- added cheat to analyze mutations automatically (off by default)
+
+### Fixed
+- fixed crash when deco plants with crops tried to apply mutations to seeds
+
 ## [1.0.20.0] EX1 S9-458490
 
 ### Fixed

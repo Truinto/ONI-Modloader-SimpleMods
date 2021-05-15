@@ -22,7 +22,7 @@
   <ItemGroup>
     <Compile Include="ColdBreather.cs" />
     <Compile Include="Fixes.cs" />
-    <Compile Include="FumTools.cs" />
+    <Compile Include="Mutations.cs" />
     <Compile Include="OnLoadHook.cs" />
     <Compile Include="FlowerPots.cs" />
     <Compile Include="Main.cs" />

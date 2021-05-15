@@ -10,6 +10,7 @@ using UnityEngine;
 using System.Reflection;
 using Config;
 using System.IO;
+using Klei.AI;
 
 namespace Common
 {
@@ -395,6 +396,25 @@ namespace Common
                         sw.WriteLine($"msgstr \"\"\n");
                     }
                 }
+            }
+        }
+        #endregion
+
+        #region AttributeModifier
+        public static PropertyInfo _AttributeModifierValue = AccessTools.Property(typeof(AttributeModifier), nameof(AttributeModifier.Value));
+        public static PropertyInfo _AttributeModifierIsMultiplier = AccessTools.Property(typeof(AttributeModifier), nameof(AttributeModifier.IsMultiplier));
+
+        public static void EnsureAttributeModifier(this List<AttributeModifier> list, string AttributeId, float value, bool is_multiplier, string description = null, bool uiOnly = false, bool is_readonly = false)
+        {
+            var attribute = list.Find(s => s.AttributeId == AttributeId);
+            if (attribute == null)
+            {
+                list.Add(new AttributeModifier(AttributeId, value, description, is_multiplier, uiOnly, is_readonly));
+            }
+            else
+            {
+                _AttributeModifierValue.SetValue(attribute, value, null);
+                _AttributeModifierIsMultiplier.SetValue(attribute, is_multiplier, null);
             }
         }
         #endregion
