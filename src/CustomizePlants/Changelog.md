@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.20.0] EX1 S9-458490
+
+### Fixed
+- fixed issue with fruit_grow_time not being set
+
 ## [1.0.19.0] EX1 S9-458490 CS-455509
 
 ### Added

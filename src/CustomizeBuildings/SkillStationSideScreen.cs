@@ -264,6 +264,12 @@ namespace CustomizeBuildings
                         Debug.Log("[SkillStation] Wups, no Tag match.");
                     }
 
+                    if (minion.TotalExperienceGained < 0)
+                    {
+                        Debug.Log("[SkillStation] Warning: Minion had negative exp.");
+                        minion.AddExperience(-minion.TotalExperienceGained);
+                    }
+
                     if (minion.AvailableSkillpoints < 0)
                     {
                         Debug.Log("[SkillStation] Reset skills, because of negative Skill Point count.");
@@ -351,6 +357,7 @@ namespace CustomizeBuildings
         {
             try
             {
+                __instance.GetComponent<Filterable>().SelectedTag = "Void";
                 DetailsScreen.Instance.Refresh(__instance.gameObject);
                 Debug.Log("[SkillStation] OnAssign Refresh");
             }

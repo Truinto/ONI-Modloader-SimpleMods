@@ -13,64 +13,26 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>D:\Programme\Steam\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>D:\Programme\Steam\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>D:\Programme\Steam\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="UnityEngine">
-      <HintPath>D:\Programme\Steam\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>D:\Programme\Steam\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Compile Include="..\Common\BootDialog.cs" Link="BootDialog.cs" />
+    <Compile Include="..\Common\ConfigManager.cs" Link="ConfigManager.cs" />
+    <Compile Include="..\Common\Helpers.cs" Link="Helpers.cs" />
+    <Compile Include="..\Common\TechHelper.cs" Link="TechHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedAirConditioner.cs" />
     <Compile Include="Automation.cs" />
     <Compile Include="Batteries.cs" />
     <Compile Include="BuildingDefMod.cs" />
     <Compile Include="Conduits.cs" />
     <Compile Include="Electrolyzer.cs" />
-    <Compile Include="Helper.cs" />
     <Compile Include="Miscellaneous.cs" />
     <Compile Include="NewComponents\UserControlledConduitInbox.cs" />
     <Compile Include="NewComponents\UserControlledStorage.cs" />
     <Compile Include="NewComponents\UserControlledTransferArm.cs" />
+    <Compile Include="SkillStationSideScreen.cs" />
     <Compile Include="SteamTurbine.cs" />
-    <Compile Include="_BootDialog.cs" />
+    <Compile Include="ValvePressure.cs" />
     <Compile Include="Solar.cs" />
     <Compile Include="Transportation.cs" />
     <Compile Include="NoDupeFabricators.cs" />
@@ -80,21 +42,16 @@
     <Compile Include="SpaceScanner.cs" />
     <Compile Include="NoDupeSwitches.cs" />
     <Compile Include="Wires.cs" />
-    <Compile Include="_ConfigManager.cs" />
     <Compile Include="_CustomizeBuildingsState.cs" />
     <Compile Include="RecipeAdd.cs" />
     <Compile Include="Storages.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="_TechHelper.cs" />
+    <Compile Include="DLC1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="Changelog.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>xcopy /i /e /y /f "$(TargetDir)*" "C:\Users\Fumihiko\Documents\Klei\OxygenNotIncluded\mods\dev\CustomizeBuildings"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

@@ -114,9 +114,9 @@ namespace CustomizeBuildings
 
                     float temperatureCooled = temperatureNew - element.Temperature;
                     float mass_max = element.Mass;
-                    if (slider != null && temperatureCooled < 0f)
+                    if (slider != null && temperatureCooled != 0f)
                     {
-                        float mass_DPU = slider.SetDPU / (-temperatureCooled * element.Element.specificHeatCapacity);
+                        float mass_DPU = slider.SetDPU / (Math.Abs(temperatureCooled) * element.Element.specificHeatCapacity);
                         mass_max = Math.Min(element.Mass, mass_DPU);
 #if DEBUG
                         if (mass_max < 0f)
@@ -136,12 +136,12 @@ namespace CustomizeBuildings
 
                     if (slider != null)
                     {
-                        slider.CurrentDPU = -DPU_removed;
+                        slider.CurrentDPU = DPU_removed;
                     }
 
                     float display_dt = (___lastSampleTime > 0f) ? (Time.time - ___lastSampleTime) : 1f;
                     ___lastSampleTime = Time.time;
-                    GameComps.StructureTemperatures.ProduceEnergy(___structureTemperature, -DPU_removed, STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, display_dt);
+                    GameComps.StructureTemperatures.ProduceEnergy(___structureTemperature, Math.Max(4f, -DPU_removed), STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, display_dt);
                     break;
                 }
             }
@@ -217,7 +217,7 @@ namespace CustomizeBuildings
         float IThresholdSwitch.ProcessedInputValue(float input) => GameUtil.GetTemperatureConvertedToKelvin(input);
         #endregion
 
-        #region TooHot
+        #region TooHot; Power Consumption
         public void Sim200ms(float dt)
         {
             // works in principle: 1) should average, so it doesn't flicker so much 2) should consider overheat material bonuses
@@ -228,11 +228,8 @@ namespace CustomizeBuildings
             //else if (handle != Guid.Empty)
             //    handle = selectable.RemoveStatusItem(handle);
 
-            if (CurrentDPU > 0f)
-            {
-                //energyConsumer.BaseWattageRating = energyConsumer.BaseWattsNeededWhenActive * Math.Min(1f, CurrentDPU / (MaxDPU * 0.1f));
-                energyConsumer.BaseWattageRating = Math.Min(energyConsumer.BaseWattsNeededWhenActive, CurrentDPU * factorDPU);
-            }
+            energyConsumer.BaseWattageRating = Math.Min(energyConsumer.BaseWattsNeededWhenActive, Math.Abs(CurrentDPU) * factorDPU);
+            //Helpers.Print($" dt={dt}, CurrentDPU={CurrentDPU}, factorDPU={factorDPU}, Rating={energyConsumer.BaseWattageRating}");
         }
 
         public bool TooHot()

@@ -9,5 +9,4 @@ Also increases limit of Critter Drop-Off to 100.
 Note:
 I would make a new artwork, but I am not an artist. If anyone wants to supply an actual bulletin board artwork, I would be happy to include it.
 
-Github (manual download):
-https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/SweepThoseEggs
+[Github](https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/SweepThoseEggs)

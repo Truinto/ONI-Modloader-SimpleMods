@@ -277,7 +277,7 @@ namespace CustomizePlants
                 crop.Configure(cropval);
 
                 EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
-                EnsureAttribute(modifiers, baseTrait, Db.Get().Amounts.Maturity.Id, cropval.cropDuration / 600f);
+                EnsureAmount(modifiers, baseTrait, Db.Get().Amounts.Maturity, maxValue: cropval.cropDuration / 600f);
 
                 plant.AddOrGet<Growing>();
                 if (setting.id != ForestTreeConfig.ID)  // don't harvest arbor trees directly
@@ -393,7 +393,7 @@ namespace CustomizePlants
                         pressure.safe_atmospheres.Add(element);
                 }
 
-                plant.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject inst)
+                plant.GetComponent<KPrefabID>().prefabInitFn += delegate (GameObject inst)
                 {
                     PressureVulnerable pressure2 = inst.GetComponent<PressureVulnerable>();
                     if (pressure2 != null)
@@ -648,21 +648,10 @@ namespace CustomizePlants
         {
             Helpers.PrintDebug($"EnsureAttribute {modifiers.PrefabID()}");
 
-            if (attributeId == Db.Get().Amounts.Maturity.Id)
+            if (!modifiers.initialAttributes.Contains(attributeId))
             {
-                if (!modifiers.initialAmounts.Contains(attributeId))
-                {
-                    modifiers.initialAmounts.Add(attributeId);
-                    Helpers.PrintDebug($" add Amount {attributeId}");
-                }
-            }
-            else
-            {
-                if (!modifiers.initialAttributes.Contains(attributeId))
-                {
-                    modifiers.initialAttributes.Add(attributeId);
-                    Helpers.PrintDebug($" add Attribute {attributeId}");
-                }
+                modifiers.initialAttributes.Add(attributeId);
+                Helpers.PrintDebug($" add Attribute {attributeId}");
             }
 
             var attribute = baseTrait.SelfModifiers.Find(s => s.AttributeId == attributeId);
@@ -670,6 +659,35 @@ namespace CustomizePlants
                 baseTrait.Add(new AttributeModifier(attributeId, value, null, isMultiplier, false, true));
             else
                 _AttributeModifierValue.SetValue(attribute, value, null);
+        }
+
+        public static void EnsureAmount(Modifiers modifiers, Trait baseTrait, Amount amount, float? maxValue = null, float? value = null, bool isMultiplier = false)
+        {
+            Helpers.PrintDebug($"EnsureAmount {modifiers.PrefabID()}");
+
+            if (!modifiers.initialAmounts.Contains(amount.Id))
+            {
+                modifiers.initialAmounts.Add(amount.Id);
+                Helpers.PrintDebug($" add Amount {amount.Id}");
+            }
+
+            if (value != null)
+            {
+                var attribute = baseTrait.SelfModifiers.Find(s => s.AttributeId == amount.Id);
+                if (attribute == null)
+                    baseTrait.Add(new AttributeModifier(amount.Id, value.Value, null, isMultiplier, false, true));
+                else
+                    _AttributeModifierValue.SetValue(attribute, value.Value, null);
+            }
+
+            if (maxValue != null)
+            {
+                var maxAttribute = baseTrait.SelfModifiers.Find(s => s.AttributeId == amount.maxAttribute.Id);
+                if (maxAttribute == null)
+                    baseTrait.Add(new AttributeModifier(amount.maxAttribute.Id, maxValue.Value, null, isMultiplier, false, true));
+                else
+                    _AttributeModifierValue.SetValue(maxAttribute, maxValue.Value, null);
+            }
         }
 #endif
     }

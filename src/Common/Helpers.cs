@@ -232,6 +232,15 @@ namespace Common
             return null;
         }
 
+        public static string GetUndoLiteralString(this string line)
+        {
+            line = line.Replace("\\\\", "\\");
+            line = line.Replace("\\\"", "\"");
+            line = line.Replace("\\t", "\t");
+            line = line.Replace("\\n", "\n");
+            return line;
+        }
+
         public static string GetLiteralString(this string line)
         {
             line = line.Replace("\\", "\\\\");
@@ -350,9 +359,9 @@ namespace Common
                         }
                         else if (line.StartsWith("msgstr", StringComparison.Ordinal))
                         {
-                            proper = GetQuotationString(line);
+                            proper = GetQuotationString(line).GetUndoLiteralString();
 
-                            if (proper != null)
+                            if (proper != null && proper != "")
                             {
                                 if (!isTag)
                                     Strings.Add(key, proper);

@@ -56,8 +56,7 @@ ALL setting are optional and can be turned off.
 * - where buildings are allowed to be build e.g. in the background, on the floor, anywhere
 * - enable rotation for any building; might result in funny graphical bugs
 
-Github
-https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/Customize%20Buildings
+[Github](https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/Customize%20Buildings)
 
 # README v30
 

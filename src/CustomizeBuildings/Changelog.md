@@ -1,6 +1,24 @@
 # Changelog
 
-## [1.0.31.0] EX1 S8-456169 EX1 S9-458490 CS-455509
+## [1.0.33.0]
+
+### Added
+- added options for mini pumps
+
+### Fixed
+- fixed a Skill Station exploit
+- fixed \n not getting resolved in language files
+
+### Changed
+- changed default value for AirConditionerAbsolutePowerFactor from 0.1 to 0.3
+
+## [1.0.32.0] EX1 S9-458490 CS-455509
+
+### Fixed
+- fixed AirConditionerAbsoluteOutput cooling the building, causing crashes at 0 Kelvin; instead the building will heat at least 4 kJoules
+- fixed AirConditionerAbsoluteOutput requiring almost no power when heating the input; power consumption now scales with heat produced
+
+## [1.0.31.0] EX1 S9-458490 CS-455509
 
 ### Added
 - added tuning global flag to disable the feature altogether

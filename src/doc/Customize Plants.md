@@ -19,7 +19,6 @@ Changeable in json file above!
 * Pincha Pepper 15kg polluted water per cycle (original 35kg)
 * Arbor Tree 62.5kg polluted water (original 70kg)
 * Wheezewort no irrigation (original Phosphorite)
-* Gas Grass only needs 100 Lumen to grow
 * Bluff Briar filter chlorine from their surrounding up to 10g/s
 * Mirth Leaf drop Algae and Clay, but take water to irrigate
 * Jumping Joya filter natural gas from their surrounding up to 10g/s and convert it into CO2
@@ -61,13 +60,16 @@ List of Settings
 * OxyfernOxygenPerSecond: Amount of oxygen released by oxyferns.
 * CheatFlowerVase: When true, the basic Flower Pot for decoration plants does not need any irrigation at all, no matter which plant is in it.
 * WildFlowerVase: When true, the basic Flower Pot grows plants as if they were wild.
-* AutomaticallyAddModPlants: When true, will automatically add any plant to the mod, that registers as a plant via ExtendEntityToBasicPlant function. Might require restart after plant was found.
+* AutomaticallyAddModPlants: When true, will automatically add any plant to the mod, that registers as a plant via ExtendEntityToBasicPlant function. Requires restart after plant was found.
 * IgnoreList: List of plants that shouldn't be modified. Does not apply to ModPlants.
 * ModPlants: List of classes to patch. This may be extended manually or by enabling AutomaticallyAddModPlants.
 
 GitHub
-If Steam Download does not work or you need an older version, you find the files also here: GitHub[github.com]
+If Steam Download does not work or you need an older version, you find the files also here: [GitHub](https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/Customize%20Plants)
 
+
+Notes to unknown IDs:
+The mod will print a list of all found plants to Player.log
 
 Notes to patch order:
 CustomizePlants will try to modify the plant early while it is generated. This works fine for all the game's plants. Plants added from mods may be not fully compatible, depending on how the code was structured. In that case, activate AutomaticallyAddModPlants and boot the game once. It will generate ModPlants. From here you can pick which plants should be patched early or late. It's patched early, if it's not on IgnoreList. It's patched late, if its class is present in ModPlants. In theory you can patch it early and late, but that's pointless. AutomaticallyAddModPlants disables itself after it ran and added at least one entry.

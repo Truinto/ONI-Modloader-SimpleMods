@@ -2,20 +2,20 @@ Care Package Manager
 
 Let's you change what care packages can contain. 让你能改变补给包包含什么。
 
-Default:
-- removes cycle restrictions from all packages
-- adds small amounts of space materials and vacillator recharge
+Features:
+- increase selection of care package up to 6 (visibility limited by screen resolution)
+- increase selection of duplicants up to 6 (visibility limited by screen resolution)
+- bonus attribute chance; increase overall attribute sum (negative values reduce attributes)
+- option to get always 3 interests
+- option to remove starter conditions (some dupes cannot normally show up)
+- option to have duplicants reshuffle button even after game start
+- option to have duplicants and care packages ordered (only works with DLC enabled)
+- multiplier for care package amounts
 
-Things changeable in config:
-- remove existing entries
-- change quantities
-- set custom cycle restriction
-- add entries; game must recognizable the "Tag"!
-- increase roster to 6
-- rosterIsOrdered which makes dupes be on the left side, packages on the right
-- onlyUntilCycle which will make a package unavailable after a certain cycle
-
-NOTE: Make sure that there are at least 2 entries that are valid starting cycle 0, otherwise it will crash loading null.
+Manual editing only:
+- remove or add new entries to possible care packages; this can be anything, as long as the game recognizes the given "Tag"
+- add new restrictions onlyAfterCycle or onlyUntilCycle to get specific packages on specific cycles
+NOTE: Make sure that there are always at least 2 valid entries, otherwise it will crash when accessing the portal
 
 Config file found here: (after enabling it)
 %userprofile%\documents\Klei\OxygenNotIncluded\mods\Care Package Manager.json
@@ -24,12 +24,13 @@ On MacOS: ~Library/Application Support/unity.Klei.Oxygen Not Included/mods/Care 
 On Ubuntu: ~/.config/unity3d/Klei/Oxygen Not Included/mods/Care Package Manager.json
 
 Manual download here:
-Github[github.com]
+[Github](https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/CarePackageMod)
 
 Tip: oni-assistant.com
 If you open something it will show its internal name in the URL
 
 ______________________________________
+Translation not up to date. Feel free to submit your own.
 
 让你能改变补给包包含什么。
 

@@ -1,5 +1,5 @@
 # ONI-Modloader-SimpleMods
-OxygenNotIncluded Mods for [**ONI-Modloader**](https://github.com/javisar/ONI-Modloader)
+OxygenNotIncluded Mods
 
 Disclaimers
 -----------
@@ -7,7 +7,7 @@ Disclaimers
 * BE AWARE that all mods are WIP and may fail.
 * I do not take any responsibility for broken saves or any other damage. Use this software at your own risk.
 
-Installation
+Offline Installation
 -----------
 * Extract the zip file e.g. ONI-Modloader-SimpleMods/Mods/CustomizeBuildingsV6.zip into the mod folder: %userprofile%\Documents\Klei\OxygenNotIncluded\mods\local\CustomizeBuildings
 * Each such mod must be in it's own subfolder!

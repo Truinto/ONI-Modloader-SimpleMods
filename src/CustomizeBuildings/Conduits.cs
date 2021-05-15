@@ -200,6 +200,66 @@ namespace CustomizeBuildings
         }
     }
 
+    [HarmonyPatch(typeof(LiquidMiniPumpConfig), "DoPostConfigureComplete")]
+    internal class LiquidMiniPumpConfig_DoPostConfigureComplete
+    {
+        internal static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.PipeLiquidPumpMini != 1f;
+        }
+
+        private static void Postfix(GameObject go)
+        {
+            ElementConsumer elementConsumer = go.GetComponent<ElementConsumer>();
+            if (elementConsumer == null)
+            {
+                Debug.LogWarning("LiquidPumpConfig_DoPostConfigureComplete elementConsumer was null");
+                return;
+            }
+
+            Storage storage = go.GetComponent<Storage>();
+            if (storage == null)
+            {
+                Debug.LogWarning("LiquidPumpConfig_DoPostConfigureComplete storage was null");
+                return;
+            }
+
+            storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidPumpMini * 2;
+
+            elementConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeLiquidPumpMini;
+        }
+    }
+
+    [HarmonyPatch(typeof(GasMiniPumpConfig), "DoPostConfigureComplete")]
+    internal class GasMiniPumpConfig_DoPostConfigureComplete
+    {
+        internal static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.PipeGasPumpMini != 0.05f;
+        }
+
+        private static void Postfix(GameObject go)
+        {
+            ElementConsumer elementConsumer = go.GetComponent<ElementConsumer>();
+            if (elementConsumer == null)
+            {
+                Debug.LogWarning("GasPumpConfig_DoPostConfigureComplete elementConsumer was null");
+                return;
+            }
+
+            Storage storage = go.GetComponent<Storage>();
+            if (storage == null)
+            {
+                Debug.LogWarning("GasPumpConfig_DoPostConfigureComplete storage was null");
+                return;
+            }
+
+            storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasPumpMini * 2;
+
+            elementConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeGasPumpMini;
+        }
+    }
+
     [HarmonyPatch(typeof(SolidConduitDispenser), "ConduitUpdate")]
     internal class SolidConduitDispenser_ConduitUpdate
     {

@@ -90,7 +90,7 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NewRecipeRockCrusher_ToolTip", "Adds regolith to sand recipe.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_Title", "Air Conditioner Absolute Output");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "If true, Air Conditioner and Aquatuner get a temperature setting. Output temperature will always be that temperature, instead of -14°C. Also adds a DPU setting, which limits how fast the building heats up. Energy consumption will scale on cooling factor.");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "If true, Air Conditioner and Aquatuner get a new target temperature slider. If the target temperature is 0 Kelvin, it will retain -14°C behaviour. Otherwise output temperature will match exactly target temperature. Also adds a kJoules slider, which limits how fast the building heats up. Energy consumption will scale on cooling/heating factor.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "Air Conditioner Absolute Power Factor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "% of MaxDPU the Air Conditioner takes full power. Default: 0.1");
@@ -179,6 +179,12 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPump_Title", "Pipe Gas Pump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPump_ToolTip", "Amount of gas pumped at once from Gas Pumps.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPumpMini_Title", "Pipe Liquid Pump Mini");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPumpMini_ToolTip", "Amount of liquid pumped at once from Mini Liquid Pumps.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPumpMini_Title", "Pipe Gas Pump Mini");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPumpMini_ToolTip", "Amount of gas pumped at once from Mini Gas Pumps.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorRailPackageSize_Title", "Conveyor Rail Package Size");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorRailPackageSize_ToolTip", "Maximum size of packages on Conveyor Rails.");
@@ -521,7 +527,7 @@ namespace CustomizeBuildings
             PeterHan.PLib.Options.POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 31;
+        public int version { get; set; } = 32;
 
         #region $Reset Button
         [Option("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_ToolTip")]
@@ -580,6 +586,8 @@ namespace CustomizeBuildings
                 StateManager.State.PipeValvePressureButtonShow = false;
                 StateManager.State.PipeLiquidPump = 10f;
                 StateManager.State.PipeGasPump = 0.5f;
+                StateManager.State.PipeLiquidPumpMini = 1f;
+                StateManager.State.PipeGasPumpMini = 0.05f;
                 StateManager.State.ConveyorRailPackageSize = 20f;
                 StateManager.State.ConveyorLoaderHasSlider = false;
                 StateManager.State.ConveyorReceptacleHasSlider = false;
@@ -769,7 +777,7 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "Miscellaneous")]
         public bool AirConditionerAbsoluteOutput { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "Miscellaneous")]
-        public float AirConditionerAbsolutePowerFactor { get; set; } = 0.1f;
+        public float AirConditionerAbsolutePowerFactor { get; set; } = 0.3f;
         [Option("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "Miscellaneous")]
         public bool SpaceHeaterTargetTemperature { get; set; } = true;
         #endregion
@@ -831,13 +839,17 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.PipeLiquidMaxPressure_Title", "CustomizeBuildings.LOCSTRINGS.PipeLiquidMaxPressure_ToolTip", "Pipes", "F2")]
         public float PipeLiquidMaxPressure { get; set; } = 10f;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_Title", "CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_ToolTip", "Pipes", "F2")]
-        public float PipeGasMaxPressure { get; set; } = 1f;
+        public float PipeGasMaxPressure { get; set; } = 1.0f;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_Title", "CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_ToolTip", "Pipes")]
         public bool PipeValvePressureButtonShow { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_Title", "CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_ToolTip", "Pipes", "F2")]
-        public float PipeLiquidPump { get; set; } = 10f;
+        public float PipeLiquidPump { get; set; } = 10.0f;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeGasPump_Title", "CustomizeBuildings.LOCSTRINGS.PipeGasPump_ToolTip", "Pipes", "F2")]
         public float PipeGasPump { get; set; } = 0.5f;
+        [Option("CustomizeBuildings.LOCSTRINGS.PipeLiquidPumpMini_Title", "CustomizeBuildings.LOCSTRINGS.PipeLiquidPumpMini_ToolTip", "Pipes", "F2")]
+        public float PipeLiquidPumpMini { get; set; } = 1.0f;
+        [Option("CustomizeBuildings.LOCSTRINGS.PipeGasPumpMini_Title", "CustomizeBuildings.LOCSTRINGS.PipeGasPumpMini_ToolTip", "Pipes", "F2")]
+        public float PipeGasPumpMini { get; set; } = 0.05f;
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorRailPackageSize_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorRailPackageSize_ToolTip", "Pipes", "F2")]
         public float ConveyorRailPackageSize { get; set; } = 20f;
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderHasSlider_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderHasSlider_ToolTip", "Pipes")]
