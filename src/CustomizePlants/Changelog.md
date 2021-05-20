@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.23.0] EX1 S11-464434
+
+### Added
+- added radiation setting, if set adds component with rads equal to value
+- added radiation_radius setting, if radiation component exists sets the X and Y range to value
+- added print_mutations, if true will overwrite MutationSettings with Klei's settings
+- added MutationSettings which let's you change the basic attributes of mutations
+
+## [1.0.22.0] EX1 S11-464102
+
+### Fixed
+- fixed crash when deco plant with a placeholder-crop and the lice mutation and was harvested
+
 ## [1.0.21.0] EX1 S11-464102
 
 ### Added

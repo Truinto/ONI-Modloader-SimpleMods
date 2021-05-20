@@ -417,6 +417,30 @@ namespace Common
                 _AttributeModifierIsMultiplier.SetValue(attribute, is_multiplier, null);
             }
         }
+
+        public class AttributeContainer
+        {
+            public string Description;
+            public string AttributeId;
+            public float Value;
+            public bool IsMultiplier;
+
+            public AttributeContainer()
+            { }
+
+            public AttributeContainer(AttributeModifier source)
+            {
+                this.Description = source.Description;
+                this.AttributeId = source.AttributeId;
+                this.Value = source.Value;
+                this.IsMultiplier = source.IsMultiplier;
+            }
+
+            public static implicit operator AttributeModifier(AttributeContainer container)
+            {
+                return new AttributeModifier(container.AttributeId, container.Value, container.Description, container.IsMultiplier, uiOnly: false, is_readonly: false);
+            }
+        }
         #endregion
 
         #region Components

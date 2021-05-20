@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 namespace CustomizePlants
 {
     public class CustomizePlantsState
     {
-        public int version { get; set; } = 21;
+        public int version { get; set; } = 23;
 
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new PlantData(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }),
@@ -18,7 +19,7 @@ namespace CustomizePlants
             new PlantData(id: ForestTreeConfig.ID, irrigation: new Dictionary<string, float>() { {"DirtyWater", 62.5f }, {"Dirt", 10f} }),
             //new PlantData(id: OxyfernConfig.ID, fruitId: OxyfernConfig.SEED_ID, fruit_amount: 1, fruit_grow_time: 20*600, max_age: -1f),
             //new PlantData(id: ColdBreatherConfig.ID, irrigation: new Dictionary<string, float>() { }, fruitId: ColdBreatherConfig.SEED_ID, fruit_amount: 1, fruit_grow_time: 20*600, max_age: -1f),
-            new PlantData(id: ColdBreatherConfig.ID, irrigation: new Dictionary<string, float>() { }),
+            new PlantData(id: ColdBreatherConfig.ID, irrigation: new Dictionary<string, float>() { }, radiation: 0f, radiation_radius: 6),
             new PlantData(id: GasGrassConfig.ID, illumination: 100f),
             new PlantData(id: PrickleGrassConfig.ID, safe_elements: new string[] { "Oxygen", "ContaminatedOxygen", "CarbonDioxide", "ChlorineGas" }, input_element: "ChlorineGas", input_rate: 0.01f),
             new PlantData(id: LeafyPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Water", 10f} }, fruitId: "placeholder1", fruit_grow_time: 4*600f),
@@ -28,6 +29,12 @@ namespace CustomizePlants
 
         public Dictionary<string, Dictionary<string, int>> SpecialCropSettings { get; set; } = new Dictionary<string, Dictionary<string, int>>() {
             { "placeholder1", new Dictionary<string, int>() { { "Algae", 40 }, { "Clay", 20 } } }
+        };
+
+        public bool print_mutations { get; set; } = true;
+
+        public HashSet<PlantMutationData> MutationSettings { get; set; } = new HashSet<PlantMutationData>() {
+
         };
 
         public bool SeedsGoIntoAnyFlowerPots { get; set; } = true;
@@ -52,6 +59,12 @@ namespace CustomizePlants
             {
                 state.AutomaticallyAddModPlants = false;
                 state.ModPlants.Clear();
+            }
+            if (state.version < 23)
+            {
+                var wheeze = state.PlantSettings.FirstOrDefault(f => f.id == ColdBreatherConfig.ID);
+                if (wheeze != null)
+                    wheeze.radiation = 0f;
             }
             return true;
         }

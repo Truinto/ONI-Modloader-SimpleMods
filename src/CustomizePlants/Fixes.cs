@@ -40,5 +40,22 @@ namespace CustomizePlants
                 return false;
             }
         }
+
+        [HarmonyPatch(typeof(ColdBreather), "OnReplanted")]
+        public static class Patch_ColdBreatherOnReplanted
+        {
+            public static float? _cache = CustomizePlantsState.StateManager.State.PlantSettings.FirstOrDefault(f => f.id == ColdBreatherConfig.ID)?.radiation;
+
+            public static bool Prepare()
+            {
+                return CustomizePlantsState.StateManager.State.ApplyBugFixes;
+            }
+
+            public static void Postfix(RadiationEmitter ___radiationEmitter)
+            {
+                if (_cache != null)
+                    ___radiationEmitter.emitRads = _cache.Value;
+            }
+        }
     }
 }

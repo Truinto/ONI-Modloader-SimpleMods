@@ -121,7 +121,7 @@ namespace CustomizePlants
 #endif
             }
 
-            __instance.Trigger((int)GameHashes.CropPicked);
+            __instance.Trigger((int)GameHashes.CropPicked, __instance);
             return false;
         }
 
@@ -627,7 +627,24 @@ namespace CustomizePlants
 
             }
             #endregion
-
+            #region radiation
+#if DLC1
+            if (setting.radiation != null)
+            {
+                var radiation = plant.AddOrGet<RadiationEmitter>();
+                radiation.emitRads = setting.radiation.Value;
+            }
+            if (setting.radiation_radius != null)
+            {
+                var radiation = plant.GetComponent<RadiationEmitter>();
+                if (radiation != null)
+                {
+                    radiation.emitRadiusX = (short)setting.radiation_radius.Value;
+                    radiation.emitRadiusY = radiation.emitRadiusX;
+                }
+            }
+#endif
+            #endregion
 
         }
 
@@ -722,6 +739,8 @@ namespace CustomizePlants
         public float? input_rate;
         public string output_element;
         public float? output_rate;
+        public float? radiation;
+        public int? radiation_radius;
 
         /// <summary>
         /// Holds settings for one plant.
@@ -747,7 +766,9 @@ namespace CustomizePlants
         /// <param name="input_rate">Amount absorbed per second.</param>
         /// <param name="output_element">Type of gas or liquid plant expels per second.</param>
         /// <param name="output_rate">Amount expelled per second.</param>
-        public PlantData(string id, string fruitId = null, float? fruit_grow_time = null, int? fruit_amount = null, Dictionary<string, float> irrigation = null, float? illumination = null, string[] safe_elements = null, float[] temperatures = null, float[] pressures = null, int? decor_value = null, int? decor_radius = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string disease = null, int? disease_amount = null, string input_element = null, float? input_rate = null, string output_element = null, float? output_rate = null)
+        /// <param name="radiation">Amount of radiation emitted.</param>
+        /// <param name="radiation_radius">Radius of radiation (if any).</param>
+        public PlantData(string id, string fruitId = null, float? fruit_grow_time = null, int? fruit_amount = null, Dictionary<string, float> irrigation = null, float? illumination = null, string[] safe_elements = null, float[] temperatures = null, float[] pressures = null, int? decor_value = null, int? decor_radius = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string disease = null, int? disease_amount = null, string input_element = null, float? input_rate = null, string output_element = null, float? output_rate = null, float? radiation = null, int? radiation_radius = null)
         {
             this.id = id;
             this.fruitId = fruitId;
@@ -770,6 +791,8 @@ namespace CustomizePlants
             this.input_rate = input_rate;
             this.output_element = output_element;
             this.output_rate = output_rate;
+            this.radiation = radiation;
+            this.radiation_radius = radiation_radius;
             //TODO: validate settings
         }
 
