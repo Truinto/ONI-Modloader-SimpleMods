@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.33.0]
+## [1.0.33.0] EX1 S12-466411 CS-466292
 
 ### Added
 - added options for mini pumps
@@ -10,7 +10,9 @@
 - fixed \n not getting resolved in language files
 
 ### Changed
-- changed default value for AirConditionerAbsolutePowerFactor from 0.1 to 0.3
+- changed default value for AirConditionerAbsolutePowerFactor from 0.1 to 0.6
+- air conditioner consumes at least 100W regardless of cooling factor, up to its default value (240W)
+- air conditioner will ignore DPU setting, if in -14°C mode (that is, if target temperature is 0 Kelvin)
 
 ## [1.0.32.0] EX1 S9-458490 CS-455509
 

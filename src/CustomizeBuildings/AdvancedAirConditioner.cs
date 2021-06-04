@@ -114,7 +114,7 @@ namespace CustomizeBuildings
 
                     float temperatureCooled = temperatureNew - element.Temperature;
                     float mass_max = element.Mass;
-                    if (slider != null && temperatureCooled != 0f)
+                    if (slider != null && temperatureCooled != 0f && slider.SetTemperature >= 1f)
                     {
                         float mass_DPU = slider.SetDPU / (Math.Abs(temperatureCooled) * element.Element.specificHeatCapacity);
                         mass_max = Math.Min(element.Mass, mass_DPU);
@@ -228,7 +228,7 @@ namespace CustomizeBuildings
             //else if (handle != Guid.Empty)
             //    handle = selectable.RemoveStatusItem(handle);
 
-            energyConsumer.BaseWattageRating = Math.Min(energyConsumer.BaseWattsNeededWhenActive, Math.Abs(CurrentDPU) * factorDPU);
+            energyConsumer.BaseWattageRating = Math.Min(energyConsumer.BaseWattsNeededWhenActive, 100f + (Math.Abs(CurrentDPU) * factorDPU));
             //Helpers.Print($" dt={dt}, CurrentDPU={CurrentDPU}, factorDPU={factorDPU}, Rating={energyConsumer.BaseWattageRating}");
         }
 

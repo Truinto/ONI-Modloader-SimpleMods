@@ -11,7 +11,7 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
     public class RockCrusherConfig_ConfigureBuildingTemplate
     {
-        private static void Postfix(Game __instance, GameObject go)
+        public static void Postfix(Game __instance, GameObject go)
         {
             if (CustomizeBuildingsState.StateManager.State.NewRecipeRockCrusher)
             {
