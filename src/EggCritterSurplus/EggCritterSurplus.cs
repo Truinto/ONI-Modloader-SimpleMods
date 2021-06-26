@@ -2,12 +2,12 @@
 using System;
 using UnityEngine;
 using TUNING;
-using Harmony;
+using HarmonyLib;
 using System.Linq;
 using System.Collections.Generic;
 using KSerialization;
 using System.Reflection;
-using Techs;
+using Common;
 
 namespace EggCritterSurplus
 {

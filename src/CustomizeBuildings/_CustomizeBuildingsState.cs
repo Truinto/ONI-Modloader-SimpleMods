@@ -1,17 +1,18 @@
 ﻿//#define LOCALE
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using PeterHan.PLib;
 using Common;
+using HarmonyLib;
+using PeterHan.PLib.Options;
 
 namespace CustomizeBuildings
 {
-    [PeterHan.PLib.Options.ConfigFile("CustomizeBuildings.json", true, true)]
-    [PeterHan.PLib.Options.RestartRequired]
+    [ConfigFile("CustomizeBuildings.json", true, true)]
+    [RestartRequired]
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState
     {
-        public static void OnLoad()
+        public static void LoadStrings()
         {
             #region $Reset Button
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "Reset To Klei Default");
@@ -78,6 +79,9 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_Title", "Reservoir Manual Delivery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_ToolTip", "Dupes may store material in reservoirs.\n- dupes will deliver selected liquids/gases until the capacity is at the slider amount\n- liquid/gas pipes can still deliver any element and will ignore the slider limit\n- activating, then deactivating an element checkbox drops it on the floor, for easy removal of rogue elements");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "Railgun Max Launch");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "How much material can be send per launch. Storage is at least twice at much.");
             #endregion
             #region Miscellaneous
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ElectrolizerMaxPressure_Title", "Electrolizer Max Pressure");
@@ -124,8 +128,11 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_Title", "Scanner Best Network Size");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_ToolTip", "Amount of scanners needed for best warning time.");
 
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_Title", "Ladder Comet Invincibility");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_ToolTip", "Comets will no longer deal damage to standard ladders (does not include plastic ones). Known to cause issues on Linux.");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_Title", "Telescope Clear Cell Radius");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_ToolTip", "");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeAnalyzeRadius_Title", "Telescope Analyze Radius");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeAnalyzeRadius_ToolTip", "");
             #endregion
             #region Steam Turbine
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineEnabled_Title", "Steam Turbine Enabled");
@@ -313,6 +320,9 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_Title", "No Dupe Ranch Station");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_ToolTip", "If true, will buff the standard duration of grooming to 100 cycles.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_Title", "No Dupe Telescope");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_ToolTip", "");
             #endregion
             #region Skill Station
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationEnabled_Title", "Skill Station Enabled");
@@ -338,6 +348,13 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_Title", "Skill Station Add Attribute");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationFailure", "{0} wasted time getting their brain fried - Make sure you have enough EXP to trade in");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationReset", "{0} got their <style=\"KKeyword\">Skill Points</style> refunded");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait", "{0} gained a new trait '{1}'");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait", "{0} lost a trait '{1}'");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp", "{0} improved their {1} from {2} to {3}.");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude", "{0} sparked new Interests in {1}");
             #endregion
             #region Tuning
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_Title", "<b><color=red>!!! Unlock Tuning !!!</color></b>");
@@ -511,211 +528,205 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasHigh_Title", "Fuel Cost Per Distance: Steam and CO2 Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasHigh_ToolTip", "");
             #endregion
-            #region SkillStation
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationFailure", "{0} wasted time getting their brain fried - Make sure you have enough EXP to trade in");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationReset", "{0} got their <style=\"KKeyword\">Skill Points</style> refunded");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait", "{0} gained a new trait '{1}'");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait", "{0} lost a trait '{1}'");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp", "{0} improved their {1} from {2} to {3}.");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude", "{0} sparked new Interests in {1}");
-            #endregion
+
 #if LOCALE
             Helpers.StringsPrint();
 #else
             //Helpers.StringsLoad();
 #endif
-            PeterHan.PLib.Options.POptions.RegisterOptions(typeof(CustomizeBuildingsState));
+            //POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 32;
+        public int version { get; set; } = 35;
+
+        [Option("_______________________________________________________________________________________")]
+        public LocText Header => null;
 
         #region $Reset Button
         [Option("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_ToolTip")]
         [JsonIgnore]
-        public System.Action ResetToKleiDefault
+        public System.Action<object> ResetToKleiDefault => delegate (object nix)
         {
-            get => delegate ()
-            {
-                StateManager.State.BatterySmartKJ = 20000f;
-                StateManager.State.BatterySmartNoRunOff = false;
-                StateManager.State.BatteryLargeKJ = 40000f;
-                StateManager.State.LockerKG = 20000f;
-                StateManager.State.LockerSmartKG = 20000f;
-                StateManager.State.GasReservoirKG = 150f;
-                StateManager.State.LiquidReservoirKG = 5000f;
-                StateManager.State.RationBoxKG = 150f;
-                StateManager.State.FridgeKG = 100f;
-                StateManager.State.CritterFeederKG = 2000f;
-                StateManager.State.FishFeederKG = 200f;
-                StateManager.State.CanisterFillerKG = 10f;
-                StateManager.State.ConveyorLoaderKG = 1000f;
-                StateManager.State.ConveyorReceptacleKG = 100f;
-                StateManager.State.IUserControlledMax = 20000f;
-                StateManager.State.ReservoirNoGround = false;
-                StateManager.State.ReservoirManualDelivery = false;
-                StateManager.State.ElectrolizerMaxPressure = 1.8f;
-                StateManager.State.AirfilterDropsCanisters = false;
-                StateManager.State.NewRecipeRockCrusher = false;
-                StateManager.State.AirConditionerAbsoluteOutput = false;
-                StateManager.State.SpaceHeaterTargetTemperature = false;
-                StateManager.State.NoDupeValves = false;
-                StateManager.State.NoDupeSwitches = false;
-                StateManager.State.NoDupeToogleBuildings = false;
-                StateManager.State.NoDupeToogleDoors = false;
-                StateManager.State.ScannerInterferenceRadius = 15;
-                StateManager.State.ScannerWorstWarningTime = 1f;
-                StateManager.State.ScannerBestWarningTime = 200f;
-                StateManager.State.ScannerBestNetworkSize = 6;
-                StateManager.State.LadderCometInvincibility = false;
-                StateManager.State.SolarMaxPower = 380f;
-                StateManager.State.SolarEnergyMultiplier = 1f;
-                StateManager.State.SteamTurbineEnabled = false;
-                StateManager.State.SteamTurbineWattage = 850f;
-                StateManager.State.SteamTurbineSourceElement = "Steam";
-                StateManager.State.SteamTurbineOutputElement = "Water";
-                StateManager.State.SteamTurbinePumpRateKG = 2f;
-                StateManager.State.SteamTurbineMaxSelfHeat = 64f;
-                StateManager.State.SteamTurbineHeatTransferPercent = 0.1f;
-                StateManager.State.SteamTurbineMinActiveTemperature = 398.15f;
-                StateManager.State.SteamTurbineIdealTemperature = 473.15f;
-                StateManager.State.SteamTurbineOutputTemperature = 368.15f;
-                StateManager.State.SteamTurbineOverheatTemperature = 373.15f;
-                StateManager.State.PipeThroughputPercent = 1.0f;
-                StateManager.State.PipeLiquidMaxPressure = 10f;
-                StateManager.State.PipeGasMaxPressure = 1f;
-                StateManager.State.PipeValvePressureButtonShow = false;
-                StateManager.State.PipeLiquidPump = 10f;
-                StateManager.State.PipeGasPump = 0.5f;
-                StateManager.State.PipeLiquidPumpMini = 1f;
-                StateManager.State.PipeGasPumpMini = 0.05f;
-                StateManager.State.ConveyorRailPackageSize = 20f;
-                StateManager.State.ConveyorLoaderHasSlider = false;
-                StateManager.State.ConveyorReceptacleHasSlider = false;
-                StateManager.State.ConveyorLoaderAcceptLiquidsGas = false;
-                StateManager.State.AutoSweeperCapacity = 1000f;
-                StateManager.State.AutoSweeperRange = 4;
-                StateManager.State.AutoSweeperSlider = false;
-                StateManager.State.AutoSweeperPickupAnything = false;
-                StateManager.State.RoboMinerWidth = 16;
-                StateManager.State.RoboMinerHeight = 9;
-                StateManager.State.RoboMinerOffset = 0;
-                StateManager.State.RoboMinerRegolithTurbo = false;
-                StateManager.State.RoboMinerDigThroughGlass = false;
-                StateManager.State.RoboMinerDigAnyTile = false;
-                StateManager.State.WireSmallWatts = 1000;
-                StateManager.State.WireRefinedWatts = 2000;
-                StateManager.State.WireHeavyWatts = 20000;
-                StateManager.State.WireRefinedHeavyWatts = 50000;
-                StateManager.State.TransitTubeAnywhere = false;
-                StateManager.State.TransitTubeUTurns = false;
-                StateManager.State.TransitTubeJoulesPerLaunch = 10000f;
-                StateManager.State.TransitTubeJouleCapacity = 40000f;
-                StateManager.State.NoDupeGlobal = false;
-                StateManager.State.NoDupeApothecary = false;
-                StateManager.State.NoDupeClothingFabricator = false;
-                StateManager.State.NoDupeCookingStation = false;
-                StateManager.State.NoDupeGourmetCookingStation = false;
-                StateManager.State.NoDupeEggCracker = false;
-                StateManager.State.NoDupeGlassForge = false;
-                StateManager.State.NoDupeMetalRefinery = false;
-                StateManager.State.NoDupeMicrobeMusher = false;
-                StateManager.State.NoDupeRockCrusher = false;
-                StateManager.State.NoDupeSuitFabricator = false;
-                StateManager.State.NoDupeSupermaterialRefinery = false;
-                StateManager.State.NoDupeSludgePress = false;
-                StateManager.State.NoDupeCompost = false;
-                StateManager.State.NoDupeDesalinator = false;
-                StateManager.State.NoDupeOilRefinery = false;
-                StateManager.State.NoDupeOilWellCap = false;
-                StateManager.State.NoDupeIceCooledFan = false;
-                StateManager.State.NoDupeRanchStation = false;
-                StateManager.State.SkillStationEnabled = false;
-                StateManager.State.SkillStationCostTime = 180f;
-                StateManager.State.SkillStationCostReset = 0f;
-                StateManager.State.SkillStationCostRemoveTrait = 10000f;
-                StateManager.State.SkillStationCostAddTrait = 10000f;
-                StateManager.State.SkillStationCostBadTrait = -10000f;
-                StateManager.State.SkillStationCostAddAptitude = 10000f;
-                StateManager.State.SkillStationCostAddAttribute = 5000f;
-                StateManager.State.BuildingBaseSettingGlobalFlag = false;
+            StateManager.State.BatterySmartKJ = 20000f;
+            StateManager.State.BatterySmartNoRunOff = false;
+            StateManager.State.BatteryLargeKJ = 40000f;
+            StateManager.State.LockerKG = 20000f;
+            StateManager.State.LockerSmartKG = 20000f;
+            StateManager.State.GasReservoirKG = 150f;
+            StateManager.State.LiquidReservoirKG = 5000f;
+            StateManager.State.RationBoxKG = 150f;
+            StateManager.State.FridgeKG = 100f;
+            StateManager.State.CritterFeederKG = 2000f;
+            StateManager.State.FishFeederKG = 200f;
+            StateManager.State.CanisterFillerKG = 10f;
+            StateManager.State.ConveyorLoaderKG = 1000f;
+            StateManager.State.ConveyorReceptacleKG = 100f;
+            StateManager.State.IUserControlledMax = 20000f;
+            StateManager.State.ReservoirNoGround = false;
+            StateManager.State.ReservoirManualDelivery = false;
+            StateManager.State.RailgunMaxLaunch = 200f;
+            StateManager.State.ElectrolizerMaxPressure = 1.8f;
+            StateManager.State.AirfilterDropsCanisters = false;
+            StateManager.State.NewRecipeRockCrusher = false;
+            StateManager.State.AirConditionerAbsoluteOutput = false;
+            StateManager.State.SpaceHeaterTargetTemperature = false;
+            StateManager.State.NoDupeValves = false;
+            StateManager.State.NoDupeSwitches = false;
+            StateManager.State.NoDupeToogleBuildings = false;
+            StateManager.State.NoDupeToogleDoors = false;
+            StateManager.State.ScannerInterferenceRadius = 15;
+            StateManager.State.ScannerWorstWarningTime = 1f;
+            StateManager.State.ScannerBestWarningTime = 200f;
+            StateManager.State.ScannerBestNetworkSize = 6;
+            StateManager.State.TelescopeClearCellRadius = 5;
+            StateManager.State.TelescopeAnalyzeRadius = 3;
+            StateManager.State.LadderCometInvincibility = false;
+            StateManager.State.SolarMaxPower = 380f;
+            StateManager.State.SolarEnergyMultiplier = 1f;
+            StateManager.State.SteamTurbineEnabled = false;
+            StateManager.State.SteamTurbineWattage = 850f;
+            StateManager.State.SteamTurbineSourceElement = "Steam";
+            StateManager.State.SteamTurbineOutputElement = "Water";
+            StateManager.State.SteamTurbinePumpRateKG = 2f;
+            StateManager.State.SteamTurbineMaxSelfHeat = 64f;
+            StateManager.State.SteamTurbineHeatTransferPercent = 0.1f;
+            StateManager.State.SteamTurbineMinActiveTemperature = 398.15f;
+            StateManager.State.SteamTurbineIdealTemperature = 473.15f;
+            StateManager.State.SteamTurbineOutputTemperature = 368.15f;
+            StateManager.State.SteamTurbineOverheatTemperature = 373.15f;
+            StateManager.State.PipeThroughputPercent = 1.0f;
+            StateManager.State.PipeLiquidMaxPressure = 10f;
+            StateManager.State.PipeGasMaxPressure = 1f;
+            StateManager.State.PipeValvePressureButtonShow = false;
+            StateManager.State.PipeLiquidPump = 10f;
+            StateManager.State.PipeGasPump = 0.5f;
+            StateManager.State.PipeLiquidPumpMini = 1f;
+            StateManager.State.PipeGasPumpMini = 0.05f;
+            StateManager.State.ConveyorRailPackageSize = 20f;
+            StateManager.State.ConveyorLoaderHasSlider = false;
+            StateManager.State.ConveyorReceptacleHasSlider = false;
+            StateManager.State.ConveyorLoaderAcceptLiquidsGas = false;
+            StateManager.State.AutoSweeperCapacity = 1000f;
+            StateManager.State.AutoSweeperRange = 4;
+            StateManager.State.AutoSweeperSlider = false;
+            StateManager.State.AutoSweeperPickupAnything = false;
+            StateManager.State.RoboMinerWidth = 16;
+            StateManager.State.RoboMinerHeight = 9;
+            StateManager.State.RoboMinerOffset = 0;
+            StateManager.State.RoboMinerRegolithTurbo = false;
+            StateManager.State.RoboMinerDigThroughGlass = false;
+            StateManager.State.RoboMinerDigAnyTile = false;
+            StateManager.State.WireSmallWatts = 1000;
+            StateManager.State.WireRefinedWatts = 2000;
+            StateManager.State.WireHeavyWatts = 20000;
+            StateManager.State.WireRefinedHeavyWatts = 50000;
+            StateManager.State.TransitTubeAnywhere = false;
+            StateManager.State.TransitTubeUTurns = false;
+            StateManager.State.TransitTubeJoulesPerLaunch = 10000f;
+            StateManager.State.TransitTubeJouleCapacity = 40000f;
+            StateManager.State.NoDupeGlobal = false;
+            StateManager.State.NoDupeApothecary = false;
+            StateManager.State.NoDupeClothingFabricator = false;
+            StateManager.State.NoDupeCookingStation = false;
+            StateManager.State.NoDupeGourmetCookingStation = false;
+            StateManager.State.NoDupeEggCracker = false;
+            StateManager.State.NoDupeGlassForge = false;
+            StateManager.State.NoDupeMetalRefinery = false;
+            StateManager.State.NoDupeMicrobeMusher = false;
+            StateManager.State.NoDupeRockCrusher = false;
+            StateManager.State.NoDupeSuitFabricator = false;
+            StateManager.State.NoDupeSupermaterialRefinery = false;
+            StateManager.State.NoDupeSludgePress = false;
+            StateManager.State.NoDupeCompost = false;
+            StateManager.State.NoDupeDesalinator = false;
+            StateManager.State.NoDupeOilRefinery = false;
+            StateManager.State.NoDupeOilWellCap = false;
+            StateManager.State.NoDupeIceCooledFan = false;
+            StateManager.State.NoDupeRanchStation = false;
+            StateManager.State.NoDupeTelescope = false;
+            StateManager.State.SkillStationEnabled = false;
+            StateManager.State.SkillStationCostTime = 180f;
+            StateManager.State.SkillStationCostReset = 0f;
+            StateManager.State.SkillStationCostRemoveTrait = 10000f;
+            StateManager.State.SkillStationCostAddTrait = 10000f;
+            StateManager.State.SkillStationCostBadTrait = -10000f;
+            StateManager.State.SkillStationCostAddAptitude = 10000f;
+            StateManager.State.SkillStationCostAddAttribute = 5000f;
+            StateManager.State.BuildingBaseSettingGlobalFlag = false;
 
-                StateManager.State.TuningAtmosuitDecay = -0.1f;
-                StateManager.State.TuningOxygenMaskDecay = -0.2f;
-                StateManager.State.TuningAtmosuitAthletics = -6f;
-                StateManager.State.TuningAtmosuitScalding = 1000f;
-                StateManager.State.TuningAtmosuitInsulation = 50f;
-                StateManager.State.TuningAtmosuitThermalConductivityBarrier = 0.2f;
-                StateManager.State.TuningLeadsuitRadiationShielding = 0.66f;
-                StateManager.State.TuningLeadsuitAthletics = -8;
-                StateManager.State.TuningLeadsuitStrength = 10;
-                StateManager.State.TuningLeadsuitInsulation = 50;
-                StateManager.State.TuningLeadsuitThermalConductivityBarrier = 0.3f;
-                StateManager.State.TuningMissionDurationScale = 1800f;
-                StateManager.State.TuningMassPenaltyExponent = 3.2f;
-                StateManager.State.TuningMassPenaltyDivisor = 300f;
-                StateManager.State.TuningResearchEvergreen = 10;
-                StateManager.State.TuningResearchBasic = 50;
-                StateManager.State.TuningAnalysisDiscovered = 50;
-                StateManager.State.TuningAnalysisComplete = 100;
-                StateManager.State.TuningAnalysisDefaultCyclesPerDiscovery = 0.5f;
-                StateManager.State.TuningThrustCostsLow = 3;
-                StateManager.State.TuningThrustCostsMid = 5;
-                StateManager.State.TuningThrustCostsHigh = 7;
-                StateManager.State.TuningThrustCostsVeryHigh = 9;
-                StateManager.State.TuningClusterFowPointsToReveal = 100f;
-                StateManager.State.TuningClusterFowDefaultCyclesPerReveal = 0.5f;
-                StateManager.State.TuningEngineEfficiencyWeak = 20f;
-                StateManager.State.TuningEngineEfficiencyMedium = 40f;
-                StateManager.State.TuningEngineEfficiencyStrong = 60f;
-                StateManager.State.TuningEngineEfficiencyBooster = 30f;
-                StateManager.State.TuningOxidizerEfficiencyVeryLow = 1f;
-                StateManager.State.TuningOxidizerEfficiencyLow = 2f;
-                StateManager.State.TuningOxidizerEfficiencyHigh = 4f;
-                StateManager.State.TuningCargoContainerMassStaticMass = 1000f;
-                StateManager.State.TuningCargoContainerMassPayloadMass = 1000f;
-                StateManager.State.TuningBurdenInsignificant = 1;
-                StateManager.State.TuningBurdenMinor = 2;
-                StateManager.State.TuningBurdenMinorPlus = 3;
-                StateManager.State.TuningBurdenModerate = 4;
-                StateManager.State.TuningBurdenModeratePlus = 5;
-                StateManager.State.TuningBurdenMajor = 6;
-                StateManager.State.TuningBurdenMajorPlus = 7;
-                StateManager.State.TuningBurdenMega = 9;
-                StateManager.State.TuningEnginePowerEarlyWeak = 12;
-                StateManager.State.TuningEnginePowerEarlyStrong = 20;
-                StateManager.State.TuningEnginePowerMidVeryStrong = 42;
-                StateManager.State.TuningEnginePowerMidStrong = 27;
-                StateManager.State.TuningEnginePowerMidWeak = 6;
-                StateManager.State.TuningEnginePowerLateWeak = 1;
-                StateManager.State.TuningEnginePowerLateStrong = 48;
-                StateManager.State.TuningFuelCostPerDistanceVeryLow = 0.055555556f;
-                StateManager.State.TuningFuelCostPerDistanceLow = 0.0625f;
-                StateManager.State.TuningFuelCostPerDistanceMedium = 0.125f;
-                StateManager.State.TuningFuelCostPerDistanceHigh = 0.166666672f;
-                StateManager.State.TuningFuelCostPerDistanceVeryHigh = 0.25f;
-                StateManager.State.TuningFuelCostPerDistanceGasLow = 0.027777778f;
-                StateManager.State.TuningFuelCostPerDistanceGasHigh = 0.0416666679f;
-                StateManager.TrySaveConfigurationState();
+            StateManager.State.TuningAtmosuitDecay = -0.1f;
+            StateManager.State.TuningOxygenMaskDecay = -0.2f;
+            StateManager.State.TuningAtmosuitAthletics = -6f;
+            StateManager.State.TuningAtmosuitScalding = 1000f;
+            StateManager.State.TuningAtmosuitInsulation = 50f;
+            StateManager.State.TuningAtmosuitThermalConductivityBarrier = 0.2f;
+            StateManager.State.TuningLeadsuitRadiationShielding = 0.66f;
+            StateManager.State.TuningLeadsuitAthletics = -8;
+            StateManager.State.TuningLeadsuitStrength = 10;
+            StateManager.State.TuningLeadsuitInsulation = 50;
+            StateManager.State.TuningLeadsuitThermalConductivityBarrier = 0.3f;
+            StateManager.State.TuningMissionDurationScale = 1800f;
+            StateManager.State.TuningMassPenaltyExponent = 3.2f;
+            StateManager.State.TuningMassPenaltyDivisor = 300f;
+            StateManager.State.TuningResearchEvergreen = 10;
+            StateManager.State.TuningResearchBasic = 50;
+            StateManager.State.TuningAnalysisDiscovered = 50;
+            StateManager.State.TuningAnalysisComplete = 100;
+            StateManager.State.TuningAnalysisDefaultCyclesPerDiscovery = 0.5f;
+            StateManager.State.TuningThrustCostsLow = 3;
+            StateManager.State.TuningThrustCostsMid = 5;
+            StateManager.State.TuningThrustCostsHigh = 7;
+            StateManager.State.TuningThrustCostsVeryHigh = 9;
+            StateManager.State.TuningClusterFowPointsToReveal = 100f;
+            StateManager.State.TuningClusterFowDefaultCyclesPerReveal = 0.5f;
+            StateManager.State.TuningEngineEfficiencyWeak = 20f;
+            StateManager.State.TuningEngineEfficiencyMedium = 40f;
+            StateManager.State.TuningEngineEfficiencyStrong = 60f;
+            StateManager.State.TuningEngineEfficiencyBooster = 30f;
+            StateManager.State.TuningOxidizerEfficiencyVeryLow = 1f;
+            StateManager.State.TuningOxidizerEfficiencyLow = 2f;
+            StateManager.State.TuningOxidizerEfficiencyHigh = 4f;
+            StateManager.State.TuningCargoContainerMassStaticMass = 1000f;
+            StateManager.State.TuningCargoContainerMassPayloadMass = 1000f;
+            StateManager.State.TuningBurdenInsignificant = 1;
+            StateManager.State.TuningBurdenMinor = 2;
+            StateManager.State.TuningBurdenMinorPlus = 3;
+            StateManager.State.TuningBurdenModerate = 4;
+            StateManager.State.TuningBurdenModeratePlus = 5;
+            StateManager.State.TuningBurdenMajor = 6;
+            StateManager.State.TuningBurdenMajorPlus = 7;
+            StateManager.State.TuningBurdenMega = 9;
+            StateManager.State.TuningEnginePowerEarlyWeak = 12;
+            StateManager.State.TuningEnginePowerEarlyStrong = 20;
+            StateManager.State.TuningEnginePowerMidVeryStrong = 42;
+            StateManager.State.TuningEnginePowerMidStrong = 27;
+            StateManager.State.TuningEnginePowerMidWeak = 6;
+            StateManager.State.TuningEnginePowerLateWeak = 1;
+            StateManager.State.TuningEnginePowerLateStrong = 48;
+            StateManager.State.TuningFuelCostPerDistanceVeryLow = 0.055555556f;
+            StateManager.State.TuningFuelCostPerDistanceLow = 0.0625f;
+            StateManager.State.TuningFuelCostPerDistanceMedium = 0.125f;
+            StateManager.State.TuningFuelCostPerDistanceHigh = 0.166666672f;
+            StateManager.State.TuningFuelCostPerDistanceVeryHigh = 0.25f;
+            StateManager.State.TuningFuelCostPerDistanceGasLow = 0.027777778f;
+            StateManager.State.TuningFuelCostPerDistanceGasHigh = 0.0416666679f;
+            StateManager.TrySaveConfigurationState();
 
-                PeterHan.PLib.Options.OptionsDialog.Last?.CloseDialog();
-                PeterHan.PLib.Options.OptionsDialog.Last?.CheckForRestart();
-                PeterHan.PLib.Options.OptionsDialog.Last = null;
-            };
-        }
+            PeterHan.PLib.Options.OptionsDialog.Last?.CloseDialog();
+            PeterHan.PLib.Options.OptionsDialog.Last?.CheckForRestart();
+            PeterHan.PLib.Options.OptionsDialog.Last = null;
+        };
 
         [Option("CustomizeBuildings.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeBuildings.LOCSTRINGS.ResetToCustomDefault_ToolTip")]
         [JsonIgnore]
-        public System.Action ResetToCustomDefault
+        public System.Action<object> ResetToCustomDefault => delegate (object nix)
         {
-            get => delegate ()
-            {
-                StateManager.TrySaveConfigurationState(new CustomizeBuildingsState());
+            StateManager.TrySaveConfigurationState(new CustomizeBuildingsState());
 
-                PeterHan.PLib.Options.OptionsDialog.Last?.CloseDialog();
-                PeterHan.PLib.Options.OptionsDialog.Last?.CheckForRestart();
-                PeterHan.PLib.Options.OptionsDialog.Last = null;
-            };
-        }
+            OptionsDialog.Last?.CloseDialog();
+            OptionsDialog.Last?.CheckForRestart();
+            OptionsDialog.Last = null;
+        };
 
         #endregion
 
@@ -763,6 +774,8 @@ namespace CustomizeBuildings
         public bool ReservoirNoGround { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_Title", "CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_ToolTip", "Storage")]
         public bool ReservoirManualDelivery { get; set; } = true;
+        [Option("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "Storage")]
+        public float RailgunMaxLaunch { get; set; } = 200f;
         #endregion
 
         #region Miscellaneous
@@ -804,6 +817,11 @@ namespace CustomizeBuildings
         public int ScannerBestNetworkSize { get; set; } = 2;
         [Option("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_Title", "CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_ToolTip", "Space Scanner")]
         public bool LadderCometInvincibility { get; set; } = true;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_Title", "CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_ToolTip", "Space Scanner")]
+        public int TelescopeClearCellRadius { get; set; } = 5;
+        [Option("CustomizeBuildings.LOCSTRINGS.TelescopeAnalyzeRadius_Title", "CustomizeBuildings.LOCSTRINGS.TelescopeAnalyzeRadius_ToolTip", "Space Scanner")]
+        public int TelescopeAnalyzeRadius { get; set; } = 3;
         #endregion
 
         #region Steam Turbine
@@ -949,6 +967,8 @@ namespace CustomizeBuildings
         public bool NoDupeIceCooledFan { get; set; } = false; // TODO: revisit
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_ToolTip", "No Dupe")]
         public bool NoDupeRanchStation { get; set; } = false; // TODO: revisit
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_ToolTip", "No Dupe")]
+        public bool NoDupeTelescope { get; set; } = false;
         //public bool NoDupeShearingStation { get; set; } = true;
         //public bool NoDupeCompost { get; set; } = true;
         #endregion
@@ -1167,7 +1187,7 @@ namespace CustomizeBuildings
 
     }
 
-    [Harmony.HarmonyPatch(typeof(Localization), nameof(Localization.Initialize))]
+    [HarmonyPatch(typeof(Localization), nameof(Localization.Initialize))]
     public class Patch_LocalizationInitialize
     {
         public static void Postfix()

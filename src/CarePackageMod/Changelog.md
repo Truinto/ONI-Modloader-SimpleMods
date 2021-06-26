@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.12.0] EX1 S13-469369
+
+### Changed
+- updated to Harmony 2.0
+
 ## [1.0.11.0]
 
 ### Added

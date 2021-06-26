@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Linq;
 using System.Text;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using static Config.PostBootDialog;
 using System.Reflection;
@@ -106,7 +106,7 @@ namespace CustomizePlants
             if (IsPatched) return;
             IsPatched = true;
 
-            var harmony = HarmonyInstance.Create("com.fumihiko.oni.customizeplants");
+            var harmony = new Harmony("com.fumihiko.oni.customizeplants");
             var postfix = new HarmonyMethod(typeof(OnLoadPatch).GetMethod(nameof(OnLoadPatch.PlantPostfix)));
 
             foreach (Type type in PLANTS.CLASSES_NOPREVIEW)

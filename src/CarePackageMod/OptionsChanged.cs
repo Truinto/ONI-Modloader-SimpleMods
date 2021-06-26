@@ -1,4 +1,4 @@
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace CarePackageMod
 
         public static void ButtonPress()
         {
-            PeterHan.PLib.Options.POptions.ShowNow(typeof(CarePackageState), "CarePackageMod Option", OptionChanged.ReloadConfig);
+            PeterHan.PLib.Options.POptions.ShowDialog(typeof(CarePackageState), OptionChanged.ReloadConfig);
             OptionChanged.ReloadConfig();
         }
     }

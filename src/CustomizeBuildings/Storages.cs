@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 
 namespace CustomizeBuildings
@@ -134,6 +134,38 @@ namespace CustomizeBuildings
             {
                 __instance.DropAll(false, false, new Vector3(), true);
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(RailGun), nameof(RailGun.MaxLaunchMass), MethodType.Getter)]
+    public class Railgun_MaxLaunch
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch != 200f;
+        }
+
+        public static bool Prefix(ref float __result)
+        {
+            __result = CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(RailGunConfig), nameof(RailGunConfig.DoPostConfigureComplete))]
+    public class Railgun_MaxLaunch2
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch != 200f;
+        }
+        
+        public static void Postfix(GameObject go)
+        {
+            var particleStorage = go.AddOrGet<HighEnergyParticleStorage>();
+            particleStorage.capacity = CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch * 1.05f;
+
+            go.AddOrGet<Storage>().capacityKg = Math.Min(1200f, CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch * 2f);
         }
     }
 }

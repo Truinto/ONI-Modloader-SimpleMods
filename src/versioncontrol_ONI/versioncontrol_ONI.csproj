@@ -4,10 +4,13 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Configurations>Debug;Release</Configurations>
+    <!--<EnableDefaultItems>false</EnableDefaultItems>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences> -->
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="MDConvert.cs" />
-    <Content Include="LanguageFillOut.cs" />
-    <Content Include="HelperStrings.cs" />
+    <None Include="Program.cs" />
+    <None Include="HelperStrings.cs" />
+    <None Include="MDConvert.cs" />
+    <None Include="LanguageFillOut.cs" />
   </ItemGroup>
 </Project>

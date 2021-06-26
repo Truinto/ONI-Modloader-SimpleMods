@@ -3,7 +3,7 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Harmony;
+using HarmonyLib;
 using System.Reflection;
 
 namespace Config
@@ -299,7 +299,7 @@ namespace Config
                 PostBootDialog.ModName = modName;
                 Common.Helpers.ModName = modName;
             }
-            return Path.Combine(ModsDirectory, modName + ".json");
+            return Path.Combine(ModsDirectory, "config", modName + ".json");
         }
     }
 

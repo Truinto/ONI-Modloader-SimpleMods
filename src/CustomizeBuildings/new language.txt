@@ -1,0 +1,10 @@
+TelescopeClearCellRadius_Title
+TelescopeClearCellRadius_ToolTip
+TelescopeAnalyzeRadius_Title
+TelescopeAnalyzeRadius_ToolTip
+
+NoDupeTelescope_Title
+NoDupeTelescope_ToolTip
+
+RailgunMaxLaunch_Title
+RailgunMaxLaunch_ToolTip

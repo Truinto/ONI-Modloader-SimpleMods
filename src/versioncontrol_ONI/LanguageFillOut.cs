@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.CodeDom.Compiler;
 using static versioncontrol_ONI.HelperStrings;
 
 namespace versioncontrol_ONI
@@ -25,7 +26,7 @@ namespace versioncontrol_ONI
         public static Regex rex_variable = new Regex(@"public\s*[\w\.]*\s*(\w*)", RegexOptions.Compiled);
         public static Regex rex_numbers = new Regex(@"\d+\.?(\d*)f;", RegexOptions.Compiled);
 
-        public static void Main(string pathStateSource, bool overwrite = false)
+        public static void Run(string pathStateSource, bool overwrite = false)
         {
             if (pathStateSource == null || !File.Exists(pathStateSource))
                 return;
@@ -70,7 +71,7 @@ namespace versioncontrol_ONI
                         var variable_match = rex_variable.Match(line[i + j]);
                         if (variable_match.Success && variable_match.Groups.Count == 2)
                         {
-							if (variable_match.Groups[1].EndsWith("Percent"))
+							if (variable_match.Groups[1].Value.EndsWith("Percent"))
 								format = format.Replace('F', 'P');
 							
                             line[i] = $"        [Option(\"{@namespace}.LOCSTRINGS.{variable_match.Groups[1]}_Title\", \"{@namespace}.LOCSTRINGS.{variable_match.Groups[1]}_ToolTip\", \"{region}\", {format})]";
@@ -216,4 +217,13 @@ namespace versioncontrol_ONI
             return variable;
         }
     }
+
+    public class Parser
+    {
+        public void Main()
+        {
+            //System.CodeDom.Compiler.CodeParser.Parse();
+        }
+    }
+
 }

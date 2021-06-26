@@ -7,10 +7,10 @@ using Common;
 
 namespace CarePackageMod
 {
-    [PeterHan.PLib.Options.ConfigFile("Care Package Manager.json", true, true)]
+    [ConfigFile("Care Package Manager.json", true, true)]
     public class CarePackageState
     {
-        public static void OnLoad()
+        public static void LoadStrings()
         {
             #region $Settings
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.biggerRoster_Title", "Change amount");
@@ -48,7 +48,7 @@ namespace CarePackageMod
 #else
             Helpers.StringsLoad();
 #endif
-            POptions.RegisterOptions(typeof(CarePackageState));
+            //POptions.RegisterOptions(typeof(CarePackageState));
         }
 
         public int version { get; set; } = 8;
@@ -56,37 +56,37 @@ namespace CarePackageMod
         public bool enabled { get; set; } = true;
 
         #region $Settings
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.biggerRoster_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.biggerRoster_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.biggerRoster_Title", "CarePackageMod.LOCSTRINGS.biggerRoster_ToolTip")]
         public bool biggerRoster { get; set; } = true;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.rosterDupes_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.rosterDupes_ToolTip")]
-        [PeterHan.PLib.Limit(0, 6)]
+        [Option("CarePackageMod.LOCSTRINGS.rosterDupes_Title", "CarePackageMod.LOCSTRINGS.rosterDupes_ToolTip")]
+        [Limit(0, 6)]
         public int rosterDupes { get; set; } = 3;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.rosterPackages_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.rosterPackages_ToolTip")]
-        [PeterHan.PLib.Limit(0, 6)]
+        [Option("CarePackageMod.LOCSTRINGS.rosterPackages_Title", "CarePackageMod.LOCSTRINGS.rosterPackages_ToolTip")]
+        [Limit(0, 6)]
         public int rosterPackages { get; set; } = 3;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.attributeBonusChance_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.attributeBonusChance_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.attributeBonusChance_Title", "CarePackageMod.LOCSTRINGS.attributeBonusChance_ToolTip")]
         public int attributeBonusChance { get; set; } = 0;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.always3Interests_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.always3Interests_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.always3Interests_Title", "CarePackageMod.LOCSTRINGS.always3Interests_ToolTip")]
         public bool always3Interests { get; set; } = true;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.removeStarterRestriction_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.removeStarterRestriction_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.removeStarterRestriction_Title", "CarePackageMod.LOCSTRINGS.removeStarterRestriction_ToolTip")]
         public bool removeStarterRestriction { get; set; } = true;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.allowReshuffle_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.allowReshuffle_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.allowReshuffle_Title", "CarePackageMod.LOCSTRINGS.allowReshuffle_ToolTip")]
         public bool allowReshuffle { get; set; } = false;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.rosterIsOrdered_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.rosterIsOrdered_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.rosterIsOrdered_Title", "CarePackageMod.LOCSTRINGS.rosterIsOrdered_ToolTip")]
         public bool rosterIsOrdered { get; set; } = false;
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.multiplier_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.multiplier_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.multiplier_Title", "CarePackageMod.LOCSTRINGS.multiplier_ToolTip")]
         public float multiplier { get; set; } = 1f;
 
 
-        [PeterHan.PLib.Option("CarePackageMod.LOCSTRINGS.OPTIONS.labelPackages_Title", "CarePackageMod.LOCSTRINGS.OPTIONS.labelPackages_ToolTip")]
+        [Option("CarePackageMod.LOCSTRINGS.labelPackages_Title", "CarePackageMod.LOCSTRINGS.labelPackages_ToolTip")]
         public LocString labelPackages { get; set; }
 
         public CarePackageContainer[] CarePackages { get; set; } = CarePackageList.GetPackages();

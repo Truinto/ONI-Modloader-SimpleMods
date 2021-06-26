@@ -7,7 +7,7 @@ namespace CustomizePlants
 {
     public class CustomizePlantsState
     {
-        public int version { get; set; } = 23;
+        public int version { get; set; } = 24;
 
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new PlantData(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }, temperatures: new float[] { 218.15f, 278.15f, 308.15f, 398.15f }),
@@ -34,7 +34,6 @@ namespace CustomizePlants
         public bool print_mutations { get; set; } = true;
 
         public HashSet<PlantMutationData> MutationSettings { get; set; } = new HashSet<PlantMutationData>() {
-
         };
 
         public bool SeedsGoIntoAnyFlowerPots { get; set; } = true;
@@ -65,6 +64,10 @@ namespace CustomizePlants
                 var wheeze = state.PlantSettings.FirstOrDefault(f => f.id == ColdBreatherConfig.ID);
                 if (wheeze != null)
                     wheeze.radiation = 0f;
+            }
+            if (state.version < 24)
+            {
+                state.MutationSettings.Clear();
             }
             return true;
         }

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using TUNING;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 
 namespace CustomizeBuildings
@@ -11,6 +11,11 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
     public class RockCrusherConfig_ConfigureBuildingTemplate
     {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.NewRecipeRockCrusher;
+        }
+
         public static void Postfix(Game __instance, GameObject go)
         {
             if (CustomizeBuildingsState.StateManager.State.NewRecipeRockCrusher)

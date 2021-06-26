@@ -1,4 +1,4 @@
-using Harmony;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using Klei.AI;
-using FumLib;
+using Common;
 
 namespace CustomizeCritter
 {
@@ -270,7 +270,7 @@ namespace CustomizeCritter
             this.producedConversionRate = producedConversionRate;
             this.diseaseId = diseaseId;
             this.diseasePerKgProduced = diseasePerKgProduced;
-            foreach (var consume in consumeTags) consumeTags.Add(consume);
+            foreach (var consume in consumeTags) this.consumedTags.Add(consume);
         }
 
         public DietContainer(Diet.Info info)

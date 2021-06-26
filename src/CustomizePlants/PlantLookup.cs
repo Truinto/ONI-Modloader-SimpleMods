@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Linq;
 using System.Text;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using static Config.PostBootDialog;
 using System.Reflection;

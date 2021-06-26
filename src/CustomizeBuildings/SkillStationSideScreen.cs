@@ -1,5 +1,5 @@
 //#define LOCALE
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
@@ -235,7 +235,6 @@ namespace CustomizeBuildings
                             //tooltip = $"{minion.GetProperName()} lost a trait '{trait.Name}'";  //SkillStationRemoveTrait
                             tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait"), minion.GetProperName(), trait.Name);
                         }
-
                     }
                     else if (filter.SelectedTag.Name.StartsWith("Attribute ", StringComparison.Ordinal)) // if attribute ID 
                     {

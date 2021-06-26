@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Linq;
 using System.Text;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using static Config.PostBootDialog;
 using System.Runtime.Serialization;
@@ -228,7 +228,7 @@ namespace CustomizePlants
             }
 #endif
             #endregion
-            #region decor plant fixes
+            #region decor plant fixes; including seeds
             if (setting.fruitId != null)    //decor plant fixes
             {
                 PrickleGrass grass = plant.GetComponent<PrickleGrass>();
@@ -252,13 +252,23 @@ namespace CustomizePlants
                     //kbatchedAnimController.initialAnim = "idle_empty";
                 }
 
-                SeedProducer seedProducer = plant.GetComponent<SeedProducer>();
+                SeedProducer seedProducer = plant.GetComponent<SeedProducer>(); // this fixes the missing mutantion on deco plant seeds
                 if (seedProducer != null)
                 {
                     seedProducer.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
                     seedProducer.seedInfo.newSeedsProduced = 1;
 
-                    Assets.TryGetPrefab(seedProducer.seedInfo.seedId)?.AddOrGet<MutantPlant>(); // this fixes the missing mutantion on deco plant seeds
+                    var mutantseed = Assets.TryGetPrefab(seedProducer.seedInfo.seedId)?.AddOrGet<MutantPlant>();
+                    if (mutantseed != null)
+                    {
+                        mutantseed.SpeciesID = plant.GetComponent<KPrefabID>().PrefabTag;
+                    }
+
+                    var mutantcompost = Assets.TryGetPrefab("Compost" + plant.GetComponent<KPrefabID>().name)?.AddOrGet<MutantPlant>();
+                    if (mutantcompost != null)
+                    {
+                        mutantcompost.SpeciesID = mutantseed.SpeciesID;
+                    }
                 }
             }
             #endregion
@@ -287,8 +297,10 @@ namespace CustomizePlants
                 plant.AddOrGet<HarvestDesignatable>();
                 if (DlcManager.FeaturePlantMutationsEnabled())
                 {
+                    var mutant = plant.AddOrGet<MutantPlant>();
+                    mutant.SpeciesID = plant.GetComponent<KPrefabID>().PrefabTag;
+                    Helpers.Print("Set mutant.SpeciesID to " + mutant.SpeciesID);
                     SymbolOverrideControllerUtil.AddToPrefab(plant);
-                    plant.AddOrGet<MutantPlant>();
                 }
 
                 plant.AddOrGet<StandardCropPlant>();

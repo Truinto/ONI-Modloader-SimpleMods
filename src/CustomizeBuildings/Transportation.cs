@@ -1,10 +1,11 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Linq;
 using System;
+using Common;
 
 namespace CustomizeBuildings
 {
@@ -70,7 +71,7 @@ namespace CustomizeBuildings
             //__result.ObjectLayer = ObjectLayer.Wire;
             //__result.TileLayer = ObjectLayer.WireTile;
 
-            __result.BuildLocationRule = BuildLocationRule.Anywhere;            
+            __result.BuildLocationRule = BuildLocationRule.Anywhere;
             __result.ObjectLayer = ObjectLayer.Canvases;
             //__result.TileLayer = ObjectLayer.Canvases;
         }
@@ -108,21 +109,45 @@ namespace CustomizeBuildings
             }
         }
     }
-    
-    //[HarmonyPatch(typeof(BipedTransitionLayer), new Type[] { typeof(Navigator), typeof(float), typeof(float) })]
-    //internal class BipedTransitionLayer_BipedTransitionLayer
-    //{
-    //    private static bool Prepare()
-    //    {
-    //        Debug.Log("HELLO WORLD1");
-    //        return CustomizeBuildingsState.StateManager.State.TransitTubeSpeed != 18f;
-    //    }
-    //    private static void Prefix(ref float ___tubeSpeed)
-    //    {
-    //        //___tubeSpeed = CustomizeBuildingsState.StateManager.State.TransitTubeSpeed;
-    //        //Debug.Log("Transit Tube speed set to: " + CustomizeBuildingsState.StateManager.State.TransitTubeSpeed.ToString());
-    //        Debug.Log("HELLO WORLD2");
-    //    }
-    //}
+
+    //[HarmonyPatch(typeof(BipedTransitionLayer), nameof(BipedTransitionLayer.BeginTransition))]
+    public class TravelTubeSpeed_Patch
+    {
+        public static bool Prepare()
+        {
+            return true;
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (var line in instructions)
+            {
+                if (line.opcode == OpCodes.Ldc_R4 && (float)line.operand == 18f)
+                {
+                    line.operand = 30f;
+                    Helpers.PrintDebug("Patched BipedTransitionLayer");
+                }
+                yield return line;
+            }
+        }
+    }
+
+    //[HarmonyPatch(typeof(TUNING.DUPLICANTSTATS.MOVEMENT), MethodType.StaticConstructor)]
+    public class Speed_Patch
+    {
+        public static bool Prepare()
+        {
+            return true;
+        }
+
+        public static void OnLoad()
+        {
+            return;
+            TUNING.DUPLICANTSTATS.MOVEMENT.BONUS_2 = 1.25f;     // Standard Tile
+            TUNING.DUPLICANTSTATS.MOVEMENT.BONUS_3 = 1.5f;      // Metal, Plastic Tile
+            TUNING.DUPLICANTSTATS.MOVEMENT.PENALTY_2 = 0.75f;   // Carpet
+            TUNING.DUPLICANTSTATS.MOVEMENT.PENALTY_3 = 0.5f;    // Travel Tube Bridge
+        }
+    }
 
 }

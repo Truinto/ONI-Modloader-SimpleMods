@@ -6,13 +6,14 @@ Mac: ~Library/Application Support/unity.Klei.Oxygen Not Included/mods/CustomizeC
 Ubuntu: ~/.config/unity3d/Klei/Oxygen Not Included/mods/CustomizeCritter.json
 
 IMPORTANT:
-For the main categories of settings (critter_settings, egg_settings, trait_settings, and egg_modifiers) any missing option is ignored (except for id). For instance, if you want to make it so a critter doesn't drown, then it's sufficient to just define 'id' and 'canDrown'. Note that some options interact with each other. For instance, giving a peaceful critter an attack value still doesn't make it fight back. For this you need to look into the chore_table. I made it as easy as possible, while also allowing maximum control. Some changes can still prove difficult, even for me. I recommend small changes with lots of testing.
-If you use an id that doesn't already exists in the game, then a new type will be generated to accommodate it. Missing options for these will be set to an default value, if it would otherwise be guaranteed to cause a crash. These defaults might not fit the critter you indented to create at all.
+- For the main categories of settings (critter_settings, egg_settings, trait_settings, and egg_modifiers) any missing option is ignored (except for id).
+- If you use an id that doesn't already exists in the game, then a new type will be generated to accommodate it. Missing options for these will be set to an default value, if it would otherwise be guaranteed to cause a crash. These defaults might not fit the critter you indented to create at all.
+- A lot of settings are not fully implemented and don't work. Settings marked with an asterisk are very likely to cause issues. Try to avoid them.
 
 General settings:
 - debug: verbose log output
 - print_all: If this flag is true during bootup, it will search for all registered entities (including from other mods) and overwrite critter_settings, egg_settings, trait_settings, and egg_modifiers with their extracted default values. Any previous modifications you made to these settings will be lost during this process.
-- print_verbose: During the 'print_all' procedure, it will print the chore_table as well (which isn't needed for normal use).
+- print_verbose: During the 'print_all' procedure, it will print the chore_table as well (which doesn't work currently).
 - alwaysHungry: Any food intake will have critters stomach set to 50%, causing them to constantly eat.
 - cantStarve: Tame critters cannot starve.
 - eggWildness: Disabled if negativ. Otherwise increase wildness on newly hatched eggs by this percentage (0.0 to 100.0).
@@ -24,18 +25,18 @@ critter_settings: (properties of all critter types, including robots)
 - id: unique id of critter
 - name: display name
 - desc: displayed description
-- anim_file: kanim of critter
-- is_baby: whenever of not a critter is a baby; affects growing up (don't use in conjunction with is_adult)
-- is_adult: whenever of not a critter is an adult; affects reproduction (don't use in conjunction with is_baby)
+- *anim_file: kanim of critter
+- *is_baby: whenever of not a critter is a baby; affects growing up (don't use in conjunction with is_adult)
+- *is_adult: whenever of not a critter is an adult; affects reproduction (don't use in conjunction with is_baby)
 - traitId: id of trait to be used (may define new trait in trait_settings)
-- override_prefix: prefix of KAnim and CreatureBrain (behavior)
+- *override_prefix: prefix of KAnim and CreatureBrain (behavior)
 - space_requirement: tile needed before critter is overcrowded
 - lifespan: negative values makes critter immortal; positive values do nothing; for actual life time see traits
-- mass: weight of critter
-- width: horizontal space
-- height: vertical space
+- *mass: weight of critter
+- *width: horizontal space
+- *height: vertical space
 - decor: range and amount of decor
-- navGridName: logic on how critter tries to move
+- *navGridName: logic on how critter tries to move
 -- WalkerNavGrid1x1
 -- WalkerBabyNavGrid
 -- DreckoNavGrid
@@ -46,18 +47,18 @@ critter_settings: (properties of all critter types, including robots)
 -- FloaterNavGrid
 -- SwimmerNavGrid
 -- SquirrelNavGrid
-- navi:
+- *navi:
 -- Floor
 -- Hover
 -- Swim
 - moveSpeed: speed of movement
 - dropOnDeath: list of items dropped after death (standard weight per unit)
-- canDrown: whenever a critter can breath liquids
-- canCrushed: whenever a critter dies when burrowed by sand
-- canBurrow: whenever a critter burrows at night
-- canTunnel: whenever a critter can burrow through tiles
-- canFall: whenever a critter is affected by gravity
-- canHoverOverWater: whenever a critter floats on liquids (overrides canFall)
+- *canDrown: whenever a critter can breath liquids
+- *canCrushed: whenever a critter dies when burrowed by sand
+- *canBurrow: whenever a critter burrows at night
+- *canTunnel: whenever a critter can burrow through tiles
+- *canFall: whenever a critter is affected by gravity
+- *canHoverOverWater: whenever a critter floats on liquids (overrides canFall)
 - tempLowDeath: low temperature limit before the critter dies
 - tempLowWarning: comfortable temperature range
 - tempBorn: temperature at which the critter spawns from an egg
@@ -66,17 +67,17 @@ critter_settings: (properties of all critter types, including robots)
 - pickup_only_from_top: perhaps animation relevant
 - pickup_allow_mark: whenever can be marked for bagging (otherwise trap needed)
 - pickup_use_gun: perhaps animation relevant
-- tags: list of tags to be added to critter ("R:SomeTag" removes existing tags, "C:" clears all tags)
-- faction: group the critter belongs to
+- *tags: list of tags to be added to critter ("R:SomeTag" removes existing tags, "C:" clears all tags)
+- *faction: group the critter belongs to
 -- Prey
 -- Pest
-- species: creature type the critter belongs to (interacts with other logics)
+- *species: creature type the critter belongs to (interacts with other logics)
 - lures: list of elements the critter can be lured by
 - attackValue: attack value; note: whenever a critter uses this attack is dependend on the chore_table
-- chore_table: "chore_table" is a list of logic components applied to the critter; if automatically_populate is true, the mod will fill out missing components automatically; Sweepbot is disabled because of bugs; note: use print_all and print_verbose to extract the chore_table; note2: due to bugs a lot doesn't work as intended, use OVERRIDE_ID to copy a working chore_table from base creature
+- *chore_table: NOT WORKING! "chore_table" is a list of logic components applied to the critter; if automatically_populate is true, the mod will fill out missing components automatically; Sweepbot is disabled because of bugs; note: use print_all and print_verbose to extract the chore_table; note2: due to bugs a lot doesn't work as intended, use OVERRIDE_ID to copy a working chore_table from base creature
 - adultId: only is_baby; critter the baby will evolve into
-- eggId: only relevant for discover (so it shows up in menus)
-- babyId: only relevant for discover (so it shows up in menus)
+- *eggId: only relevant for discover (so it shows up in menus)
+- *babyId: only relevant for discover (so it shows up in menus)
 - dropOnMature: only is_baby; item drop when critter evolves
 - fertility_cycles: only is_adult; time between laying eggs
 - egg_chances: table of eggs and how likely they are (modifiers defined in egg_modifiers)
@@ -148,8 +149,7 @@ egg_modifiers: (modifiers of egg probabilities; only one TYPE can be used at onc
 wildEffect, tameEffect, happyWildEffect, happyTameEffect, unhappyWildEffect, unhappyTameEffect:
 Similiar to traits, these settings control attribute modifiers on happy, unhappy, wild, or tame critters. They take the same attribute ids. wildEffect and tameEffect are only applied, if the critter ID is present in critter_settings.
 
-
-
+* may not work
 
 
 

@@ -1,4 +1,4 @@
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
@@ -63,9 +63,6 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
         }
 
-        public static FastSetter lastEnvTemp = Helpers.CreateSetterProperty(typeof(AirConditioner), "lastEnvTemp");
-        public static FastSetter lastGasTemp = Helpers.CreateSetterProperty(typeof(AirConditioner), "lastGasTemp");
-        public static FastInvoke UpdateStatus = Helpers.CreateInvoker(typeof(AirConditioner), "UpdateStatus");
         public static Func<int, object, bool> UpdateStateCbDelegate = (Func<int, object, bool>)AccessTools.Field(typeof(AirConditioner), "UpdateStateCbDelegate").GetValue(null);
 
         [HarmonyPriority(Priority.Low)]
@@ -86,7 +83,7 @@ namespace CustomizeBuildings
                 occupyArea.TestArea(Grid.PosToCell(__instance.gameObject), __instance, UpdateStateCbDelegate);
                 ___envTemp /= (float)___cellCount;
             }
-            lastEnvTemp(__instance, ___envTemp);
+            Access.lastEnvTemp(__instance, ___envTemp);
             List<GameObject> items = storage.items;
             for (int i = 0; i < items.Count; i++)
             {
@@ -94,7 +91,7 @@ namespace CustomizeBuildings
                 if (element.Mass > 0f && (__instance.isLiquidConditioner && element.Element.IsLiquid || !__instance.isLiquidConditioner && element.Element.IsGas))
                 {
                     isSatisfied = true;
-                    lastGasTemp(__instance, element.Temperature);
+                    Access.lastGasTemp(__instance, element.Temperature);
                     float temperatureNew = element.Temperature + __instance.temperatureDelta;
                     if (slider != null)
                     {
@@ -152,7 +149,7 @@ namespace CustomizeBuildings
                 ___lastSampleTime = Time.time;
             }
             operational.SetActive(isSatisfied, false);
-            UpdateStatus(__instance);
+            Access.UpdateStatus(__instance);
 
             return false;
         }

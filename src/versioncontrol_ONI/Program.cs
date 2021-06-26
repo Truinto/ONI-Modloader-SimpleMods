@@ -34,6 +34,7 @@ namespace versioncontrol_ONI
                 string gameversion = null;
                 string gameversionprefix = null;
                 string assemblyversion = null;
+                string projectname = null;
                 int int_gameversion = 0;
                 bool b_exp1 = false;
                 bool overwrite_state = false;
@@ -58,6 +59,9 @@ namespace versioncontrol_ONI
                             break;
                         case "-state":
                             path_state = args[i + 1];
+                            break;
+                        case "-projectname":
+                            projectname = args[i + 1];
                             break;
                         case "-stateoverwrite":
                             overwrite_state = true;
@@ -138,15 +142,20 @@ namespace versioncontrol_ONI
                     {
                         modinfo = File.ReadAllLines(path_info);
                         for (int i = 0; i < modinfo.Length; i++)
-                            if (modinfo[i].StartsWith("lastWorkingBuild:", StringComparison.Ordinal))
-                                modinfo[i] = "lastWorkingBuild: " + int_gameversion;
+                            if (modinfo[i].StartsWith("minimumSupportedBuild:", StringComparison.Ordinal))
+                                modinfo[i] = "minimumSupportedBuild: " + int_gameversion;
+                            else if (modinfo[i].StartsWith("version: ", StringComparison.Ordinal))
+                                modinfo[i] = "version: " + assemblyversion;
                     }
                     else
                     {
                         modinfo = new string[]
                         {
                             "supportedContent: " + (b_exp1 ? "EXPANSION1_ID" : "VANILLA_ID"),
-                            "lastWorkingBuild: " + int_gameversion
+                            "minimumSupportedBuild: " + int_gameversion,
+                            "APIVersion: 2",
+                            projectname == null ? "" : "staticID: " + projectname,
+                            assemblyversion == null ? "" : "version: " + assemblyversion
                         };
                     }
                     File.WriteAllLines(path_info, modinfo);
@@ -172,7 +181,7 @@ namespace versioncontrol_ONI
 
                 // auto complete state source
                 #region language
-                LanguageFillOut.Main(path_state, overwrite_state);
+                LanguageFillOut.Run(path_state, overwrite_state);
                 #endregion
 
                 Console.WriteLine("versioncontrol done!");

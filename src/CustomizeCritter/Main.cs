@@ -1,29 +1,16 @@
 //#define DLC1
 
-using Harmony;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using UnityEngine;
 using Klei.AI;
-using FumLib;
+using Common;
 
 namespace CustomizeCritter
 {
-    //[HarmonyPatch(typeof(SweepBotConfig), "OnSpawn")]
-    public class test
-    {
-        public static bool Prefix(GameObject inst)
-        {
-            StorageUnloadMonitor.Instance smi = inst.GetSMI<StorageUnloadMonitor.Instance>();
-            smi.sm.internalStorage.Set(inst.GetComponents<Storage>()[1], smi);
-            inst.GetComponent<OrnamentReceptacle>();
-            //inst.GetSMI<CreatureFallMonitor.Instance>().anim = "idle_loop";
-            return false;
-        }
-    }
-
     [HarmonyPatch(typeof(EntityTemplates), nameof(EntityTemplates.AddCreatureBrain))]
     public class Patch_AddCreatureBrain
     {
@@ -107,45 +94,50 @@ namespace CustomizeCritter
                         container.id = go.name;
                         container.name = go.GetProperName();
                         container.desc = go.GetComponent<InfoDescription>()?.description;
-                        container.anim_file = go.GetComponent<KBatchedAnimController>()?.AnimFiles?[0]?.name;
-                        container.is_baby = go.GetDef<BabyMonitor.Def>() != null;
-                        container.is_adult = go.GetDef<FertilityMonitor.Def>() != null;
+                        //container.anim_file = go.GetComponent<KBatchedAnimController>()?.AnimFiles?[0]?.name;
+                        //container.is_baby = go.GetDef<BabyMonitor.Def>() != null;
+                        //container.is_adult = go.GetDef<FertilityMonitor.Def>() != null;
                         container.traitId = go.GetComponent<Modifiers>()?.initialTraits?[0];
-                        container.override_prefix = go.GetComponent<CreatureBrain>()?.symbolPrefix;
+                        //container.override_prefix = go.GetComponent<CreatureBrain>()?.symbolPrefix;
                         container.space_requirement = go.GetDef<OvercrowdingMonitor.Def>()?.spaceRequiredPerCreature;
                         container.lifespan = go.GetDef<AgeMonitor.Def>() != null ? null : new float?(-1f);
-                        container.mass = go.GetComponent<PrimaryElement>()?.Mass;
-                        container.width = go.GetComponent<KBoxCollider2D>()?.size.x;
-                        container.height = go.GetComponent<KBoxCollider2D>()?.size.y;
+                        //container.mass = go.GetComponent<PrimaryElement>()?.Mass;
+                        //container.width = go.GetComponent<KBoxCollider2D>()?.size.x;
+                        //container.height = go.GetComponent<KBoxCollider2D>()?.size.y;
                         var decor = go.GetComponent<DecorProvider>(); if (decor != null) container.decor = new EffectorValues((int)decor.baseDecor, (int)decor.baseRadius);
-                        container.navGridName = go.GetComponent<Navigator>()?.NavGridName;
-                        container.navi = go.GetComponent<Navigator>()?.CurrentNavType.ToString();
+                        //container.navGridName = go.GetComponent<Navigator>()?.NavGridName;
+                        //container.navi = go.GetComponent<Navigator>()?.CurrentNavType.ToString();
                         container.moveSpeed = go.GetComponent<Navigator>()?.defaultSpeed;
                         container.dropOnDeath = go.GetComponent<Butcherable>()?.Drops;
-                        container.canDrown = go.GetComponent<DrowningMonitor>() != null;
-                        container.canCrushed = go.GetComponent<EntombVulnerable>() != null;
-                        container.canBurrow = go.GetDef<BurrowMonitor.Def>() != null;
-                        container.canTunnel = go.GetDef<DiggerMonitor.Def>() != null;
-                        container.canFall = go.GetDef<CreatureFallMonitor.Def>() != null;
-                        container.canHoverOverWater = go.GetDef<CreatureFallMonitor.Def>()?.canSwim ?? false;
-                        container.tempLowDeath = go.GetComponent<TemperatureVulnerable>()?.internalTemperatureLethal_Low;
-                        container.tempLowWarning = go.GetComponent<TemperatureVulnerable>()?.internalTemperatureWarning_Low;
+                        //container.canDrown = go.GetComponent<DrowningMonitor>() != null;
+                        //container.canCrushed = go.GetComponent<EntombVulnerable>() != null;
+                        //container.canBurrow = go.GetDef<BurrowMonitor.Def>() != null;
+                        //container.canTunnel = go.GetDef<DiggerMonitor.Def>() != null;
+                        //container.canFall = go.GetDef<CreatureFallMonitor.Def>() != null;
+                        //container.canHoverOverWater = go.GetDef<CreatureFallMonitor.Def>()?.canSwim ?? false;
                         container.tempBorn = go.GetComponent<PrimaryElement>()?.Temperature;
-                        container.tempHighWarning = go.GetComponent<TemperatureVulnerable>()?.internalTemperatureWarning_High;
-                        container.tempHighDeath = go.GetComponent<TemperatureVulnerable>()?.internalTemperatureLethal_High;
                         container.pickup_only_from_top = go.GetComponent<Baggable>()?.mustStandOntopOfTrapForPickup;
                         container.pickup_allow_mark = go.GetComponent<Capturable>()?.allowCapture;
                         container.pickup_use_gun = go.GetComponent<Baggable>()?.useGunForPickup;
-                        container.tags = prefab.Tags.Select(x => x.ToString()).ToArray();
-                        container.faction = go.GetComponent<FactionAlignment>()?.Alignment.ToString();
-                        container.species = go.GetComponent<CreatureBrain>()?.species.ToString();
+                        //container.tags = prefab.Tags.Select(x => x.ToString()).ToArray();
+                        //container.faction = go.GetComponent<FactionAlignment>()?.Alignment.ToString();
+                        //container.species = go.GetComponent<CreatureBrain>()?.species.ToString();
                         container.lures = go.GetDef<LureableMonitor.Def>()?.lures?.Select(x => x.ToString())?.ToArray();
                         container.attackValue = go.GetComponent<Weapon>()?.properties.base_damage_min;
 
-                        container.chore_table = new ChoreContainer().Set(go);
+                        var temperatureVulnerable = go.GetComponent<TemperatureVulnerable>();
+                        if (temperatureVulnerable != null)
+                        {
+                            container.tempLowDeath = Access.internalTemperatureLethal_Low(temperatureVulnerable);
+                            container.tempLowWarning = Access.internalTemperatureWarning_Low(temperatureVulnerable);
+                            container.tempHighWarning = Access.internalTemperatureWarning_High(temperatureVulnerable);
+                            container.tempHighDeath = Access.internalTemperatureLethal_High(temperatureVulnerable);
+                        }
+
+                        //container.chore_table = new ChoreContainer().Set(go);
 
                         container.adultId = go.GetDef<BabyMonitor.Def>()?.adultPrefab.ToString();
-                        container.eggId = go.GetDef<FertilityMonitor.Def>()?.eggPrefab.ToString();
+                        //container.eggId = go.GetDef<FertilityMonitor.Def>()?.eggPrefab.ToString();
                         //container.babyId;
                         container.dropOnMature = go.GetDef<BabyMonitor.Def>()?.onGrowDropID;
                         container.fertility_cycles = go.GetDef<FertilityMonitor.Def>()?.baseFertileCycles;
@@ -355,14 +347,6 @@ namespace CustomizeCritter
             }
         }
 
-        public static FertilityMonitor.BreedingChance BreedingChance(string tag, float weight)
-        {
-            return new FertilityMonitor.BreedingChance()
-            {
-                egg = tag.ToTag(),
-                weight = weight
-            };
-        }
         public static HashSet<Tag> egg_tags = new HashSet<Tag>() { GameTags.Egg, GameTags.IncubatableEgg, GameTags.PedestalDisplayable };
 
         /// Modifies existing critters and adds new ones, if ID is missing
@@ -514,10 +498,10 @@ namespace CustomizeCritter
                 }
 
                 if (setting.faction != null && !Enum.TryParse(setting.faction, out go.AddOrGet<FactionAlignment>().Alignment)) Debug.Log("[CustomizeCritter] Invalid FactionID: " + setting.faction);
-                if (setting.tempLowDeath != null) go.AddOrGet<TemperatureVulnerable>().internalTemperatureLethal_Low = setting.tempLowDeath.Value;
-                if (setting.tempLowWarning != null) go.AddOrGet<TemperatureVulnerable>().internalTemperatureWarning_Low = setting.tempLowWarning.Value;
-                if (setting.tempHighWarning != null) go.AddOrGet<TemperatureVulnerable>().internalTemperatureWarning_High = setting.tempHighWarning.Value;
-                if (setting.tempHighDeath != null) go.AddOrGet<TemperatureVulnerable>().internalTemperatureLethal_High = setting.tempHighDeath.Value;
+                if (setting.tempLowDeath != null) Access.internalTemperatureLethal_Low(go.AddOrGet<TemperatureVulnerable>()) = setting.tempLowDeath.Value;
+                if (setting.tempLowWarning != null) Access.internalTemperatureWarning_Low(go.AddOrGet<TemperatureVulnerable>()) = setting.tempLowWarning.Value;
+                if (setting.tempHighWarning != null) Access.internalTemperatureWarning_High(go.AddOrGet<TemperatureVulnerable>()) = setting.tempHighWarning.Value;
+                if (setting.tempHighDeath != null) Access.internalTemperatureLethal_High(go.AddOrGet<TemperatureVulnerable>()) = setting.tempHighDeath.Value;
 
                 if (setting.canDrown != null)
                 {
@@ -713,7 +697,7 @@ namespace CustomizeCritter
                     if (setting.fertility_cycles != null) go.AddOrGetDef<FertilityMonitor.Def>().baseFertileCycles = setting.fertility_cycles.Value;
 
                     if (setting.eggId != null) go.AddOrGetDef<FertilityMonitor.Def>().eggPrefab = new Tag(setting.eggId);
-                    if (setting.egg_chances != null) go.AddOrGetDef<FertilityMonitor.Def>().initialBreedingWeights = setting.egg_chances.Select(x => Helper.BreedingChance(x.Key, x.Value)).ToList();
+                    if (setting.egg_chances != null) go.AddOrGetDef<FertilityMonitor.Def>().initialBreedingWeights = setting.egg_chances.Select(x => Helpers.BreedingChance(x.Key, x.Value)).ToList();
 #if DLC1
                     if (setting.eggId != null) kPrefab.prefabSpawnFn += delegate (GameObject inst) { DiscoveredResources.Instance.Discover(setting.eggId.ToTag(), DiscoveredResources.GetCategoryForTags(egg_tags)); };
                     if (setting.babyId != null) kPrefab.prefabSpawnFn += delegate (GameObject inst) { DiscoveredResources.Instance.Discover(setting.babyId.ToTag(), DiscoveredResources.GetCategoryForTags(kPrefab.Tags)); };
@@ -878,21 +862,16 @@ namespace CustomizeCritter
         }
     }
 
-    [Harmony.HarmonyPatch(typeof(TUNING.CREATURES.EGG_CHANCE_MODIFIERS), MethodType.StaticConstructor)]
+    [HarmonyPatch(typeof(TUNING.CREATURES.EGG_CHANCE_MODIFIERS), MethodType.StaticConstructor)]
     public class Patch_EggChances
     {
-        public static bool Prefix()
+        public static void Postfix()
         {
             if (CustomizeCritterState.StateManager.State.clear_vanilla_egg_modifiers)
             {
                 TUNING.CREATURES.EGG_CHANCE_MODIFIERS.MODIFIER_CREATORS = new List<System.Action>();
-                return false;
             }
-            return true;
-        }
 
-        public static void Postfix()
-        {
             foreach (var modifier in CustomizeCritterState.StateManager.State.egg_modifiers)
             {
                 TUNING.CREATURES.EGG_CHANCE_MODIFIERS.MODIFIER_CREATORS.Add(modifier.Convert());

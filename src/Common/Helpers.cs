@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Harmony;
+using HarmonyLib;
 using System.Diagnostics;
 using UnityEngine;
 using System.Reflection;
@@ -448,10 +448,10 @@ namespace Common
         {
             try
             {
-                var harmony = HarmonyInstance.Create("com.company.project.product");
+                var harmony = new Harmony("com.company.project.product");
 
                 var original = type.GetMethod(method);
-                var info = harmony.GetPatchInfo(original);
+                var info = Harmony.GetPatchInfo(original);
 
                 if (info == null) return;
 
@@ -459,7 +459,7 @@ namespace Common
                 {
                     Debug.Log("Prefix index: " + patch.index);
                     Debug.Log("Prefix owner: " + patch.owner);
-                    Debug.Log("Prefix patch: " + patch.patch.Name);
+                    Debug.Log("Prefix patch: " + patch.PatchMethod.Name);
                     Debug.Log("Prefix priority: " + patch.priority);
                     Debug.Log("Prefix before: " + String.Join(" ", patch.before.ToArray()));
                     Debug.Log("Prefix after: " + String.Join(" ", patch.after.ToArray()));
@@ -468,7 +468,7 @@ namespace Common
                 {
                     Debug.Log("Postfix index: " + patch.index);
                     Debug.Log("Postfix owner: " + patch.owner);
-                    Debug.Log("Postfix patch: " + patch.patch.Name);
+                    Debug.Log("Postfix patch: " + patch.PatchMethod.Name);
                     Debug.Log("Postfix priority: " + patch.priority);
                     Debug.Log("Postfix before: " + String.Join(" ", patch.before.ToArray()));
                     Debug.Log("Postfix after: " + String.Join(" ", patch.after.ToArray()));
@@ -477,7 +477,7 @@ namespace Common
                 {
                     Debug.Log("Transpiler index: " + patch.index);
                     Debug.Log("Transpiler owner: " + patch.owner);
-                    Debug.Log("Transpiler patch: " + patch.patch.Name);
+                    Debug.Log("Transpiler patch: " + patch.PatchMethod.Name);
                     Debug.Log("Transpiler priority: " + patch.priority);
                     Debug.Log("Transpiler before: " + String.Join(" ", patch.before.ToArray()));
                     Debug.Log("Transpiler after: " + String.Join(" ", patch.after.ToArray()));
@@ -554,33 +554,5 @@ namespace Common
         }
         #endregion
 
-        #region FastAccess
-        public static FastGetter CreateGetter(this Type type, string name)
-        {
-            return new FastGetter(FastAccess.CreateGetterHandler(AccessTools.Field(type, name)));
-        }
-        public static FastSetter CreateSetter(this Type type, string name)
-        {
-            return new FastSetter(FastAccess.CreateSetterHandler(AccessTools.Field(type, name)));
-        }
-        public static FastGetter CreateGetterProperty(this Type type, string name)
-        {
-            return new FastGetter(FastAccess.CreateGetterHandler(AccessTools.Property(type, name)));
-        }
-        public static FastSetter CreateSetterProperty(this Type type, string name)
-        {
-            return new FastSetter(FastAccess.CreateSetterHandler(AccessTools.Property(type, name)));
-        }
-        public static FastInvoke CreateInvoker(this Type type, string methodName, Type[] args = null, Type[] typeArgs = null)
-        {
-            if (args == null && typeArgs == null)
-                return new FastInvoke(MethodInvoker.GetHandler(AccessTools.Method(type, methodName)));
-            return new FastInvoke(MethodInvoker.GetHandler(AccessTools.Method(type, methodName, args, typeArgs)));
-        }
-        #endregion
     }
-
-    public delegate void FastSetter(object source, object value);
-    public delegate object FastGetter(object source);
-    public delegate object FastInvoke(object target, params object[] paramters);
 }

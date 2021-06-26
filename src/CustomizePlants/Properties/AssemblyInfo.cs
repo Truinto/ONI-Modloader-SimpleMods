@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Fumihiko")]
 [assembly: AssemblyProduct("CustomizePlants")]
-[assembly: AssemblyCopyright("Fumihiko 2020")]
+[assembly: AssemblyCopyright("Fumihiko 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

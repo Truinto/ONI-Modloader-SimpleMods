@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +6,7 @@ using System.Text;
 
 namespace EggCritterSurplus
 {
-#pragma warning disable CS0618
-    [HarmonyPatch(typeof(CreatureDeliveryPoint))]
-    [HarmonyPatch("IUserControlledCapacity.MaxCapacity", PropertyMethod.Getter)]
+    [HarmonyPatch(typeof(CreatureDeliveryPoint), "IUserControlledCapacity.MaxCapacity", MethodType.Getter)]
     public class PatchCritterPointMax
     {
         public static bool Prefix(ref float __result)

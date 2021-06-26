@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.35.0] EX1 S13-469369
+
+### Fixed
+- Option menu being too small
+
+## [1.0.34.0] EX1 S13-469369
+
+### Added
+- added telescope clear radius, analysis radius, and no-dupe options
+- added railgun max launch
+
+### Changed
+- updated to Harmony 2.0
+
 ## [1.0.33.0] EX1 S12-466411 CS-466292
 
 ### Added

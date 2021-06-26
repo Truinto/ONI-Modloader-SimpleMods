@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common;
 
 namespace CustomizeCritter
 {
@@ -48,47 +49,6 @@ namespace CustomizeCritter
         public float babyGrowupTime_inDays = 5f;
         public bool acceleratedLifecycle = true;
 
-        public CustomizeCritterState()
-        {
-            if (wildEffect == null)
-            {
-                wildEffect = new List<TraitContainer.Attribute>();
-                wildEffect.Add(new TraitContainer.Attribute("WildnessDelta", 0.008333334f, false));
-                wildEffect.Add(new TraitContainer.Attribute("Metabolism", 25f, false));
-                wildEffect.Add(new TraitContainer.Attribute("ScaleGrowthDelta", -0.75f, true));
-            }
-
-            if (tameEffect == null)
-            {
-                tameEffect = new List<TraitContainer.Attribute>();
-                tameEffect.Add(new TraitContainer.Attribute("Happiness", -1f, false));
-                tameEffect.Add(new TraitContainer.Attribute("Metabolism", 100f, false));
-            }
-
-            if (happyWildEffect == null)
-            {
-                happyWildEffect = new List<TraitContainer.Attribute>();
-            }
-
-            if (happyTameEffect == null)
-            {
-                happyTameEffect = new List<TraitContainer.Attribute>();
-                happyTameEffect.Add(new TraitContainer.Attribute("FertilityDelta", 9f, true));
-            }
-
-            if (unhappyWildEffect == null)
-            {
-                unhappyWildEffect = new List<TraitContainer.Attribute>();
-                unhappyWildEffect.Add(new TraitContainer.Attribute("Metabolism", -15f, false));
-            }
-            
-            if (unhappyTameEffect == null)
-            {
-                unhappyTameEffect = new List<TraitContainer.Attribute>();
-                unhappyTameEffect.Add(new TraitContainer.Attribute("Metabolism", -80f, false));
-            }
-        }
-
-        public static Config.Manager<CustomizeCritterState> StateManager = new Config.Manager<CustomizeCritterState>(Config.Helper.CreatePath("CustomizeCritter"), true);
+        public static Config.Manager<CustomizeCritterState> StateManager = new Config.Manager<CustomizeCritterState>(Config.PathHelper.CreatePath("CustomizeCritter"), true);
     }
 }

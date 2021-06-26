@@ -3,28 +3,40 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Linq;
 using System.Text;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
+using Common;
+using System.Reflection;
 
 namespace CustomizePlants
 {
-    public static class FlowerPotPatch
+    public static class FlowerPotHelper
     {
-        public static void SetPlantablePlotAllTags(GameObject go, bool hasLiquidPiping = false)
+        public static void SetPlantablePlotAllTags(GameObject go)
         {
             PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
-            (AccessTools.Field(typeof(PlantablePlot), "possibleDepositTagsList").GetValue(plantablePlot) as List<Tag>)?.Clear();
+            Access.possibleDepositTagsList(plantablePlot).Clear();
             plantablePlot.AddDepositTag(GameTags.CropSeed);
             plantablePlot.AddDepositTag(GameTags.WaterSeed);
             plantablePlot.AddDepositTag(GameTags.DecorSeed);
-            plantablePlot.SetFertilizationFlags(true, hasLiquidPiping);
+            plantablePlot.SetFertilizationFlags(true, plantablePlot.has_liquid_pipe_input);
+
+            var storage = go.AddOrGet<Storage>();
+            storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
+            storage.capacityKg = 2000f;
+
+            go.RemoveComponent<FlowerVase>();
+            go.AddOrGet<PlanterBox>();
+            go.AddOrGet<CopyBuildingSettings>().copyGroupTag = GameTags.Farm;
+            go.AddOrGet<DropAllWorkable>();
+            go.AddOrGet<AnimTileable>();
         }
 
         public static void EnableCheats(GameObject go)
         {
             PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
-            AccessTools.Field(typeof(PlantablePlot), "accepts_irrigation").SetValue(plantablePlot, false);
-            AccessTools.Field(typeof(PlantablePlot), "accepts_fertilizer").SetValue(plantablePlot, false);
+            Access.accepts_irrigation(plantablePlot) = false;
+            Access.accepts_fertilizer(plantablePlot) = false;
         }
     }
 
@@ -49,75 +61,41 @@ namespace CustomizePlants
     }
 
     [HarmonyPatch(typeof(FlowerVaseConfig), "ConfigureBuildingTemplate")]
-    public static class FlowerVaseConfig_ConfigureBuildingTemplate
+    public static class FlowerVaseConfig_Cheat
     {
-        private static void Postfix(GameObject go)
+        public static bool Prepare()
         {
-            if (CustomizePlants.CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots)
-                FlowerPotPatch.SetPlantablePlotAllTags(go);
+            return CustomizePlantsState.StateManager.State.CheatFlowerVase;
+        }
 
-            if (CustomizePlantsState.StateManager.State.CheatFlowerVase)
-                FlowerPotPatch.EnableCheats(go);
+        public static void Postfix(GameObject go)
+        {
+            FlowerPotHelper.EnableCheats(go);
         }
     }
 
-    [HarmonyPatch(typeof(PlanterBoxConfig), "ConfigureBuildingTemplate")]
-    public static class PlanterBoxConfig_ConfigureBuildingTemplate
+    [HarmonyPatch]
+    public class FlowerPots_Patches
     {
-        private static void Postfix(GameObject go)
+        public static bool Prepare()
         {
-            if (CustomizePlants.CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots)
-                FlowerPotPatch.SetPlantablePlotAllTags(go);
+            return CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots;
         }
-    }
 
-    [HarmonyPatch(typeof(FarmTileConfig), "ConfigureBuildingTemplate")]
-    public static class FarmTileConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
+        public static IEnumerable<MethodBase> TargetMethods()
         {
-            if (CustomizePlants.CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots)
-                FlowerPotPatch.SetPlantablePlotAllTags(go);
+            yield return typeof(FlowerVaseConfig).GetMethod("ConfigureBuildingTemplate");
+            yield return typeof(PlanterBoxConfig).GetMethod("ConfigureBuildingTemplate");
+            yield return typeof(FarmTileConfig).GetMethod("ConfigureBuildingTemplate");
+            yield return typeof(HydroponicFarmConfig).GetMethod("ConfigureBuildingTemplate");
+            yield return typeof(FlowerVaseHangingConfig).GetMethod("ConfigureBuildingTemplate");
+            yield return typeof(FlowerVaseHangingFancyConfig).GetMethod("ConfigureBuildingTemplate");
+            yield return typeof(FlowerVaseWallConfig).GetMethod("ConfigureBuildingTemplate");
         }
-    }
 
-    [HarmonyPatch(typeof(HydroponicFarmConfig), "ConfigureBuildingTemplate")]
-    public static class HydroponicFarmConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
-            if (CustomizePlants.CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots)
-                FlowerPotPatch.SetPlantablePlotAllTags(go, true);
-        }
-    }
-
-    [HarmonyPatch(typeof(FlowerVaseHangingConfig), "ConfigureBuildingTemplate")]
-    public static class FlowerVaseHangingConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
-        {
-            if (CustomizePlants.CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots)
-                FlowerPotPatch.SetPlantablePlotAllTags(go);
-        }
-    }
-
-    [HarmonyPatch(typeof(FlowerVaseHangingFancyConfig), "ConfigureBuildingTemplate")]
-    public static class FlowerVaseHangingFancyConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
-        {
-            if (CustomizePlants.CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots)
-                FlowerPotPatch.SetPlantablePlotAllTags(go);
-        }
-    }
-
-    [HarmonyPatch(typeof(FlowerVaseWallConfig), "ConfigureBuildingTemplate")]
-    public static class FlowerVaseWallConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
-        {
-            if (CustomizePlants.CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots)
-                FlowerPotPatch.SetPlantablePlotAllTags(go);
+            FlowerPotHelper.SetPlantablePlotAllTags(go);
         }
     }
 }

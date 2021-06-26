@@ -1,6 +1,13 @@
 # Changelog
 
-## [1.0.24.0] EX1 S11-464434
+## [1.0.24.0] EX1 S13-469369
+
+### Fixed
+- fixed some weird behavior with SeedsGoIntoAnyFlowerPots
+
+### Changed
+- updated to Harmony 2.0
+- expanded mutation options
 
 ## [1.0.23.0] EX1 S11-464434
 
