@@ -18,6 +18,8 @@ namespace CustomizeBuildings
         public static Action<AirConditioner, float> lastGasTemp;
         public static Action<AirConditioner> UpdateStatus;
 
+        //public static FastInvokeHandler OnSimDoorOpened;
+
         static Access()
         {
             // no inline definitions, so we get more meaningful debug expections
@@ -27,6 +29,8 @@ namespace CustomizeBuildings
                 lastGasTemp = MethodDelegate<Action<AirConditioner, float>>(PropertySetter(typeof(AirConditioner), nameof(AirConditioner.lastGasTemp)));
 
                 UpdateStatus = MethodDelegate<Action<AirConditioner>>(Method(typeof(AirConditioner), "UpdateStatus"));
+
+                //OnSimDoorOpened = MethodInvoker.GetHandler(AccessTools.Method(typeof(Door), "OnSimDoorOpened"));
 
                 foreach (var field in typeof(Access).GetFields(BindingFlags.Static | BindingFlags.Public))
                 {

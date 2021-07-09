@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Common;
+using System.Linq;
 
 namespace CustomizeBuildings
 {
@@ -257,6 +258,21 @@ namespace CustomizeBuildings
 
             UnityEngine.Object.DestroyImmediate(oilWellCap);
             go.AddOrGet<WaterPurifier>();
+        }
+    }
+
+    [HarmonyPatch(typeof(AlgaeHabitat.SMInstance), nameof(AlgaeHabitat.SMInstance.CreateEmptyChore))]
+    public class AlgaeHabitatSMInstance_CreateEmptyChore
+    {
+        public static bool Prepare()
+        {
+            return false;
+        }
+
+        public static bool Prefix(AlgaeHabitat.SMInstance __instance)
+        {
+            __instance.master.GetComponents<Storage>().FirstOrDefault(f => f.storageFilters != null && f.storageFilters.Count > 0).DropAll();
+            return false;
         }
     }
 

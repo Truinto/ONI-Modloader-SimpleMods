@@ -76,6 +76,25 @@ namespace Common
             return result;
         }
 
+        public static SimHashes ToSimHash(this Tag tag)
+        {
+            return (SimHashes)tag.GetHash();
+        }
+
+        public static Tag ToTag(this SimHashes hash)
+        {
+            return new Tag(hash.ToString());
+        }
+
+        public static Element ToElement(this Tag tag)
+        {
+            if (ElementLoader.elementTable == null)
+                return null;
+
+            ElementLoader.elementTable.TryGetValue(tag.GetHash(), out Element element);
+            return element;
+        }
+
         public static string ToDiseaseId(this byte diseaseIdx)
         {
             if (diseaseIdx < Db.Get().Diseases.Count)

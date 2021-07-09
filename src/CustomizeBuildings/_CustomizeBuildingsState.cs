@@ -102,6 +102,12 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "Space Heater Target Temperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "If true, Space Heater gets a temperature setting to control target temperature.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_Title", "Algae Terrarium Grower");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_ToolTip", "If true, will modify the Algae Terrarium. By default will convert dirt into algae.");
+            
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_Title", "Self Sealing Door");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_ToolTip", "If true, doors will block gas flow while set to automatic.");
             #endregion
             #region Switches
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeValves_Title", "No Dupe Valves");
@@ -128,6 +134,9 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_Title", "Scanner Best Network Size");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_ToolTip", "Amount of scanners needed for best warning time.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_Title", "Ladder Comet Invincibility");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_ToolTip", "Ladders don't get harmed by comets. Does not apply to plastic ladders. Ladders can still melt from heat.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_Title", "Telescope Clear Cell Radius");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_ToolTip", "");
@@ -324,6 +333,9 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_Title", "No Dupe Telescope");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_ToolTip", "");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "No Dupe Algae Terrarium");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "");
             #endregion
             #region Skill Station
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationEnabled_Title", "Skill Station Enabled");
@@ -538,7 +550,7 @@ namespace CustomizeBuildings
             //POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 36;
+        public int version { get; set; } = 37;
 
         [JsonIgnore]
         [Option("_______________________________________________________________________________________")]
@@ -572,6 +584,8 @@ namespace CustomizeBuildings
             StateManager.State.NewRecipeRockCrusher = false;
             StateManager.State.AirConditionerAbsoluteOutput = false;
             StateManager.State.SpaceHeaterTargetTemperature = false;
+            StateManager.State.AlgaeTerrariumPatch = false;
+            StateManager.State.DoorSelfSealing = false;
             StateManager.State.NoDupeValves = false;
             StateManager.State.NoDupeSwitches = false;
             StateManager.State.NoDupeToogleBuildings = false;
@@ -646,6 +660,7 @@ namespace CustomizeBuildings
             StateManager.State.NoDupeIceCooledFan = false;
             StateManager.State.NoDupeRanchStation = false;
             StateManager.State.NoDupeTelescope = false;
+            StateManager.State.NoDupeAlgaeTerrarium = false;
             StateManager.State.SkillStationEnabled = false;
             StateManager.State.SkillStationCostTime = 180f;
             StateManager.State.SkillStationCostReset = 0f;
@@ -655,6 +670,7 @@ namespace CustomizeBuildings
             StateManager.State.SkillStationCostAddAptitude = 10000f;
             StateManager.State.SkillStationCostAddAttribute = 5000f;
             StateManager.State.BuildingBaseSettingGlobalFlag = false;
+            StateManager.State.BuildingAdvancedGlobalFlag = false;
 
             StateManager.State.TuningAtmosuitDecay = -0.1f;
             StateManager.State.TuningOxygenMaskDecay = -0.2f;
@@ -798,6 +814,10 @@ namespace CustomizeBuildings
         public float AirConditionerAbsolutePowerFactor { get; set; } = 0.6f;
         [Option("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "Miscellaneous")]
         public bool SpaceHeaterTargetTemperature { get; set; } = true;
+        [Option("CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_Title", "CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_ToolTip", "Miscellaneous")]
+        public bool AlgaeTerrariumPatch { get; set; } = false;
+        [Option("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_Title", "CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_ToolTip", "Miscellaneous")]
+        public bool DoorSelfSealing { get; set; } = true;
         #endregion
 
         #region Switches
@@ -974,6 +994,8 @@ namespace CustomizeBuildings
         public bool NoDupeRanchStation { get; set; } = false; // TODO: revisit
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_ToolTip", "No Dupe")]
         public bool NoDupeTelescope { get; set; } = false;
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "No Dupe")]
+        public bool NoDupeAlgaeTerrarium { get; set; } = false;
         //public bool NoDupeShearingStation { get; set; } = true;
         //public bool NoDupeCompost { get; set; } = true;
         #endregion
@@ -1133,6 +1155,16 @@ namespace CustomizeBuildings
             { "EthanolDistillery", 4f }
         };
 
+        public bool BuildingAdvancedGlobalFlag { get; set; } = false;
+        public List<BuildingAdv> BuildingAdvanced { get; set; } = new List<BuildingAdv>() {
+            new BuildingAdv(TravelTubeConfig.ID, null, true, "Glass Ice"),
+            new BuildingAdv(TravelTubeWallBridgeConfig.ID, null, true, "Glass Ice")
+        };
+
+        public ElementConverterContainer AlgaeTerrarium { get; set; } = new ElementConverterContainer()
+            .Input("Dirt", 0.030000001f).Input("Water", 0.3f)
+            .Output("Oxygen", 0.040000003f).Output("Algae", 0.29033336f).Store(false, true);
+
         public Dictionary<string, Dictionary<string, Dictionary<string, object>>> AdvancedSettings { get; set; } = null;
         //    = new Dictionary<string, Dictionary<string, Dictionary<string, object>>>() {
         //        { "LiquidHeater", new Dictionary<string, Dictionary<string, object>> { { "SpaceHeater", new Dictionary<string, object> { { "targetTemperature", 1000f} }  } } }
@@ -1212,6 +1244,24 @@ namespace CustomizeBuildings
                 this.ConstructionMass = ConstructionMass;
                 this.ThermalConductivity = ThermalConductivity;
             }
+        }
+
+        public class BuildingAdv
+        {
+            public string Id;
+            public int? Index;
+            public bool MaterialAppend;
+            public string MaterialOverride;
+
+            public BuildingAdv(string Id, int? Index = null, bool MaterialAppend = true, string MaterialOverride = null)
+            {
+                this.Id = Id;
+                this.Index = Index;
+                this.MaterialAppend = MaterialAppend;
+                this.MaterialOverride = MaterialOverride;
+            }
+            public BuildingAdv()
+            { }
         }
 
     }

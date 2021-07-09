@@ -8,3 +8,12 @@ NoDupeTelescope_ToolTip
 
 RailgunMaxLaunch_Title
 RailgunMaxLaunch_ToolTip
+
+NoDupeAlgaeTerrarium_Title
+NoDupeAlgaeTerrarium_ToolTip
+
+AlgaeTerrariumPatch_Title
+AlgaeTerrariumPatch_ToolTip
+
+DoorSelfSealing_Title
+DoorSelfSealing_ToolTip

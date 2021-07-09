@@ -94,6 +94,11 @@ namespace CustomizeBuildings
                     buildingDef.IsFoundation = (bool)entry.IsFoundation;
                 }
 
+                if (entry.ThermalConductivity != null)
+                {
+                    buildingDef.ThermalConductivity = (float)entry.ThermalConductivity;
+                }
+
                 if (entry.MaterialCategory != null)
                 {
                     buildingDef.MaterialCategory = entry.MaterialCategory.Split(' ');
@@ -104,9 +109,17 @@ namespace CustomizeBuildings
                     buildingDef.Mass = entry.ConstructionMass;
                 }
 
-                if (entry.ThermalConductivity != null)
+                if (buildingDef.MaterialCategory.Length != buildingDef.Mass.Length)
                 {
-                    buildingDef.ThermalConductivity = (float)entry.ThermalConductivity;
+                    float[] newmass = new float[buildingDef.MaterialCategory.Length];
+                    for (int i = 0; i < newmass.Length; i++)
+                    {
+                        if (i < buildingDef.Mass.Length)
+                            newmass[i] = buildingDef.Mass[i];
+                        else
+                            newmass[i] = 1f;
+                    }
+                    buildingDef.Mass = newmass;
                 }
 
                 #endregion

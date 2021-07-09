@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.37.0] EX1 S13-469473
+
+### Added
+- added BuildingAdvanced that allows to add elements as valid materials to any specific building (split multiple with spacebar); this is an advanced setting which cannot be changed ingame
+- added No Dupe Algae Terrarium, which removes the need to empty the dirty water storage
+- added Algae Terrarium converter setting; allows for variable input/output
+
 ## [1.0.36.0] EX1 S13-469473
 
 ### Changed

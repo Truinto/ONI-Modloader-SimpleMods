@@ -154,7 +154,7 @@ namespace versioncontrol_ONI
                             "supportedContent: " + (b_exp1 ? "EXPANSION1_ID" : "VANILLA_ID"),
                             "minimumSupportedBuild: " + int_gameversion,
                             "APIVersion: 2",
-                            projectname == null ? "" : "staticID: " + projectname,
+                            //projectname == null ? "" : "staticID: " + projectname,
                             assemblyversion == null ? "" : "version: " + assemblyversion
                         };
                     }
