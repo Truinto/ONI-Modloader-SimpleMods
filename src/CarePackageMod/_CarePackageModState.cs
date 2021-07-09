@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using PeterHan.PLib.Options;
 using Common;
+using System.IO;
 
 namespace CarePackageMod
 {
@@ -51,7 +52,7 @@ namespace CarePackageMod
             //POptions.RegisterOptions(typeof(CarePackageState));
         }
 
-        public int version { get; set; } = 8;
+        public int version { get; set; } = 13;
 
         public bool enabled { get; set; } = true;
 
@@ -96,6 +97,15 @@ namespace CarePackageMod
 
         public static bool UpdateFunction(CarePackageState state)
         {
+            if (state.version < 13)
+            {
+                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "Care Package Manager.json");
+                if (File.Exists(modpath))
+                    File.Delete(modpath);
+                modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "CarePackageModMerged");
+                if (Directory.Exists(modpath))
+                    Directory.Delete(modpath, true);
+            }
             return true;
         }
     }

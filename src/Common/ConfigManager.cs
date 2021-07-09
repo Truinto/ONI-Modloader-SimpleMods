@@ -299,7 +299,7 @@ namespace Config
                 PostBootDialog.ModName = modName;
                 Common.Helpers.ModName = modName;
             }
-            return Path.Combine(ModsDirectory, "config", modName + ".json");
+            return Path.Combine(ModsDirectory, modName + ".json");
         }
     }
 

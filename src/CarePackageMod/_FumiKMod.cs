@@ -11,10 +11,10 @@ namespace CarePackageMod
     {
         public override void OnLoad(Harmony harmony)
         {
-            base.OnLoad(harmony);
-
             CarePackageState.LoadStrings();
             new PeterHan.PLib.Options.POptions().RegisterOptions(this, typeof(CarePackageState));
+
+            base.OnLoad(harmony);
         }
     }
 }

@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Common;
 using HarmonyLib;
 using PeterHan.PLib.Options;
+using System.IO;
 
 namespace CustomizeBuildings
 {
@@ -537,8 +538,9 @@ namespace CustomizeBuildings
             //POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 35;
+        public int version { get; set; } = 36;
 
+        [JsonIgnore]
         [Option("_______________________________________________________________________________________")]
         public LocText Header => null;
 
@@ -710,6 +712,9 @@ namespace CustomizeBuildings
             StateManager.State.TuningFuelCostPerDistanceVeryHigh = 0.25f;
             StateManager.State.TuningFuelCostPerDistanceGasLow = 0.027777778f;
             StateManager.State.TuningFuelCostPerDistanceGasHigh = 0.0416666679f;
+
+            StateManager.State.MachineMultiplier?.Clear();
+
             StateManager.TrySaveConfigurationState();
 
             PeterHan.PLib.Options.OptionsDialog.Last?.CloseDialog();
@@ -1140,7 +1145,31 @@ namespace CustomizeBuildings
         {
             if (state.version < 29)
                 state.AutoSweeperPickupAnything = false;
+            if (state.version < 36)
+            {
+                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "CustomizeBuildings.json");
+                if (File.Exists(modpath))
+                    File.Delete(modpath);
+                modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "CustomizeBuildingsMerged");
+                if (Directory.Exists(modpath))
+                    Directory.Delete(modpath, true);
+            }
             return true;
+        }
+
+        public static bool CheckUpdate(CustomizeBuildingsState state)
+        {
+            var newstate = new CustomizeBuildingsState();
+
+            if (state.version != 0 && newstate.version != 0 && state.version != newstate.version)
+            {
+                OnUpdate(state);
+
+                state.version = newstate.version;
+                return true;
+            }
+
+            return false;
         }
 
         public class BuildingStruct

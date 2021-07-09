@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PeterHan.PLib.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,14 @@ namespace CustomizeBuildings
     {
         public override void OnLoad(Harmony harmony)
         {
-            base.OnLoad(harmony);
-
             CustomizeBuildingsState.LoadStrings();
-            new PeterHan.PLib.Options.POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
+            new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
+
+            //var state = POptions.ReadSettings<CustomizeBuildingsState>();
+            //if (CustomizeBuildingsState.CheckUpdate(state))
+            //    POptions.WriteSettings(state);
+
+            base.OnLoad(harmony);
         }
     }
 }

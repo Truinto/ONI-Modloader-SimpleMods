@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.25.0] EX1 S13-469473
+
+### Changed
+- reversed changed config file path and fixed read/write function to use the same path
+
 ## [1.0.24.0] EX1 S13-469369
 
 ### Fixed

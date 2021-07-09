@@ -2,12 +2,13 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using System.IO;
 
 namespace CustomizePlants
 {
     public class CustomizePlantsState
     {
-        public int version { get; set; } = 24;
+        public int version { get; set; } = 25;
 
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new PlantData(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }, temperatures: new float[] { 218.15f, 278.15f, 308.15f, 398.15f }),
@@ -68,6 +69,12 @@ namespace CustomizePlants
             if (state.version < 24)
             {
                 state.MutationSettings.Clear();
+            }
+            if (state.version < 25)
+            {
+                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "Customize Plants.json");
+                if (File.Exists(modpath))
+                    File.Delete(modpath);
             }
             return true;
         }

@@ -34,7 +34,7 @@ namespace CustomizeGeyser
             }
         }
 
-        public int version { get; set; } = 5;
+        public int version { get; set; } = 8;
         public bool Enabled { get; set; } = true;
 
         public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
@@ -117,15 +117,12 @@ namespace CustomizeGeyser
 
         public static bool UpdateFunction(CustomizeGeyserState state)
         {
-            switch (state.version)
+            if (state.version < 8)
             {
-                case 1:
-                    state.RandomizerEnabled = false;
-                    break;
-                default:
-                    break;
+                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "Customize Geyser.json");
+                if (File.Exists(modpath))
+                    File.Delete(modpath);
             }
-
             return true;
         }
 
