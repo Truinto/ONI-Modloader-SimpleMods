@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.38.0] EX1 S14-471531
+
+### Fixed
+- rewrote the SkillStation code; fixing an issue that would reset skills instead of applying new traits/skills
+- fixed air conditioner crash caused by latest update
+
 ## [1.0.37.0] EX1 S13-469473
 
 ### Added

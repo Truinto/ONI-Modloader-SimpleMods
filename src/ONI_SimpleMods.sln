@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizePlants", "Customiz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeBuildingsMod", "CustomizeBuildings\CustomizeBuildingsMod.csproj", "{2E95459E-85F3-4CAC-8E24-65EFDD6DEF07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeElements", "CustomizeElements\CustomizeElements.csproj", "{B0C4F760-1288-4FDD-8C1A-DE6D8F7EAA6D}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomizeCritter", "CustomizeCritter\CustomizeCritter.csproj", "{DA085F9F-AB2C-4BF3-B28A-10891FD4020E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarePackageMod", "CarePackageMod\CarePackageMod.csproj", "{4C0CBB9B-C5D4-4F04-B686-2357062CC11B}"
@@ -35,6 +37,10 @@ Global
 		{2E95459E-85F3-4CAC-8E24-65EFDD6DEF07}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{2E95459E-85F3-4CAC-8E24-65EFDD6DEF07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E95459E-85F3-4CAC-8E24-65EFDD6DEF07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C4F760-1288-4FDD-8C1A-DE6D8F7EAA6D}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C4F760-1288-4FDD-8C1A-DE6D8F7EAA6D}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{B0C4F760-1288-4FDD-8C1A-DE6D8F7EAA6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C4F760-1288-4FDD-8C1A-DE6D8F7EAA6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA085F9F-AB2C-4BF3-B28A-10891FD4020E}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{DA085F9F-AB2C-4BF3-B28A-10891FD4020E}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{DA085F9F-AB2C-4BF3-B28A-10891FD4020E}.Release|Any CPU.ActiveCfg = Release|Any CPU

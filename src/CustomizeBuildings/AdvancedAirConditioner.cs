@@ -168,7 +168,7 @@ namespace CustomizeBuildings
             energyConsumer = this.GetComponent<EnergyConsumer>();
             if (CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor <= 0f)
                 CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor = 0.001f;
-            factorDPU = energyConsumer.BaseWattsNeededWhenActive / (MaxDPU * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
+            factorDPU = energyConsumer.WattsNeededWhenActive / (MaxDPU * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
         }
         #endregion
 
@@ -225,7 +225,7 @@ namespace CustomizeBuildings
             //else if (handle != Guid.Empty)
             //    handle = selectable.RemoveStatusItem(handle);
 
-            energyConsumer.BaseWattageRating = Math.Min(energyConsumer.BaseWattsNeededWhenActive, 100f + (Math.Abs(CurrentDPU) * factorDPU));
+            energyConsumer.BaseWattageRating = Math.Min(energyConsumer.WattsNeededWhenActive, 100f + (Math.Abs(CurrentDPU) * factorDPU));
             //Helpers.Print($" dt={dt}, CurrentDPU={CurrentDPU}, factorDPU={factorDPU}, Rating={energyConsumer.BaseWattageRating}");
         }
 

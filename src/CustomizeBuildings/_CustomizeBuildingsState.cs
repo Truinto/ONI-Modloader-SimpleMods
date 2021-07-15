@@ -550,7 +550,7 @@ namespace CustomizeBuildings
             //POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 37;
+        public int version { get; set; } = 38;
 
         [JsonIgnore]
         [Option("_______________________________________________________________________________________")]
@@ -1266,7 +1266,7 @@ namespace CustomizeBuildings
 
     }
 
-    [HarmonyPatch(typeof(Localization), nameof(Localization.Initialize))]
+    //[HarmonyPatch(typeof(Localization), nameof(Localization.Initialize))]
     public class Patch_LocalizationInitialize
     {
         public static void Postfix()

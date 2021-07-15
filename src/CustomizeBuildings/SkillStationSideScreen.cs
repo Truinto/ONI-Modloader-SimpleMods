@@ -10,6 +10,7 @@ using KSerialization;
 using TUNING;
 using Klei.AI;
 using Common;
+using System.Runtime.CompilerServices;
 
 namespace CustomizeBuildings
 {
@@ -191,121 +192,189 @@ namespace CustomizeBuildings
 
         public static bool Prefix(Worker worker, ResetSkillsStation __instance)
         {
-            __instance.assignable.Unassign();
+            // get basic components
             var minion = worker.GetComponent<MinionResume>();
-            if (minion != null)
+            var filter = __instance.GetComponent<Filterable>();
+            if (minion == null || filter == null)
             {
-                Debug.Log($"[SkillStation] Dupe={minion.GetProperName()} Exp={minion.TotalExperienceGained} Points={minion.TotalSkillPointsGained}");
-                //string tooltip = $"{minion.GetProperName()} wasted time getting their brain fried - Make sure you have enough EXP to trade in"; //SkillStationFailure
-                string tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationFailure"), minion.GetProperName());
+                Debug.Log("[SkillStation] Minion or Filter is null");
+                return false;
+            }
 
-                var filter = __instance.GetComponent<Filterable>();
+            // print debug message
+            Debug.Log($"[SkillStation] Dupe={minion.GetProperName()} Exp={minion.TotalExperienceGained} Points={minion.TotalSkillPointsGained}");
+            __instance.assignable.Unassign();
 
-                if (filter == null || !filter.SelectedTag.IsValid || filter.SelectedTag == (Tag)"Void")
-                {
+            // check which purchase was selected
+            Trait trait = Db.Get().traits.TryGet(filter.SelectedTag.Name);
+            SkillType type;
+            if (!filter.SelectedTag.IsValid || filter.SelectedTag == (Tag)"Void")
+                type = SkillType.Reset;
+            else if (trait != null && minion.gameObject.GetComponent<Traits>().HasTrait(trait))
+                type = SkillType.RemoveTrait;
+            else if (trait != null && SkillStation_Options_Patch.BadTraits.Contains(trait.Id))
+                type = SkillType.BadTrait;
+            else if (trait != null)
+                type = SkillType.GoodTrait;
+            else if (filter.SelectedTag.Name.StartsWith("Attribute ", StringComparison.Ordinal))
+                type = SkillType.Attribute;
+            else if (Db.Get().SkillGroups.resources.Any(s => s.Id == filter.SelectedTag.Name))
+                type = SkillType.Aptitude;
+            else
+                type = SkillType.Error;
+
+            // check if exp are sufficient
+            switch (type)
+            {
+                case SkillType.Reset:
+                    if (minion.TotalExperienceGained < SkillStationCosts.CostReset)
+                        type = SkillType.MissingExp;
+                    break;
+                case SkillType.RemoveTrait:
+                    if (minion.TotalExperienceGained < SkillStationCosts.CostRemoveTrait)
+                        type = SkillType.MissingExp;
+                    break;
+                case SkillType.GoodTrait:
+                    if (minion.TotalExperienceGained < SkillStationCosts.CostAddTrait)
+                        type = SkillType.MissingExp;
+                    break;
+                case SkillType.BadTrait:
+                    if (minion.TotalExperienceGained < SkillStationCosts.CostBadTrait)
+                        type = SkillType.MissingExp;
+                    break;
+                case SkillType.Attribute:
+                    if (minion.TotalExperienceGained < SkillStationCosts.CostAddAttribute)
+                        type = SkillType.MissingExp;
+                    break;
+                case SkillType.Aptitude:
+                    if (minion.TotalExperienceGained < SkillStationCosts.CostAddAptitude)
+                        type = SkillType.MissingExp;
+                    break;
+            }
+
+            // execute
+            string tooltip;
+            switch (type)
+            {
+                default:
+                    Debug.Log("[SkillStation] Wups, no Tag match.");
+                    throw new Exception("SkillType.Error");
+
+                case SkillType.MissingExp:
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationFailure"), minion.GetProperName());
+                    break;
+
+                case SkillType.Reset:
                     Debug.Log("[SkillStation] Tag execute: Void");
                     minion.ResetSkillLevels(true);
                     minion.SetHats(minion.CurrentHat, null);
                     minion.ApplyTargetHat();
                     minion.AddExperience(-SkillStationCosts.CostReset);
-                    //tooltip = $"{minion.GetProperName()} got their <style=\"KKeyword\">Skill Points</style> refunded";  //SkillStationReset
                     tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationReset"), minion.GetProperName());
-                }
-                else
-                {
+                    break;
+
+                case SkillType.RemoveTrait:
                     Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
-                    Trait trait = Db.Get().traits.TryGet(filter.SelectedTag.Name);
-                    if (trait != null)
+                    minion.gameObject.GetComponent<Traits>().Remove(trait);
+                    minion.AddExperience(-SkillStationCosts.CostRemoveTrait);
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait"), minion.GetProperName(), trait.Name);
+                    break;
+
+                case SkillType.GoodTrait:
+                    Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
+                    minion.gameObject.GetComponent<Traits>().Add(trait);
+                    minion.AddExperience(-SkillStationCosts.CostAddTrait);
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), trait.Name);
+                    break;
+
+                case SkillType.BadTrait:
+                    Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
+                    minion.gameObject.GetComponent<Traits>().Add(trait);
+                    minion.AddExperience(-SkillStationCosts.CostBadTrait);
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), trait.Name);
+                    break;
+
+                case SkillType.Attribute:
+                    Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
+                    string attributeId = filter.SelectedTag.Name.Substring(10);
+                    var attribute = minion.gameObject.GetComponent<AttributeLevels>().GetAttributeLevel(attributeId);
+                    if (attribute != null)
                     {
-                        var traits = minion.gameObject.GetComponent<Traits>();
-                        if (!traits.HasTrait(trait))
-                        {
-                            traits.Add(trait);
-                            if (SkillStation_Options_Patch.BadTraits.Contains(trait.Id))
-                                minion.AddExperience(-SkillStationCosts.CostBadTrait);
-                            else
-                                minion.AddExperience(-SkillStationCosts.CostAddTrait);
-                            //tooltip = $"{minion.GetProperName()} gained a new trait '{trait.Name}'";    //SkillStationAddTrait
-                            tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), trait.Name);
-                        }
-                        else
-                        {
-                            traits.Remove(trait);
-                            minion.AddExperience(-SkillStationCosts.CostRemoveTrait);
-                            //tooltip = $"{minion.GetProperName()} lost a trait '{trait.Name}'";  //SkillStationRemoveTrait
-                            tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait"), minion.GetProperName(), trait.Name);
-                        }
-                    }
-                    else if (filter.SelectedTag.Name.StartsWith("Attribute ", StringComparison.Ordinal)) // if attribute ID 
-                    {
-                        var attributes = minion.gameObject.GetComponent<AttributeLevels>();
-                        string attributeId = filter.SelectedTag.Name.Substring(10);
-                        var attribute = attributes.GetAttributeLevel(attributeId);
-                        if (attribute != null)
-                        {
-                            int level = attribute.GetLevel();
-                            attribute.SetLevel(level + 1);
-                            minion.AddExperience(-SkillStationCosts.CostAddAttribute);
-                            //tooltip = $"{minion.GetProperName()} improved their {attributeId} from {level} to {level + 1}.";    //SkillStationAttributeUp
-                            tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), attributeId, level, level + 1);
-                        }
-                    }
-                    else if (Db.Get().SkillGroups.resources.Any(s => s.Id == filter.SelectedTag.Name)) // if Aptitude ID
-                    {
-                        //minion.AptitudeBySkillGroup[filter.SelectedTag.Name] = 1f;
-                        minion.SetAptitude(filter.SelectedTag.Name, 1f);
-                        minion.AddExperience(-SkillStationCosts.CostAddAptitude);
-                        //tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.ProperName()}";   //SkillStationAptitude
-                        tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude"), minion.GetProperName(), filter.SelectedTag.ProperName());
+                        int level = attribute.GetLevel();
+                        attribute.SetLevel(level + 1);
+                        minion.AddExperience(-SkillStationCosts.CostAddAttribute);
+                        tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), attributeId, level, level + 1);
                     }
                     else
                     {
-                        Debug.Log("[SkillStation] Wups, no Tag match.");
+                        tooltip = "Wups, cricital error: Attribute could not be resolved.";
                     }
+                    break;
 
-                    if (minion.TotalExperienceGained < 0)
-                    {
-                        Debug.Log("[SkillStation] Warning: Minion had negative exp.");
-                        minion.AddExperience(-minion.TotalExperienceGained);
-                    }
-
-                    if (minion.AvailableSkillpoints < 0)
-                    {
-                        Debug.Log("[SkillStation] Reset skills, because of negative Skill Point count.");
-                        minion.ResetSkillLevels(true);
-                        minion.SetHats(minion.CurrentHat, null);
-                        minion.ApplyTargetHat();
-                    }
-
-                    filter.SelectedTag = "Void";
-                    DetailsScreen.Instance.Refresh(__instance.gameObject);
-                }
-
-                Debug.Log("[SkillStation] " + tooltip);
-                worker.GetComponent<Notifier>().Add(new Notification(
-#if !DLC1
-                    group: HashedString.Invalid,
-#endif
-                    title: "Skills Station",
-                    type: NotificationType.Good,
-                    tooltip: (List<Notification> notificationList, object data) =>
-                    {
-                        string text = null;
-                        foreach (var notification in notificationList)
-                            text = text + (string)notification.tooltipData + "\n";
-                        return text;
-                    },
-                    tooltip_data: tooltip,
-                    expires: true,
-                    delay: 0f,
-                    custom_click_callback: null,
-                    custom_click_data: null,
-                    click_focus: null,
-                    volume_attenuation: true),
-                    suffix: "");
+                case SkillType.Aptitude:
+                    Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
+                    //minion.AptitudeBySkillGroup[filter.SelectedTag.Name] = 1f;
+                    minion.SetAptitude(filter.SelectedTag.Name, 1f);
+                    minion.AddExperience(-SkillStationCosts.CostAddAptitude);
+                    //tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.ProperName()}";   //SkillStationAptitude
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude"), minion.GetProperName(), filter.SelectedTag.ProperName());
+                    break;
             }
 
+            // cleanup
+            if (minion.TotalExperienceGained < 0)
+            {
+                Debug.Log("[SkillStation] Warning: Minion had negative exp.");
+                minion.AddExperience(-minion.TotalExperienceGained);
+            }
+            if (minion.AvailableSkillpoints < 0)
+            {
+                Debug.Log("[SkillStation] Reset skills, because of negative Skill Point count.");
+                minion.ResetSkillLevels(true);
+                minion.SetHats(minion.CurrentHat, null);
+                minion.ApplyTargetHat();
+            }
+            filter.SelectedTag = "Void";
+            DetailsScreen.Instance.Refresh(__instance.gameObject);
+
+            // display notification
+            Debug.Log("[SkillStation] " + tooltip);
+            worker.GetComponent<Notifier>().Add(new Notification(
+#if !DLC1
+                group: HashedString.Invalid,
+#endif
+                title: "Skills Station",
+                type: NotificationType.Good,
+                tooltip: (List<Notification> notificationList, object data) =>
+                {
+                    string text = null;
+                    foreach (var notification in notificationList)
+                        text = text + (string)notification.tooltipData + "\n";
+                    return text;
+                },
+                tooltip_data: tooltip,
+                expires: true,
+                delay: 0f,
+                custom_click_callback: null,
+                custom_click_data: null,
+                click_focus: null,
+                volume_attenuation: true),
+                suffix: "");
+
+            // skip base method
             return false;
+        }
+
+        private enum SkillType
+        {
+            Error,
+            MissingExp,
+            Reset,
+            RemoveTrait,
+            GoodTrait,
+            BadTrait,
+            Attribute,
+            Aptitude,
         }
     }
 
@@ -356,13 +425,13 @@ namespace CustomizeBuildings
         {
             try
             {
-                __instance.GetComponent<Filterable>().SelectedTag = "Void";
+                //__instance.GetComponent<Filterable>().SelectedTag = "Void";
                 DetailsScreen.Instance.Refresh(__instance.gameObject);
-                Debug.Log("[SkillStation] OnAssign Refresh");
+                Helpers.PrintDebug("SkillStation OnAssign Refresh");
             }
             catch (System.Exception)
             {
-                Debug.Log("[SkillStation] OnAssign wups");
+                Helpers.PrintDebug("SkillStation OnAssign wups");
             }
         }
     }
