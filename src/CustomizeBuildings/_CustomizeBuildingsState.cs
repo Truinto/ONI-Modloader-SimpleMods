@@ -108,6 +108,12 @@ namespace CustomizeBuildings
             
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_Title", "Self Sealing Door");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_ToolTip", "If true, doors will block gas flow while set to automatic.");
+            
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialIgnoreInsufficientMaterial_Title", "Ignore Insufficient Material");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialIgnoreInsufficientMaterial_ToolTip", "If true, will allow placing buildings while having insufficient building material.");
+            
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "Material No Auto Select");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "If true, will keep selected building material, even if stored amount is insufficient.");
             #endregion
             #region Switches
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeValves_Title", "No Dupe Valves");
@@ -818,6 +824,10 @@ namespace CustomizeBuildings
         public bool AlgaeTerrariumPatch { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_Title", "CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_ToolTip", "Miscellaneous")]
         public bool DoorSelfSealing { get; set; } = true;
+        [Option("CustomizeBuildings.LOCSTRINGS.MaterialIgnoreInsufficientMaterial_Title", "CustomizeBuildings.LOCSTRINGS.MaterialIgnoreInsufficientMaterial_ToolTip", "Miscellaneous")]
+        public bool MaterialIgnoreInsufficientMaterial { get; set; } = true;
+        [Option("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "Miscellaneous")]
+        public bool MaterialAutoSelect { get; set; } = true;
         #endregion
 
         #region Switches

@@ -195,7 +195,7 @@ namespace Common
         }
 
         /// <summary>Returns string inside quotation marks. Respects escape character.</summary>
-        public static string GetQuotationString(this string line, int occurrence)
+        public static string GetQuotationString(this string line, int occurrence, char delimiter = '"')
         {
             occurrence--;
 
@@ -214,7 +214,7 @@ namespace Common
                     isEscape = true;
                     continue;
                 }
-                else if (line[i] == '"')
+                else if (line[i] == delimiter)
                 {
                     if (occurrence == count / 2)
                     {

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.26.0] EX1 S14-471883-S
+
+### Fixed
+- fixed missing ModPlants initialisation (only needed in special cases)
+- set vanilla flag, so it can load without DLC
+
 ## [1.0.25.0] EX1 S13-469473
 
 ### Changed

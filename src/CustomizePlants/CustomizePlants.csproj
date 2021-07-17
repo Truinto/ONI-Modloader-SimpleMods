@@ -31,6 +31,7 @@
     <Compile Include="PlantLookup.cs" />
     <Compile Include="_CustomizePlantsState.cs" />
     <Compile Include="Access.cs" />
+    <Compile Include="_FumiKMod.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Changelog.md">

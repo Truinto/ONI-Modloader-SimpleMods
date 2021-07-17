@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.39.0] EX1 S14-471883-S
+
+### Added
+- added option to allow placing building with material you have nothing stored of
+- added option to stop the game from switching selected materials due to insufficient material
+
+### Fixed
+- fixed TUNING patches not being load
+- set vanilla flag, so it can load without DLC
+
 ## [1.0.38.0] EX1 S14-471531
 
 ### Fixed

@@ -13,6 +13,10 @@ namespace CustomizeBuildings
         public override void OnLoad(Harmony harmony)
         {
             CustomizeBuildingsState.LoadStrings();
+
+            Miscellaneous.OnLoad();
+            Speed_Patch.OnLoad();
+
             new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
 
             //var state = POptions.ReadSettings<CustomizeBuildingsState>();

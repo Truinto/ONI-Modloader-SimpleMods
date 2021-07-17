@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Linq;
 using System;
 using Common;
+using Klei;
 
 namespace CustomizeBuildings
 {
@@ -147,11 +148,42 @@ namespace CustomizeBuildings
 #endif
                 }
                 #endregion
+
+                if (CustomizeBuildingsState.StateManager.State.MaterialIgnoreInsufficientMaterial)
+                    AccessTools.Property(typeof(GenericGameSettings), nameof(GenericGameSettings.allowInsufficientMaterialBuild))
+                        .SetValue(GenericGameSettings.instance, true);
             }
             catch (System.Exception e)
             {
                 Helpers.PrintDebug(e.Message);
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(MaterialSelector), nameof(MaterialSelector.AutoSelectAvailableMaterial))]
+    public class MaterialAutoSelect_Patch
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.MaterialAutoSelect;
+        }
+
+        public static bool Prefix(MaterialSelector __instance, Recipe ___activeRecipe, ref bool __result)
+        {
+            if (___activeRecipe == null || __instance.ElementToggles.Count == 0)
+                return true;
+
+            Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(__instance.selectorIndex, ___activeRecipe.Result);
+            if (previousElement == null)
+                return true;
+
+            __instance.ElementToggles.TryGetValue(previousElement, out KToggle toggle);
+            if (toggle == null)
+                return true;
+            
+            __instance.OnSelectMaterial(previousElement, ___activeRecipe, true);
+            __result = true;
+            return false;
         }
     }
 }

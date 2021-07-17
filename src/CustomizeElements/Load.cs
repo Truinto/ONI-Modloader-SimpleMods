@@ -127,7 +127,7 @@ namespace CustomizeElements
                     element.materialCategory = setting.materialCategory;
 
                 if (setting.oreTags != null)
-                    CreateOreTags(null, element.materialCategory, (Tag)element.state.ToString(), setting.oreTags.ToArray());
+                    element.oreTags = (Tag[])CreateOreTags(null, element.materialCategory, (Tag)element.state.ToString(), setting.oreTags.ToArray());
             }
         }
 

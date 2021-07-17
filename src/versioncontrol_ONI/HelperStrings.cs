@@ -22,11 +22,10 @@ namespace versioncontrol_ONI
             return -1;
         }
 
-        /// <summary>Returns string inside quotation marks. Respects escape character.</summary>
-        public static string GetQuotationString(this string line, int occurrence)
+        public static string GetQuotationString(this string line, int occurrence, char delimiter = '"')
         {
-            occurrence++;
-            
+            occurrence--;
+
             bool isEscape = false;
             int start = -1;
             int stop = -1;
@@ -42,13 +41,13 @@ namespace versioncontrol_ONI
                     isEscape = true;
                     continue;
                 }
-                else if (line[i] == '"')
+                else if (line[i] == delimiter)
                 {
                     if (occurrence == count / 2)
                     {
                         if (0 == count % 2)
                         {
-                            start = i+1;
+                            start = i + 1;
                         }
                         else
                         {

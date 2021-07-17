@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using HarmonyLib;
 
@@ -46,5 +47,14 @@ namespace CustomizeElements
         public string materialCategory;
         public List<string> oreTags;
         public int? buildMenuSort;
+
+        public ElementContainer()
+        { }
+
+        public ElementContainer(string Id, params string[] tags)
+        {
+            this.Id = Id;
+            this.oreTags = tags == null || tags.Length == 0 ? null : tags.ToList();
+        }
     }
 }

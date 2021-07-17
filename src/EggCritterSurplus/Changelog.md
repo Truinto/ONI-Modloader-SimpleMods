@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.9.0] EX1 S14-471883-S
+
+### Fixed
+- fixed missing building initialisation
+- set vanilla flag, so it can load without DLC
+
 ## [1.0.8.0] EX1 S13-469473
 
 ### Changed

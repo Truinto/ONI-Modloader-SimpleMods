@@ -41,7 +41,7 @@ namespace versioncontrol_ONI
 
                 // read args
                 #region args
-                for (int i = 0; i+1 < args.Length; i++)
+                for (int i = 0; i + 1 < args.Length; i++)
                 {
                     switch (args[i])
                     {
@@ -92,9 +92,9 @@ namespace versioncontrol_ONI
                         {
                             index += 22;
                             gameversion = line[index..];
-                            gameversionprefix = gameversion[..^versionLength];
-                            int.TryParse(gameversion[^versionLength..], out int_gameversion);
-                            Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}");
+                            gameversionprefix = gameversion[..gameversion.IndexOf('-')];
+                            int.TryParse(HelperStrings.GetQuotationString(gameversion, 1, '-'), out int_gameversion);
+                            Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}, prefix: {gameversionprefix}");
                         }
                     }
                 }
@@ -119,11 +119,13 @@ namespace versioncontrol_ONI
                                 Console.WriteLine("read assembly version as: " + assemblyversion);
                                 if (gameversion != null)
                                 {
-                                    int indexversion = changelog[i].IndexOf(gameversionprefix, StringComparison.Ordinal);
-                                    if (indexversion < 0)
+                                    if (changelog[i].IndexOf(gameversion, StringComparison.Ordinal) < 0)
                                         changelog[i] += (" " + gameversion);
-                                    else
-                                        changelog[i] = changelog[i][..indexversion] + gameversion + changelog[i][(indexversion + gameversion.Length)..];
+                                    //int indexversion = changelog[i].IndexOf(gameversionprefix, StringComparison.Ordinal);
+                                    //if (indexversion < 0)
+                                    //    changelog[i] += (" " + gameversion);
+                                    //else
+                                    //    changelog[i] = changelog[i][..indexversion] + gameversion + changelog[i][(indexversion + gameversion.Length)..];
                                 }
                             }
                             break;

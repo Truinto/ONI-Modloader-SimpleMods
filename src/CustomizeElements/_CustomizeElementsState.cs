@@ -13,7 +13,16 @@ namespace CustomizeElements
 
         public List<ElementContainer> Elements { get; set; } = new List<ElementContainer>()
         {
-            new ElementContainer() { Id = "Oxygen", molarMass = 15.9f }
+            new ElementContainer("Oxygen") { molarMass = 15.9f },
+            new ElementContainer("Aluminum", "BuildableAny", "Metal"),
+            new ElementContainer("Copper", "BuildableAny", "Metal"),
+            new ElementContainer("DepletedUranium", "BuildableAny", "Metal"),
+            new ElementContainer("Gold", "BuildableAny", "Metal"),
+            new ElementContainer("Iron", "BuildableAny", "Metal"),
+            new ElementContainer("Cobalt", "BuildableAny", "Metal"),
+            new ElementContainer("Lead", "BuildableAny", "Metal"),
+            new ElementContainer("Tungsten", "BuildableAny", "Metal", "Plumbable"),
+            new ElementContainer("Katairite", "BuildableRaw", "BuildableAny"),
         };
 
         public static Config.Manager<CustomizeElementsState> StateManager = new Config.Manager<CustomizeElementsState>(Config.PathHelper.CreatePath("CustomizeElements"), true, OnUpdate, null);

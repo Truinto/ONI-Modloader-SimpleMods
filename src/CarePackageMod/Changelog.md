@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.13.1] EX1 S14-471883-S
+
+### Fixed
+- set vanilla flag, so it can load without DLC
+
 ## [1.0.13.0] EX1 S13-469473
 
 ### Changed
