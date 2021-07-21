@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.40.0] EX1 S14-471883-S
+
+### Fixed
+- fixed bug where idle dupes would rarely get entombed in doors
+
 ## [1.0.39.0] EX1 S14-471883-S
 
 ### Added

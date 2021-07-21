@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.10.0] EX1 S14-471883-S FA-471883-B
+
+### Fixed
+- fixed vanilla bug causing a crash when any of these geysers were in the RNG table "liquid_sulfur", "molten_niobium", "molten_cobalt", "molten_tungsten", "molten_aluminum"
+
 ## [1.0.9.0] EX1 S14-471883-S
 
 ### Fixed

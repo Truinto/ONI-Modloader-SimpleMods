@@ -161,17 +161,12 @@ namespace Common
 
         public static void AddBuildingToPlanScreen(string buildingId, PlanScreens category)
         {
-            //ModUtil.AddBuildingToPlanScreen(buildingId, category.ToString());
-            //Debug.Log("HELLO WORLD: Printout Planorder");
-            //foreach (var order in TUNING.BUILDINGS.PLANORDER)
-            //    Debug.Log($"Category={order.category} as string {ConvertCategory(order.category)}; {order.data.Join()}");
-
             bool flag = false;
             for (int i = 0; i < TUNING.BUILDINGS.PLANORDER.Count; i++)
             {
                 if (TUNING.BUILDINGS.PLANORDER[i].category == category.ToString())
                 {
-                    (TUNING.BUILDINGS.PLANORDER[i].data as IList<string>).Add(buildingId);
+                    TUNING.BUILDINGS.PLANORDER[i].data.Add(buildingId);
                     Debug.Log($"[TECHHELPER] Added {buildingId} to {category}");
                     flag = true;
                     break;

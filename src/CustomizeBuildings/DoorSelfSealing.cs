@@ -8,6 +8,28 @@ using System.Reflection;
 
 namespace CustomizeBuildings
 {
+    [HarmonyPatch(typeof(FallMonitor.Instance), nameof(FallMonitor.Instance.UpdateFalling))]
+    public class DoorEntomb_Patch
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.DoorSelfSealing;
+        }
+
+        public static bool Prefix(FallMonitor.Instance __instance, Navigator ___navigator)
+        {
+            if (___navigator.IsMoving() || ___navigator.CurrentNavType == NavType.Tube || Grid.HasDoor[Grid.PosToCell(__instance.transform.GetPosition())])
+            {
+                __instance.sm.isEntombed.Set(false, __instance);
+                __instance.sm.isFalling.Set(false, __instance);
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+
     [HarmonyPatch(typeof(Door), "SetSimState")]
     public class DoorSelfSealing_Patch
     {

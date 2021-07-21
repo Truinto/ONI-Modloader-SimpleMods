@@ -5,6 +5,7 @@ using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
 using static Config.PostBootDialog;
+using System.Linq;
 
 namespace CustomizeGeyser
 {
@@ -14,6 +15,7 @@ namespace CustomizeGeyser
 		public static int[] weights = null;
 		public static HashedString[] ignoreTypes = new HashedString[0];
 		public static int sum = 0;
+		public static string[] ignoreMissing = new string[] { "liquid_sulfur", "molten_niobium", "molten_cobalt", "molten_tungsten", "molten_aluminum", };
 
 		public static void FixErrors()
 		{
@@ -21,15 +23,23 @@ namespace CustomizeGeyser
 
 			foreach (string entry in CustomizeGeyserState.StateManager.State.RNGTable.Keys)
 			{
-				GeyserConfigurator.GeyserType geyserType = GeyserInfo.GeyserTypes.Find(t => t.id == entry);
+				if (!GeyserInfo.GeyserTypes.Any(a => a.id == entry))
+					itemsToRemove.Add(entry);
 
-				if (geyserType == null) itemsToRemove.Add(entry);
+				if (!GeyserInfo.Config.Any(a => a.id == "GeyserGeneric_" + entry))
+					itemsToRemove.Add(entry);
+
+				//if (!Assets.Prefabs.Any(a => a.PrefabID() == "GeyserGeneric_" + entry))
+				//	itemsToRemove.Add(entry);
 			}
+
+			
 
 			foreach (string entry in itemsToRemove)
 			{
 				CustomizeGeyserState.StateManager.State.RNGTable.Remove(entry);
-				Debug.LogWarning(ToDialog("GeyserRandomizer: Geyser in config non existent, check spelling: " + entry));
+				if (!ignoreMissing.Contains(entry))
+					Debug.LogWarning(ToDialog("GeyserRandomizer: Geyser in config non existent, check spelling: " + entry));
 			}
 		}
 

@@ -1,0 +1,91 @@
+﻿Wildplantbox
+- change RegisterWithPlant to not trigger event
+f class inherent PlantablePlot
+f override OnSpawn and ConfigureOccupyingObject to filter out RegisterWithPlant
+
+------------
+
+HOW SIDESCREENS WORK:
+1) new sidescreen must inherent from SideScreenContent
+2) IsValidForTarget must return true for objects that should display this sidescreen
+3) sidescreen must be added to DetailsScreen.Instance.sideScreens (presumably after OnPrefabInit)
+
+------------
+
+Bugs:
+- Apothecary must not display "Lacks Medicine Skill..."
+- Electric Grill/Gas Range must not display "Lacks Grilling Skill..."
+- resolve enums by name: [JsonConverter(typeof(StringEnumConverter))]
+
+Customize Buildings:
+- door crashes when no dupe is off and sealed door on
+- fix door chore bug
+- Ice-E Fan (revisit)
+- reservoirs Sweep Only also affect if dupes can take from it
+    patch FilteredStorage.IsFunctional() to check for GetComponent<Reservoir>(), if true return true (so reservoirs are always accessible)
+- Canister Filler (Pipe-to-bottle building)
+- reservoirs accessible even if pipes not connected
+- Canister emptier fetches from reservoirs only when Auto-bottle enabled
+- robo miners dig through diamond
+- nodupe RailGunPayloadOpenerConfig
+
+Customize Plants:
+- bug: multiple seed print when using placeholder
+- bug: evil flower doesn't stop producing output element when bristled
+- plants don't consume water when fully grown/bristled
+- if plants don't have enough irrigiation, they still grow at 25% speed
+- fix oxyfern ignoring wild output mali
+
+Piped Output:
+- consider switching the default layer
+
+Other:
+- super storage
+- teleport entombed dupes to printing pod
+- Wood Burner outputs coal
+- Faster transport tube
+- Stasis Pot (Disease Clinic)
+
+Effects missing:
+drecko grow in any gas
+glossy drecko need balm lily instead of mealwood?
+pump suck radius
+ultra mopping
+
+New Buildings:
+Pipe to bottle building
+Gas pitcher pump?
+
+------------
+
+Set color tint:
+__instance.GetComponent<KAnimControllerBase>().TintColour = InsulatedPressureDoorConfig.Color();
+
+------------
+
+Door stuff:
+SimMessages.SetCellProperties(cell, x);
+x=4; block sand?
+x=8; door?
+x=103; convert solid?
+x=128; buildings?
+
+SimMessages.ReplaceAndDisplaceElement
+set cell to a certain element
+
+SimMessages.Dig
+set cell to vacuum?
+
+GameComps.StructureTemperatures.Bypass( GameComps.StructureTemperatures.GetHandle(this.gameObject) ); //UnBypass
+stop temperature simulation
+
+Game.Instance.SetDupePassableSolid(num, passable, solid);
+// Game.instance.gameSolidInfo.Add(new SolidInfo(cell, solid));
+Grid.DupePassable[cell] = true;
+Grid.CritterImpassable[num] = true;
+Grid.DupeImpassable[num] = true;
+
+
+
+
+
