@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.42.0] EX1 S14-471883-S
+
+### Added
+- BuildingAdvancedOutputTemp which allows setting output material temperature of converters
+
+### Changed
+- renamed MachineMultiplier to BuildingAdvancedMachineMultiplier; it now requires BuildingAdvancedGlobalFlag to be true
+- renamed BuildingAdvanced to BuildingAdvancedMaterial
+- added menu entries for BuildingBaseSettingGlobalFlag and BuildingAdvancedGlobalFlag
+
+### Fixed
+- added legacy version for CS-469300 and older
+
 ## [1.0.41.0] EX1 S14-471883-S
 
 ### Fixed

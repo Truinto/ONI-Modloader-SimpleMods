@@ -159,82 +159,84 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(Assets), "AddBuildingDef")]
+    [HarmonyPatch(typeof(Assets), nameof(Assets.AddBuildingDef))]
     public class Assets_AddBuildingDef
     {
-        private static void Prefix(BuildingDef def)
+        public static bool Prepare()
         {
-            MuliplierHelper.ProcessPost(def);
-            AdvancedHelper.Process(def);
+            return CustomizeBuildingsState.StateManager.State.BuildingAdvancedGlobalFlag;
+        }
+
+        public static void Prefix(BuildingDef def)
+        {
+            MachineMuliplier(def);
+            OutputTemp(def);
+            SuperAdvanced(def);
 
             //if (def.PrefabID == CreatureDeliveryPointConfig.ID)
             //    if (!TUNING.STORAGEFILTERS.BAGABLE_CREATURES.Contains(GameTags.Egg))
             //        TUNING.STORAGEFILTERS.BAGABLE_CREATURES.Add(GameTags.Egg);
 
         }
-    }
-
-    public class MuliplierHelper
-    {
-        public static void ProcessPost(BuildingDef buildingDef)
+        public static void MachineMuliplier(BuildingDef def)
         {
             float multiplier;
-            bool flag = CustomizeBuildingsState.StateManager.State.MachineMultiplier.TryGetValue(buildingDef.PrefabID, out multiplier);
+            bool flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(def.PrefabID, out multiplier);
             if (!flag)
             {
-                flag = CustomizeBuildingsState.StateManager.State.MachineMultiplier.TryGetValue(BuildingConfigManager_RegisterBuilding.FindBetweenLink.Match(buildingDef.Name).Groups[1].Value, out multiplier);
+                flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(BuildingConfigManager_RegisterBuilding.FindBetweenLink.Match(def.Name).Groups[1].Value, out multiplier);
             }
             if (flag)
             {
-                ElementConverter[] converters = buildingDef.BuildingComplete.GetComponents<ElementConverter>();
+                ElementConverter[] converters = def.BuildingComplete.GetComponents<ElementConverter>();
                 for (int j = 0; j < converters.Count(); j++)
                 {
                     for (int i = 0; i < converters[j].consumedElements.Count(); i++)
                         converters[j].consumedElements[i].massConsumptionRate *= multiplier;
                     for (int i = 0; i < converters[j].outputElements.Count(); i++)
                         converters[j].outputElements[i].massGenerationRate *= multiplier;
-                    Debug.Log("Multiplier: " + buildingDef.PrefabID + " x" + multiplier);
+                    Debug.Log("Multiplier: " + def.PrefabID + " x" + multiplier);
                 }
 
-                Storage[] storages = buildingDef.BuildingComplete.GetComponents<Storage>();
+                Storage[] storages = def.BuildingComplete.GetComponents<Storage>();
                 for (int i = 0; i < storages.Count(); i++)
                 {
                     storages[i].capacityKg *= multiplier;
                 }
 
-                ManualDeliveryKG[] manualDeliveryKGs = buildingDef.BuildingComplete.GetComponents<ManualDeliveryKG>();
+                ManualDeliveryKG[] manualDeliveryKGs = def.BuildingComplete.GetComponents<ManualDeliveryKG>();
                 for (int i = 0; i < manualDeliveryKGs.Count(); i++)
                 {
                     manualDeliveryKGs[i].capacity *= multiplier;
                 }
 
-                ConduitConsumer[] conduitConsumer = buildingDef.BuildingComplete.GetComponents<ConduitConsumer>();
+                ConduitConsumer[] conduitConsumer = def.BuildingComplete.GetComponents<ConduitConsumer>();
                 for (int i = 0; i < conduitConsumer.Count(); i++)
                 {
                     conduitConsumer[i].capacityKG *= multiplier;
                     conduitConsumer[i].consumptionRate *= multiplier;
                 }
 
-                PassiveElementConsumer[] elementConsumer = buildingDef.BuildingComplete.GetComponents<PassiveElementConsumer>();
+                PassiveElementConsumer[] elementConsumer = def.BuildingComplete.GetComponents<PassiveElementConsumer>();
                 for (int i = 0; i < elementConsumer.Count(); i++)
                 {
                     elementConsumer[i].consumptionRate *= multiplier;
                     elementConsumer[i].capacityKG *= multiplier;
                 }
 
-                BuildingElementEmitter[] buildingElementEmitter = buildingDef.BuildingComplete.GetComponents<BuildingElementEmitter>();
+                BuildingElementEmitter[] buildingElementEmitter = def.BuildingComplete.GetComponents<BuildingElementEmitter>();
                 for (int i = 0; i < elementConsumer.Count(); i++)
                 {
                     buildingElementEmitter[i].emitRate *= multiplier;
                 }
 
-                AlgaeDistillery[] algaeDistillery = buildingDef.BuildingComplete.GetComponents<AlgaeDistillery>();
+                AlgaeDistillery[] algaeDistillery = def.BuildingComplete.GetComponents<AlgaeDistillery>();
                 for (int i = 0; i < elementConsumer.Count(); i++)
                 {
                     algaeDistillery[i].emitMass *= multiplier;
                 }
 
-                ElementDropper[] elementDropper = buildingDef.BuildingComplete.GetComponents<ElementDropper>();
+                ElementDropper[] elementDropper = def.BuildingComplete.GetComponents<ElementDropper>();
                 for (int i = 0; i < elementConsumer.Count(); i++)
                 {
                     elementDropper[i].emitMass *= multiplier;
@@ -242,11 +244,26 @@ namespace CustomizeBuildings
 
             }
         }
-    }
 
-    public class AdvancedHelper
-    {
-        public static void Process(BuildingDef def)
+        public static void OutputTemp(BuildingDef def)
+        {
+            CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(def.PrefabID, out var setting);
+
+            if (setting == null)
+                return;
+
+            foreach (var converter in def.BuildingComplete.GetComponents<ElementConverter>())
+            {
+                setting.Set(converter);
+            }
+
+            foreach (var converter in def.BuildingComplete.GetComponents<EnergyGenerator>())
+            {
+                setting.Set(converter);
+            }
+        }
+
+        public static void SuperAdvanced(BuildingDef def)
         {
             if (CustomizeBuildingsState.StateManager.State.AdvancedSettings == null) return;
 

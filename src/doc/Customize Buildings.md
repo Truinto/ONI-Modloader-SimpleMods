@@ -58,7 +58,7 @@ ALL setting are optional and can be turned off.
 
 [Github](https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/Customize%20Buildings)
 
-# README v37
+# README v41
 
 If CustomizeBuildings.json is corrupted or otherwise does not work, delete it and restart the game. A new clean file will be generated.
 
@@ -101,6 +101,8 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 * AlgaeTerrariumPatch: if true, apply AlgaeTerrarium
 * AlgaeTerrarium: new input/output elements; only last liquid will be absorbed from environment; will always passively consume CO2
 * DoorSelfSealing: if true, doors will block gas flow while set to automatic
+* MaterialIgnoreInsufficientMaterial: If true, will allow placing buildings while having insufficient building material.
+* MaterialAutoSelect: If true, will keep selected building material, even if stored amount is insufficient.
 * NoDupeValves: valves are set instantly without dupe interaction
 * NoDupeSwitches: switches are set instantly without dupe interaction
 * NoDupeToogleBuildings: buildings are enabled/disabled instantly without dupe interaction
@@ -279,13 +281,35 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 *    - MaterialCategory: single string, separate multiple with spacebar; must match count of elements; each entry must be a valid Tag like: Metal, RefinedMetal, Alloy, BuildableRaw, BuildableProcessed, PreciousRock, Farmable, Plastic, Glass, Transparent, BuildingFiber, FlyingCritterEdible, or BuildableAny
 *    - ConstructionMass: array of float; must match count of elements; how much kg are needed to build it
 *    - ThermalConductivity: thermal multiplier, probably only works on buildings already messing with temperatures; 0..1 will reduce the temperature transfer, while 1..100 will increase it; normal settings are 0.01 for insulated tiles and 2 for radiant pipes
-* MachineMultiplier: a list of building IDs; will multiply all storage and element converting properties of a building, which might break some stuff, so be mindfull
+* BuildingAdvancedMachineMultiplier: a list of building IDs; will multiply all storage and element converting properties of a building, which might break some stuff, so be mindfull
 * BuildingAdvancedGlobalFlag: if false, disable this feature altogether
-* BuildingAdvanced: more complex patches to buildings
+* BuildingAdvancedMaterial: more complex patches to buildings
 *    - Id: building ID
 *    - Index: material index that should be modified; applies to all if null
 *    - MaterialOverride: valid build elements to add for this building, multiple split with spacebar
+* BuildingAdvancedOutputTemp: allows output temperature to be set; if the number of element do not match, it will take the first entry for all values; values of 0.0 will use the building temperature and otherwise the input element's temperature
 * AdvancedSettings: not supported
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

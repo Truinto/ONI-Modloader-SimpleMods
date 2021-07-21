@@ -58,7 +58,7 @@ ALL setting are optional and can be turned off.
 
 [Github](https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/Customize%20Buildings)
 
-# README v30
+# README v41
 
 If CustomizeBuildings.json is corrupted or otherwise does not work, delete it and restart the game. A new clean file will be generated.
 
@@ -87,6 +87,7 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 *    - dupes will deliver selected liquids/gases until the capacity is at the slider amount
 *    - liquid/gas pipes can still deliver any element and will ignore the slider limit
 *    - activating, then deactivating an element checkbox drops it on the floor, for easy removal of rogue elements
+* RailgunMaxLaunch: 
 * ElectrolizerMaxPressure: pressure at which the elecrolizer will stop producing oxygen/hydrogen
 * AirfilterDropsCanisters: if true, airfilters (as well as all other buildings) will drop gas canisters on deconstruction (instead of venting stored gases)
 * NewRecipeRockCrusher: adds a new recipe to rock crusher -> Regolith To Sand
@@ -97,6 +98,11 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 *    - additional max DPU setting can be used to limit heating in exchange of lower throughput
 *    - energy consumption scales with DPU
 * SpaceHeaterTargetTemperature: add a slider to space heater/liquid heater which sets the shutoff temperature; does not prevent overheating
+* AlgaeTerrariumPatch: if true, apply AlgaeTerrarium
+* AlgaeTerrarium: new input/output elements; only last liquid will be absorbed from environment; will always passively consume CO2
+* DoorSelfSealing: if true, doors will block gas flow while set to automatic
+* MaterialIgnoreInsufficientMaterial: If true, will allow placing buildings while having insufficient building material.
+* MaterialAutoSelect: If true, will keep selected building material, even if stored amount is insufficient.
 * NoDupeValves: valves are set instantly without dupe interaction
 * NoDupeSwitches: switches are set instantly without dupe interaction
 * NoDupeToogleBuildings: buildings are enabled/disabled instantly without dupe interaction
@@ -106,6 +112,8 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 * ScannerBestWarningTime: best time before a network will detect incoming meteors
 * ScannerBestNetworkSize: amount of scanners needed for best warning time
 * LadderCometInvincibility: comets will no longer deal damage to standard ladders (does not include plastic ones)
+* TelescopeClearCellRadius: 
+* TelescopeAnalyzeRadius: 
 * SteamTurbineEnabled: 
 * SteamTurbineWattage: 
 * SteamTurbineSourceElement: 
@@ -164,6 +172,8 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 * NoDupeOilWellCap: buildings will not require a dupe to run
 * NoDupeIceCooledFan: adds power plug for automated operation; cooling factor is different
 * NoDupeRanchStation: grooming lasts for 100 cycles instead of 1
+* NoDupeTelescope: 
+* NoDupeAlgaeTerrarium: 
 * SkillStationEnabled: if false, disable this feature altogether
 * SkillStationCostTime: time dupe spends until process is done
 * SkillStationCostReset: exp cost for resets (usually free)
@@ -271,6 +281,52 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 *    - MaterialCategory: single string, separate multiple with spacebar; must match count of elements; each entry must be a valid Tag like: Metal, RefinedMetal, Alloy, BuildableRaw, BuildableProcessed, PreciousRock, Farmable, Plastic, Glass, Transparent, BuildingFiber, FlyingCritterEdible, or BuildableAny
 *    - ConstructionMass: array of float; must match count of elements; how much kg are needed to build it
 *    - ThermalConductivity: thermal multiplier, probably only works on buildings already messing with temperatures; 0..1 will reduce the temperature transfer, while 1..100 will increase it; normal settings are 0.01 for insulated tiles and 2 for radiant pipes
-* MachineMultiplier: a list of building IDs; will multiply all storage and element converting properties of a building, which might break some stuff, so be mindfull
+* BuildingAdvancedMachineMultiplier: a list of building IDs; will multiply all storage and element converting properties of a building, which might break some stuff, so be mindfull
+* BuildingAdvancedGlobalFlag: if false, disable this feature altogether
+* BuildingAdvancedMaterial: more complex patches to buildings
+*    - Id: building ID
+*    - Index: material index that should be modified; applies to all if null
+*    - MaterialOverride: valid build elements to add for this building, multiple split with spacebar
+* BuildingAdvancedOutputTemp: allows output temperature to be set; if the number of element do not match, it will take the first entry for all values; values of 0.0 will use the building temperature and otherwise the input element's temperature
 * AdvancedSettings: not supported
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

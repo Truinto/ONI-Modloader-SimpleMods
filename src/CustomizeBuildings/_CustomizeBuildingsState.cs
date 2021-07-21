@@ -114,6 +114,12 @@ namespace CustomizeBuildings
             
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "Material No Auto Select");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "If true, will keep selected building material, even if stored amount is insufficient.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_Title", "Base Setting Global Flag");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_ToolTip", "If false, will keep disable all basic manual changes.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_Title", "Advanced Global Flag");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_ToolTip", "If false, will keep disable all advanced manual changes.");
             #endregion
             #region Switches
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeValves_Title", "No Dupe Valves");
@@ -556,7 +562,7 @@ namespace CustomizeBuildings
             //POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 38;
+        public int version { get; set; } = 42;
 
         [JsonIgnore]
         [Option("_______________________________________________________________________________________")]
@@ -735,7 +741,7 @@ namespace CustomizeBuildings
             StateManager.State.TuningFuelCostPerDistanceGasLow = 0.027777778f;
             StateManager.State.TuningFuelCostPerDistanceGasHigh = 0.0416666679f;
 
-            StateManager.State.MachineMultiplier?.Clear();
+            StateManager.State.BuildingAdvancedMachineMultiplier?.Clear();
 
             StateManager.TrySaveConfigurationState();
 
@@ -1150,6 +1156,7 @@ namespace CustomizeBuildings
         #endregion
 
         #region Advanced
+        [Option("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_Title", "CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_ToolTip", "Miscellaneous")]
         public bool BuildingBaseSettingGlobalFlag { get; set; } = true;
         public Dictionary<string, BuildingStruct> BuildingBaseSettings { get; set; } = new Dictionary<string, BuildingStruct> {
             { WireHighWattageConfig.ID, new BuildingStruct(LocationRule: BuildLocationRule.Anywhere) },
@@ -1161,14 +1168,17 @@ namespace CustomizeBuildings
             //{ DoorConfig.ID, new BuildingStruct(IsFoundation: true) },
         };
 
-        public Dictionary<string, float> MachineMultiplier { get; set; } = new Dictionary<string, float> {
+        [Option("CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_Title", "CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_ToolTip", "Miscellaneous")]
+        public bool BuildingAdvancedGlobalFlag { get; set; } = false;
+        public Dictionary<string, float> BuildingAdvancedMachineMultiplier { get; set; } = new Dictionary<string, float> {
             { "EthanolDistillery", 4f }
         };
-
-        public bool BuildingAdvancedGlobalFlag { get; set; } = false;
-        public List<BuildingAdv> BuildingAdvanced { get; set; } = new List<BuildingAdv>() {
+        public List<BuildingAdv> BuildingAdvancedMaterial { get; set; } = new List<BuildingAdv>() {
             new BuildingAdv(TravelTubeConfig.ID, null, true, "Glass Ice"),
-            new BuildingAdv(TravelTubeWallBridgeConfig.ID, null, true, "Glass Ice")
+            new BuildingAdv(TravelTubeWallBridgeConfig.ID, null, true, "Glass Ice"),
+        };
+        public Dictionary<string, ElementConverterContainer> BuildingAdvancedOutputTemp { get; set; } = new Dictionary<string, ElementConverterContainer>() {
+            { ElectrolyzerConfig.ID, new ElementConverterContainer().ModeTemperature().Temperature(1f) },
         };
 
         public ElementConverterContainer AlgaeTerrarium { get; set; } = new ElementConverterContainer()
