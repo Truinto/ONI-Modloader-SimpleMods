@@ -19,6 +19,7 @@ Bugs:
 
 Customize Buildings:
 - door crashes when no dupe is off and sealed door on
+- fix check for PipedOutput
 - fix door chore bug
 - Ice-E Fan (revisit)
 - reservoirs Sweep Only also affect if dupes can take from it

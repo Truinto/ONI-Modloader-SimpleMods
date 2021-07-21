@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.41.0] EX1 S14-471883-S
+
+### Fixed
+- fixed crash when changing state of self sealing doors while nodupedoors was off
+
 ## [1.0.40.0] EX1 S14-471883-S
 
 ### Fixed

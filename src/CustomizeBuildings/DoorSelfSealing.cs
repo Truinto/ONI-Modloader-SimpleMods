@@ -29,6 +29,30 @@ namespace CustomizeBuildings
         }
     }
 
+    [HarmonyPatch(typeof(Door), "OnPrefabInit")]
+    public class DoorOnPrefabInit_Patch
+    {
+        public static void Postfix(ref Door __instance)
+        {
+            __instance.overrideAnims = new KAnimFile[]
+            {
+                Assets.GetAnim("anim_use_remote_kanim")
+            };
+        }
+    }
+
+    [HarmonyPatch(typeof(Door), "OnCleanUp")]
+    public class DoorOnCleanUp_Patch
+    {
+        public static void Postfix(Door __instance)
+        {
+            foreach (int cell in __instance.building.PlacementCells)
+            {
+                SimMessages.ClearCellProperties(cell, 3);
+            }
+        }
+    }
+
 
     [HarmonyPatch(typeof(Door), "SetSimState")]
     public class DoorSelfSealing_Patch
