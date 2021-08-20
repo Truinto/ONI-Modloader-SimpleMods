@@ -17,9 +17,10 @@ Bugs:
 - Electric Grill/Gas Range must not display "Lacks Grilling Skill..."
 - resolve enums by name: [JsonConverter(typeof(StringEnumConverter))]
 
+Customize Recipe:
+
 Customize Buildings:
-- door crashes when no dupe is off and sealed door on
-- fix check for PipedOutput
+- new patch -> DropAll() was updated
 - fix door chore bug
 - Ice-E Fan (revisit)
 - reservoirs Sweep Only also affect if dupes can take from it
@@ -31,6 +32,7 @@ Customize Buildings:
 - nodupe RailGunPayloadOpenerConfig
 
 Customize Plants:
+- make accessible
 - bug: multiple seed print when using placeholder
 - bug: evil flower doesn't stop producing output element when bristled
 - plants don't consume water when fully grown/bristled

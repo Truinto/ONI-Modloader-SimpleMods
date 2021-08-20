@@ -13,6 +13,8 @@ namespace CustomizeGeyser
 
         public static List<GeyserConfigurator.GeyserType> GeyserTypes = (List<GeyserConfigurator.GeyserType>)AccessTools.Field(typeof(GeyserConfigurator), "geyserTypes").GetValue(null);
 
+        public static List<string> IdsBaseGame = new List<string>();
+
         public static string ConvertGeyserId(this HashedString hash)
         {
             return GeyserTypes.Find(s => s.idHash == hash)?.id;
@@ -34,6 +36,9 @@ namespace CustomizeGeyser
         public static void Postfix(ref List<GeyserGenericConfig.GeyserPrefabParams> __result)
         {
             GeyserInfo.Config = __result;
+
+            foreach (var config in __result)
+                GeyserInfo.IdsBaseGame.Add(config.geyserType.id);
 
             for (int j = 0; j < CustomizeGeyserState.StateManager.State.Geysers.Count; j++)
             {

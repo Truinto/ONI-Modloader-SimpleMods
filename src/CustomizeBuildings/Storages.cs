@@ -7,6 +7,56 @@ using UnityEngine;
 
 namespace CustomizeBuildings
 {
+    [HarmonyPatch(typeof(Assets), nameof(Assets.AddBuildingDef))]
+    [HarmonyPriority(Priority.HigherThanNormal)]
+    public class Storages
+    {
+        public static bool Prepare()
+        {
+            return true; // TODO: create storage global flag
+        }
+
+        public static void Prefix(BuildingDef def)
+        {
+            if (def.PrefabID == NoseconeHarvestConfig.ID)
+            {
+                var storage = def.BuildingComplete.GetComponent<Storage>();
+                storage.capacityKg = CustomizeBuildingsState.StateManager.State.DrillConeKG;
+                var manualDeliveryKG = def.BuildingComplete.GetComponent<ManualDeliveryKG>();
+                //manualDeliveryKG.minimumMass = storage.capacityKg;
+                manualDeliveryKG.capacity = storage.capacityKg;
+                manualDeliveryKG.refillMass = storage.capacityKg;
+            }
+
+            else if (def.PrefabID == ModularLaunchpadPortGasConfig.ID || def.PrefabID == ModularLaunchpadPortGasUnloaderConfig.ID)
+            {
+                ConduitConsumer conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
+                if (conduitConsumer != null)
+                    conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.RocketPortGas;
+                foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
+                    storage.capacityKg = CustomizeBuildingsState.StateManager.State.RocketPortGas;
+            }
+
+            else if (def.PrefabID == ModularLaunchpadPortLiquidConfig.ID || def.PrefabID == ModularLaunchpadPortLiquidUnloaderConfig.ID)
+            {
+                ConduitConsumer conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
+                if (conduitConsumer != null)
+                    conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.RocketPortLiquid;
+                foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
+                    storage.capacityKg = CustomizeBuildingsState.StateManager.State.RocketPortLiquid;
+            }
+
+            else if (def.PrefabID == ModularLaunchpadPortSolidConfig.ID || def.PrefabID == ModularLaunchpadPortSolidUnloaderConfig.ID)
+            {
+                SolidConduitConsumer solidConduitConsumer = def.BuildingComplete.GetComponent<SolidConduitConsumer>();
+                if (solidConduitConsumer != null)
+                    solidConduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.RocketPortSolid;
+                foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
+                    storage.capacityKg = CustomizeBuildingsState.StateManager.State.RocketPortSolid;
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(SolidConduitInboxConfig), "DoPostConfigureComplete")]
     public class SolidConduitInbox_AcceptAny
     {
@@ -159,7 +209,7 @@ namespace CustomizeBuildings
         {
             return CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch != 200f;
         }
-        
+
         public static void Postfix(GameObject go)
         {
             var particleStorage = go.AddOrGet<HighEnergyParticleStorage>();

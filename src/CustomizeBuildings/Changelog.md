@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.0.44.0] U33-474321-S U34-475368-S
+
+### Changed
+- selecting an attribute on the skill station will repeat the jobs, as long as the dupe has enough exp
+
+### Fixed
+- fixed skill-station crash when dupe is selected
+- skill-station now applies its attribute increases instantly
+- excluded critters from AutoSweeperPickupAnything to prevent crashes
+- fixed a bug that set the drillcone capacity to 1 (instead of 1000), making it impossible to mine
+
+### Removed
+- removed non existing TuningEnginePowerLateWeak
+
+## [1.0.43.0] U33-473720-S U33-474141-S
+
+### Added
+- added drill cone and various launch port capacity settings
+- added no dupe diamond press
+
+### Fixed
+- fixed an incompatibility issue with PeterHan.AIImprovements
+
 ## [1.0.42.0] EX1 S14-471883-S
 
 ### Added

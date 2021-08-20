@@ -23,3 +23,21 @@ MaterialIgnoreInsufficientMaterial_ToolTip
 
 MaterialAutoSelect_Title
 MaterialAutoSelect_ToolTip
+
+NoDupeDiamondPress_Title
+NoDupeDiamondPress_ToolTip
+
+RocketPortGas_Title
+RocketPortGas_ToolTip
+
+RocketPortLiquid_Title
+RocketPortLiquid_ToolTip
+
+RocketPortSolid_Title
+RocketPortSolid_ToolTip
+
+DrillConeKG_Title
+DrillConeKG_ToolTip
+
+REMOVE TuningEnginePowerLateWeak_Title
+REMOVE TuningEnginePowerLateWeak_ToolTip

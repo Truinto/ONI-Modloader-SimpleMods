@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.28.0]
+
+### Added
+- added ingame menu with some basic options
+
+## [1.0.27.0] U33-473720-B
+
+### Fixed
+- fixed a crash on vanilla version
+
 ## [1.0.26.0] EX1 S14-471883-S
 
 ### Fixed

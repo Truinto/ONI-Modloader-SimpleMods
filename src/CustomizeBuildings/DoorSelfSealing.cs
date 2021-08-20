@@ -9,11 +9,15 @@ using System.Reflection;
 namespace CustomizeBuildings
 {
     [HarmonyPatch(typeof(FallMonitor.Instance), nameof(FallMonitor.Instance.UpdateFalling))]
+    [HarmonyPriority(Priority.Low)]
     public class DoorEntomb_Patch
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.DoorSelfSealing;
+            if (Helpers.IsModActive("PeterHan.AIImprovements", true))
+                Helpers.Print("Didn't patch DoorEntomb_Patch because PeterHan.AIImprovements is enabled.");
+
+            return CustomizeBuildingsState.StateManager.State.DoorSelfSealing && !Helpers.IsModActive("PeterHan.AIImprovements", true);
         }
 
         public static bool Prefix(FallMonitor.Instance __instance, Navigator ___navigator)
@@ -79,12 +83,14 @@ namespace CustomizeBuildings
                     var delegateDoorOpen = (System.Action)Delegate.CreateDelegate(typeof(System.Action), __instance, OnSimDoorOpened);
                     var handleOpen = Game.Instance.callbackManager.Add(new Game.CallbackInfo(delegateDoorOpen, false));
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorOpen, mass, pElement.Temperature, byte.MaxValue, 0, handleOpen.index);
+                    //SimMessages.ClearCellProperties(cell, 3);
                 }
                 else
                 {
                     var delegateDoorClose = (System.Action)Delegate.CreateDelegate(typeof(System.Action), __instance, OnSimDoorClosed);
                     var handleClose = Game.Instance.callbackManager.Add(new Game.CallbackInfo(delegateDoorClose, false));
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorClose, mass, pElement.Temperature, byte.MaxValue, 0, handleClose.index);
+                    //SimMessages.SetCellProperties(cell, 3);
                 }
             }
             return false;

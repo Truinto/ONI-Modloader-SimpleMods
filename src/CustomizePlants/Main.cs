@@ -660,6 +660,49 @@ namespace CustomizePlants
 
         }
 
+        public static void ReadPlant(GameObject plant, ref PlantData setting)
+        {
+            if (setting == null) return;
+
+            #region fruitId
+            Crop crop = plant.GetComponent<Crop>();
+            if (crop != null)
+            {
+                setting.fruitId = crop.cropVal.cropId;
+                setting.fruit_amount = crop.cropVal.numProduced;
+                setting.fruit_grow_time = crop.cropVal.cropDuration;
+            }
+            #endregion
+            #region irrigation
+            setting.irrigation = new Dictionary<string, float>();
+
+            foreach (var irrigation in plant.GetDef<IrrigationMonitor.Def>().consumedElements)
+                setting.irrigation.Add(irrigation.tag.ToString(), irrigation.massConsumptionRate);
+                
+            foreach (var irrigation in plant.GetDef<FertilizationMonitor.Def>().consumedElements)
+                setting.irrigation.Add(irrigation.tag.ToString(), irrigation.massConsumptionRate);
+            #endregion
+            #region safe_elements & pressure
+            var pressure = plant.GetComponent<PressureVulnerable>();
+            if (pressure != null && pressure.safe_atmospheres != null)
+            {
+                setting.safe_elements = pressure.safe_atmospheres.Select(s => s.tag.ToString()).ToArray();
+
+                if (pressure.pressure_sensitive)
+                {
+                    setting.pressures = new float[] { pressure.pressureLethal_Low, pressure.pressureWarning_Low, pressure.pressureWarning_High, pressure.pressureLethal_High };
+                }
+            }
+            #endregion
+            #region temperatures
+            var temperature = plant.GetComponent<TemperatureVulnerable>();
+            if (temperature != null)
+            {
+                setting.temperatures = new float[] { temperature.TemperatureLethalLow, temperature.TemperatureWarningLow, temperature.TemperatureWarningHigh, temperature.TemperatureLethalHigh };
+            }
+            #endregion
+        }
+
         public static void RemoveIrrigation(GameObject plant)
         {
             StateMachineController controller = plant.GetComponent<StateMachineController>();

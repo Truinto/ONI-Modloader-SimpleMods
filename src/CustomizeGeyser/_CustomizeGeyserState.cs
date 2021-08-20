@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
+using PeterHan.PLib.Options;
 
 namespace CustomizeGeyser
 {
+    [ConfigFile("Customize Geyser.json", true, true)]
+    [RestartRequired]
+    [ModInfo(null, collapse: true)]
+
     public class CustomizeGeyserState
     {
         public static void OnLoad()
@@ -34,7 +41,85 @@ namespace CustomizeGeyser
             }
         }
 
+        #region Buttons
+        [Option("Reset: Custom Default", "Re-installs mod's default settings.")]
+        [JsonIgnore]
+        public System.Action<object> ResetToCustomDefault => delegate (object nix)
+        {
+            StateManager.TrySaveConfigurationState(new CustomizeGeyserState());
+            OptionsDialog.Last?.CloseDialog();
+            OptionsDialog.Last?.CheckForRestart();
+            OptionsDialog.Last = null;
+        };
+
+        [Option("Reset: All Off", "Clears all geyser settings and turns off all options.")]
+        [JsonIgnore]
+        public System.Action<object> ResetToAllOff => delegate (object nix)
+        {
+            Geysers.Clear();
+            RNGTable.Clear();
+            foreach (var idBase in GeyserInfo.IdsBaseGame)
+                RNGTable.Add(idBase, 1);
+
+            RandomizerEnabled = false;
+            RandomizerUsesMapSeed = true;
+            RandomizerRerollsCycleRate = false;
+            RandomizerPopupGeyserDiscoveryInfo = false;
+            RandomizerHighlanderMode = false;
+            RandomizerHighlanderRetroactive = false;
+            RandomizerEnabled = false;
+            GeyserMorphEnabled = false;
+
+            StateManager.TrySaveConfigurationState();
+            OptionsDialog.Last?.CloseDialog();
+            OptionsDialog.Last?.CheckForRestart();
+            OptionsDialog.Last = null;
+        };
+
+        [Option("Preset: No Dormancy", "Adds all geysers with no dormancy period.")]
+        [JsonIgnore]
+        public System.Action<object> PresetNoDormancy => delegate (object nix)
+        {
+            foreach (var geyser in GeyserInfo.IdsBaseGame)
+            {
+                if (!Geysers.Any(a => a.id == geyser))
+                    Geysers.Add(new GeyserStruct(geyser));
+            }
+
+            foreach (var geyser in Geysers)
+            {
+                geyser.minYearPercent = 1f;
+                geyser.maxYearPercent = 1f;
+            }
+
+            StateManager.TrySaveConfigurationState(new CustomizeGeyserState());
+            OptionsDialog.Last?.CloseDialog();
+            OptionsDialog.Last?.CheckForRestart();
+            OptionsDialog.Last = null;
+        };
+
+
+        [Option("Preset: Copy", "Adds all geysers with all options copied from current game.")]
+        [JsonIgnore]
+        public System.Action<object> PresetCopy => delegate (object nix)
+        {
+            Geysers.Clear();
+            foreach (var config in GeyserInfo.Config)
+            {
+                var x = config.geyserType;
+                Geysers.Add(new GeyserStruct(x.id, x.element.ToString()));
+            }
+
+            StateManager.TrySaveConfigurationState(new CustomizeGeyserState());
+            OptionsDialog.Last?.CloseDialog();
+            OptionsDialog.Last?.CheckForRestart();
+            OptionsDialog.Last = null;
+        };
+        #endregion
+
+        #region Fields
         public int version { get; set; } = 8;
+        [Option("Enable Mod", "")]
         public bool Enabled { get; set; } = true;
 
         public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
@@ -72,9 +157,13 @@ namespace CustomizeGeyser
                 minYearPercent: 0.4f, maxYearPercent: 0.8f, Disease: "PollenGerms", DiseaseCount: 50)
         };
 
+        [Option("Randomizer Enabled", "if set to false will disable all other randomize settings")]
         public bool RandomizerEnabled { get; set; } = true;
+        [Option("Randomizer Uses Map Seed", "if set to true, the same geysers will spawn for a certain set of settings; you still get different results when you change the weights or add new geyser types; if set to false, reloading and rediscovery a geyser may reveal a different geyser")]
         public bool RandomizerUsesMapSeed { get; set; } = false;
+        [Option("Randomizer Rerolls Cycle Rate", "if set to true and RandomizerUsesMapSeed set to false will also change the percentage of cycle output; otherwise output stays consistent")]
         public bool RandomizerRerollsCycleRate { get; set; } = true;
+        [Option("Randomizer Popup Geyser Discovery Info", "generates a popup whenever a geyser is discovered; useful for rerolling/testing Randomize settings do not affect pre-defined geysers, which are some steam, methane, and oil geysers")]
         public bool RandomizerPopupGeyserDiscoveryInfo { get; set; } = true;
         public bool RandomizerHighlanderMode { get; set; } = false;
         public bool RandomizerHighlanderRetroactive { get; set; } = false;
@@ -110,19 +199,15 @@ namespace CustomizeGeyser
             { "liquid_coolant", 0 }
         };
 
+        [Option("Geyser Morph Enabled", "When enabled, shows two buttons in the geyser menu. The first will request a scientist dupe to work on it, the second will define which geyser it should be morphed into. Click the second button to cycle through the options.")]
         public bool GeyserMorphEnabled { get; set; } = true;
+        [Option("Geyser Morph Worktime", "How long a scientist dupe will need to work on the geyser to morph it.")]
         public int GeyserMorphWorktime { get; set; } = 300;
+        #endregion
 
         public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.PathHelper.CreatePath("Customize Geyser"), true, UpdateFunction);
-
         public static bool UpdateFunction(CustomizeGeyserState state)
         {
-            if (state.version < 8)
-            {
-                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "Customize Geyser.json");
-                if (File.Exists(modpath))
-                    File.Delete(modpath);
-            }
             return true;
         }
 

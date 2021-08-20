@@ -58,6 +58,7 @@ List of Settings
 * SeedsGoIntoAnyFlowerPots: Whenever or not all seeds go into any flower pots / farm plots.
 * WheezewortTempDelta: How much cooling wheezeworts do. Default is -5 Kelvin.
 * OxyfernOxygenPerSecond: Amount of oxygen released by oxyferns.
+* CheatMutationAnalyze: Immediately reveals mutations.
 * CheatFlowerVase: When true, the basic Flower Pot for decoration plants does not need any irrigation at all, no matter which plant is in it.
 * WildFlowerVase: When true, the basic Flower Pot grows plants as if they were wild.
 * AutomaticallyAddModPlants: When true, will automatically add any plant to the mod, that registers as a plant via ExtendEntityToBasicPlant function. Requires restart after plant was found.

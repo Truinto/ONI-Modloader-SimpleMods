@@ -32,7 +32,7 @@ namespace CustomizePlants
     {
         public static void Postfix()
         {
-            var mutations = Db.Get().PlantMutations.resources;
+            var mutations = Db.Get().PlantMutations?.resources;
 
             if (mutations == null)
             {

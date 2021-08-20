@@ -158,6 +158,20 @@ namespace CustomizeBuildings
         }
     }
 
+    [HarmonyPatch(typeof(DiamondPressConfig), "ConfigureBuildingTemplate")]
+    public class DiamondPressConfig_ConfigureBuildingTemplate
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeDiamondPress;
+        }
+
+        public static void Postfix(GameObject go)
+        {
+            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
+        }
+    }
+
     [HarmonyPatch(typeof(SuitFabricatorConfig), "ConfigureBuildingTemplate")]
     public class SuitFabricatorConfig_ConfigureBuildingTemplate
     {
@@ -240,7 +254,7 @@ namespace CustomizeBuildings
         {
             //foreach (var mod in Global.Instance.modManager.mods) Debug.Log($"id={mod.label.id} title={mod.label.title} enabled={mod.IsEnabledForActiveDlc()}");
 
-            if (Helpers.IsModActive("Piped output"))
+            if (Helpers.IsModActive("PipedOutput"))
                 return;
 
             OilWellCap oilWellCap = go.GetComponent<OilWellCap>();

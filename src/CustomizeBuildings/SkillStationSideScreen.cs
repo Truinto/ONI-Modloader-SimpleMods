@@ -198,11 +198,14 @@ namespace CustomizeBuildings
             if (minion == null || filter == null)
             {
                 Debug.Log("[SkillStation] Minion or Filter is null");
-                return false;
+                return true;
             }
 
             // print debug message
             Debug.Log($"[SkillStation] Dupe={minion.GetProperName()} Exp={minion.TotalExperienceGained} Points={minion.TotalSkillPointsGained}");
+
+            // remember assignee, in case we want to reassign it
+            var assignee = __instance.assignable.assignee;
             __instance.assignable.Unassign();
 
             // check which purchase was selected
@@ -297,17 +300,19 @@ namespace CustomizeBuildings
                 case SkillType.Attribute:
                     Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
                     string attributeId = filter.SelectedTag.Name.Substring(10);
-                    var attribute = minion.gameObject.GetComponent<AttributeLevels>().GetAttributeLevel(attributeId);
+                    var attributes = minion.gameObject.GetComponent<AttributeLevels>();
+                    var attribute = attributes.GetAttributeLevel(attributeId);
                     if (attribute != null)
                     {
                         int level = attribute.GetLevel();
                         attribute.SetLevel(level + 1);
+                        attribute.Apply(attributes);
                         minion.AddExperience(-SkillStationCosts.CostAddAttribute);
                         tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), attributeId, level, level + 1);
                     }
                     else
                     {
-                        tooltip = "Wups, cricital error: Attribute could not be resolved.";
+                        tooltip = "Wups, critical error: Attribute could not be resolved.";
                     }
                     break;
 
@@ -334,15 +339,23 @@ namespace CustomizeBuildings
                 minion.SetHats(minion.CurrentHat, null);
                 minion.ApplyTargetHat();
             }
-            filter.SelectedTag = "Void";
-            DetailsScreen.Instance.Refresh(__instance.gameObject);
+
+            // re-apply job, if attribute selected and exp sufficient
+            if (type == SkillType.Attribute && minion.TotalExperienceGained > SkillStationCosts.CostAddAttribute)
+            {
+                __instance.assignable.Assign(assignee);
+            }
+            else
+            {
+                filter.SelectedTag = "Void";
+            }
+
+            if (__instance.GetComponent<KSelectable>().IsSelected)
+                DetailsScreen.Instance.Refresh(__instance.gameObject);
 
             // display notification
             Debug.Log("[SkillStation] " + tooltip);
             worker.GetComponent<Notifier>().Add(new Notification(
-#if !DLC1
-                group: HashedString.Invalid,
-#endif
                 title: "Skills Station",
                 type: NotificationType.Good,
                 tooltip: (List<Notification> notificationList, object data) =>
@@ -361,7 +374,6 @@ namespace CustomizeBuildings
                 volume_attenuation: true),
                 suffix: "");
 
-            // skip base method
             return false;
         }
 
@@ -426,7 +438,8 @@ namespace CustomizeBuildings
             try
             {
                 //__instance.GetComponent<Filterable>().SelectedTag = "Void";
-                DetailsScreen.Instance.Refresh(__instance.gameObject);
+                if (__instance.GetComponent<KSelectable>().IsSelected)
+                    DetailsScreen.Instance.Refresh(__instance.gameObject);
                 Helpers.PrintDebug("SkillStation OnAssign Refresh");
             }
             catch (System.Exception)

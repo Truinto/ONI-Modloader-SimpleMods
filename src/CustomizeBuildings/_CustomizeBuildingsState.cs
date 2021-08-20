@@ -46,13 +46,13 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_Title", "Gas Reservoir Capacity");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_ToolTip", "Capped at 100 tones. Anything higher will get deleted by the game.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_Title", "Liquid Reservoir Capacity");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_ToolTip", "");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_ToolTip", "Capped at 100 tones. Anything higher will get deleted by the game.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RationBoxKG_Title", "Ration Box Capacity");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RationBoxKG_ToolTip", "Ration Box Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RationBoxKG_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FridgeKG_Title", "Fridge Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FridgeKG_ToolTip", "");
@@ -83,6 +83,18 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "Railgun Max Launch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "How much material can be send per launch. Storage is at least twice at much.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "Drillcone Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortGas_Title", "Rocket Port Gas Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortGas_ToolTip", "");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_Title", "Rocket Port Liquid Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_ToolTip", "");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "Rocket Port Solid Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "");
             #endregion
             #region Miscellaneous
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ElectrolizerMaxPressure_Title", "Electrolizer Max Pressure");
@@ -315,6 +327,9 @@ namespace CustomizeBuildings
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRockCrusher_Title", "No Dupe Rock Crusher");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRockCrusher_ToolTip", "");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDiamondPress_Title", "No Dupe Diamond Press");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDiamondPress_ToolTip", "");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSuitFabricator_Title", "No Dupe Suit Fabricator");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSuitFabricator_ToolTip", "");
@@ -562,7 +577,7 @@ namespace CustomizeBuildings
             //POptions.RegisterOptions(typeof(CustomizeBuildingsState));
         }
 
-        public int version { get; set; } = 42;
+        public int version { get; set; } = 44;
 
         [JsonIgnore]
         [Option("_______________________________________________________________________________________")]
@@ -591,6 +606,10 @@ namespace CustomizeBuildings
             StateManager.State.ReservoirNoGround = false;
             StateManager.State.ReservoirManualDelivery = false;
             StateManager.State.RailgunMaxLaunch = 200f;
+            StateManager.State.DrillConeKG = 1000f;
+            StateManager.State.RocketPortGas = 1f;
+            StateManager.State.RocketPortLiquid = 10f;
+            StateManager.State.RocketPortSolid = 20f;
             StateManager.State.ElectrolizerMaxPressure = 1.8f;
             StateManager.State.AirfilterDropsCanisters = false;
             StateManager.State.NewRecipeRockCrusher = false;
@@ -662,6 +681,7 @@ namespace CustomizeBuildings
             StateManager.State.NoDupeMetalRefinery = false;
             StateManager.State.NoDupeMicrobeMusher = false;
             StateManager.State.NoDupeRockCrusher = false;
+            StateManager.State.NoDupeDiamondPress = false;
             StateManager.State.NoDupeSuitFabricator = false;
             StateManager.State.NoDupeSupermaterialRefinery = false;
             StateManager.State.NoDupeSludgePress = false;
@@ -731,7 +751,6 @@ namespace CustomizeBuildings
             StateManager.State.TuningEnginePowerMidVeryStrong = 42;
             StateManager.State.TuningEnginePowerMidStrong = 27;
             StateManager.State.TuningEnginePowerMidWeak = 6;
-            StateManager.State.TuningEnginePowerLateWeak = 1;
             StateManager.State.TuningEnginePowerLateStrong = 48;
             StateManager.State.TuningFuelCostPerDistanceVeryLow = 0.055555556f;
             StateManager.State.TuningFuelCostPerDistanceLow = 0.0625f;
@@ -745,9 +764,9 @@ namespace CustomizeBuildings
 
             StateManager.TrySaveConfigurationState();
 
-            PeterHan.PLib.Options.OptionsDialog.Last?.CloseDialog();
-            PeterHan.PLib.Options.OptionsDialog.Last?.CheckForRestart();
-            PeterHan.PLib.Options.OptionsDialog.Last = null;
+            OptionsDialog.Last?.CloseDialog();
+            OptionsDialog.Last?.CheckForRestart();
+            OptionsDialog.Last = null;
         };
 
         [Option("CustomizeBuildings.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeBuildings.LOCSTRINGS.ResetToCustomDefault_ToolTip")]
@@ -807,8 +826,16 @@ namespace CustomizeBuildings
         public bool ReservoirNoGround { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_Title", "CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_ToolTip", "Storage")]
         public bool ReservoirManualDelivery { get; set; } = true;
-        [Option("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "Storage", "F0")]
         public float RailgunMaxLaunch { get; set; } = 200f;
+        [Option("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "Storage", "F0")]
+        public float DrillConeKG { get; set; } = 1000f;        
+        [Option("CustomizeBuildings.LOCSTRINGS.RocketPortGas_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortGas_ToolTip", "Storage", "F0")]
+        public float RocketPortGas { get; set; } = 1f;
+        [Option("CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_ToolTip", "Storage", "F0")]
+        public float RocketPortLiquid { get; set; } = 10f;
+        [Option("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "Storage", "F0")]
+        public float RocketPortSolid { get; set; } = 20f;
         #endregion
 
         #region Miscellaneous
@@ -990,6 +1017,8 @@ namespace CustomizeBuildings
         public bool NoDupeMicrobeMusher { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeRockCrusher_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeRockCrusher_ToolTip", "No Dupe")]
         public bool NoDupeRockCrusher { get; set; } = true;
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupeDiamondPress_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeDiamondPress_ToolTip", "No Dupe")]
+        public bool NoDupeDiamondPress { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeSuitFabricator_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeSuitFabricator_ToolTip", "No Dupe")]
         public bool NoDupeSuitFabricator { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeSupermaterialRefinery_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeSupermaterialRefinery_ToolTip", "No Dupe")]
@@ -1013,7 +1042,6 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "No Dupe")]
         public bool NoDupeAlgaeTerrarium { get; set; } = false;
         //public bool NoDupeShearingStation { get; set; } = true;
-        //public bool NoDupeCompost { get; set; } = true;
         #endregion
 
         #region Skill Station
@@ -1135,8 +1163,6 @@ namespace CustomizeBuildings
         public int TuningEnginePowerMidStrong { get; set; } = 27;
         [Option("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidWeak_Title", "CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidWeak_ToolTip", "Tuning")]
         public int TuningEnginePowerMidWeak { get; set; } = 6;
-        [Option("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateWeak_Title", "CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateWeak_ToolTip", "Tuning")]
-        public int TuningEnginePowerLateWeak { get; set; } = 1;
         [Option("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateStrong_Title", "CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateStrong_ToolTip", "Tuning")]
         public int TuningEnginePowerLateStrong { get; set; } = 48;
         [Option("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryLow_Title", "CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryLow_ToolTip", "Tuning", "F2")]
@@ -1206,6 +1232,9 @@ namespace CustomizeBuildings
                 if (Directory.Exists(modpath))
                     Directory.Delete(modpath, true);
             }
+            if (state.version < 44 && state.DrillConeKG < 1000f)
+                state.DrillConeKG = 1000f;
+
             return true;
         }
 

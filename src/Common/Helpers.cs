@@ -121,9 +121,17 @@ namespace Common
         #endregion
 
         #region Utility
-        public static bool IsModActive(string title)
+        public static bool IsModActive(string title, bool exact = false)
         {
-            return Global.Instance.modManager.mods.FirstOrDefault(s => s.title == title)?.IsEnabledForActiveDlc() ?? false;
+            if (exact)
+                return Global.Instance.modManager.mods.FirstOrDefault(s => s.staticID == title)?.IsEnabledForActiveDlc() ?? false;
+
+            return Global.Instance.modManager.mods.FirstOrDefault(s => s.staticID.EqualIgnoreCase(title) || s.title.EqualIgnoreCase(title))?.IsEnabledForActiveDlc() ?? false;
+        }
+
+        public static bool EqualIgnoreCase(this string str1, string str2)
+        {
+            return String.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
         }
 
         public static HashSet<Tag> RemoveRange(this HashSet<Tag> set, IEnumerable<Tag> itemsToRemove)

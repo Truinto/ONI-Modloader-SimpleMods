@@ -19,7 +19,6 @@ namespace CustomizeBuildings
                 #region Tuning
                 if (CustomizeBuildingsState.StateManager.State.TuningGlobal)
                 {
-#if DLC1
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitDecay))
                         TUNING.EQUIPMENT.SUITS.ATMOSUIT_DECAY = CustomizeBuildingsState.StateManager.State.TuningAtmosuitDecay;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitAthletics))
@@ -36,7 +35,6 @@ namespace CustomizeBuildings
                         TUNING.EQUIPMENT.SUITS.LEADSUIT_INSULATION = CustomizeBuildingsState.StateManager.State.TuningLeadsuitInsulation;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningLeadsuitThermalConductivityBarrier))
                         TUNING.EQUIPMENT.SUITS.LEADSUIT_THERMAL_CONDUCTIVITY_BARRIER = CustomizeBuildingsState.StateManager.State.TuningLeadsuitThermalConductivityBarrier;
-#endif
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitScalding))
                         TUNING.EQUIPMENT.SUITS.ATMOSUIT_SCALDING = (int)CustomizeBuildingsState.StateManager.State.TuningAtmosuitScalding;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningAtmosuitInsulation))
@@ -72,12 +70,10 @@ namespace CustomizeBuildings
                         TUNING.ROCKETRY.DESTINATION_THRUST_COSTS.HIGH = CustomizeBuildingsState.StateManager.State.TuningThrustCostsHigh;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningThrustCostsVeryHigh))
                         TUNING.ROCKETRY.DESTINATION_THRUST_COSTS.VERY_HIGH = CustomizeBuildingsState.StateManager.State.TuningThrustCostsVeryHigh;
-#if DLC1
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningClusterFowPointsToReveal))
                         TUNING.ROCKETRY.CLUSTER_FOW.POINTS_TO_REVEAL = CustomizeBuildingsState.StateManager.State.TuningClusterFowPointsToReveal;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningClusterFowDefaultCyclesPerReveal))
                         TUNING.ROCKETRY.CLUSTER_FOW.DEFAULT_CYCLES_PER_REVEAL = CustomizeBuildingsState.StateManager.State.TuningClusterFowDefaultCyclesPerReveal;
-#endif
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningEngineEfficiencyWeak))
                         TUNING.ROCKETRY.ENGINE_EFFICIENCY.WEAK = CustomizeBuildingsState.StateManager.State.TuningEngineEfficiencyWeak;   //CO2; Steam
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningEngineEfficiencyMedium))
@@ -86,10 +82,8 @@ namespace CustomizeBuildings
                         TUNING.ROCKETRY.ENGINE_EFFICIENCY.STRONG = CustomizeBuildingsState.StateManager.State.TuningEngineEfficiencyStrong; //Hydrogen; Sugar
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningEngineEfficiencyBooster))
                         TUNING.ROCKETRY.ENGINE_EFFICIENCY.BOOSTER = CustomizeBuildingsState.StateManager.State.TuningEngineEfficiencyBooster;
-#if DLC1
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningOxidizerEfficiencyVeryLow))
                         TUNING.ROCKETRY.OXIDIZER_EFFICIENCY.VERY_LOW = CustomizeBuildingsState.StateManager.State.TuningOxidizerEfficiencyVeryLow;  //Fertilizer
-#endif
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningOxidizerEfficiencyLow))
                         TUNING.ROCKETRY.OXIDIZER_EFFICIENCY.LOW = CustomizeBuildingsState.StateManager.State.TuningOxidizerEfficiencyLow;   //OxyRock
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningOxidizerEfficiencyHigh))
@@ -98,7 +92,6 @@ namespace CustomizeBuildings
                         TUNING.ROCKETRY.CARGO_CONTAINER_MASS.STATIC_MASS = CustomizeBuildingsState.StateManager.State.TuningCargoContainerMassStaticMass;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningCargoContainerMassPayloadMass))
                         TUNING.ROCKETRY.CARGO_CONTAINER_MASS.PAYLOAD_MASS = CustomizeBuildingsState.StateManager.State.TuningCargoContainerMassPayloadMass;
-#if DLC1
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningBurdenInsignificant))
                         TUNING.ROCKETRY.BURDEN.INSIGNIFICANT = CustomizeBuildingsState.StateManager.State.TuningBurdenInsignificant;   //Unconstructed
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningBurdenMinor))
@@ -125,10 +118,6 @@ namespace CustomizeBuildings
                         TUNING.ROCKETRY.ENGINE_POWER.MID_STRONG = CustomizeBuildingsState.StateManager.State.TuningEnginePowerMidStrong;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningEnginePowerMidWeak))
                         TUNING.ROCKETRY.ENGINE_POWER.MID_WEAK = CustomizeBuildingsState.StateManager.State.TuningEnginePowerMidWeak;
-#if false
-                    if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningEnginePowerLateWeak))
-                        TUNING.ROCKETRY.ENGINE_POWER.LATE_WEAK = CustomizeBuildingsState.StateManager.State.TuningEnginePowerLateWeak;
-#endif
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningEnginePowerLateStrong))
                         TUNING.ROCKETRY.ENGINE_POWER.LATE_STRONG = CustomizeBuildingsState.StateManager.State.TuningEnginePowerLateStrong;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningFuelCostPerDistanceVeryLow))
@@ -145,7 +134,6 @@ namespace CustomizeBuildings
                         TUNING.ROCKETRY.FUEL_COST_PER_DISTANCE.GAS_LOW = CustomizeBuildingsState.StateManager.State.TuningFuelCostPerDistanceGasLow;
                     if (!float.IsNaN(CustomizeBuildingsState.StateManager.State.TuningFuelCostPerDistanceGasHigh))
                         TUNING.ROCKETRY.FUEL_COST_PER_DISTANCE.GAS_HIGH = CustomizeBuildingsState.StateManager.State.TuningFuelCostPerDistanceGasHigh;
-#endif
                 }
                 #endregion
 
@@ -155,7 +143,7 @@ namespace CustomizeBuildings
             }
             catch (System.Exception e)
             {
-                Helpers.PrintDebug(e.Message);
+                Helpers.Print(e.Message);
             }
         }
     }
@@ -180,10 +168,67 @@ namespace CustomizeBuildings
             __instance.ElementToggles.TryGetValue(previousElement, out KToggle toggle);
             if (toggle == null)
                 return true;
-            
+
             __instance.OnSelectMaterial(previousElement, ___activeRecipe, true);
             __result = true;
             return false;
+        }
+    }
+
+    public class RecipePatch
+    {
+        public static ComplexRecipe.RecipeElement[] EmptyIngredient = Array.Empty<ComplexRecipe.RecipeElement>();
+
+        public static void Load()
+        {
+#if DEBUG
+            foreach (var recipe in ComplexRecipeManager.Get().recipes)
+                Helpers.Print($"id: {recipe.id}, description: {recipe.description}, building: {recipe.fabricators.FirstOrDefault()}");
+#endif
+            //foreach (var setting in CustomizeBuildingsState.StateManager.State.RecipeSettings)
+            //    Process(setting);
+        }
+
+        public static void Process(RecipeData setting)
+        {
+            if (setting.Id == null && setting.Building != null && setting.Inputs != null && setting.Outputs != null)
+                setting.Id = ComplexRecipeManager.MakeRecipeID(setting.Building, setting.Inputs, setting.Outputs);
+
+            if (setting.Id == null)
+                return;
+
+            var recipe = ComplexRecipeManager.Get().recipes.Find(f => f.id == setting.Id);
+            if (recipe == null)
+            {
+                recipe = new ComplexRecipe(setting.Id, EmptyIngredient, EmptyIngredient)
+                {
+                    time = 40f,
+                    fabricators = new List<Tag>() { setting.Building.ToTag() },
+                    nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult
+                };
+            }
+
+            if (setting.Description != null)
+                recipe.description = setting.Description;
+            if (setting.Inputs != null)
+                recipe.ingredients = setting.Inputs.ToArray();
+            if (setting.Outputs != null)
+                recipe.results = setting.Outputs.ToArray();
+            if (setting.Time != null)
+                recipe.time = setting.Time.Value;
+            if (setting.HEP != null)
+                recipe.consumedHEP = setting.HEP.Value;
+        }
+
+        public class RecipeData //need [Id] or [Building, Inputs, Outputs]; note that you always need Id, if you are changing any elements of existing recipes
+        {
+            public string Id;
+            public string Building;
+            public string Description;
+            public List<ComplexRecipe.RecipeElement> Inputs;
+            public List<ComplexRecipe.RecipeElement> Outputs;
+            public float? Time;
+            public int? HEP;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.NewRecipeRockCrusher;
         }
 
-        public static void Postfix(Game __instance, GameObject go)
+        public static void Postfix()
         {
             if (CustomizeBuildingsState.StateManager.State.NewRecipeRockCrusher)
             {
