@@ -9,14 +9,14 @@ using Common;
 
 namespace CustomizeBuildings
 {
-    [HarmonyPatch(typeof(LadderConfig), "DoPostConfigureComplete")]
-    internal class LadderConfig_DoPostConfigureComplete
+    [HarmonyPatch(typeof(LadderConfig), "ConfigureBuildingTemplate")]
+    public class LadderConfig_ConfigureBuildingTemplate
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.LadderCometInvincibility;
         }
-        private static void Prefix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             try
             {

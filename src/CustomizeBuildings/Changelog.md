@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.46.0] U34-477203-S
+
+### Fixed
+- fixed LadderCometInvincibility AGAIN
+
 ## [1.0.45.0] U34-476059-S U34-476542-S
 
 ### Updated
