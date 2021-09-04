@@ -2,12 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace versioncontrol_ONI
 {
     public static class HelperStrings
     {
+        public static int FindPreviousLine(List<string> line, int index, string search)
+        {
+            if (index <= 0)
+                return 0;
+
+            for (int j = -1; index + j >= 0; j--)
+            {
+                if (line[index + j].Contains(search))
+                    return j;
+            }
+
+            return 0;
+        }
+
         public static int FindNextLine(List<string> line, int index, string search)
         {
             if (index + 1 >= line.Count)
@@ -68,6 +83,29 @@ namespace versioncontrol_ONI
             if (start >= 0 && stop >= start)
                 return line.Substring(start, stop - start); //"str"; start=1, stop=4
             return null;
+        }
+    
+        public static string EscapeString(this string line)
+        {
+            StringBuilder sb = new StringBuilder(line.Length);
+
+            foreach (char c in line)
+            {
+                switch (c)
+                {
+                    case '\n':
+                        sb.Append("\\n");
+                        break;
+                    case '\t':
+                        sb.Append("\\t");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+
+            return sb.ToString();
         }
     }
 }

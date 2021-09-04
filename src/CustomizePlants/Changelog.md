@@ -1,9 +1,11 @@
 # Changelog
 
-## [1.0.28.0]
+## [1.0.28.0] U34-476542-S
 
 ### Added
 - added ingame menu with some basic options
+- added option radiation_threshold_min and radiation_threshold_max to PlantSettings
+- added translation support
 
 ## [1.0.27.0] U33-473720-B
 

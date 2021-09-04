@@ -27,6 +27,7 @@
     <Compile Include="FlowerPots.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Oxyfern.cs" />
+    <Compile Include="PlantData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlantLookup.cs" />
     <Compile Include="_CustomizePlantsState.cs" />

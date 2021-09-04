@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Common;
+using HarmonyLib;
 using KSerialization;
 using System;
 using System.Linq;
@@ -92,7 +93,7 @@ namespace CustomizeGeyser
 
         public void ToggleChore()
         {
-            Debug.Log("DEBUG ToggleChore");
+            Helpers.PrintDebug("DEBUG ToggleChore");
 
             //if (KMonoBehaviour.isLoadingScene) return;
             if (this.chore == null)
@@ -116,7 +117,7 @@ namespace CustomizeGeyser
 
         public void CancelChore()
         {
-            Debug.Log("DEBUG CancelChore");
+            Helpers.PrintDebug("DEBUG CancelChore");
             if (this.chore == null)
                 return;
             this.chore.Cancel("GeyserMorph.CancelChore");
@@ -126,7 +127,7 @@ namespace CustomizeGeyser
 
         protected override void OnCompleteWork(Worker worker)
         {
-            Debug.Log("DEBUG OnCompleteWork");
+            Helpers.PrintDebug("DEBUG OnCompleteWork");
             this.CancelChore();
             //this.TriggerTextDialog();
             ChangeGeyserElement(this.gameObject, currentGeyserSelection);
@@ -142,7 +143,7 @@ namespace CustomizeGeyser
                 GameUtil.KInstantiate(Assets.GetPrefab((Tag)new_id), go.transform.GetPosition(), Grid.SceneLayer.BuildingBack, (string)null, 0).SetActive(true);
                 go.DeleteObject();
             } catch (Exception e) {
-                Debug.LogWarning("ChangeGeyser critical failure: " + e.Message);
+                Helpers.PrintDialog("ChangeGeyser critical failure: " + e.Message);
 				return false;
             }
 			return true;

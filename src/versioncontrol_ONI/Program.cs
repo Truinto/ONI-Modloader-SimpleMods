@@ -15,12 +15,14 @@ namespace versioncontrol_ONI
 #if DEBUG
             args = new string[]
             {
-                "-md",
-                @"C:\Users\Fumihiko\Documents\Visual Studio Projects\ONI_Mod\CustomizeBuildings\Changelog.md",
-                "-info",
-                @"C:\Users\Fumihiko\Documents\Klei\OxygenNotIncluded\mods\dev\CarePackageMod\mod_info.yaml",
-                "-asbly",
-                @"C:\Users\Fumihiko\Documents\Visual Studio Projects\ONI_Mod\CustomizeBuildings\Properties\AssemblyInfo.cs"
+                //"-md",
+                //@"C:\Users\Fumihiko\Documents\Visual Studio Projects\ONI_Mod\CustomizeBuildings\Changelog.md",
+                //"-info",
+                //@"C:\Users\Fumihiko\Documents\Klei\OxygenNotIncluded\mods\dev\CarePackageMod\mod_info.yaml",
+                //"-asbly",
+                //@"C:\Users\Fumihiko\Documents\Visual Studio Projects\ONI_Mod\CustomizeBuildings\Properties\AssemblyInfo.cs",
+                "-state",
+                @"C:\Users\dominik.zeising\Desktop\_CustomizeBuildingsState.cs",
             };
 #endif
 
@@ -73,28 +75,31 @@ namespace versioncontrol_ONI
                 // read current version from log
                 #region log
                 path_log = path_log ?? (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\..\LocalLow\Klei\Oxygen Not Included\Player.log");
-                using (var log = File.OpenText(path_log))
+                if (File.Exists(path_log))
                 {
-                    //Console.WriteLine("Reading log file...");
-                    int counter = 0;
-                    while (!log.EndOfStream && counter++ < 50)
+                    using (var log = File.OpenText(path_log))
                     {
-                        var line = log.ReadLine();
-                        if (line.Contains("[INFO] Expansion1: True", StringComparison.Ordinal))
+                        //Console.WriteLine("Reading log file...");
+                        int counter = 0;
+                        while (!log.EndOfStream && counter++ < 50)
                         {
-                            b_exp1 = true;
-                            break;
-                        }
+                            var line = log.ReadLine();
+                            if (line.Contains("[INFO] Expansion1: True", StringComparison.Ordinal))
+                            {
+                                b_exp1 = true;
+                                break;
+                            }
 
-                        int index = line.IndexOf("[INFO] release Build: ", StringComparison.Ordinal);
-                        if (index < 0) index = line.IndexOf("[INFO] preview Build: ", StringComparison.Ordinal);
-                        if (index >= 0)
-                        {
-                            index += 22;
-                            gameversion = line[index..];
-                            gameversionprefix = gameversion[..gameversion.IndexOf('-')];
-                            int.TryParse(HelperStrings.GetQuotationString(gameversion, 1, '-'), out int_gameversion);
-                            Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}, prefix: {gameversionprefix}");
+                            int index = line.IndexOf("[INFO] release Build: ", StringComparison.Ordinal);
+                            if (index < 0) index = line.IndexOf("[INFO] preview Build: ", StringComparison.Ordinal);
+                            if (index >= 0)
+                            {
+                                index += 22;
+                                gameversion = line[index..];
+                                gameversionprefix = gameversion[..gameversion.IndexOf('-')];
+                                int.TryParse(HelperStrings.GetQuotationString(gameversion, 1, '-'), out int_gameversion);
+                                Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}, prefix: {gameversionprefix}");
+                            }
                         }
                     }
                 }

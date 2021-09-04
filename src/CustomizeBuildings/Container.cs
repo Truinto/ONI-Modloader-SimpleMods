@@ -102,4 +102,63 @@ namespace CustomizeBuildings
             return ec;
         }
     }
+    public class BuildingStruct
+    {
+        public float? PowerConsumption;
+        public float? OverheatTemperature;
+        public string MaterialCategory;
+        public float? ExhaustKilowattsWhenActive;
+        public float? SelfHeatKilowattsWhenActive;
+        public float? GeneratorWattageRating;
+        public float? GeneratorBaseCapacity;
+        public float? BaseDecor;
+        public float? BaseDecorRadius;
+        public BuildLocationRule? LocationRule;
+        public PermittedRotations? Rotations;
+        public bool? Floodable;
+        public bool? IsFoundation;
+        public float[] ConstructionMass;
+        public float? ThermalConductivity;
+
+        public BuildingStruct(float? PowerConsumption = null, string MaterialCategory = null, float? OverheatTemperature = null,
+            float? ExhaustKilowattsWhenActive = null, float? SelfHeatKilowattsWhenActive = null, float? GeneratorWattageRating = null,
+            float? GeneratorBaseCapacity = null, float? BaseDecor = null, float? BaseDecorRadius = null, BuildLocationRule? LocationRule = null,
+            PermittedRotations? Rotations = null, bool? Floodable = null, bool? IsFoundation = null, float[] ConstructionMass = null,
+            float? ThermalConductivity = null)
+        {
+            this.PowerConsumption = PowerConsumption;
+            this.MaterialCategory = MaterialCategory;
+            this.OverheatTemperature = OverheatTemperature;
+            this.ExhaustKilowattsWhenActive = ExhaustKilowattsWhenActive;
+            this.SelfHeatKilowattsWhenActive = SelfHeatKilowattsWhenActive;
+            this.GeneratorWattageRating = GeneratorWattageRating;
+            this.GeneratorBaseCapacity = GeneratorBaseCapacity;
+            this.BaseDecor = BaseDecor;
+            this.BaseDecorRadius = BaseDecorRadius;
+            this.LocationRule = LocationRule;
+            this.Rotations = Rotations;
+            this.Floodable = Floodable;
+            this.IsFoundation = IsFoundation;
+            this.ConstructionMass = ConstructionMass;
+            this.ThermalConductivity = ThermalConductivity;
+        }
+    }
+    public class BuildingAdv
+    {
+        public string Id;
+        public int? Index;
+        public bool MaterialAppend;
+        public string MaterialOverride;
+
+        public BuildingAdv(string Id, int? Index = null, bool MaterialAppend = true, string MaterialOverride = null)
+        {
+            this.Id = Id;
+            this.Index = Index;
+            this.MaterialAppend = MaterialAppend;
+            this.MaterialOverride = MaterialOverride;
+        }
+        public BuildingAdv()
+        { }
+    }
+
 }

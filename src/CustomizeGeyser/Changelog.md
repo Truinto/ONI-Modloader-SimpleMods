@@ -1,9 +1,10 @@
 # Changelog
 
-## [1.0.11.0] 
+## [1.0.11.0] U34-476542-S
 
 ### Added
 - added ingame menu to control basic uses
+- added language support
 
 ## [1.0.10.0] EX1 S14-471883-S FA-471883-B
 

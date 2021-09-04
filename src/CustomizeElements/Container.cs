@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Common;
 using HarmonyLib;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace CustomizeElements
 {
@@ -56,5 +58,21 @@ namespace CustomizeElements
             this.Id = Id;
             this.oreTags = tags == null || tags.Length == 0 ? null : tags.ToList();
         }
+    }
+
+    public class OreContainer
+    {
+        public bool? DecayStorage;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public SpawnFXHashes FxHash;
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public SimHashes SublimatedElement;
+        public float? SublimationRate;
+        public float? MinSublimationAmount;
+        public float? MaxDestinationMass;
+        public float? MassPower;
+        public byte? DiseaseIdx;
+        public int? DiseaseCount;
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using HarmonyLib;
 using System.Collections.Generic;
 using static Config.PostBootDialog;
+using Common;
 
 namespace CustomizeGeyser
 {
@@ -40,12 +41,11 @@ namespace CustomizeGeyser
             foreach (var config in __result)
                 GeyserInfo.IdsBaseGame.Add(config.geyserType.id);
 
-            for (int j = 0; j < CustomizeGeyserState.StateManager.State.Geysers.Count; j++)
+            foreach (var modifier in CustomizeGeyserState.StateManager.State.Geysers)
             {
-                CustomizeGeyserState.GeyserStruct modifier = CustomizeGeyserState.StateManager.State.Geysers[j];
                 if (modifier.id == null) continue;
 
-                Debug.Log("[CustomizeGeyser] Processing " + modifier.id + " ...");
+                Helpers.Print("Processing " + modifier.id + " ...");
                 
                 #region Error checks
                 {
@@ -56,65 +56,65 @@ namespace CustomizeGeyser
                     }
                     else if (modifier.anim != null && !GeyserKAnimsVanilla.Any(s => s == modifier.anim))
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has non standard kAnim type " + modifier.anim));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has non standard kAnim type " + modifier.anim);
                         modifier.anim = null;    // TODO: find a way to validate custom kAnims
                     }
                     if (modifier.width != null && modifier.width < 1 || modifier.width > 10)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad width"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad width");
                         modifier.width = null;
                     }
                     if (modifier.height != null && modifier.height < 1 || modifier.height > 10)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad height"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad height");
                         modifier.height = null;
                     }
                     if (modifier.element != null && ElementLoader.FindElementByName(modifier.element) == null)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " element " + modifier.element + " does not exist"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " element " + modifier.element + " does not exist");
                         modifier.element = null;
                     }
                     if (modifier.temperature != null && modifier.temperature < 1f || modifier.temperature > 8000f)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad temperature"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad temperature");
                         modifier.temperature = null;
                     }
                     if (modifier.minRatePerCycle != null && modifier.minRatePerCycle < 0f)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad minRatePerCycle"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minRatePerCycle");
                         modifier.minRatePerCycle = null;
                     }
                     // maxRatePerCycle later check for min
                     if (modifier.maxPressure != null && modifier.maxPressure < 0f)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad maxPressure"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxPressure");
                         modifier.maxPressure = null;
                     }
                     if (modifier.minIterationLength != null && modifier.minIterationLength < 0f)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad minIterationLength"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minIterationLength");
                         modifier.minIterationLength = null;
                     }
                     // maxIterationLength later check for min
                     if (modifier.minIterationPercent != null && modifier.minIterationPercent < 0f || modifier.minIterationPercent > 1f)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad minIterationPercent"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minIterationPercent");
                         modifier.minIterationPercent = null;
                     }
                     if (modifier.maxIterationPercent != null && modifier.maxIterationPercent > 1f) // maxIterationPercent later check for min
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad maxIterationPercent"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxIterationPercent");
                         modifier.maxIterationPercent = null;
                     }
                     if (modifier.minYearLength != null && modifier.minYearLength < 10f)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad minYearLength"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minYearLength");
                         modifier.minYearLength = null;
                     }
                     // maxYearLength later check for min
                     if (modifier.minYearPercent != null && modifier.minYearPercent < 0f || modifier.minYearPercent > 1f)
                     {
-                        Debug.LogWarning(ToDialog("Warning: Geyser " + modifier.id + " has bad minYearPercent"));
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minYearPercent");
                         modifier.minYearPercent = null;
                     }
                     // maxYearPercent later check for min
@@ -204,7 +204,7 @@ namespace CustomizeGeyser
                             geyserType.diseaseInfo = new Klei.SimUtil.DiseaseInfo() { idx = diseaseIndex, count = (int)modifier.DiseaseCount };
                     }
 
-                    Debug.Log("[CustomizeGeyser] Changed geyser with id: " + modifier.id);
+                    Helpers.Print("Changed geyser with id: " + modifier.id);
                 }
                 #endregion
                 #region new geyser
@@ -212,13 +212,13 @@ namespace CustomizeGeyser
                 {
                     if (modifier.element == null)
                     {
-                        Debug.LogWarning(ToDialog("[CustomizeGeyser] Cannot add geyser with no element: " + modifier.id));
+                        Helpers.PrintDialog("Cannot add geyser with no element: " + modifier.id);
                         continue;
                     }
 
                     if (ElementLoader.FindElementByName(modifier.element) == null)
                     {
-                        Debug.LogWarning(ToDialog("[CustomizeGeyser] Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element));
+                        Helpers.PrintDialog("Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element);
                         continue;
                     }
 
@@ -327,7 +327,7 @@ namespace CustomizeGeyser
                                 (float)modifier.maxYearPercent).AddDisease(diseaseInfo)
                         ));
 
-                    Debug.Log("[CustomizeGeyser] Added geyser " + modifier.id + " : " + modifier.element);
+                    Helpers.Print("Added geyser " + modifier.id + " : " + modifier.element);
                 }
                 #endregion
             }

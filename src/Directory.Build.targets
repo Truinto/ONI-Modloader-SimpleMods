@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>  
   <!-- Pre-build script; updates versioning -->
-  <!--  -state "$(ProjectDir)_$(TargetName)State.cs" -->
   <PropertyGroup Condition="Exists('$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe') and '$(TargetName)' != 'versioncontrol_ONI'">
     <PreBuildEvent>if True==$(DefineConstants.Contains('DLC1')) (
-  "$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\mod_info.yaml" -projectname "$(TargetName)"
+  if True==$(DefineConstants.Contains('LOCALE')) (
+    "$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\mod_info.yaml" -projectname "$(TargetName)" -state "$(ProjectDir)_$(TargetName)State.cs"
+  ) else (
+    "$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\mod_info.yaml" -projectname "$(TargetName)"
+  )
 ) else (
   mkdir "$(ModFolder)\$(TargetName)\vanilla\"
   "$(MSBuildThisFileDirectory)versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe" -md "$(ProjectDir)Changelog.md" -asbly "$(ProjectDir)Properties\AssemblyInfo.cs" -info "$(ModFolder)\$(TargetName)\vanilla\mod_info.yaml" -projectname "$(TargetName)"

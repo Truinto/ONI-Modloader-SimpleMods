@@ -1,16 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Common;
 using Newtonsoft.Json;
 using PeterHan.PLib.Options;
 
 namespace CustomizeGeyser
 {
-    [ConfigFile("Customize Geyser.json", true, true)]
+    [ConfigFile("CustomizeGeyser.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
-    [ModInfo(null, collapse: true)]
-
     public class CustomizeGeyserState
     {
         public static void OnLoad()
@@ -37,12 +36,12 @@ namespace CustomizeGeyser
             }
             catch (Exception e)
             {
-                Debug.Log("[CustomizeGeyser] " + e.ToString());
+                Helpers.Print(e.ToString());
             }
         }
 
         #region Buttons
-        [Option("Reset: Custom Default", "Re-installs mod's default settings.")]
+        [Option("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip")]
         [JsonIgnore]
         public System.Action<object> ResetToCustomDefault => delegate (object nix)
         {
@@ -52,23 +51,23 @@ namespace CustomizeGeyser
             OptionsDialog.Last = null;
         };
 
-        [Option("Reset: All Off", "Clears all geyser settings and turns off all options.")]
+        [Option("CustomizeGeyser.LOCSTRINGS.ResetToAllOff_Title", "CustomizeGeyser.LOCSTRINGS.ResetToAllOff_ToolTip", "Buttons", null)]
         [JsonIgnore]
         public System.Action<object> ResetToAllOff => delegate (object nix)
         {
-            Geysers.Clear();
-            RNGTable.Clear();
+            StateManager.State.Geysers.Clear();
+            StateManager.State.RNGTable.Clear();
             foreach (var idBase in GeyserInfo.IdsBaseGame)
-                RNGTable.Add(idBase, 1);
+                StateManager.State.RNGTable.Add(idBase, 1);
 
-            RandomizerEnabled = false;
-            RandomizerUsesMapSeed = true;
-            RandomizerRerollsCycleRate = false;
-            RandomizerPopupGeyserDiscoveryInfo = false;
-            RandomizerHighlanderMode = false;
-            RandomizerHighlanderRetroactive = false;
-            RandomizerEnabled = false;
-            GeyserMorphEnabled = false;
+            StateManager.State.RandomizerEnabled = false;
+            StateManager.State.RandomizerUsesMapSeed = true;
+            StateManager.State.RandomizerRerollsCycleRate = false;
+            StateManager.State.RandomizerPopupGeyserDiscoveryInfo = false;
+            StateManager.State.RandomizerHighlanderMode = false;
+            StateManager.State.RandomizerHighlanderRetroactive = false;
+            StateManager.State.RandomizerEnabled = false;
+            StateManager.State.GeyserMorphEnabled = false;
 
             StateManager.TrySaveConfigurationState();
             OptionsDialog.Last?.CloseDialog();
@@ -76,41 +75,41 @@ namespace CustomizeGeyser
             OptionsDialog.Last = null;
         };
 
-        [Option("Preset: No Dormancy", "Adds all geysers with no dormancy period.")]
+        [Option("CustomizeGeyser.LOCSTRINGS.PresetNoDormancy_Title", "CustomizeGeyser.LOCSTRINGS.PresetNoDormancy_ToolTip", "Buttons", null)]
         [JsonIgnore]
         public System.Action<object> PresetNoDormancy => delegate (object nix)
         {
             foreach (var geyser in GeyserInfo.IdsBaseGame)
             {
-                if (!Geysers.Any(a => a.id == geyser))
-                    Geysers.Add(new GeyserStruct(geyser));
+                if (!StateManager.State.Geysers.Any(a => a.id == geyser))
+                    StateManager.State.Geysers.Add(new GeyserStruct(geyser));
             }
 
-            foreach (var geyser in Geysers)
+            foreach (var geyser in StateManager.State.Geysers)
             {
                 geyser.minYearPercent = 1f;
                 geyser.maxYearPercent = 1f;
             }
 
-            StateManager.TrySaveConfigurationState(new CustomizeGeyserState());
+            StateManager.TrySaveConfigurationState();
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
             OptionsDialog.Last = null;
         };
 
 
-        [Option("Preset: Copy", "Adds all geysers with all options copied from current game.")]
+        [Option("CustomizeGeyser.LOCSTRINGS.PresetCopy_Title", "CustomizeGeyser.LOCSTRINGS.PresetCopy_ToolTip", "Buttons", null)]
         [JsonIgnore]
         public System.Action<object> PresetCopy => delegate (object nix)
         {
-            Geysers.Clear();
+            StateManager.State.Geysers.Clear();
             foreach (var config in GeyserInfo.Config)
             {
                 var x = config.geyserType;
-                Geysers.Add(new GeyserStruct(x.id, x.element.ToString()));
+                StateManager.State.Geysers.Add(new GeyserStruct(x.id, x.element.ToString()));
             }
 
-            StateManager.TrySaveConfigurationState(new CustomizeGeyserState());
+            StateManager.TrySaveConfigurationState();
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
             OptionsDialog.Last = null;
@@ -119,10 +118,10 @@ namespace CustomizeGeyser
 
         #region Fields
         public int version { get; set; } = 8;
-        [Option("Enable Mod", "")]
+        [Option("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "Fields", null)]
         public bool Enabled { get; set; } = true;
 
-        public List<GeyserStruct> Geysers { get; set; } = new List<GeyserStruct>() {
+        public HashSet<GeyserStruct> Geysers { get; set; } = new HashSet<GeyserStruct>() {
             new GeyserStruct(id: "steam", temperature: 378.15f),
             new GeyserStruct(id: "slimy_po2", temperature: 378.15f, Disease: "ZombieSpores", DiseaseCount: 5000),
             new GeyserStruct(id: "molten_tungsten", anim: "geyser_molten_tungsten_kanim", element: "MoltenTungsten",
@@ -157,13 +156,13 @@ namespace CustomizeGeyser
                 minYearPercent: 0.4f, maxYearPercent: 0.8f, Disease: "PollenGerms", DiseaseCount: 50)
         };
 
-        [Option("Randomizer Enabled", "if set to false will disable all other randomize settings")]
+        [Option("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_Title", "CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_ToolTip", "Fields", null)]
         public bool RandomizerEnabled { get; set; } = true;
-        [Option("Randomizer Uses Map Seed", "if set to true, the same geysers will spawn for a certain set of settings; you still get different results when you change the weights or add new geyser types; if set to false, reloading and rediscovery a geyser may reveal a different geyser")]
+        [Option("CustomizeGeyser.LOCSTRINGS.RandomizerUsesMapSeed_Title", "CustomizeGeyser.LOCSTRINGS.RandomizerUsesMapSeed_ToolTip", "Fields", null)]
         public bool RandomizerUsesMapSeed { get; set; } = false;
-        [Option("Randomizer Rerolls Cycle Rate", "if set to true and RandomizerUsesMapSeed set to false will also change the percentage of cycle output; otherwise output stays consistent")]
+        [Option("CustomizeGeyser.LOCSTRINGS.RandomizerRerollsCycleRate_Title", "CustomizeGeyser.LOCSTRINGS.RandomizerRerollsCycleRate_ToolTip", "Fields", null)]
         public bool RandomizerRerollsCycleRate { get; set; } = true;
-        [Option("Randomizer Popup Geyser Discovery Info", "generates a popup whenever a geyser is discovered; useful for rerolling/testing Randomize settings do not affect pre-defined geysers, which are some steam, methane, and oil geysers")]
+        [Option("CustomizeGeyser.LOCSTRINGS.RandomizerPopupGeyserDiscoveryInfo_Title", "CustomizeGeyser.LOCSTRINGS.RandomizerPopupGeyserDiscoveryInfo_ToolTip", "Fields", null)]
         public bool RandomizerPopupGeyserDiscoveryInfo { get; set; } = true;
         public bool RandomizerHighlanderMode { get; set; } = false;
         public bool RandomizerHighlanderRetroactive { get; set; } = false;
@@ -199,87 +198,75 @@ namespace CustomizeGeyser
             { "liquid_coolant", 0 }
         };
 
-        [Option("Geyser Morph Enabled", "When enabled, shows two buttons in the geyser menu. The first will request a scientist dupe to work on it, the second will define which geyser it should be morphed into. Click the second button to cycle through the options.")]
+        [Option("CustomizeGeyser.LOCSTRINGS.GeyserMorphEnabled_Title", "CustomizeGeyser.LOCSTRINGS.GeyserMorphEnabled_ToolTip", "Fields", null)]
         public bool GeyserMorphEnabled { get; set; } = true;
-        [Option("Geyser Morph Worktime", "How long a scientist dupe will need to work on the geyser to morph it.")]
+        [Option("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_Title", "CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_ToolTip", "Fields", null)]
         public int GeyserMorphWorktime { get; set; } = 300;
         #endregion
 
-        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.PathHelper.CreatePath("Customize Geyser"), true, UpdateFunction);
+        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.PathHelper.CreatePath("CustomizeGeyser"), true, UpdateFunction);
         public static bool UpdateFunction(CustomizeGeyserState state)
         {
             return true;
         }
+    }
 
-        public class GeyserStruct
+    public class CustomStrings
+    {
+        public static void LoadStrings()
         {
-            public string id;
-            public string element;
-            public string anim;
-            public int? width;
-            public int? height;
-            public float? temperature;
-            public float? minRatePerCycle;
-            public float? maxRatePerCycle;
-            public float? maxPressure;
-            public float? minIterationLength;
-            public float? maxIterationLength;
-            public float? minIterationPercent;
-            public float? maxIterationPercent;
-            public float? minYearLength;
-            public float? maxYearLength;
-            public float? minYearPercent;
-            public float? maxYearPercent;
-            public string Name;
-            public string Description;
-            public string Disease;
-            public int? DiseaseCount;
+            #region Buttons
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "Reset: Custom Default");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Re-installs mod's default settings.");
 
-            public GeyserStruct(
-                string id,
-                string element = null,
-                string anim = null,
-                int? width = null,
-                int? height = null,
-                float? temperature = null,
-                float? minRatePerCycle = null,
-                float? maxRatePerCycle = null,
-                float? maxPressure = null,
-                float? minIterationLength = null,
-                float? maxIterationLength = null,
-                float? minIterationPercent = null,
-                float? maxIterationPercent = null,
-                float? minYearLength = null,
-                float? maxYearLength = null,
-                float? minYearPercent = null,
-                float? maxYearPercent = null,
-                string Name = null,
-                string Description = null,
-                string Disease = null,
-                int? DiseaseCount = null)
-            {
-                this.id = id;
-                this.element = element;
-                this.anim = anim;
-                this.width = width;
-                this.height = height;
-                this.temperature = temperature;
-                this.minRatePerCycle = minRatePerCycle;
-                this.maxRatePerCycle = maxRatePerCycle;
-                this.maxPressure = maxPressure;
-                this.minIterationLength = minIterationLength;
-                this.maxIterationLength = maxIterationLength;
-                this.minIterationPercent = minIterationPercent;
-                this.maxIterationPercent = maxIterationPercent;
-                this.minYearLength = minYearLength;
-                this.maxYearLength = maxYearLength;
-                this.minYearPercent = minYearPercent;
-                this.maxYearPercent = maxYearPercent;
-                this.Name = Name;
-                this.Description = Description;
-                this.Disease = Disease;
-                this.DiseaseCount = DiseaseCount;
-            }
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToAllOff_Title", "Reset: All Off");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToAllOff_ToolTip", "Clears all geyser settings and turns off all options.");
+
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.PresetNoDormancy_Title", "Preset: No Dormancy");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.PresetNoDormancy_ToolTip", "Adds all geysers with no dormancy period.");
+
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.PresetCopy_Title", "Preset: Copy");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.PresetCopy_ToolTip", "Adds all geysers with all options copied from current game.");
+            #endregion
+            #region Fields
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.version", "version");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.Enabled", "Enabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "Enable Mod");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.Geysers", "Geysers");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerEnabled", "RandomizerEnabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_Title", "Randomizer Enabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_ToolTip", "if set to false will disable all other randomize settings");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerUsesMapSeed", "RandomizerUsesMapSeed");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerUsesMapSeed_Title", "Randomizer Uses Map Seed");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerUsesMapSeed_ToolTip", "if set to true, the same geysers will spawn for a certain set of settings; you still get different results when you change the weights or add new geyser types; if set to false, reloading and rediscovery a geyser may reveal a different geyser");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerRerollsCycleRate", "RandomizerRerollsCycleRate");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerRerollsCycleRate_Title", "Randomizer Rerolls Cycle Rate");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerRerollsCycleRate_ToolTip", "if set to true and RandomizerUsesMapSeed set to false will also change the percentage of cycle output; otherwise output stays consistent");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerPopupGeyserDiscoveryInfo", "RandomizerPopupGeyserDiscoveryInfo");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerPopupGeyserDiscoveryInfo_Title", "Randomizer Popup Geyser Discovery Info");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerPopupGeyserDiscoveryInfo_ToolTip", "generates a popup whenever a geyser is discovered; useful for rerolling/testing Randomize settings do not affect pre-defined geysers, which are some steam, methane, and oil geysers");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerHighlanderMode", "RandomizerHighlanderMode");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerHighlanderRetroactive", "RandomizerHighlanderRetroactive");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RNGTable", "RNGTable");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.GeyserMorphEnabled", "GeyserMorphEnabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserMorphEnabled_Title", "Geyser Morph Enabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserMorphEnabled_ToolTip", "When enabled, shows two buttons in the geyser menu. The first will request a scientist dupe to work on it, the second will define which geyser it should be morphed into. Click the second button to cycle through the options.");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.GeyserMorphWorktime", "GeyserMorphWorktime");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_Title", "Geyser Morph Worktime");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_ToolTip", "How long a scientist dupe will need to work on the geyser to morph it.");
+            #endregion
         }
     }
 }

@@ -20,7 +20,6 @@ Bugs:
 Customize Recipe:
 
 Customize Buildings:
-- new patch -> DropAll() was updated
 - fix door chore bug
 - Ice-E Fan (revisit)
 - reservoirs Sweep Only also affect if dupes can take from it
@@ -32,7 +31,6 @@ Customize Buildings:
 - nodupe RailGunPayloadOpenerConfig
 
 Customize Plants:
-- make accessible
 - bug: multiple seed print when using placeholder
 - bug: evil flower doesn't stop producing output element when bristled
 - plants don't consume water when fully grown/bristled
@@ -47,7 +45,7 @@ Other:
 - teleport entombed dupes to printing pod
 - Wood Burner outputs coal
 - Faster transport tube
-- Stasis Pot (Disease Clinic)
+- Stasis Pot
 
 Effects missing:
 drecko grow in any gas

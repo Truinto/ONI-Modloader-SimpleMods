@@ -1,9 +1,6 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Common;
+using HarmonyLib;
+using PeterHan.PLib.Options;
 
 namespace CustomizePlants
 {
@@ -11,6 +8,18 @@ namespace CustomizePlants
     {
         public override void OnLoad(Harmony harmony)
         {
+            Helpers.ModName = "CustomizePlants";
+            CustomStrings.LoadStrings();
+            Helpers.StringsAddClass(typeof(PlantData));
+            Helpers.StringsAddClass(typeof(PlantMutationData));
+#if LOCALE
+            Helpers.StringsPrint();
+#else
+            Helpers.StringsLoad();
+#endif
+
+            new POptions().RegisterOptions(this, typeof(CustomizePlantsState));
+
             OnLoadPatch.OnLoad();
             base.OnLoad(harmony);
         }

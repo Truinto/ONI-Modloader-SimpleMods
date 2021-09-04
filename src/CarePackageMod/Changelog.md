@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.13.2] U33-474321-S
+
+### Added
+- added option allowOnlyDiscoveredElements
+- added missing language support file; this can be translated for any language; extend the file by the country code, like so strings_en.pot
+
 ## [1.0.13.1] EX1 S14-471883-S
 
 ### Fixed

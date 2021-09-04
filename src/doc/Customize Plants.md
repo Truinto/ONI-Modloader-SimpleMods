@@ -4,9 +4,9 @@ Now all plants and compatible with other mods! Remove or add as many irrigation/
 
 Settings found here (after running mod)
 ----------
-Windows: %userprofile%\documents\Klei\OxygenNotIncluded\mods\Customize Plants.json
-Mac: ~Library/Application Support/unity.Klei.Oxygen Not Included/mods/Customize Plants.json
-Ubuntu: ~/.config/unity3d/Klei/Oxygen Not Included/mods/Customize Plants.json
+Windows: %userprofile%\documents\Klei\OxygenNotIncluded\mods\CustomizePlants.json
+Mac: ~Library/Application Support/unity.Klei.Oxygen Not Included/mods/CustomizePlants.json
+Ubuntu: ~/.config/unity3d/Klei/Oxygen Not Included/mods/CustomizePlants.json
 
 Base changes
 ----------
@@ -54,6 +54,8 @@ List of Settings
 * - input_rate: Amount absorbed per second.
 * - output_element: Type of gas or liquid plant expels per second. Not compatible with Wheezewort or Oxyfern.
 * - output_rate: Amount expelled per second.
+* - radiation_threshold_min: Minimum radiation threshold.
+* - radiation_threshold_max: Maximum radiation threshold.
 * SpecialCropSettings: Defines a placeholder name and a list of resources. When a plant tries to spawn a matching fruitId it will instead use the list provided. Note that this is only necessary when dealing with more than one resource at once.
 * SeedsGoIntoAnyFlowerPots: Whenever or not all seeds go into any flower pots / farm plots.
 * WheezewortTempDelta: How much cooling wheezeworts do. Default is -5 Kelvin.

@@ -9,7 +9,7 @@ namespace CustomizeBuildings
 {
 
     [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
-    public class RockCrusherConfig_ConfigureBuildingTemplate
+    public class RockCrusherConfig_ConfigureBuildingTemplate    // TODO: remove
     {
         public static bool Prepare()
         {

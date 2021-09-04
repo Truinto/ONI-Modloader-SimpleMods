@@ -20,8 +20,8 @@ namespace CustomizeBuildings
             Helpers.PrintDebug(buildingDef.PrefabID + "\t\tName: " + FindBetweenLink.Match(buildingDef.Name).Groups[1].Value);
             //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
             //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
-            CustomizeBuildingsState.BuildingStruct entry;
 
+            BuildingStruct entry;
             bool flag = CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out entry);
             if (flag == false)
                 flag = CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(FindBetweenLink.Match(buildingDef.Name).Groups[1].Value, out entry);

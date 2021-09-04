@@ -5,16 +5,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using HarmonyLib;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using Newtonsoft.Json.Serialization;
+using Common;
 
 namespace Config
 {
+    public class TranslationResolver : DefaultContractResolver
+    {
+        protected override string ResolvePropertyName(string propertyName)
+        {
+            if (Strings.TryGet($"{Helpers.ModName}.PROPERTY.{propertyName}", out StringEntry result) && result != "")
+            {
+                Helpers.PrintDebug($"resolving {Helpers.ModName}.PROPERTY.{propertyName} as {result}");
+                return result;
+            }
+
+            Helpers.PrintDebug($"resolving {Helpers.ModName}.PROPERTY.{propertyName} as {propertyName}");
+            return propertyName;
+        }
+
+        protected override string ResolveDictionaryKey(string dictionaryKey)
+        {
+            return dictionaryKey;
+        }
+    }
+
     public class JsonManager
     {
         public JsonSerializer Serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
-            ObjectCreationHandling = ObjectCreationHandling.Replace
+            ObjectCreationHandling = ObjectCreationHandling.Replace,
+            //Converters = new List<JsonConverter>() { new ApiErrorConverter() },
+            ContractResolver = new TranslationResolver(),
         });
 
         public T Deserialize<T>(string path)
@@ -203,7 +229,7 @@ namespace Config
 
             this.StateFilePath = resultPath;
             this.JsonLoader = new JsonFileManager(new JsonManager());
-            
+
             UpdateVersion();
         }
 
@@ -288,7 +314,7 @@ namespace Config
                 //return System.IO.Directory.GetParent(AssemblyDirectory).Parent.FullName;
             }
         }
-        
+
         /// <summary>
         /// returns absolute file-path
         /// </summary>

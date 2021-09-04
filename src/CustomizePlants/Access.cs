@@ -45,7 +45,7 @@ namespace CustomizePlants
 
         static Access()
         {
-            // no inline definitions, so we get more meaningful debug expections
+            // no inline definitions, so we get more meaningful debug exceptions
             try
             {
                 //Helpers.Print(typeof(PlantMutation).GetNestedTypes(BindingFlags.NonPublic).Select(s => s.AssemblyQualifiedName).Join());

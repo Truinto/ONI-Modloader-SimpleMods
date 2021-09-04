@@ -43,6 +43,9 @@ namespace CarePackageMod
 
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.labelPackages_Title", "Care Packages must be edited manually");
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.labelPackages_ToolTip", "Open config file to edit Care Packages.");
+
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.allowOnlyDiscoveredElements_Title", "Allow Only Discovered Elements");
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.allowOnlyDiscoveredElements_ToolTip", "If true, only elements / items that were discovered at least once will show up in care packages.");
             #endregion
 #if LOCALE
             Helpers.StringsPrint();
@@ -52,7 +55,7 @@ namespace CarePackageMod
             //POptions.RegisterOptions(typeof(CarePackageState));
         }
 
-        public int version { get; set; } = 13;
+        public int version { get; set; } = 14;
 
         public bool enabled { get; set; } = true;
 
@@ -86,6 +89,8 @@ namespace CarePackageMod
         [Option("CarePackageMod.LOCSTRINGS.multiplier_Title", "CarePackageMod.LOCSTRINGS.multiplier_ToolTip")]
         public float multiplier { get; set; } = 1f;
 
+        [Option("CarePackageMod.LOCSTRINGS.allowOnlyDiscoveredElements_Title", "CarePackageMod.LOCSTRINGS.allowOnlyDiscoveredElements_ToolTip")]
+        public bool allowOnlyDiscoveredElements { get; set; } = false;
 
         [Option("CarePackageMod.LOCSTRINGS.labelPackages_Title", "CarePackageMod.LOCSTRINGS.labelPackages_ToolTip")]
         public LocString labelPackages { get; set; }
@@ -123,14 +128,14 @@ namespace CarePackageMod
         {
             this.ID = ID;
             this.amount = amount;
-            this.onlyAfterCycle = onlyAfterCycle;
+            this.onlyAfterCycle = onlyAfterCycle; 
             this.onlyUntilCycle = onlyUntilCycle;
         }
 
         public CarePackageInfo ToInfo()
         {
             float amount = (float)Math.Max(Math.Round(this.amount * this.multiplier, 0), 1.0);
-            return new CarePackageInfo(this.ID, amount, (() => CycleCondition(onlyAfterCycle, onlyUntilCycle)));
+            return new CarePackageInfo(this.ID, amount, (() => CheckCondition(this.ID, onlyAfterCycle, onlyUntilCycle)));
         }
 
         public static implicit operator CarePackageInfo(CarePackageContainer container)
@@ -143,11 +148,13 @@ namespace CarePackageMod
             return new CarePackageContainer(info.id, info.quantity, 0);
         }
 
-        public static bool CycleCondition(int? afterCycle = null, int? untilCycle = null)
+        public static bool CheckCondition(string id, int? afterCycle = null, int? untilCycle = null)
         {
-            if (afterCycle == null) afterCycle = 0;
-            if (untilCycle == null) untilCycle = int.MaxValue;
-            return GameClock.Instance.GetCycle() > afterCycle && GameClock.Instance.GetCycle() <= untilCycle;
+            bool after = GameClock.Instance.GetCycle() > (afterCycle ?? 0);
+            bool until = GameClock.Instance.GetCycle() <= (untilCycle ?? int.MaxValue);
+            bool discover = !CarePackageState.StateManager.State.allowOnlyDiscoveredElements || DiscoveredResources.Instance.IsDiscovered(id.ToTag());
+
+            return after && until && discover;
         }
     }
 

@@ -205,6 +205,7 @@ namespace Common
         /// <summary>Returns string inside quotation marks. Respects escape character.</summary>
         public static string GetQuotationString(this string line, int occurrence, char delimiter = '"')
         {
+            if (line == null) return null;
             occurrence--;
 
             bool isEscape = false;
@@ -253,15 +254,17 @@ namespace Common
 
         public static string GetQuotationString(this string line)
         {
+            if (line == null) return null;
             int index1 = line.IndexOf('"') + 1;
             int index2 = line.LastIndexOf('"');
-            if (index1 > 0 && index2 > index1)
+            if (index1 > 0 && index2 >= index1)
                 return line.Substring(index1, index2 - index1);
             return null;
         }
 
         public static string GetUndoLiteralString(this string line)
         {
+            if (line == null) return null;
             line = line.Replace("\\\\", "\\");
             line = line.Replace("\\\"", "\"");
             line = line.Replace("\\t", "\t");
@@ -271,6 +274,7 @@ namespace Common
 
         public static string GetLiteralString(this string line)
         {
+            if (line == null) return null;
             line = line.Replace("\\", "\\\\");
             line = line.Replace("\"", "\\\"");
             line = line.Replace("\t", "\\t");
@@ -293,37 +297,25 @@ namespace Common
             }
         }
 
-        public static string PathLocale => Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + (Localization.GetLocale()?.Code ?? "en") + ".pot");
+        public static string PathLocale
+        {
+            get
+            {
+                string code = Localization.GetCurrentLanguageCode();
+                if (code == null || code == "")
+                    code = "en";
+                return Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + code + ".pot");
+            }
+        }
 #if LOCALE
         public static Dictionary<string, string> StringsDic = new Dictionary<string, string>();
 
         /// Use this to create a translation file. Only works, if you have used StringsAdd or StringsTag to add to the list.
         /// Can be called multiple times. Consecutive calls will appended. Must #define LOCALE to be used.
-        public static bool StringsAppend = true;
+        public static bool StringsAppend = false;
         public static void StringsPrint(string path = null)
         {
-            try
-            {
-                using (StreamReader sr = new StreamReader(path ?? PathLocale))
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        string line = sr.ReadLine();
-                        if (line.StartsWith("msgctxt ", StringComparison.Ordinal))
-                        {
-                            line = line.GetQuotationString();
-                            //Debug.Log($"key '{key}'");
-                            if (line != null)
-                                StringsDic.Remove(line);
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            using (StreamWriter sw = new StreamWriter(path ?? PathLocale, StringsAppend))
+            using (StreamWriter sw = new StreamWriter(path ?? Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_en.pot"), StringsAppend))
             {
                 foreach (var keyPair in StringsDic)
                 {
@@ -348,6 +340,21 @@ namespace Common
             Strings.Add(key, text);
         }
 
+        [System.Diagnostics.Conditional("LOCALE")]
+        public static void StringsAddProperty(string key, string text)
+        {
+            StringsAdd(key, text);
+        }
+
+        [System.Diagnostics.Conditional("LOCALE")]
+        public static void StringsAddClass(Type @class)
+        {
+            foreach (var field in @class.GetFields())
+            {
+                StringsAdd($"{ModName}.PROPERTY.{field.Name}", field.Name);
+            }
+        }
+
         /// Adds string to TagManager.
         public static void StringsTag(string key, string id, string proper = null)
         {
@@ -360,49 +367,100 @@ namespace Common
 
         public static void StringsLoad(string path = null)
         {
-            //if (Localization.GetLocale()?.Code == null)return;
-
             try
             {
                 if (path == null)
                     path = PathLocale;
 
-                using (StreamReader sr = new StreamReader(path))
+                if (!File.Exists(path))
                 {
-                    string line;
-                    string key = "";
-                    string id = "";
-                    string proper = "";
-                    bool isTag = false;
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        if (line.StartsWith("msgctxt", StringComparison.Ordinal))
-                        {
-                            isTag = line.Contains(".TAG.");
-                            key = GetQuotationString(line);
-                        }
-                        else if (line.StartsWith("msgid", StringComparison.Ordinal))
-                        {
-                            id = GetQuotationString(line);
-                        }
-                        else if (line.StartsWith("msgstr", StringComparison.Ordinal))
-                        {
-                            proper = GetQuotationString(line).GetUndoLiteralString();
+                    Print("Language file does not exist: " + path);
+                    return;
+                }
 
-                            if (proper != null && proper != "")
-                            {
-                                if (!isTag)
-                                    Strings.Add(key, proper);
-                                else
-                                    TagManager.Create(id, proper);
-                            }
+                Print("Read language file: " + path);
+
+                string key = null;
+                string id = null;
+                bool isTag = false;
+                var lines = File.ReadAllLines(path);
+                int i = 0;
+                for (; i < lines.Length; i++) if (lines[i].StartsWith("msgctxt", StringComparison.Ordinal)) break; // ignore everything until the first msgctxt
+                for (; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    string quote = line.GetQuotationString();
+                    int j = 0;
+
+                    // resolve multi-line quotes
+                    while (true)
+                    {
+                        if (quote == null)
+                            break;
+
+                        if (lines.Length <= i + 1)
+                            break;
+
+                        string quote2 = lines[i + 1];
+                        if (!quote2.StartsWith("\"", StringComparison.Ordinal))
+                            break;
+
+                        quote2 = quote2.GetQuotationString();
+                        if (quote2 == null)
+                            break;
+
+                        quote += quote2;
+                        i++;
+                        j++;
+                    }
+
+                    if (line.StartsWith("msgctxt", StringComparison.Ordinal))
+                    {
+                        isTag = line.Contains(".TAG.");
+                        key = quote;
+                        continue;
+                    }
+
+                    if (line.StartsWith("msgid", StringComparison.Ordinal))
+                    {
+                        id = quote;
+                        continue;
+                    }
+
+                    if (line.StartsWith("msgstr", StringComparison.Ordinal))
+                    {
+                        if (quote == null)
+                        {
+                            Print($"Error: quote is null at i={i} j={j}");
+                            continue;
                         }
+
+                        if (!isTag && (key == null || key == ""))
+                        {
+                            Print($"Error: key is null at i={i} j={j} for '{quote}'");
+                            continue;
+                        }
+
+                        if (isTag && (id == null || id == ""))
+                        {
+                            Print($"Error: tag id is null at i={i} j={j} for '{quote}'");
+                            continue;
+                        }
+
+                        if (!isTag)
+                            Strings.Add(key, quote.GetUndoLiteralString());
+                        else
+                            TagManager.Create(id, quote.GetUndoLiteralString());
+
+                        key = null;
+                        id = null;
+                        continue;
                     }
                 }
             }
             catch (System.Exception e)
             {
-                Print("Error reading language file: " + e.Message);
+                Print("Error reading language file: " + e.ToString());
             }
         }
 

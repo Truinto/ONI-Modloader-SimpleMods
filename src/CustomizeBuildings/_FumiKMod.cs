@@ -17,27 +17,22 @@ namespace CustomizeBuildings
         public override void OnLoad(Harmony harmony)
         {
             instance = harmony;
-            CustomizeBuildingsState.LoadStrings();
-
-            Miscellaneous.OnLoad();
-            Speed_Patch.OnLoad();
+            Helpers.ModName = "CustomizeBuildings";
+            CustomStrings.LoadStrings();
+            Helpers.StringsAddClass(typeof(BuildingStruct));
+            Helpers.StringsAddClass(typeof(BuildingAdv));
+            Helpers.StringsAddClass(typeof(ElementConverterContainer));
+#if LOCALE
+            Helpers.StringsPrint();
+#else
+            Helpers.StringsLoad();
+#endif
 
             new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
 
-            //var state = POptions.ReadSettings<CustomizeBuildingsState>();
-            //if (CustomizeBuildingsState.CheckUpdate(state))
-            //    POptions.WriteSettings(state);
-
+            Miscellaneous.OnLoad();
+            Speed_Patch.OnLoad();
             base.OnLoad(harmony);
-        }
-
-        public override void OnAllModsLoaded(Harmony harmony, IReadOnlyList<Mod> mods)
-        {
-            // if (mods.Any(a => a.staticID == "PeterHan.AIImprovements" && a.IsEnabledForActiveDlc()))
-            // {
-            //     harmony.Unpatch(typeof(FallMonitor.Instance).GetMethod(nameof(FallMonitor.Instance.UpdateFalling)), HarmonyPatchType.Prefix, harmony.Id);
-            //     Helpers.Print("Unpatched DoorEntomb_Patch because PeterHan.AIImprovements is enabled.");
-            // }
         }
     }
 }

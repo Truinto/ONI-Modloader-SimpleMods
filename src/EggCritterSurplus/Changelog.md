@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.10.0]
+
+### Fixed
+- fixed one incompatability with "Laser Turrets"; SweepThoseEggs must have a later load order (bottom of mod list)
+
 ## [1.0.9.0] EX1 S14-471883-S
 
 ### Fixed

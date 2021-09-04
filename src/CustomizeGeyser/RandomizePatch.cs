@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Config.PostBootDialog;
 using System.Linq;
+using Common;
 
 namespace CustomizeGeyser
 {
@@ -39,14 +40,14 @@ namespace CustomizeGeyser
 			{
 				CustomizeGeyserState.StateManager.State.RNGTable.Remove(entry);
 				if (!ignoreMissing.Contains(entry))
-					Debug.LogWarning(ToDialog("GeyserRandomizer: Geyser in config non existent, check spelling: " + entry));
+					Helpers.PrintDialog("GeyserRandomizer: Geyser in config non existent, check spelling: " + entry);
 			}
 		}
 
 		public static void Initialize()
 		{
 #if DEBUG_1
-            Debug.Log("[CustomizeGeyser] Running Initialize()...");
+			Helpers.Print("Running Initialize()...");
 #endif
 			if (CustomizeGeyserState.StateManager.State.RNGTable == null)
             {
@@ -117,7 +118,7 @@ namespace CustomizeGeyser
 		public static void Prefix(Geyser __instance)
 		{
 #if DEBUG_1
-			Debug.Log("[CustomizeGeyser] Geyser.OnSpawn " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
+			Helpers.Print("Geyser.OnSpawn " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
 #endif
 //			if (RandomizerTable.geysers == null) RandomizerTable.Initialize();
 //
@@ -130,7 +131,7 @@ namespace CustomizeGeyser
 //				if (isFirst)
 //					config.presetType = GeyserInfo.GeyserTypes.Find(x => x.id == CustomizeGeyserState.StateManager.State.RandomizerSetFirstGeyser)?.id ?? config.presetType;
 //#if DEBUG_1
-//				Debug.Log("[CustomizeGeyser] Changed geyser to: " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
+//				Helpers.Print("Changed geyser to: " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
 //#endif
 //				if (CustomizeGeyserState.StateManager.State.RandomizerPopupGeyserDiscoveryInfo)
 //				{
@@ -194,7 +195,7 @@ namespace CustomizeGeyser
             GameObject geyserGenericOrg = __result.Find(x => x.name == "GeyserGeneric");
             if (geyserGenericOrg == null)
             {
-                Debug.LogWarning("[CustomizeGeyser] RandomizerPatch critical error: Did not find GeyserGeneric");
+				Helpers.Print("RandomizerPatch critical error: Did not find GeyserGeneric");
                 return;
             }
 
@@ -209,7 +210,7 @@ namespace CustomizeGeyser
             __result.Add(geyserGeneric);
 
 #if DEBUG_1
-            Debug.Log("[CustomizeGeyser] Attached to GeyserGeneric");
+			Helpers.Print("Attached to GeyserGeneric");
 #endif
 
 			if (RandomizerTable.geysers == null) RandomizerTable.Initialize();
@@ -218,7 +219,7 @@ namespace CustomizeGeyser
         public static void PrefabInitGenericGeysers(GameObject go)
 		{
 #if DEBUG_1
-			Debug.Log("[CustomizeGeyser] PrefabInitGenericGeysers");
+			Helpers.Print("PrefabInitGenericGeysers");
 #endif
             if (RandomizerTable.sum > 0)
 			{
@@ -226,7 +227,7 @@ namespace CustomizeGeyser
 
 				if (CustomizeGeyserState.StateManager.State.RandomizerPopupGeyserDiscoveryInfo)
 					KMod.Manager.Dialog(null, "Geysers discovered", "You just discovered a geyser: " + geyserTag);
-				Debug.Log("[CustomizeGeyser] Discovered a new geyser: " + geyserTag);
+				Helpers.Print("Discovered a new geyser: " + geyserTag);
 
 				GameUtil.KInstantiate(Assets.GetPrefab(
 					(Tag)("GeyserGeneric_" + geyserTag)	 //change Tag to whatever you want to spawn; Tag is "GeyserGeneric_" + geyserType.id
@@ -235,7 +236,7 @@ namespace CustomizeGeyser
 			}
 			else
 			{
-				Debug.Log("[CustomizeGeyser] RandomizerTable was empty...");
+				Helpers.Print("RandomizerTable was empty...");
 			}
 		}
 	}
@@ -256,14 +257,14 @@ namespace CustomizeGeyser
         {
             __result.AddOrGet<KPrefabID>().prefabInitFn += PrefabInitIndividualGeyser;
 #if DEBUG_1
-			Debug.Log("[CustomizeGeyser] Attached to geyser type " + __result.name);
+			Helpers.Print("Attached to geyser type " + __result.name);
 #endif
 		}
 
 		public static void PrefabInitIndividualGeyser(GameObject go)
 		{
 #if DEBUG_1
-			Debug.Log("[CustomizeGeyser] Running PrefabInitIndividualGeyser");
+			Helpers.Print("Running PrefabInitIndividualGeyser");
 #endif
 			try
 			{
@@ -281,7 +282,7 @@ namespace CustomizeGeyser
 						}
 					}
 #if DEBUG_1
-					Debug.Log("[CustomizeGeyser] Attached to geyser [" + i + "] id: " + id + " flag is " + flag);
+					Helpers.Print("Attached to geyser [" + i + "] id: " + id + " flag is " + flag);
 #endif
 
 					if (flag && RandomizerTable.weights[i] >= 1)
@@ -289,13 +290,13 @@ namespace CustomizeGeyser
 						RandomizerTable.weights[i]--;
 						RandomizerTable.sum--;
 #if DEBUG_1
-						Debug.Log("[CustomizeGeyser] Reduced weight of [" + i + "] to " + RandomizerTable.weights[i]);
+						Helpers.Print("Reduced weight of [" + i + "] to " + RandomizerTable.weights[i]);
 #endif
 					}
 					else if (CustomizeGeyserState.StateManager.State.RandomizerHighlanderRetroactive)
 					{
 #if DEBUG_1
-						Debug.Log("[CustomizeGeyser] Weight of [" + i + "] is 0, changing back to GeyserGeneric");
+						Helpers.Print("Weight of [" + i + "] is 0, changing back to GeyserGeneric");
 #endif
 						ChangeGeyserElement(go);    //changes geyser back to GeyserGeneric, which in turn rerolls again unless sum is 0
 					}
@@ -303,7 +304,7 @@ namespace CustomizeGeyser
 			}
 			catch (Exception e)
 			{
-				Debug.LogWarning(e.ToString());
+				Helpers.PrintDialog(e.ToString());
 			}
 		}
 
@@ -325,7 +326,7 @@ namespace CustomizeGeyser
 		
 		public static void Prefix()
 		{
-			Debug.Log("[CustomizeGeyser] Re-initializing RandomizerTable...");
+			Helpers.Print("Re-initializing RandomizerTable...");
 			RandomizerTable.Reinitialize();
 		}
     }
@@ -340,7 +341,7 @@ namespace CustomizeGeyser
 
         public static void Prefix()
         {
-            Debug.Log("[CustomizeGeyser] Re-initializing RandomizerTable...");
+			Helpers.Print("Re-initializing RandomizerTable...");
             RandomizerTable.Reinitialize();
         }
     }

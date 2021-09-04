@@ -11,7 +11,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;LOCALE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -39,6 +39,7 @@
   <PropertyGroup>
     <DefineConstants Condition="Exists('$(ONIManaged)\_IsDLC1')">$(DefineConstants);DLC1</DefineConstants>
     <DefineConstants Condition="Exists('$(ProjectDir)_MERGE')">$(DefineConstants);MERGE</DefineConstants>
+    <DefineConstants Condition="Exists('$(ProjectDir)_MERGE') and '$(Configuration)'=='Debug'">$(DefineConstants);LOCALE</DefineConstants>
   </PropertyGroup>
   
   <!-- Common references -->

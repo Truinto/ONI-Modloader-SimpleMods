@@ -8,6 +8,9 @@
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences> -->
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="LanguageFillOut.cs.bak" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Program.cs" />
     <None Include="HelperStrings.cs" />
     <None Include="MDConvert.cs" />
