@@ -134,6 +134,8 @@ namespace CustomizeGeyser
                             copy.width = (int)modifier.width;
                         if (modifier.height != null)
                             copy.height = (int)modifier.height;
+                        if (modifier.IsGeneric != null)
+                            copy.isGenericGeyser = (bool)modifier.IsGeneric;
 
                         __result[i] = copy;
                     }
@@ -288,6 +290,9 @@ namespace CustomizeGeyser
                     if (modifier.maxYearPercent == null || modifier.maxYearPercent < modifier.minYearPercent || modifier.maxYearPercent > 1f)
                         modifier.maxYearPercent = modifier.minYearPercent;
 
+                    if (modifier.IsGeneric == null)
+                        modifier.IsGeneric = true;
+
                     if (modifier.Name != null)
                         Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".NAME", modifier.Name);
                     if (modifier.Description != null)
@@ -324,7 +329,8 @@ namespace CustomizeGeyser
                                 (float)modifier.minYearLength,
                                 (float)modifier.maxYearLength,
                                 (float)modifier.minYearPercent,
-                                (float)modifier.maxYearPercent).AddDisease(diseaseInfo)
+                                (float)modifier.maxYearPercent).AddDisease(diseaseInfo),
+                            (bool)modifier.IsGeneric
                         ));
 
                     Helpers.Print("Added geyser " + modifier.id + " : " + modifier.element);

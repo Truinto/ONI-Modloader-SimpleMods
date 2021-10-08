@@ -26,6 +26,7 @@ namespace CustomizeGeyser
         public string Description;
         public string Disease;
         public int? DiseaseCount;
+        public bool? IsGeneric;
 
         public GeyserStruct(
             string id,
@@ -48,7 +49,8 @@ namespace CustomizeGeyser
             string Name = null,
             string Description = null,
             string Disease = null,
-            int? DiseaseCount = null)
+            int? DiseaseCount = null,
+            bool? IsGeneric = null)
         {
             this.id = id;
             this.element = element;
@@ -71,6 +73,7 @@ namespace CustomizeGeyser
             this.Description = Description;
             this.Disease = Disease;
             this.DiseaseCount = DiseaseCount;
+            this.IsGeneric = IsGeneric;
         }
 
         public override bool Equals(object obj)

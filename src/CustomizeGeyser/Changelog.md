@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.14.0] U36-481350-S
+
+### Fixed
+- updated to current game version
+
 ## [1.0.11.0] U34-476542-S
 
 ### Added
