@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <SteamFolder>D:\Programme\Steam</SteamFolder>
+    <ONIManaged Condition="Exists('$(SteamFolder)')">$(SteamFolder)\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</ONIManaged>
+    <ONIManaged Condition="!Exists('$(SteamFolder)')">..\..\..\..\$non-backup\ONI sources</ONIManaged>
+    <ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev</ModFolder>
+    <ILMergeEXE>$(MSBuildThisFileDirectory)packages\ILMerge.3.0.41\tools\net452\ILMerge.exe</ILMergeEXE>
+  </PropertyGroup>
+</Project>

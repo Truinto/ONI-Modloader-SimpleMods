@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.15.0] U37-484114-S
+
+### Fixed
+- fixed rare crash
+
 ## [1.0.14.0] U36-481350-S
 
 ### Fixed

@@ -57,5 +57,29 @@ namespace CustomizePlants
                     ___radiationEmitter.emitRads = _cache.Value;
             }
         }
+
+        //[HarmonyPatch(typeof(GameUtil), nameof(GameUtil.ActionToBinding))]
+        public static class Patch_GameInputBindings
+        {
+            public static bool Printed = false;
+            public static void Prefix()
+            {
+                if (!Printed)
+                {
+                    foreach (BindingEntry b in GameInputMapping.KeyBindings)
+                    {
+                        Debug.Log($"{b}: {b.mGroup} {b.mRebindable} {b.mIgnoreRootConflics} {b.mButton} {b.mKeyCode} {b.mAction} {b.mModifier}");
+                    }
+                    Printed = true;
+                }
+
+            }
+
+            public static Exception Finalizer(Exception __exception)
+            {
+                Debug.Log(__exception.StackTrace);
+                return null;
+            }
+        }
     }
 }

@@ -55,6 +55,9 @@ namespace CustomizeGeyser
 				return;
 			}
 
+			if (GeyserInfo.Config == null || GeyserInfo.GeyserTypes == null)
+				return;
+
             FixErrors();
 
 			int count = 0;
