@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Common;
+using Database;
 using HarmonyLib;
 using Klei.AI;
 using UnityEngine;
@@ -26,7 +27,26 @@ namespace CustomizePlants
         }
     }
 
+    [HarmonyPatch(typeof(PlantMutations), nameof(PlantMutations.GetRandomMutation))]
+    public class PlantMutations_GetRandomMutationPatch
+    {
+        public static bool Prepare()
+        {
+            return CustomizePlantsState.StateManager.State.MutantPlantsDropSeeds;
+        }
+
+        public static bool Prefix(string targetPlantPrefabID, ref PlantMutation __result)
+        {
+            __result = (from m in Db.Get().PlantMutations.resources
+                        where !m.originalMutation && !m.restrictedPrefabIDs.Contains(targetPlantPrefabID) && (m.requiredPrefabIDs.Count == 0 || m.requiredPrefabIDs.Contains(targetPlantPrefabID))
+                        select m).ToList().GetRandom();
+
+            return false;
+        }
+    }
+
 #if DLC1
+
     [HarmonyPatch(typeof(Db), nameof(Db.Initialize))]
     public class Db_Initialize_MutationsPatch
     {
@@ -269,6 +289,7 @@ namespace CustomizePlants
             CustomizePlantsState.StateManager.TrySaveConfigurationState();
         }
     }
+
 #endif
 
     public class PlantMutationData

@@ -127,6 +127,9 @@ namespace CustomizePlants
         #endregion
 
         #region Extras
+
+        [Option("CustomizePlants.LOCSTRINGS.MutantPlantsDropSeeds_Title", "CustomizePlants.LOCSTRINGS.MutantPlantsDropSeeds_ToolTip", "Extras", null)]
+        public bool MutantPlantsDropSeeds { get; set; } = true;
         [Option("CustomizePlants.LOCSTRINGS.SeedsGoIntoAnyFlowerPots_Title", "CustomizePlants.LOCSTRINGS.SeedsGoIntoAnyFlowerPots_ToolTip", "Extras", null)]
         public bool SeedsGoIntoAnyFlowerPots { get; set; } = true;
         [Option("CustomizePlants.LOCSTRINGS.WheezewortTempDelta_Title", "CustomizePlants.LOCSTRINGS.WheezewortTempDelta_ToolTip", "Extras", "F0")]
@@ -211,6 +214,10 @@ namespace CustomizePlants
             Helpers.StringsAddProperty("CustomizePlants.PROPERTY.MutationSettings", "MutationSettings");
             #endregion
             #region Extras
+            Helpers.StringsAddProperty("CustomizePlants.PROPERTY.MutantPlantsDropSeeds", "MutantPlantsDropSeeds");
+            Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.MutantPlantsDropSeeds_Title", "Mutant Plants Drop Seeds");
+            Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.MutantPlantsDropSeeds_ToolTip", "Mutant plants can also drop seeds.");
+
             Helpers.StringsAddProperty("CustomizePlants.PROPERTY.SeedsGoIntoAnyFlowerPots", "SeedsGoIntoAnyFlowerPots");
             Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.SeedsGoIntoAnyFlowerPots_Title", "Seeds Go Into Any Flower Pots");
             Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.SeedsGoIntoAnyFlowerPots_ToolTip", "Whenever or not all seeds go into any flower pots / farm plots.");

@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.0.29.0]
+## [1.0.29.0] U37-484114-S
+
+### Added
+- added setting to allow mutant plants to drop seeds
 
 ## [1.0.28.0] U34-476542-S
 
