@@ -38,7 +38,7 @@ namespace CustomizePlants
         public static bool Prefix(string targetPlantPrefabID, ref PlantMutation __result)
         {
             __result = (from m in Db.Get().PlantMutations.resources
-                        where !m.originalMutation && !m.restrictedPrefabIDs.Contains(targetPlantPrefabID) && (m.requiredPrefabIDs.Count == 0 || m.requiredPrefabIDs.Contains(targetPlantPrefabID))
+                        where !m.restrictedPrefabIDs.Contains(targetPlantPrefabID) && (m.requiredPrefabIDs.Count == 0 || m.requiredPrefabIDs.Contains(targetPlantPrefabID))
                         select m).ToList().GetRandom();
 
             return false;

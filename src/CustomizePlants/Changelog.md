@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.31.0] U37-484114-S
+
+### Fixed
+- fixed mutant drop seeds
+
 ## [1.0.30.0] U37-484114-S
 
 ### Fixed
