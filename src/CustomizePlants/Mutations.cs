@@ -65,7 +65,7 @@ namespace CustomizePlants
                 return;
             }
 
-            foreach (var data in CustomizePlantsState.StateManager.State.MutationSettings.Where(w => mutations.Any(a => a.Id == w.id)))
+            foreach (var data in CustomizePlantsState.StateManager.State.MutationSettings.Where(w => !mutations.Any(a => a.Id == w.id)))
             {
                 Helpers.Print("Added new Mutation: " + data.id);
                 mutations.Add(new PlantMutation(data.id, data.name, data.description));

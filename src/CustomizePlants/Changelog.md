@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.30.0] U37-484114-S
+
+### Fixed
+- fixed new mutations not getting generated
+
 ## [1.0.29.0] U37-484114-S
 
 ### Added
