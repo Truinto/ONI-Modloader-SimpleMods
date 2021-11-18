@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.47.0] U37-484114-S
+
+### Fixed
+- updated to new release
+
 ## [1.0.46.0] U34-477203-S
 
 ### Fixed

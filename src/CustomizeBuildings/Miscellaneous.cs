@@ -161,7 +161,7 @@ namespace CustomizeBuildings
             if (___activeRecipe == null || __instance.ElementToggles.Count == 0)
                 return true;
 
-            Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(__instance.selectorIndex, ___activeRecipe.Result);
+            Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(ClusterManager.Instance.activeWorldId, __instance.selectorIndex, ___activeRecipe.Result);
             if (previousElement == null)
                 return true;
 
