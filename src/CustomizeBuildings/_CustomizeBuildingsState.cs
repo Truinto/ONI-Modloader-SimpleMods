@@ -96,6 +96,7 @@ namespace CustomizeBuildings
             StateManager.State.RoboMinerWidth = 16;
             StateManager.State.RoboMinerHeight = 9;
             StateManager.State.RoboMinerOffset = 0;
+            StateManager.State.RoboMinerSpeedMult = 1f;
             StateManager.State.RoboMinerRegolithTurbo = false;
             StateManager.State.RoboMinerDigThroughGlass = false;
             StateManager.State.RoboMinerDigAnyTile = false;
@@ -401,6 +402,8 @@ namespace CustomizeBuildings
         public int RoboMinerHeight { get; set; } = 9;
         [Option("CustomizeBuildings.LOCSTRINGS.RoboMinerOffset_Title", "CustomizeBuildings.LOCSTRINGS.RoboMinerOffset_ToolTip", "Robo Miner")]
         public int RoboMinerOffset { get; set; } = 0;
+        [Option("CustomizeBuildings.LOCSTRINGS.RoboMinerSpeedMult_Title", "CustomizeBuildings.LOCSTRINGS.RoboMinerSpeedMult_ToolTip", "Robo Miner", "F0")]
+        public float RoboMinerSpeedMult { get; set; } = 1f;
         [Option("CustomizeBuildings.LOCSTRINGS.RoboMinerRegolithTurbo_Title", "CustomizeBuildings.LOCSTRINGS.RoboMinerRegolithTurbo_ToolTip", "Robo Miner")]
         public bool RoboMinerRegolithTurbo { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.RoboMinerDigThroughGlass_Title", "CustomizeBuildings.LOCSTRINGS.RoboMinerDigThroughGlass_ToolTip", "Robo Miner")]
@@ -680,743 +683,747 @@ namespace CustomizeBuildings
         public static void LoadStrings()
         {
             #region 
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.version", "version");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.Header_Title", "_______________________________________________________________________________________");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.Header_ToolTip", "");
+
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "Reset To Klei Default");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_ToolTip", "This will discard all changes and set all options to 'off'.");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToCustomDefault_Title", "Reset To Mod Preset");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToCustomDefault_ToolTip", "This will discard all changes and enable most options.");
-
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.Header_Title", "_______________________________________________________________________________________");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.Header_ToolTip", "");
             #endregion
             #region Advanced
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BuildingBaseSettingGlobalFlag", "BuildingBaseSettingGlobalFlag");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BuildingBaseSettingGlobalFlag", "BuildingBaseSettingGlobalFlag");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_Title", "Base Setting Global Flag");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_ToolTip", "If false, will keep disable all basic manual changes.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BuildingAdvancedGlobalFlag", "BuildingAdvancedGlobalFlag");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BuildingBaseSettings", "BuildingBaseSettings");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BuildingAdvancedGlobalFlag", "BuildingAdvancedGlobalFlag");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_Title", "Advanced Global Flag");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_ToolTip", "If false, will keep disable all advanced manual changes.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BuildingBaseSettings", "BuildingBaseSettings");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BuildingAdvancedMachineMultiplier", "BuildingAdvancedMachineMultiplier");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BuildingAdvancedMachineMultiplier", "BuildingAdvancedMachineMultiplier");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BuildingAdvancedMaterial", "BuildingAdvancedMaterial");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BuildingAdvancedMaterial", "BuildingAdvancedMaterial");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BuildingAdvancedOutputTemp", "BuildingAdvancedOutputTemp");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BuildingAdvancedOutputTemp", "BuildingAdvancedOutputTemp");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AlgaeTerrarium", "AlgaeTerrarium");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AlgaeTerrarium", "AlgaeTerrarium");
-
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AdvancedSettings", "AdvancedSettings");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AdvancedSettings", "AdvancedSettings");
             #endregion
             #region Auto Sweeper
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AutoSweeperCapacity", "AutoSweeperCapacity");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AutoSweeperCapacity", "AutoSweeperCapacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperCapacity_Title", "Auto Sweeper Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperCapacity_ToolTip", "Storage capacity of auto sweepers.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AutoSweeperRange", "AutoSweeperRange");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AutoSweeperRange", "AutoSweeperRange");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperRange_Title", "Auto Sweeper Range");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperRange_ToolTip", "Range of Auto Sweeper. Very large numbers will cause lag.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AutoSweeperSlider", "AutoSweeperSlider");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AutoSweeperSlider", "AutoSweeperSlider");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperSlider_Title", "Auto Sweeper Slider");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperSlider_ToolTip", "If true, will show a slider to reduce the Sweeper's range.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AutoSweeperPickupAnything", "AutoSweeperPickupAnything");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AutoSweeperPickupAnything", "AutoSweeperPickupAnything");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperPickupAnything_Title", "Auto Sweeper Pickup Anything");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperPickupAnything_ToolTip", "If true, Auto Sweeper can move/store anything that dupes can.");
             #endregion
             #region Miscellaneous
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ElectrolizerMaxPressure", "ElectrolizerMaxPressure");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ElectrolizerMaxPressure", "ElectrolizerMaxPressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ElectrolizerMaxPressure_Title", "Electrolizer Max Pressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ElectrolizerMaxPressure_ToolTip", "Pressure the electrolizer will stop producing oxygen/hydrogen.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AirfilterDropsCanisters", "AirfilterDropsCanisters");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AirfilterDropsCanisters", "AirfilterDropsCanisters");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirfilterDropsCanisters_Title", "Airfilter Canisters");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirfilterDropsCanisters_ToolTip", "On deconstruction, air-filters (as well as all other buildings) drop gas canisters instead of venting stored gases.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NewRecipeRockCrusher", "NewRecipeRockCrusher");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NewRecipeRockCrusher", "NewRecipeRockCrusher");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NewRecipeRockCrusher_Title", "New Recipe: Rock-Crusher");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NewRecipeRockCrusher_ToolTip", "Adds regolith to sand recipe.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AirConditionerAbsoluteOutput", "AirConditionerAbsoluteOutput");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AirConditionerAbsoluteOutput", "AirConditionerAbsoluteOutput");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_Title", "Air Conditioner Absolute Output");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "If true, Air Conditioner and Aquatuner get a new target temperature slider. If the target temperature is 0 Kelvin, it will retain -14°C behaviour. Otherwise output temperature will match exactly target temperature. Also adds a kJoules slider, which limits how fast the building heats up. Energy consumption will scale on cooling/heating factor.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AirConditionerAbsolutePowerFactor", "AirConditionerAbsolutePowerFactor");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AirConditionerAbsolutePowerFactor", "AirConditionerAbsolutePowerFactor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "Air Conditioner Absolute Power Factor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "% of MaxDPU the Air Conditioner takes full power. Default: 0.1");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SpaceHeaterTargetTemperature", "SpaceHeaterTargetTemperature");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceHeaterTargetTemperature", "SpaceHeaterTargetTemperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "Space Heater Target Temperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "If true, Space Heater gets a temperature setting to control target temperature.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.AlgaeTerrariumPatch", "AlgaeTerrariumPatch");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AlgaeTerrariumPatch", "AlgaeTerrariumPatch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_Title", "Algae Terrarium Grower");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_ToolTip", "If true, will modify the Algae Terrarium. By default will convert dirt into algae.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.DoorSelfSealing", "DoorSelfSealing");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.DoorSelfSealing", "DoorSelfSealing");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_Title", "Self Sealing Door");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DoorSelfSealing_ToolTip", "If true, doors will block gas flow while set to automatic.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.MaterialIgnoreInsufficientMaterial", "MaterialIgnoreInsufficientMaterial");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.MaterialIgnoreInsufficientMaterial", "MaterialIgnoreInsufficientMaterial");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialIgnoreInsufficientMaterial_Title", "Ignore Insufficient Material");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialIgnoreInsufficientMaterial_ToolTip", "If true, will allow placing buildings while having insufficient building material.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.MaterialAutoSelect", "MaterialAutoSelect");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.MaterialAutoSelect", "MaterialAutoSelect");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "Material No Auto Select");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "If true, will keep selected building material, even if stored amount is insufficient.");
             #endregion
             #region No Dupe
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeGlobal", "NoDupeGlobal");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeGlobal", "NoDupeGlobal");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGlobal_Title", "<b><color=red>!!! Unlock No Dupe !!!</color></b>");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGlobal_ToolTip", "If false, will disable all settings in this category.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeApothecary", "NoDupeApothecary");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeApothecary", "NoDupeApothecary");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeApothecary_Title", "No Dupe Apothecary");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeApothecary_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeClothingFabricator", "NoDupeClothingFabricator");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeClothingFabricator", "NoDupeClothingFabricator");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeClothingFabricator_Title", "No Dupe ClothingFabricator");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeClothingFabricator_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeCookingStation", "NoDupeCookingStation");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeCookingStation", "NoDupeCookingStation");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeCookingStation_Title", "No Dupe Cooking Station");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeCookingStation_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeGourmetCookingStation", "NoDupeGourmetCookingStation");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeGourmetCookingStation", "NoDupeGourmetCookingStation");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGourmetCookingStation_Title", "No Dupe Gourmet Cooking Station");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGourmetCookingStation_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeEggCracker", "NoDupeEggCracker");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeEggCracker", "NoDupeEggCracker");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeEggCracker_Title", "No Dupe Egg Cracker");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeEggCracker_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeGlassForge", "NoDupeGlassForge");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeGlassForge", "NoDupeGlassForge");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGlassForge_Title", "No Dupe Glass Forge");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeGlassForge_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeMetalRefinery", "NoDupeMetalRefinery");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeMetalRefinery", "NoDupeMetalRefinery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMetalRefinery_Title", "No Dupe Metal Refinery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMetalRefinery_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeMicrobeMusher", "NoDupeMicrobeMusher");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeMicrobeMusher", "NoDupeMicrobeMusher");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMicrobeMusher_Title", "No Dupe Microbe Musher");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMicrobeMusher_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeRockCrusher", "NoDupeRockCrusher");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeRockCrusher", "NoDupeRockCrusher");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRockCrusher_Title", "No Dupe Rock Crusher");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRockCrusher_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeDiamondPress", "NoDupeDiamondPress");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeDiamondPress", "NoDupeDiamondPress");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDiamondPress_Title", "No Dupe Diamond Press");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDiamondPress_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeSuitFabricator", "NoDupeSuitFabricator");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeSuitFabricator", "NoDupeSuitFabricator");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSuitFabricator_Title", "No Dupe Suit Fabricator");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSuitFabricator_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeSupermaterialRefinery", "NoDupeSupermaterialRefinery");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeSupermaterialRefinery", "NoDupeSupermaterialRefinery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSupermaterialRefinery_Title", "No Dupe Supermaterial Refinery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSupermaterialRefinery_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeSludgePress", "NoDupeSludgePress");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeSludgePress", "NoDupeSludgePress");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSludgePress_Title", "No Dupe Sludge Press");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSludgePress_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeCompost", "NoDupeCompost");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeCompost", "NoDupeCompost");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeCompost_Title", "No Dupe Compost");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeCompost_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeDesalinator", "NoDupeDesalinator");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeDesalinator", "NoDupeDesalinator");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDesalinator_Title", "No Dupe Desalinator");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDesalinator_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeOilRefinery", "NoDupeOilRefinery");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeOilRefinery", "NoDupeOilRefinery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeOilRefinery_Title", "No Dupe Oil Refinery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeOilRefinery_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeOilWellCap", "NoDupeOilWellCap");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeOilWellCap", "NoDupeOilWellCap");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeOilWellCap_Title", "No Dupe Oil Well Cap");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeOilWellCap_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeIceCooledFan", "NoDupeIceCooledFan");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeIceCooledFan", "NoDupeIceCooledFan");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeIceCooledFan_Title", "No Dupe Ice Cooled Fan");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeIceCooledFan_ToolTip", "If true, will replace the dupe requirement with 120W power inlet. Ice consumption is different.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeRanchStation", "NoDupeRanchStation");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeRanchStation", "NoDupeRanchStation");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_Title", "No Dupe Ranch Station");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_ToolTip", "If true, will buff the standard duration of grooming to 100 cycles.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeTelescope", "NoDupeTelescope");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeTelescope", "NoDupeTelescope");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_Title", "No Dupe Telescope");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeAlgaeTerrarium", "NoDupeAlgaeTerrarium");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeAlgaeTerrarium", "NoDupeAlgaeTerrarium");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "No Dupe Algae Terrarium");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeShearingStation", "NoDupeShearingStation");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeShearingStation", "NoDupeShearingStation");
             #endregion
             #region Pipes
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeThroughputPercent", "PipeThroughputPercent");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeThroughputPercent", "PipeThroughputPercent");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeThroughputPercent_Title", "Pipe Throughput Percent");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeThroughputPercent_ToolTip", "Percent of pipe usage for Aquatuner and Air Conditioner.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeLiquidMaxPressure", "PipeLiquidMaxPressure");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeLiquidMaxPressure", "PipeLiquidMaxPressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidMaxPressure_Title", "Pipe Liquid Max Pressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidMaxPressure_ToolTip", "Liquid pipe pressure.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeGasMaxPressure", "PipeGasMaxPressure");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeGasMaxPressure", "PipeGasMaxPressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_Title", "Pipe Gas Max Pressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_ToolTip", "Gas pipe pressure.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeValvePressureButtonShow", "PipeValvePressureButtonShow");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeValvePressureButtonShow", "PipeValvePressureButtonShow");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_Title", "Pipe Valve Pressure Button Show");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_ToolTip", "If true, will display a 'limit' button in the building window. While limited, output tile cannot exceed flow rate.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeLiquidPump", "PipeLiquidPump");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeLiquidPump", "PipeLiquidPump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_Title", "Pipe Liquid Pump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_ToolTip", "Amount of liquid pumped at once from Liquid Pumps.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeGasPump", "PipeGasPump");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeGasPump", "PipeGasPump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPump_Title", "Pipe Gas Pump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPump_ToolTip", "Amount of gas pumped at once from Gas Pumps.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeLiquidPumpMini", "PipeLiquidPumpMini");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeLiquidPumpMini", "PipeLiquidPumpMini");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPumpMini_Title", "Pipe Liquid Pump Mini");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPumpMini_ToolTip", "Amount of liquid pumped at once from Mini Liquid Pumps.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.PipeGasPumpMini", "PipeGasPumpMini");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeGasPumpMini", "PipeGasPumpMini");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPumpMini_Title", "Pipe Gas Pump Mini");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasPumpMini_ToolTip", "Amount of gas pumped at once from Mini Gas Pumps.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ConveyorRailPackageSize", "ConveyorRailPackageSize");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorRailPackageSize", "ConveyorRailPackageSize");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorRailPackageSize_Title", "Conveyor Rail Package Size");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorRailPackageSize_ToolTip", "Maximum size of packages on Conveyor Rails.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ConveyorLoaderHasSlider", "ConveyorLoaderHasSlider");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderHasSlider", "ConveyorLoaderHasSlider");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderHasSlider_Title", "Conveyor Loader Has Slider");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderHasSlider_ToolTip", "If true, will show the capacity slider for Conveyor Loaders.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ConveyorReceptacleHasSlider", "ConveyorReceptacleHasSlider");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorReceptacleHasSlider", "ConveyorReceptacleHasSlider");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleHasSlider_Title", "Conveyor Receptacle Has Slider");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleHasSlider_ToolTip", "If true, will show the capacity slider for Conveyor Receptacles.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ConveyorLoaderAcceptLiquidsGas", "ConveyorLoaderAcceptLiquidsGas");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderAcceptLiquidsGas", "ConveyorLoaderAcceptLiquidsGas");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "Conveyor Loader Accepts Liquids Gases");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "If true, add liquids and gases to the filter list.");
             #endregion
             #region Power
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BatterySmartKJ", "BatterySmartKJ");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BatterySmartKJ", "BatterySmartKJ");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BatterySmartKJ_Title", "Smart Battery KJ");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BatterySmartKJ_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BatterySmartNoRunOff", "BatterySmartNoRunOff");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BatterySmartNoRunOff", "BatterySmartNoRunOff");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BatterySmartNoRunOff_Title", "Smart Battery remove runoff");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BatterySmartNoRunOff_ToolTip", "If true, smart battery won't lose charge over time.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.BatteryLargeKJ", "BatteryLargeKJ");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BatteryLargeKJ", "BatteryLargeKJ");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BatteryLargeKJ_Title", "Large Battery KJ");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BatteryLargeKJ_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SolarMaxPower", "SolarMaxPower");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SolarMaxPower", "SolarMaxPower");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarMaxPower_Title", "Solar Max Power");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarMaxPower_ToolTip", "Limit of how much light can be converted. Does not increase energy per lumen.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SolarEnergyMultiplier", "SolarEnergyMultiplier");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SolarEnergyMultiplier", "SolarEnergyMultiplier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_Title", "Solar Energy Multiplier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_ToolTip", "Multiplies power generation. Limited up to 'Solar Max Power'.");
             #endregion
             #region Power Cable
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.WireSmallWatts", "WireSmallWatts");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireSmallWatts", "WireSmallWatts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireSmallWatts_Title", "Wire Small Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireSmallWatts_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.WireRefinedWatts", "WireRefinedWatts");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRefinedWatts", "WireRefinedWatts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_Title", "Wire Refined Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.WireHeavyWatts", "WireHeavyWatts");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireHeavyWatts", "WireHeavyWatts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_Title", "Wire Heavy Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.WireRefinedHeavyWatts", "WireRefinedHeavyWatts");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRefinedHeavyWatts", "WireRefinedHeavyWatts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "Wire Refined Heavy Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_ToolTip", "");
             #endregion
             #region Robo Miner
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RoboMinerWidth", "RoboMinerWidth");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerWidth", "RoboMinerWidth");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerWidth_Title", "Robo Miner Width");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerWidth_ToolTip", "Mining width.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RoboMinerHeight", "RoboMinerHeight");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerHeight", "RoboMinerHeight");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerHeight_Title", "Robo Miner Height");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerHeight_ToolTip", "Mining height.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RoboMinerOffset", "RoboMinerOffset");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerOffset", "RoboMinerOffset");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerOffset_Title", "Robo Miner Offset");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerOffset_ToolTip", "Offset at which the Robo Miner works (negative numbers allowed).");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RoboMinerRegolithTurbo", "RoboMinerRegolithTurbo");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerSpeedMult", "RoboMinerSpeedMult");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerSpeedMult_Title", "Robo Miner Speed Multiplier");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerSpeedMult_ToolTip", "Determines the speed of the Robo Miner. 2 = twice as fast; 0.5 = half as fast");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerRegolithTurbo", "RoboMinerRegolithTurbo");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerRegolithTurbo_Title", "Robo Miner Regolith Turbo");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerRegolithTurbo_ToolTip", "If true, Regolith will be mined 6 times faster.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RoboMinerDigThroughGlass", "RoboMinerDigThroughGlass");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerDigThroughGlass", "RoboMinerDigThroughGlass");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerDigThroughGlass_Title", "Robo Miner Dig Through Glass");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerDigThroughGlass_ToolTip", "Robo Miner dig through glass tiles, but only from glass (not diamonds)");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RoboMinerDigAnyTile", "RoboMinerDigAnyTile");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerDigAnyTile", "RoboMinerDigAnyTile");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerDigAnyTile_Title", "Robo Miner Dig Any Tile");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RoboMinerDigAnyTile_ToolTip", "Robo Miner can dig any material.");
             #endregion
             #region Skill Station
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationEnabled", "SkillStationEnabled");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationEnabled", "SkillStationEnabled");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationEnabled_Title", "Skill Station Enabled");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationEnabled_ToolTip", "If true, will repurpose the Skill Scrubber to change traits/interests/attributes of dupes. If false, fully disables this feature.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationCostTime", "SkillStationCostTime");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostTime", "SkillStationCostTime");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostTime_Title", "Skill Station Time");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostTime_ToolTip", "Time Skill Scrubber needs.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationCostReset", "SkillStationCostReset");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostReset", "SkillStationCostReset");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostReset_Title", "Skill Station Reset");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostReset_ToolTip", "Exp cost to reset Skill Points (select \"None\")");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationCostRemoveTrait", "SkillStationCostRemoveTrait");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostRemoveTrait", "SkillStationCostRemoveTrait");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostRemoveTrait_Title", "Skill Station Remove Trait");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostRemoveTrait_ToolTip", "Exp cost to remove any Trait.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationCostAddTrait", "SkillStationCostAddTrait");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostAddTrait", "SkillStationCostAddTrait");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddTrait_Title", "Skill Station Add Trait");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddTrait_ToolTip", "Exp cost to add a new good Trait.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationCostBadTrait", "SkillStationCostBadTrait");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostBadTrait", "SkillStationCostBadTrait");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostBadTrait_Title", "Skill Station Bad Trait");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostBadTrait_ToolTip", "Exp cost to add a new bad Trait (usually grants Exp).");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationCostAddAptitude", "SkillStationCostAddAptitude");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostAddAptitude", "SkillStationCostAddAptitude");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAptitude_Title", "Skill Station Add Aptitude");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAptitude_ToolTip", "Exp cost to add a new interest.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SkillStationCostAddAttribute", "SkillStationCostAddAttribute");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostAddAttribute", "SkillStationCostAddAttribute");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_Title", "Skill Station Add Attribute");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1.");
             #endregion
             #region Space Scanner
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ScannerInterferenceRadius", "ScannerInterferenceRadius");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerInterferenceRadius", "ScannerInterferenceRadius");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_Title", "Scanner Interference Radius");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_ToolTip", "Radius looking for heavy machinery and free sky tiles.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ScannerWorstWarningTime", "ScannerWorstWarningTime");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerWorstWarningTime", "ScannerWorstWarningTime");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_Title", "Scanner Worst Warning Time");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_ToolTip", "Worst time before a network will detect incoming meteors.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ScannerBestWarningTime", "ScannerBestWarningTime");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerBestWarningTime", "ScannerBestWarningTime");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_Title", "Scanner Best Warning Time");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_ToolTip", "Best time before a network will detect incoming meteors.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ScannerBestNetworkSize", "ScannerBestNetworkSize");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerBestNetworkSize", "ScannerBestNetworkSize");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_Title", "Scanner Best Network Size");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_ToolTip", "Amount of scanners needed for best warning time.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.LadderCometInvincibility", "LadderCometInvincibility");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LadderCometInvincibility", "LadderCometInvincibility");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_Title", "Ladder Comet Invincibility");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_ToolTip", "Ladders don't get harmed by comets. Does not apply to plastic ladders. Ladders can still melt from heat.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TelescopeClearCellRadius", "TelescopeClearCellRadius");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TelescopeClearCellRadius", "TelescopeClearCellRadius");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_Title", "Telescope Clear Cell Radius");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeClearCellRadius_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TelescopeAnalyzeRadius", "TelescopeAnalyzeRadius");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TelescopeAnalyzeRadius", "TelescopeAnalyzeRadius");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeAnalyzeRadius_Title", "Telescope Analyze Radius");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TelescopeAnalyzeRadius_ToolTip", "");
             #endregion
             #region Steam Turbine
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineEnabled", "SteamTurbineEnabled");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineEnabled", "SteamTurbineEnabled");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineEnabled_Title", "Steam Turbine Enabled");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineEnabled_ToolTip", "Whenever or not to change the steam turbine at all. If false, ignores other settings.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineWattage", "SteamTurbineWattage");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineWattage", "SteamTurbineWattage");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineWattage_Title", "Steam Turbine Wattage");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineWattage_ToolTip", "Wattage produced by Steam Turbine under optimal conditions.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineSourceElement", "SteamTurbineSourceElement");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineSourceElement", "SteamTurbineSourceElement");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineSourceElement_Title", "Steam Turbine Source Element");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineSourceElement_ToolTip", "Steam Turbine input element.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineOutputElement", "SteamTurbineOutputElement");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineOutputElement", "SteamTurbineOutputElement");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOutputElement_Title", "Steam Turbine Output Element");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOutputElement_ToolTip", "Steam Turbine output element.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbinePumpRateKG", "SteamTurbinePumpRateKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbinePumpRateKG", "SteamTurbinePumpRateKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_Title", "Steam Turbine Pump-Rate");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_ToolTip", "Steam Turbine amount of gas absorbed at once.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineMaxSelfHeat", "SteamTurbineMaxSelfHeat");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineMaxSelfHeat", "SteamTurbineMaxSelfHeat");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_Title", "Steam Turbine Max Self-Heat");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_ToolTip", "Steam Turbine maximum amount of heat tranfered from gas to machine.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineHeatTransferPercent", "SteamTurbineHeatTransferPercent");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineHeatTransferPercent", "SteamTurbineHeatTransferPercent");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineHeatTransferPercent_Title", "Steam Turbine Heat Transfer Percent");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineHeatTransferPercent_ToolTip", "Steam Turbine percent of heat transfered. Limited up to MAX.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineMinActiveTemperature", "SteamTurbineMinActiveTemperature");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineMinActiveTemperature", "SteamTurbineMinActiveTemperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMinActiveTemperature_Title", "Steam Turbine Min Active Temperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMinActiveTemperature_ToolTip", "Minimal temperature at which Steam Turbine turns on.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineIdealTemperature", "SteamTurbineIdealTemperature");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineIdealTemperature", "SteamTurbineIdealTemperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineIdealTemperature_Title", "Steam Turbine Ideal Temperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineIdealTemperature_ToolTip", "Best temperature at which Steam Turbine produces full energy.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineOutputTemperature", "SteamTurbineOutputTemperature");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineOutputTemperature", "SteamTurbineOutputTemperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOutputTemperature_Title", "Steam Turbine Output Temperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOutputTemperature_ToolTip", "Steam Turbine pipe output temperature.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.SteamTurbineOverheatTemperature", "SteamTurbineOverheatTemperature");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineOverheatTemperature", "SteamTurbineOverheatTemperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOverheatTemperature_Title", "Steam Turbine Overheat Temperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOverheatTemperature_ToolTip", "Temperature where the Steam Turbine shuts off.");
             #endregion
             #region Storage
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.LockerKG", "LockerKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LockerKG", "LockerKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerKG_Title", "Storage Locker Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.LockerSmartKG", "LockerSmartKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LockerSmartKG", "LockerSmartKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_Title", "Smart Storage Locker Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.GasReservoirKG", "GasReservoirKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.GasReservoirKG", "GasReservoirKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_Title", "Gas Reservoir Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_ToolTip", "Capped at 100 tones. Anything higher will get deleted by the game.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.LiquidReservoirKG", "LiquidReservoirKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LiquidReservoirKG", "LiquidReservoirKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_Title", "Liquid Reservoir Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_ToolTip", "Capped at 100 tones. Anything higher will get deleted by the game.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RationBoxKG", "RationBoxKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RationBoxKG", "RationBoxKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RationBoxKG_Title", "Ration Box Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RationBoxKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.FridgeKG", "FridgeKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.FridgeKG", "FridgeKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FridgeKG_Title", "Fridge Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FridgeKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.CritterFeederKG", "CritterFeederKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CritterFeederKG", "CritterFeederKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CritterFeederKG_Title", "Critter Feeder Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CritterFeederKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.FishFeederKG", "FishFeederKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.FishFeederKG", "FishFeederKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FishFeederKG_Title", "Fish Feeder Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FishFeederKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.CanisterFillerKG", "CanisterFillerKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CanisterFillerKG", "CanisterFillerKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_Title", "Canister Filler Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ConveyorLoaderKG", "ConveyorLoaderKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderKG", "ConveyorLoaderKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_Title", "Conveyor Loader Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ConveyorReceptacleKG", "ConveyorReceptacleKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorReceptacleKG", "ConveyorReceptacleKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleKG_Title", "Conveyor Receptacle Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.IUserControlledMax", "IUserControlledMax");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.IUserControlledMax", "IUserControlledMax");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.IUserControlledMax_Title", "Conveyor Receptacle Controller");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.IUserControlledMax_ToolTip", "Set same as in Conveyor Receptacle Capacity.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ReservoirNoGround", "ReservoirNoGround");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ReservoirNoGround", "ReservoirNoGround");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ReservoirNoGround_Title", "Reservoir No Ground");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ReservoirNoGround_ToolTip", "Reservoirs can be placed in the air.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.ReservoirManualDelivery", "ReservoirManualDelivery");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ReservoirManualDelivery", "ReservoirManualDelivery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_Title", "Reservoir Manual Delivery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ReservoirManualDelivery_ToolTip", "Dupes may store material in reservoirs.\n- dupes will deliver selected liquids/gases until the capacity is at the slider amount\n- liquid/gas pipes can still deliver any element and will ignore the slider limit\n- activating, then deactivating an element checkbox drops it on the floor, for easy removal of rogue elements");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RailgunMaxLaunch", "RailgunMaxLaunch");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RailgunMaxLaunch", "RailgunMaxLaunch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "Railgun Max Launch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "How much material can be send per launch. Storage is at least twice at much.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.DrillConeKG", "DrillConeKG");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.DrillConeKG", "DrillConeKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "Drillcone Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RocketPortGas", "RocketPortGas");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortGas", "RocketPortGas");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortGas_Title", "Rocket Port Gas Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortGas_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RocketPortLiquid", "RocketPortLiquid");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortLiquid", "RocketPortLiquid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_Title", "Rocket Port Liquid Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.RocketPortSolid", "RocketPortSolid");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortSolid", "RocketPortSolid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "Rocket Port Solid Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "");
             #endregion
             #region Switches
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeValves", "NoDupeValves");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeValves", "NoDupeValves");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeValves_Title", "No Dupe Valves");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeValves_ToolTip", "Valves are set instantly without dupe interaction.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeSwitches", "NoDupeSwitches");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeSwitches", "NoDupeSwitches");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSwitches_Title", "No Dupe Switches");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeSwitches_ToolTip", "Switches are set instantly without dupe interaction.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeToogleBuildings", "NoDupeToogleBuildings");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeToogleBuildings", "NoDupeToogleBuildings");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeToogleBuildings_Title", "No Dupe Toogle Buildings");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeToogleBuildings_ToolTip", "Buildings are disabled instantly without dupe interaction.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.NoDupeToogleDoors", "NoDupeToogleDoors");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeToogleDoors", "NoDupeToogleDoors");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeToogleDoors_Title", "No Dupe Toogle Doors");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeToogleDoors_ToolTip", "Doors open/close instantly without dupe interaction.");
             #endregion
             #region Transit Tube
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TransitTubeAnywhere", "TransitTubeAnywhere");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TransitTubeAnywhere", "TransitTubeAnywhere");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeAnywhere_Title", "Transit Tube Anywhere");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeAnywhere_ToolTip", "Transit Tubes can be placed in the background.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TransitTubeUTurns", "TransitTubeUTurns");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TransitTubeUTurns", "TransitTubeUTurns");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeUTurns_Title", "Transit Tube U-Turns");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeUTurns_ToolTip", "Removes all transit tube layout restrictions.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TransitTubeJoulesPerLaunch", "TransitTubeJoulesPerLaunch");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TransitTubeJoulesPerLaunch", "TransitTubeJoulesPerLaunch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeJoulesPerLaunch_Title", "Transit Tube Joules Per Launch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeJoulesPerLaunch_ToolTip", "Cost per launch, normally 10000 joules.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TransitTubeJouleCapacity", "TransitTubeJouleCapacity");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TransitTubeJouleCapacity", "TransitTubeJouleCapacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeJouleCapacity_Title", "Transit Tube Joule Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TransitTubeJouleCapacity_ToolTip", "Capacity, normally 40000 joules.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TransitTubeSpeed", "TransitTubeSpeed");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TransitTubeSpeed", "TransitTubeSpeed");
             #endregion
             #region Tuning
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningGlobal", "TuningGlobal");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningGlobal", "TuningGlobal");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_Title", "<b><color=red>!!! Unlock Tuning !!!</color></b>");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningGlobal_ToolTip", "If false, will disable all settings in this category.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAtmosuitDecay", "TuningAtmosuitDecay");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAtmosuitDecay", "TuningAtmosuitDecay");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitDecay_Title", "Atmosuit Decay");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitDecay_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningOxygenMaskDecay", "TuningOxygenMaskDecay");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningOxygenMaskDecay", "TuningOxygenMaskDecay");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxygenMaskDecay_Title", "Oxygen Mask Decay");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxygenMaskDecay_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAtmosuitAthletics", "TuningAtmosuitAthletics");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAtmosuitAthletics", "TuningAtmosuitAthletics");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitAthletics_Title", "Atmosuit Athletics");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitAthletics_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAtmosuitScalding", "TuningAtmosuitScalding");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAtmosuitScalding", "TuningAtmosuitScalding");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitScalding_Title", "Atmosuit Scalding");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitScalding_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAtmosuitInsulation", "TuningAtmosuitInsulation");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAtmosuitInsulation", "TuningAtmosuitInsulation");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitInsulation_Title", "Atmosuit Insulation");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitInsulation_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAtmosuitThermalConductivityBarrier", "TuningAtmosuitThermalConductivityBarrier");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAtmosuitThermalConductivityBarrier", "TuningAtmosuitThermalConductivityBarrier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitThermalConductivityBarrier_Title", "Atmosuit Thermal Conductivity Barrier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAtmosuitThermalConductivityBarrier_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningLeadsuitRadiationShielding", "TuningLeadsuitRadiationShielding");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningLeadsuitRadiationShielding", "TuningLeadsuitRadiationShielding");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitRadiationShielding_Title", "Leadsuit Radiation Shielding");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitRadiationShielding_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningLeadsuitAthletics", "TuningLeadsuitAthletics");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningLeadsuitAthletics", "TuningLeadsuitAthletics");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitAthletics_Title", "Leadsuit Athletics");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitAthletics_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningLeadsuitStrength", "TuningLeadsuitStrength");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningLeadsuitStrength", "TuningLeadsuitStrength");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitStrength_Title", "Leadsuit Strength");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitStrength_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningLeadsuitInsulation", "TuningLeadsuitInsulation");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningLeadsuitInsulation", "TuningLeadsuitInsulation");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitInsulation_Title", "Leadsuit Insulation");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitInsulation_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningLeadsuitThermalConductivityBarrier", "TuningLeadsuitThermalConductivityBarrier");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningLeadsuitThermalConductivityBarrier", "TuningLeadsuitThermalConductivityBarrier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitThermalConductivityBarrier_Title", "Leadsuit Thermal Conductivity Barrier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningLeadsuitThermalConductivityBarrier_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningMissionDurationScale", "TuningMissionDurationScale");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningMissionDurationScale", "TuningMissionDurationScale");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningMissionDurationScale_Title", "Mission Duration Scale");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningMissionDurationScale_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningMassPenaltyExponent", "TuningMassPenaltyExponent");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningMassPenaltyExponent", "TuningMassPenaltyExponent");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningMassPenaltyExponent_Title", "Rocket Mass Penalty Exponent");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningMassPenaltyExponent_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningMassPenaltyDivisor", "TuningMassPenaltyDivisor");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningMassPenaltyDivisor", "TuningMassPenaltyDivisor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningMassPenaltyDivisor_Title", "Rocket Mass Penalty Divisor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningMassPenaltyDivisor_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningResearchEvergreen", "TuningResearchEvergreen");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningResearchEvergreen", "TuningResearchEvergreen");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningResearchEvergreen_Title", "Research Evergreen");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningResearchEvergreen_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningResearchBasic", "TuningResearchBasic");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningResearchBasic", "TuningResearchBasic");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningResearchBasic_Title", "Research Basic");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningResearchBasic_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAnalysisDiscovered", "TuningAnalysisDiscovered");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAnalysisDiscovered", "TuningAnalysisDiscovered");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDiscovered_Title", "Analysis Discovered");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDiscovered_ToolTip", "At what point/percentage, will the analysis found things (i.e. asteroid). Should not be higher than Analysis Complete.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAnalysisComplete", "TuningAnalysisComplete");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAnalysisComplete", "TuningAnalysisComplete");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisComplete_Title", "Analysis Complete");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisComplete_ToolTip", "At what point/percentage, will the analysis completed and proceed to next Starmap hex.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningAnalysisDefaultCyclesPerDiscovery", "TuningAnalysisDefaultCyclesPerDiscovery");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningAnalysisDefaultCyclesPerDiscovery", "TuningAnalysisDefaultCyclesPerDiscovery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDefaultCyclesPerDiscovery_Title", "Analysis Default Cycles Per Discovery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningAnalysisDefaultCyclesPerDiscovery_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningThrustCostsLow", "TuningThrustCostsLow");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningThrustCostsLow", "TuningThrustCostsLow");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsLow_Title", "Thrust Costs Low");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsLow_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningThrustCostsMid", "TuningThrustCostsMid");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningThrustCostsMid", "TuningThrustCostsMid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsMid_Title", "Thrust Costs Mid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsMid_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningThrustCostsHigh", "TuningThrustCostsHigh");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningThrustCostsHigh", "TuningThrustCostsHigh");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsHigh_Title", "Thrust Costs High");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsHigh_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningThrustCostsVeryHigh", "TuningThrustCostsVeryHigh");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningThrustCostsVeryHigh", "TuningThrustCostsVeryHigh");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsVeryHigh_Title", "Thrust Costs Very High");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningThrustCostsVeryHigh_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningClusterFowPointsToReveal", "TuningClusterFowPointsToReveal");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningClusterFowPointsToReveal", "TuningClusterFowPointsToReveal");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningClusterFowPointsToReveal_Title", "Cluster Fow Points To Reveal");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningClusterFowPointsToReveal_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningClusterFowDefaultCyclesPerReveal", "TuningClusterFowDefaultCyclesPerReveal");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningClusterFowDefaultCyclesPerReveal", "TuningClusterFowDefaultCyclesPerReveal");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningClusterFowDefaultCyclesPerReveal_Title", "Cluster Fow Default Cycles Per Reveal");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningClusterFowDefaultCyclesPerReveal_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyWeak", "TuningEngineEfficiencyWeak");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyWeak", "TuningEngineEfficiencyWeak");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyWeak_Title", "Engine Efficiency Weak");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyWeak_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyMedium", "TuningEngineEfficiencyMedium");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyMedium", "TuningEngineEfficiencyMedium");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyMedium_Title", "Engine Efficiency Medium");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyMedium_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyStrong", "TuningEngineEfficiencyStrong");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyStrong", "TuningEngineEfficiencyStrong");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyStrong_Title", "Engine Efficiency Strong");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyBooster", "TuningEngineEfficiencyBooster");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEngineEfficiencyBooster", "TuningEngineEfficiencyBooster");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyBooster_Title", "Engine Efficiency Booster");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEngineEfficiencyBooster_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningOxidizerEfficiencyVeryLow", "TuningOxidizerEfficiencyVeryLow");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningOxidizerEfficiencyVeryLow", "TuningOxidizerEfficiencyVeryLow");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyVeryLow_Title", "Oxidizer Efficiency: Fertilizer");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyVeryLow_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningOxidizerEfficiencyLow", "TuningOxidizerEfficiencyLow");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningOxidizerEfficiencyLow", "TuningOxidizerEfficiencyLow");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyLow_Title", "Oxidizer Efficiency: Oxylite");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyLow_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningOxidizerEfficiencyHigh", "TuningOxidizerEfficiencyHigh");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningOxidizerEfficiencyHigh", "TuningOxidizerEfficiencyHigh");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyHigh_Title", "Oxidizer Efficiency: Liquid Oxygen");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningOxidizerEfficiencyHigh_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningCargoContainerMassStaticMass", "TuningCargoContainerMassStaticMass");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningCargoContainerMassStaticMass", "TuningCargoContainerMassStaticMass");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningCargoContainerMassStaticMass_Title", "Cargo Container Mass Static Mass");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningCargoContainerMassStaticMass_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningCargoContainerMassPayloadMass", "TuningCargoContainerMassPayloadMass");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningCargoContainerMassPayloadMass", "TuningCargoContainerMassPayloadMass");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningCargoContainerMassPayloadMass_Title", "Cargo Container Mass Payload Mass");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningCargoContainerMassPayloadMass_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenInsignificant", "TuningBurdenInsignificant");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenInsignificant", "TuningBurdenInsignificant");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenInsignificant_Title", "Burden Insignificant");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenInsignificant_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenMinor", "TuningBurdenMinor");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenMinor", "TuningBurdenMinor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinor_Title", "Burden Minor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinor_ToolTip", "Value applicable to:\n- Small Solid Oxidizer Tank\n- Battery Module\n- Basic Nosecone\n- Gas Cargo Canister");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenMinorPlus", "TuningBurdenMinorPlus");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenMinorPlus", "TuningBurdenMinorPlus");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinorPlus_Title", "Burden Minor Plus");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMinorPlus_ToolTip", "Value applicable to:\n- Sugar Engine\n- Solo Spacefarer Nosecone\n- CO2 Engine\n- Liquid Cargo Tank\n- Cargographic Module");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenModerate", "TuningBurdenModerate");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenModerate", "TuningBurdenModerate");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModerate_Title", "Burden Moderate");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModerate_ToolTip", "Value applicable to:\n- Orbital Cargo Module\n- Rover Module\n- Trailblazer Module\n- Large Gas Cargo Canister\n- Cargo Bay\n- Steam Engine");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenModeratePlus", "TuningBurdenModeratePlus");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenModeratePlus", "TuningBurdenModeratePlus");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModeratePlus_Title", "Burden Moderate Plus");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenModeratePlus_ToolTip", "Value applicable to:\n- Small Petroleum Engine\n- Large Liquid Fuel Tank\n- Large Liquid Cargo Tank\n- Lange Solid Oxidizer Tank\n- Liquid Oxidizer Tank");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenMajor", "TuningBurdenMajor");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenMajor", "TuningBurdenMajor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajor_Title", "Burden Major");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajor_ToolTip", "Value applicable to:\n- Large Cargo Bay\n- Petroleum Engine\n- Spacefarer Module");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenMajorPlus", "TuningBurdenMajorPlus");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenMajorPlus", "TuningBurdenMajorPlus");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajorPlus_Title", "Burden Major Plus");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMajorPlus_ToolTip", "Value applicable to:\n- Hydrogen Engine");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningBurdenMega", "TuningBurdenMega");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningBurdenMega", "TuningBurdenMega");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMega_Title", "Burden Mega");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningBurdenMega_ToolTip", "This value have no use in game.");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEnginePowerEarlyWeak", "TuningEnginePowerEarlyWeak");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEnginePowerEarlyWeak", "TuningEnginePowerEarlyWeak");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyWeak_Title", "Engine Power: Steam Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyWeak_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEnginePowerEarlyStrong", "TuningEnginePowerEarlyStrong");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEnginePowerEarlyStrong", "TuningEnginePowerEarlyStrong");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyStrong_Title", "Engine Power: Carbon Dioxide Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerEarlyStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEnginePowerMidVeryStrong", "TuningEnginePowerMidVeryStrong");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEnginePowerMidVeryStrong", "TuningEnginePowerMidVeryStrong");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidVeryStrong_Title", "Engine Power: Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidVeryStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEnginePowerMidStrong", "TuningEnginePowerMidStrong");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEnginePowerMidStrong", "TuningEnginePowerMidStrong");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidStrong_Title", "Engine Power: Small Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEnginePowerMidWeak", "TuningEnginePowerMidWeak");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEnginePowerMidWeak", "TuningEnginePowerMidWeak");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidWeak_Title", "Engine Power: Sugar Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerMidWeak_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningEnginePowerLateStrong", "TuningEnginePowerLateStrong");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningEnginePowerLateStrong", "TuningEnginePowerLateStrong");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateStrong_Title", "Engine Power: Hydrogen Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningEnginePowerLateStrong_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceVeryLow", "TuningFuelCostPerDistanceVeryLow");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceVeryLow", "TuningFuelCostPerDistanceVeryLow");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryLow_Title", "Fuel Cost Per Distance Very Low");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryLow_ToolTip", "Not utilized in game");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceLow", "TuningFuelCostPerDistanceLow");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceLow", "TuningFuelCostPerDistanceLow");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceLow_Title", "Fuel Cost Per Distance Low");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceLow_ToolTip", "Not utilized in game");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceMedium", "TuningFuelCostPerDistanceMedium");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceMedium", "TuningFuelCostPerDistanceMedium");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceMedium_Title", "Fuel Cost Per Distance: Small Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceMedium_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceHigh", "TuningFuelCostPerDistanceHigh");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceHigh", "TuningFuelCostPerDistanceHigh");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceHigh_Title", "Fuel Cost Per Distance: Hydrogen Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceHigh_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceVeryHigh", "TuningFuelCostPerDistanceVeryHigh");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceVeryHigh", "TuningFuelCostPerDistanceVeryHigh");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryHigh_Title", "Fuel Cost Per Distance: Petroleum Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceVeryHigh_ToolTip", "");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceGasLow", "TuningFuelCostPerDistanceGasLow");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceGasLow", "TuningFuelCostPerDistanceGasLow");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_Title", "Fuel Cost Per Distance: Gas Low");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_ToolTip", "Not utilized in game");
 
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceGasHigh", "TuningFuelCostPerDistanceGasHigh");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceGasHigh", "TuningFuelCostPerDistanceGasHigh");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasHigh_Title", "Fuel Cost Per Distance: Steam and CO2 Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasHigh_ToolTip", "");
-
-            Helpers.StringsAdd("CustomizeBuildings.PROPERTY.version", "version");
             #endregion
         }
     }

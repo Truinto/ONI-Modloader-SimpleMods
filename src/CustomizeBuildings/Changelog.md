@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.48.0] U38-486708-S U38-487223-S
+
+### Added
+- added option to change Robo Miner speed
+
 ## [1.0.47.0] U37-484114-S
 
 ### Fixed

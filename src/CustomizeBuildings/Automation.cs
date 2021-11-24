@@ -87,15 +87,15 @@ namespace CustomizeBuildings
 
     #region Robominer
     [HarmonyPatch(typeof(AutoMinerConfig), "DoPostConfigureComplete")]
-    internal class AutoMinerConfig_OnPrefabInit
+    public class AutoMinerConfig_OnPrefabInit
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.RoboMinerWidth != 16
                 || CustomizeBuildingsState.StateManager.State.RoboMinerHeight != 9
                 || CustomizeBuildingsState.StateManager.State.RoboMinerOffset != 0;
         }
-        private static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             int width = CustomizeBuildingsState.StateManager.State.RoboMinerWidth;
             int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
@@ -111,15 +111,15 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(AutoMinerConfig), "AddVisualizer")]
-    internal class AutoMinerConfig_AddVisualizer
+    public class AutoMinerConfig_AddVisualizer
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.RoboMinerWidth != 16
                 || CustomizeBuildingsState.StateManager.State.RoboMinerHeight != 9
                 || CustomizeBuildingsState.StateManager.State.RoboMinerOffset != 0;
         }
-        private static void Postfix(GameObject prefab, bool movable)
+        public static void Postfix(GameObject prefab, bool movable)
         {
             int width = CustomizeBuildingsState.StateManager.State.RoboMinerWidth;
             int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
@@ -140,14 +140,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(AutoMiner), "DigBlockingCB")]
-    internal class AutoMiner_DigBlockingCB
+    public class AutoMiner_DigBlockingCB
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile || CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass;
         }
 
-        internal static bool Prefix(int cell, ref bool __result)
+        public static bool Prefix(int cell, ref bool __result)
         {
             try
             {
@@ -160,14 +160,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(AutoMiner), "ValidDigCell")]
-    internal class AutoMiner_ValidDigCell
+    public class AutoMiner_ValidDigCell
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
         }
 
-        internal static bool Prefix(int cell, ref bool __result)
+        public static bool Prefix(int cell, ref bool __result)
         {
             try
             {
@@ -181,14 +181,14 @@ namespace CustomizeBuildings
 
 
     [HarmonyPatch(typeof(AutoMiner), "UpdateDig")]
-    internal class AutoMiner_UpdateDig
+    public class AutoMiner_UpdateDig
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.RoboMinerRegolithTurbo;
         }
 
-        internal static void Prefix(ref float dt, int ___dig_cell)
+        public static void Prefix(ref float dt, int ___dig_cell)
         {
             try
             {
@@ -196,6 +196,21 @@ namespace CustomizeBuildings
                     dt *= 6f;
             }
             catch (Exception) { }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(AutoMiner), "UpdateDig")]
+    public class AutoMiner_UpdateDig2
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerSpeedMult != 1f;
+        }
+
+        public static void Prefix(ref float dt)
+        {
+            dt *= CustomizeBuildingsState.StateManager.State.RoboMinerSpeedMult;
         }
     }
     #endregion
