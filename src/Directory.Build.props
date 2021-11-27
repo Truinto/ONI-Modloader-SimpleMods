@@ -60,8 +60,9 @@
     <Reference Include="UnityEngine" HintPath="$(ONIManaged)\UnityEngine.dll" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(ONIManaged)\UnityEngine.CoreModule.dll" />
     <Reference Include="UnityEngine.UI" HintPath="$(ONIManaged)\UnityEngine.UI.dll" />
-    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)packages\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
-    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)packages\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+    <Reference Include="PLibUI" HintPath="$(MSBuildThisFileDirectory)\PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+    <Reference Include="PLibCore" HintPath="$(MSBuildThisFileDirectory)\PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)\PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
   </ItemGroup>
   
   <PropertyGroup>
