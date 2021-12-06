@@ -22,8 +22,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EggCritterSurplus.cs" />
-    <Compile Include="PatchCapturable.cs" />
-    <Compile Include="PatchCritterPointMax.cs" />
+    <Compile Include="PatchCreatureDeliveryPoint.cs" />
     <Compile Include="_FumiKMod.cs" />
   </ItemGroup>
   <ItemGroup>

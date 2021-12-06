@@ -17,9 +17,6 @@ namespace EggCritterSurplus
         {
             Helpers.Print("Loading EggCritterSurplus building.");
 
-            if (!TUNING.STORAGEFILTERS.BAGABLE_CREATURES.Contains(GameTags.SwimmingCreature))
-                TUNING.STORAGEFILTERS.BAGABLE_CREATURES.AddRange(TUNING.STORAGEFILTERS.SWIMMING_CREATURES); // makes all critters deliverable to dropoff point
-
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.NAME", EggCritterSurplusConfig.DisplayName);
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.DESC", EggCritterSurplusConfig.Description);
             Strings.Add("STRINGS.BUILDINGS.PREFABS.EGGCRITTERSURPLUS.EFFECT", EggCritterSurplusConfig.Effect);
