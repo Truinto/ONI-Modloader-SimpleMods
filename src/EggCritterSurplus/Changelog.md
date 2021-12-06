@@ -1,9 +1,10 @@
 # Changelog
 
-## [1.0.10.0]
+## [1.0.10.0] U38-487396-S
 
 ### Fixed
 - fixed one incompatability with "Laser Turrets"; SweepThoseEggs must have a later load order (bottom of mod list)
+- fixed mod incompatibility with mods that change baggable tags
 
 ## [1.0.9.0] EX1 S14-471883-S
 
