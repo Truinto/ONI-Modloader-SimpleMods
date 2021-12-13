@@ -275,12 +275,26 @@ namespace CustomizeBuildings
         }
     }
 
+    [HarmonyPatch(typeof(RailGunPayloadOpener), MethodType.StaticConstructor)]
+    public class RailGunPayloadOpener_Static
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupePayloadOpener;
+        }
+
+        public static void Postfix()
+        {
+            RailGunPayloadOpener.delivery_time = 0f;
+        }
+    }
+
     [HarmonyPatch(typeof(AlgaeHabitat.SMInstance), nameof(AlgaeHabitat.SMInstance.CreateEmptyChore))]
     public class AlgaeHabitatSMInstance_CreateEmptyChore
     {
         public static bool Prepare()
         {
-            return false;
+            return false; // TODO: finish NoDupeAlgae
         }
 
         public static bool Prefix(AlgaeHabitat.SMInstance __instance)

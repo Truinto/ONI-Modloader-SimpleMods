@@ -4,6 +4,7 @@
 
 ### Added
 - SealInsulateStorages to apply sealed and insulated attribute to storages (default off)
+- NoDupePayloadOpener to reduce unpackaging time to 0 (default off)
 
 ## [1.0.48.0] U38-486708-S U38-487223-S
 

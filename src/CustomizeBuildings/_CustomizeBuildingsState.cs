@@ -132,6 +132,7 @@ namespace CustomizeBuildings
             StateManager.State.NoDupeRanchStation = false;
             StateManager.State.NoDupeTelescope = false;
             StateManager.State.NoDupeAlgaeTerrarium = false;
+            StateManager.State.NoDupePayloadOpener = false;
             StateManager.State.SkillStationEnabled = false;
             StateManager.State.SkillStationCostTime = 180f;
             StateManager.State.SkillStationCostReset = 0f;
@@ -484,6 +485,9 @@ namespace CustomizeBuildings
         public bool NoDupeTelescope { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "No Dupe")]
         public bool NoDupeAlgaeTerrarium { get; set; } = false;
+        [Option("No Dupe Payload Opener", "", "No Dupe")]
+        public bool NoDupePayloadOpener { get; set; } = false;
+
         //public bool NoDupeShearingStation { get; set; } = true;
         #endregion
 
