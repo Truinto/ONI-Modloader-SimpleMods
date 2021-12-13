@@ -13,11 +13,13 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return true; // TODO: create storage global flag
+            return true; // todo create storage global flag
         }
 
         public static void Prefix(BuildingDef def)
         {
+            bool seal_container = CustomizeBuildingsState.StateManager.State.SealInsulateStorages;
+
             if (def.PrefabID == NoseconeHarvestConfig.ID)
             {
                 var storage = def.BuildingComplete.GetComponent<Storage>();
@@ -48,11 +50,54 @@ namespace CustomizeBuildings
 
             else if (def.PrefabID == ModularLaunchpadPortSolidConfig.ID || def.PrefabID == ModularLaunchpadPortSolidUnloaderConfig.ID)
             {
-                SolidConduitConsumer solidConduitConsumer = def.BuildingComplete.GetComponent<SolidConduitConsumer>();
+                var solidConduitConsumer = def.BuildingComplete.GetComponent<SolidConduitConsumer>();
                 if (solidConduitConsumer != null)
                     solidConduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.RocketPortSolid;
                 foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
                     storage.capacityKg = CustomizeBuildingsState.StateManager.State.RocketPortSolid;
+            }
+
+            else if (def.PrefabID == StorageLockerConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.LockerKG);
+
+            else if (def.PrefabID == StorageLockerSmartConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.LockerSmartKG);
+
+            else if (def.PrefabID == RationBoxConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.RationBoxKG);
+
+            else if (def.PrefabID == RefrigeratorConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.FridgeKG);
+
+            else if (def.PrefabID == CreatureFeederConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.CritterFeederKG);
+
+            else if (def.PrefabID == FishFeederConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.FishFeederKG);
+
+            else if (def.PrefabID == GasBottlerConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.CanisterFillerKG);
+
+            else if (def.PrefabID == SolidConduitInboxConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.ConveyorLoaderKG);
+
+            else if (def.PrefabID == SolidConduitOutboxConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.ConveyorReceptacleKG);
+
+            void setStorage(float value)
+            {
+                if ((def.InputConduitType == ConduitType.Gas || def.InputConduitType == ConduitType.Liquid) && value > 100000f)
+                    value = 100000f;
+
+                foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
+                {
+                    storage.capacityKg = value;
+                    if (seal_container)
+                        storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
+                }
+
+                foreach (var consumer in def.BuildingComplete.GetComponents<ConduitConsumer>())
+                    consumer.capacityKG = value;
             }
         }
     }
@@ -75,110 +120,38 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(StorageLockerConfig), "ConfigureBuildingTemplate")]
-    public class StorageLockerConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
-        {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.LockerKG;
-        }
-    }
-
-    [HarmonyPatch(typeof(StorageLockerSmartConfig), "DoPostConfigureComplete")]
-    public class StorageLockerSmartConfig_DoPostConfigureComplete
-    {
-        private static void Postfix(GameObject go)
-        {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.LockerSmartKG;
-        }
-    }
-
-    [HarmonyPatch(typeof(RationBoxConfig), "ConfigureBuildingTemplate")]
-    public class RationBoxConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
-        {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.RationBoxKG;
-        }
-    }
-
-    [HarmonyPatch(typeof(RefrigeratorConfig), "DoPostConfigureComplete")]
-    public class RefrigeratorConfig_DoPostConfigureComplete
-    {
-        private static void Postfix(GameObject go)
-        {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.FridgeKG;
-        }
-    }
-
-    [HarmonyPatch(typeof(CreatureFeederConfig), "ConfigureBuildingTemplate")]
-    public class CreatureFeederConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
-        {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.CritterFeederKG;
-        }
-    }
-
-    [HarmonyPatch(typeof(FishFeederConfig), "ConfigureBuildingTemplate")]
-    public class FishFeederConfig_ConfigureBuildingTemplate
-    {
-        private static void Postfix(GameObject go)
-        {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.FishFeederKG;
-        }
-    }
-
-    [HarmonyPatch(typeof(GasBottlerConfig), "ConfigureBuildingTemplate")]
-    public class GasBottlerConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.CanisterFillerKG != 10f;
-        }
-
-        private static void Postfix(GameObject go)
-        {
-            var conduit = go.AddOrGet<ConduitConsumer>();
-            conduit.storage.capacityKg = CustomizeBuildingsState.StateManager.State.CanisterFillerKG;
-            conduit.capacityKG = CustomizeBuildingsState.StateManager.State.CanisterFillerKG;
-        }
-    }
-
     [HarmonyPatch(typeof(SolidConduitInboxConfig), "DoPostConfigureComplete")]
     public class SolidConduitInboxConfig_DoPostConfigureComplete
     {
-        private static void Postfix(GameObject go)
+        public static bool Prepare()
         {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.ConveyorLoaderKG;
-            if (CustomizeBuildingsState.StateManager.State.ConveyorLoaderHasSlider)
-                go.AddOrGet<UserControlledConduitInbox>();
+            return CustomizeBuildingsState.StateManager.State.ConveyorLoaderHasSlider;
+        }
+
+        public static void Postfix(GameObject go)
+        {
+            go.AddOrGet<UserControlledConduitInbox>();
         }
     }
 
     [HarmonyPatch(typeof(SolidConduitOutboxConfig), "ConfigureBuildingTemplate")]
     public class SolidConduitOutboxConfig_ConfigureBuildingTemplate
     {
-        private static void Postfix(GameObject go)
+        public static bool Prepare()
         {
-            Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = (float)CustomizeBuildingsState.StateManager.State.ConveyorReceptacleKG;
-            if (CustomizeBuildingsState.StateManager.State.ConveyorReceptacleHasSlider)
-                go.AddOrGet<UserControlledStorage>();
+            return CustomizeBuildingsState.StateManager.State.ConveyorReceptacleHasSlider;
+        }
+
+        public static void Postfix(GameObject go)
+        {
+            go.AddOrGet<UserControlledStorage>();
         }
     }
 
     [HarmonyPatch(typeof(Storage), "OnQueueDestroyObject")]
     public class Storage_OnQueueDestroyObject
     {
-        private static void Prefix(Storage __instance)
+        public static void Prefix(Storage __instance)
         {
             if (CustomizeBuildingsState.StateManager.State.AirfilterDropsCanisters)
             {
@@ -215,7 +188,7 @@ namespace CustomizeBuildings
             var particleStorage = go.AddOrGet<HighEnergyParticleStorage>();
             particleStorage.capacity = CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch * 1.05f;
 
-            go.AddOrGet<Storage>().capacityKg = Math.Min(1200f, CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch * 2f);
+            go.AddOrGet<Storage>().capacityKg = Math.Max(1200f, CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch * 2f);
         }
     }
 }

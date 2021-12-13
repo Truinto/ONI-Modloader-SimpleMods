@@ -9,6 +9,9 @@
   </ItemDefinitionGroup>
   
   <!-- Common build properties -->
+  <PropertyGroup>
+    <LangVersion>9</LangVersion>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>

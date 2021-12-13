@@ -5,6 +5,7 @@ using Common;
 using HarmonyLib;
 using PeterHan.PLib.Options;
 using System.IO;
+using System;
 
 namespace CustomizeBuildings
 {
@@ -13,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 44;
+        public int version { get; set; } = 45;
 
         #region $Reset Button
         [JsonIgnore]
@@ -26,7 +27,8 @@ namespace CustomizeBuildings
         {
             StateManager.State.BatterySmartKJ = 20000f;
             StateManager.State.BatterySmartNoRunOff = false;
-            StateManager.State.BatteryLargeKJ = 40000f;
+            StateManager.State.BatteryLargeKJ = 40000f; 
+            StateManager.State.SealInsulateStorages = false;
             StateManager.State.LockerKG = 20000f;
             StateManager.State.LockerSmartKG = 20000f;
             StateManager.State.GasReservoirKG = 150f;
@@ -234,6 +236,8 @@ namespace CustomizeBuildings
         #endregion
 
         #region Storage
+        [Option("Seal and insulate storages", "Makes material in storages stop sublimating and transfering heat.", "Storage")]
+        public bool SealInsulateStorages { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.LockerKG_Title", "CustomizeBuildings.LOCSTRINGS.LockerKG_ToolTip", "Storage", "F0")]
         public float LockerKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_Title", "CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "Storage", "F0")]
@@ -266,7 +270,7 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "Storage", "F0")]
         public float RailgunMaxLaunch { get; set; } = 200f;
         [Option("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "Storage", "F0")]
-        public float DrillConeKG { get; set; } = 1000f;        
+        public float DrillConeKG { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortGas_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortGas_ToolTip", "Storage", "F0")]
         public float RocketPortGas { get; set; } = 1f;
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_ToolTip", "Storage", "F0")]
@@ -673,6 +677,25 @@ namespace CustomizeBuildings
             }
             if (state.version < 44 && state.DrillConeKG < 1000f)
                 state.DrillConeKG = 1000f;
+            //if (state.version < 45)
+            //{
+            //    state.Capacities.Clear();
+            //    state.Capacities.Add(StorageLockerConfig.ID, state.LockerKG);
+            //    state.Capacities.Add(StorageLockerSmartConfig.ID, state.LockerSmartKG);
+            //    state.Capacities.Add(GasReservoirConfig.ID, state.GasReservoirKG);
+            //    state.Capacities.Add(LiquidReservoirConfig.ID, state.LiquidReservoirKG);
+            //    state.Capacities.Add(RationBoxConfig.ID, state.RationBoxKG);
+            //    state.Capacities.Add(RefrigeratorConfig.ID, state.FridgeKG);
+            //    state.Capacities.Add(CreatureFeederConfig.ID, state.CritterFeederKG);
+            //    state.Capacities.Add(FishFeederConfig.ID, state.FishFeederKG);
+            //    state.Capacities.Add(GasBottlerConfig.ID, state.CanisterFillerKG);
+            //    state.Capacities.Add(SolidConduitInboxConfig.ID, state.ConveyorLoaderKG);
+            //    state.Capacities.Add(SolidConduitOutboxConfig.ID, state.ConveyorReceptacleKG);
+            //    state.Capacities.Add(NoseconeHarvestConfig.ID, state.DrillConeKG);
+            //    state.Capacities.Add(ModularLaunchpadPortGasConfig.ID, state.RocketPortGas);
+            //    state.Capacities.Add(ModularLaunchpadPortLiquidConfig.ID, state.RocketPortLiquid);
+            //    state.Capacities.Add(ModularLaunchpadPortSolidConfig.ID, state.RocketPortSolid);
+            //}
 
             return true;
         }
