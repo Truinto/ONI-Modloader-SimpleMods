@@ -237,7 +237,7 @@ namespace CustomizeBuildings
         #endregion
 
         #region Storage
-        [Option("Seal and insulate storages", "Makes material in storages stop sublimating and transfering heat.", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_Title", "CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_ToolTip", "Storage", null)]
         public bool SealInsulateStorages { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.LockerKG_Title", "CustomizeBuildings.LOCSTRINGS.LockerKG_ToolTip", "Storage", "F0")]
         public float LockerKG { get; set; } = 400000f;
@@ -485,7 +485,7 @@ namespace CustomizeBuildings
         public bool NoDupeTelescope { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "No Dupe")]
         public bool NoDupeAlgaeTerrarium { get; set; } = false;
-        [Option("No Dupe Payload Opener", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "No Dupe", null)]
         public bool NoDupePayloadOpener { get; set; } = false;
 
         //public bool NoDupeShearingStation { get; set; } = true;
@@ -889,6 +889,10 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "No Dupe Algae Terrarium");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "");
 
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupePayloadOpener", "NoDupePayloadOpener");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "No Dupe Payload Opener");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "");
+
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeShearingStation", "NoDupeShearingStation");
             #endregion
             #region Pipes
@@ -1115,6 +1119,10 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOverheatTemperature_ToolTip", "Temperature where the Steam Turbine shuts off.");
             #endregion
             #region Storage
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SealInsulateStorages", "SealInsulateStorages");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_Title", "Seal and insulate storages");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_ToolTip", "Makes material in storages stop sublimating and transfering heat.");
+
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LockerKG", "LockerKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerKG_Title", "Storage Locker Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerKG_ToolTip", "");

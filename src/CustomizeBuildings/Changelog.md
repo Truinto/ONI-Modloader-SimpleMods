@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.49.0]
+## [1.0.49.0] U39-489821-S
 
 ### Added
 - SealInsulateStorages to apply sealed and insulated attribute to storages (default off)
