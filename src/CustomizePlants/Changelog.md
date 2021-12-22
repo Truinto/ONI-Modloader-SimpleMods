@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.32.0] U39-490405-S
+
+### Fixed
+- MutantPlantsDropSeeds now actually makes mutant plants drop seeds
+
 ## [1.0.31.0] U37-484114-S
 
 ### Fixed

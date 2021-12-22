@@ -145,7 +145,7 @@ namespace CustomizeBuildings
             Debug.Log("BuildingConfigManager_RegisterBuilding patched at index: " + index);
 
             code.Insert(index++, new CodeInstruction(OpCodes.Ldloc_0));
-            code.Insert(index++, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BuildingConfigManager_RegisterBuilding), "CreateBuildingDefOverride", new Type[] { typeof(BuildingDef) })));
+            code.Insert(index++, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BuildingConfigManager_RegisterBuilding), nameof(CreateBuildingDefOverride))));
 
             //for (int i = 0; i < code.Count; i++)
             //{

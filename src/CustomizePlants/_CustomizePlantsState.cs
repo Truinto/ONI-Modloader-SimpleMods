@@ -13,7 +13,7 @@ namespace CustomizePlants
     [RestartRequired]
     public class CustomizePlantsState
     {
-        public int version { get; set; } = 28;
+        public int version { get; set; } = 32;
 
         #region $Buttons
         [Option("CustomizePlants.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizePlants.LOCSTRINGS.ResetToCustomDefault_ToolTip", "", null)]

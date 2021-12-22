@@ -6,6 +6,7 @@
     <Configurations>Debug;Release</Configurations>
     <!--<EnableDefaultItems>false</EnableDefaultItems>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences> -->
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="LanguageFillOut.cs.bak" />

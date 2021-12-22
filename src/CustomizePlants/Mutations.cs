@@ -27,7 +27,7 @@ namespace CustomizePlants
         }
     }
 
-    [HarmonyPatch(typeof(PlantMutations), nameof(PlantMutations.GetRandomMutation))]
+    [HarmonyPatch(typeof(PlantMutation), "ApplyFunctionalTo")]
     public class PlantMutations_GetRandomMutationPatch
     {
         public static bool Prepare()
@@ -35,13 +35,15 @@ namespace CustomizePlants
             return CustomizePlantsState.StateManager.State.MutantPlantsDropSeeds;
         }
 
-        public static bool Prefix(string targetPlantPrefabID, ref PlantMutation __result)
+        public static void Prefix(MutantPlant target, out SeedProducer.SeedInfo? __state)
         {
-            __result = (from m in Db.Get().PlantMutations.resources
-                        where !m.restrictedPrefabIDs.Contains(targetPlantPrefabID) && (m.requiredPrefabIDs.Count == 0 || m.requiredPrefabIDs.Contains(targetPlantPrefabID))
-                        select m).ToList().GetRandom();
+            __state = target.GetComponent<SeedProducer>()?.seedInfo;
+        }
 
-            return false;
+        public static void Postfix(MutantPlant target, SeedProducer.SeedInfo? __state)
+        {
+            if (__state != null)
+                target.GetComponent<SeedProducer>().seedInfo = __state.Value;
         }
     }
 
