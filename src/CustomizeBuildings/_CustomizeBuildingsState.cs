@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 45;
+        public int version { get; set; } = 46;
 
         #region $Reset Button
         [JsonIgnore]
@@ -48,6 +48,7 @@ namespace CustomizeBuildings
             StateManager.State.RocketPortGas = 1f;
             StateManager.State.RocketPortLiquid = 10f;
             StateManager.State.RocketPortSolid = 20f;
+            StateManager.State.RadBattery = 1000f;
             StateManager.State.ElectrolizerMaxPressure = 1.8f;
             StateManager.State.AirfilterDropsCanisters = false;
             StateManager.State.NewRecipeRockCrusher = false;
@@ -278,6 +279,9 @@ namespace CustomizeBuildings
         public float RocketPortLiquid { get; set; } = 10f;
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "Storage", "F0")]
         public float RocketPortSolid { get; set; } = 20f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "Storage", "F0")]
+        public float RadBattery { get; set; } = 1000f;
         #endregion
 
         #region Miscellaneous
@@ -1198,6 +1202,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortSolid", "RocketPortSolid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "Rocket Port Solid Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RadBattery", "RadBattery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "Radbolt Chamber Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "");
             #endregion
             #region Switches
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeValves", "NoDupeValves");

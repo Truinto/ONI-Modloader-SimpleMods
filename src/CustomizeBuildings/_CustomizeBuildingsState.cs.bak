@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 45;
+        public int version { get; set; } = 46;
 
         #region $Reset Button
         [JsonIgnore]
@@ -48,6 +48,7 @@ namespace CustomizeBuildings
             StateManager.State.RocketPortGas = 1f;
             StateManager.State.RocketPortLiquid = 10f;
             StateManager.State.RocketPortSolid = 20f;
+            StateManager.State.RadBattery = 1000f;
             StateManager.State.ElectrolizerMaxPressure = 1.8f;
             StateManager.State.AirfilterDropsCanisters = false;
             StateManager.State.NewRecipeRockCrusher = false;
@@ -237,7 +238,7 @@ namespace CustomizeBuildings
         #endregion
 
         #region Storage
-        [Option("Seal and insulate storages", "Makes material in storages stop sublimating and transfering heat.", "Storage")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_Title", "CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_ToolTip", "Storage", null)]
         public bool SealInsulateStorages { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.LockerKG_Title", "CustomizeBuildings.LOCSTRINGS.LockerKG_ToolTip", "Storage", "F0")]
         public float LockerKG { get; set; } = 400000f;
@@ -278,6 +279,9 @@ namespace CustomizeBuildings
         public float RocketPortLiquid { get; set; } = 10f;
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "Storage", "F0")]
         public float RocketPortSolid { get; set; } = 20f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "Storage", "F0")]
+        public float RadBattery { get; set; } = 1000f;
         #endregion
 
         #region Miscellaneous
@@ -485,7 +489,7 @@ namespace CustomizeBuildings
         public bool NoDupeTelescope { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "No Dupe")]
         public bool NoDupeAlgaeTerrarium { get; set; } = false;
-        [Option("No Dupe Payload Opener", "", "No Dupe")]
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "No Dupe", null)]
         public bool NoDupePayloadOpener { get; set; } = false;
 
         //public bool NoDupeShearingStation { get; set; } = true;
@@ -889,6 +893,10 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "No Dupe Algae Terrarium");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "");
 
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupePayloadOpener", "NoDupePayloadOpener");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "No Dupe Payload Opener");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "");
+
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeShearingStation", "NoDupeShearingStation");
             #endregion
             #region Pipes
@@ -1115,6 +1123,10 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineOverheatTemperature_ToolTip", "Temperature where the Steam Turbine shuts off.");
             #endregion
             #region Storage
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SealInsulateStorages", "SealInsulateStorages");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_Title", "Seal and insulate storages");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SealInsulateStorages_ToolTip", "Makes material in storages stop sublimating and transfering heat.");
+
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LockerKG", "LockerKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerKG_Title", "Storage Locker Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerKG_ToolTip", "");
@@ -1190,6 +1202,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortSolid", "RocketPortSolid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "Rocket Port Solid Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RadBattery", "RadBattery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "Radbolt Chamber Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "");
             #endregion
             #region Switches
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeValves", "NoDupeValves");

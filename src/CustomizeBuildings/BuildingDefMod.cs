@@ -7,6 +7,7 @@ using System;
 using System.Text.RegularExpressions;
 using Common;
 using Config;
+using System.Reflection;
 
 namespace CustomizeBuildings
 {
@@ -164,20 +165,33 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.BuildingAdvancedGlobalFlag;
+            if (mods == null)
+                mods = Assembly.GetExecutingAssembly().GetTypes().Where(w => typeof(IBuildingCompleteMod).IsAssignableFrom(w) && w.IsClass).Select(s => Activator.CreateInstance(s) as IBuildingCompleteMod).ToList();
+
+            Helpers.Print($"mods count={mods.Count}");
+            return true;
         }
+
+        private static List<IBuildingCompleteMod> mods;
 
         public static void Prefix(BuildingDef def)
         {
+            Helpers.Print($"Loading {def.PrefabID}, {def.Name}");
+
+            foreach (var mod in mods)
+            {
+                if (mod.Enabled(def.PrefabID))
+                    mod.Edit(def.BuildingComplete); // TODO: update all capacity patches to new IBuildingCompleteMod
+            }
+
+            if (!CustomizeBuildingsState.StateManager.State.BuildingAdvancedGlobalFlag)
+                    return;
+
             MachineMuliplier(def);
             OutputTemp(def);
             SuperAdvanced(def);
-
-            //if (def.PrefabID == CreatureDeliveryPointConfig.ID)
-            //    if (!TUNING.STORAGEFILTERS.BAGABLE_CREATURES.Contains(GameTags.Egg))
-            //        TUNING.STORAGEFILTERS.BAGABLE_CREATURES.Add(GameTags.Egg);
-
         }
+
         public static void MachineMuliplier(BuildingDef def)
         {
             float multiplier;

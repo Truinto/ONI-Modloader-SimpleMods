@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.50.0] U39-490405-S
+- added Radbolt chamber capacity (RadBattery)
+
 ## [1.0.49.0] U39-489821-S
 
 ### Added
