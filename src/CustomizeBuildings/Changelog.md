@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.51.0] U39-490405-S
+- added PowerTransformerLarge, PowerTransformerSmall in the Power Cable category
+
 ## [1.0.50.0] U39-490405-S
 - added Radbolt chamber capacity (RadBattery)
 

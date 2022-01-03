@@ -6,8 +6,8 @@ namespace CustomizeBuildings
     {
         public abstract bool Enabled(string id);
 
-        public abstract void Edit(GameObject go);
+        public abstract void Edit(BuildingDef def);
 
-        public abstract void Undo(GameObject go);
+        public abstract void Undo(BuildingDef def);
     }
 }

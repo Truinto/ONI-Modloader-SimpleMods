@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState
     {
-        public int version { get; set; } = 46;
+        public int version { get; set; } = 47;
 
         #region $Reset Button
         [JsonIgnore]
@@ -107,6 +107,8 @@ namespace CustomizeBuildings
             StateManager.State.WireRefinedWatts = 2000;
             StateManager.State.WireHeavyWatts = 20000;
             StateManager.State.WireRefinedHeavyWatts = 50000;
+            StateManager.State.PowerTransformerLarge = 4000;
+            StateManager.State.PowerTransformerSmall = 1000;
             StateManager.State.TransitTubeAnywhere = false;
             StateManager.State.TransitTubeUTurns = false;
             StateManager.State.TransitTubeJoulesPerLaunch = 10000f;
@@ -430,6 +432,10 @@ namespace CustomizeBuildings
         public int WireHeavyWatts { get; set; } = 20000;
         [Option("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_ToolTip", "Power Cable")]
         public int WireRefinedHeavyWatts { get; set; } = 50000;
+        [Option("CustomizeBuildings.LOCSTRINGS.PowerTransformerLarge_Title", "CustomizeBuildings.LOCSTRINGS.PowerTransformerLarge_ToolTip", "Power Cable", null)]
+        public int PowerTransformerLarge { get; set; } = 4000;
+        [Option("CustomizeBuildings.LOCSTRINGS.PowerTransformerSmall_Title", "CustomizeBuildings.LOCSTRINGS.PowerTransformerSmall_ToolTip", "Power Cable", null)]
+        public int PowerTransformerSmall { get; set; } = 1000;
         #endregion
 
         #region Transit Tube
@@ -646,7 +652,7 @@ namespace CustomizeBuildings
         };
 
         [Option("CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_Title", "CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_ToolTip", "Miscellaneous")]
-        public bool BuildingAdvancedGlobalFlag { get; set; } = false;
+        public bool BuildingAdvancedGlobalFlag { get; set; } = true;
         public Dictionary<string, float> BuildingAdvancedMachineMultiplier { get; set; } = new Dictionary<string, float> {
             { "EthanolDistillery", 4f }
         };
@@ -663,6 +669,7 @@ namespace CustomizeBuildings
             .Output("Oxygen", 0.040000003f).Output("Algae", 0.29033336f).Store(false, true);
 
         public Dictionary<string, Dictionary<string, Dictionary<string, object>>> AdvancedSettings { get; set; } = null;
+        
         //    = new Dictionary<string, Dictionary<string, Dictionary<string, object>>>() {
         //        { "LiquidHeater", new Dictionary<string, Dictionary<string, object>> { { "SpaceHeater", new Dictionary<string, object> { { "targetTemperature", 1000f} }  } } }
         //}; // PrefabID, Component, Field, Value
@@ -985,6 +992,14 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRefinedHeavyWatts", "WireRefinedHeavyWatts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "Wire Refined Heavy Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PowerTransformerLarge", "PowerTransformerLarge");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PowerTransformerLarge_Title", "Power Transformer Large");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PowerTransformerLarge_ToolTip", "Set capacity in joules.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PowerTransformerSmall", "PowerTransformerSmall");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PowerTransformerSmall_Title", "Power Transformer Small");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PowerTransformerSmall_ToolTip", "Set capacity in joules.");
             #endregion
             #region Robo Miner
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RoboMinerWidth", "RoboMinerWidth");
