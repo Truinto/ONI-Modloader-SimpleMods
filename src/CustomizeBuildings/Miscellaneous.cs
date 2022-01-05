@@ -175,4 +175,28 @@ namespace CustomizeBuildings
         }
     }
 
+    public class Electrolyzer_MaxPressure : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == ElectrolyzerConfig.ID && CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure != 1.8f
+                || id == RustDeoxidizerConfig.ID && CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure != 1.8f;
+        }
+
+        public void Edit(BuildingDef def)
+        {
+            Electrolyzer electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
+            if (electrolyzer != null)
+                electrolyzer.maxMass = CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure;
+
+            RustDeoxidizer rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
+            if (rustDeoxidizer != null)
+                rustDeoxidizer.maxMass = CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure;
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

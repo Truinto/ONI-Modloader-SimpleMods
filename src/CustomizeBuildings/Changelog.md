@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.52.0] U39-490405-S
+- ElectrolizerMaxPressure also applies to Rust Deoxidizer
+
 ## [1.0.51.0] U39-490405-S
 - added PowerTransformerLarge, PowerTransformerSmall in the Power Cable category
 

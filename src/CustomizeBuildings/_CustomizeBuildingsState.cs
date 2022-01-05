@@ -773,7 +773,7 @@ namespace CustomizeBuildings
             #region Miscellaneous
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ElectrolizerMaxPressure", "ElectrolizerMaxPressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ElectrolizerMaxPressure_Title", "Electrolizer Max Pressure");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ElectrolizerMaxPressure_ToolTip", "Pressure the electrolizer will stop producing oxygen/hydrogen.");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ElectrolizerMaxPressure_ToolTip", "Pressure at which Electrolizer and Rust Deoxidizer will stop producing oxygen/hydrogen.");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AirfilterDropsCanisters", "AirfilterDropsCanisters");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirfilterDropsCanisters_Title", "Airfilter Canisters");

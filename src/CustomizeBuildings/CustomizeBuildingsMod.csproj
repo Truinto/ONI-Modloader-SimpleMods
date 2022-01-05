@@ -29,7 +29,6 @@
     <Compile Include="Batteries.cs" />
     <Compile Include="BuildingDefMod.cs" />
     <Compile Include="Conduits.cs" />
-    <Compile Include="Electrolyzer.cs" />
     <Compile Include="Miscellaneous.cs" />
     <Compile Include="NewComponents\UserControlledConduitInbox.cs" />
     <Compile Include="NewComponents\UserControlledStorage.cs" />
