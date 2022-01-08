@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.53.0]
+- added chinese translation; thanks to Ventulus-lab
+
 ## [1.0.52.0] U39-490405-S
 - ElectrolizerMaxPressure also applies to Rust Deoxidizer
 
