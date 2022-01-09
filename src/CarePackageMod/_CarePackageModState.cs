@@ -8,7 +8,7 @@ using System.IO;
 
 namespace CarePackageMod
 {
-    [ConfigFile("Care Package Manager.json", true, true)]
+    [ConfigFile("Care Package Manager.json", true, true, typeof(Config.TranslationResolver))]
     public class CarePackageState
     {
         public static void LoadStrings()

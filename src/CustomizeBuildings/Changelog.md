@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.55.0] U39-490405-S
+- fixed issue that would reset settings, when using the ingame settings while not using English
+
 ## [1.0.54.0] U39-490405-S
 - fixed formatting issue while loading translations
 - fixed language code when using official translations (will now load 'strings_zh.pot', instead of looking for 'strings_zh_klei.pot')

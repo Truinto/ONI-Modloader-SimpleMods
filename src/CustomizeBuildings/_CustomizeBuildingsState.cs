@@ -9,7 +9,7 @@ using System;
 
 namespace CustomizeBuildings
 {
-    [ConfigFile("CustomizeBuildings.json", true, true)]
+    [ConfigFile("CustomizeBuildings.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState
