@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.54.0] U39-490405-S
+- fixed formatting issue while loading translations
+- fixed language code when using official translations (will now load 'strings_zh.pot', instead of looking for 'strings_zh_klei.pot')
+
 ## [1.0.53.0]
 - added chinese translation; thanks to Ventulus-lab
 
