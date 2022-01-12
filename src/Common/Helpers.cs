@@ -11,6 +11,7 @@ using System.Reflection;
 using Config;
 using System.IO;
 using Klei.AI;
+using System.Text.RegularExpressions;
 
 namespace Common
 {
@@ -284,6 +285,32 @@ namespace Common
         #endregion
 
         #region Locale
+        public static Regex FindBetweenLink = new Regex(@">(.*)<", RegexOptions.Compiled);
+
+        public static bool GetLink(string text, out string link)
+        {
+            Match match = FindBetweenLink.Match(text);
+            if (match.Success)
+            {
+                link = match.Groups[1].Value;
+                return true;
+            }
+            else
+            {
+                link = "INVALID";
+                return false;
+            }
+        }
+
+        public static string GetLink(string text)
+        {
+            Match match = FindBetweenLink.Match(text);
+            if (match.Success)
+                return match.Groups[1].Value;
+            else
+                return "INVALID";
+        }
+
         public static LocString GetTemperatureUnit()
         {
             switch (GameUtil.temperatureUnit)
@@ -455,7 +482,6 @@ namespace Common
                 Print("Error reading language file: " + e.ToString());
             }
         }
-
 
         public static void LocalizeTypeToPOT(Type type, string path = null)
         {

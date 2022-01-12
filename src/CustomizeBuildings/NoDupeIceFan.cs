@@ -265,7 +265,7 @@ namespace CustomizeBuildings
 
             ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
             elementConverter.consumedElements = new ElementConverter.ConsumedElement[]
-                { new ElementConverter.ConsumedElement(ElementLoader.FindElementByHash(SimHashes.Ice).tag, 0.01f) };
+                { new ElementConverter.ConsumedElement(GameTags.IceOre, 0.01f) };
             elementConverter.outputElements = new ElementConverter.OutputElement[]
                 { new ElementConverter.OutputElement(0.01f, SimHashes.Water, 278.15f, false, true, 0.0f, 0.5f, 1f, byte.MaxValue, 0) };
 

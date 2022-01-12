@@ -51,7 +51,6 @@ namespace CustomizeBuildings
             StateManager.State.RadBattery = 1000f;
             StateManager.State.ElectrolizerMaxPressure = 1.8f;
             StateManager.State.AirfilterDropsCanisters = false;
-            StateManager.State.NewRecipeRockCrusher = false;
             StateManager.State.AirConditionerAbsoluteOutput = false;
             StateManager.State.SpaceHeaterTargetTemperature = false;
             StateManager.State.AlgaeTerrariumPatch = false;
@@ -291,9 +290,6 @@ namespace CustomizeBuildings
         public float ElectrolizerMaxPressure { get; set; } = 5f;
         [Option("CustomizeBuildings.LOCSTRINGS.AirfilterDropsCanisters_Title", "CustomizeBuildings.LOCSTRINGS.AirfilterDropsCanisters_ToolTip", "Miscellaneous")]
         public bool AirfilterDropsCanisters { get; set; } = true;
-
-        [Option("CustomizeBuildings.LOCSTRINGS.NewRecipeRockCrusher_Title", "CustomizeBuildings.LOCSTRINGS.NewRecipeRockCrusher_ToolTip", "Miscellaneous")]
-        public bool NewRecipeRockCrusher { get; set; } = true;
 
         [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "Miscellaneous")]
         public bool AirConditionerAbsoluteOutput { get; set; } = true;

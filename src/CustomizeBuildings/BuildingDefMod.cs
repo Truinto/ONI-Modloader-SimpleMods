@@ -14,20 +14,17 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(BuildingConfigManager), "RegisterBuilding")]
     public class BuildingConfigManager_RegisterBuilding
     {
-        public static Regex FindBetweenLink = new Regex(@">(.*)<", RegexOptions.Compiled);
-
         public static void CreateBuildingDefOverride(BuildingDef buildingDef)
         {
-            Helpers.PrintDebug(buildingDef.PrefabID + "\t\tName: " + FindBetweenLink.Match(buildingDef.Name).Groups[1].Value);
+            Helpers.PrintDebug(buildingDef.PrefabID + "\t\tName: " + Helpers.GetLink(buildingDef.Name));
             //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
             //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
 
-            BuildingStruct entry;
-            bool flag = CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out entry);
-            if (flag == false)
-                flag = CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(FindBetweenLink.Match(buildingDef.Name).Groups[1].Value, out entry);
+            CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out var entry);
+            if (entry == null && Helpers.GetLink(buildingDef.Name, out string link))
+                CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(link, out entry);
 
-            if (flag)
+            if (entry == null)
             {
                 #region checks
 
@@ -148,15 +145,7 @@ namespace CustomizeBuildings
             code.Insert(index++, new CodeInstruction(OpCodes.Ldloc_0));
             code.Insert(index++, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BuildingConfigManager_RegisterBuilding), nameof(CreateBuildingDefOverride))));
 
-            //for (int i = 0; i < code.Count; i++)
-            //{
-            //    CodeInstruction codeInstruction = code[i];
-            //    Debug.Log(codeInstruction.ToString());
-            //    //Debug.Log("opcode: " + codeInstruction.opcode
-            //    //    + "\t\toperand: " + codeInstruction.operand);
-            //}
-
-            return (IEnumerable<CodeInstruction>)code;
+            return code;
         }
     }
 
@@ -185,7 +174,7 @@ namespace CustomizeBuildings
             }
 
             if (!CustomizeBuildingsState.StateManager.State.BuildingAdvancedGlobalFlag)
-                    return;
+                return;
 
             MachineMuliplier(def);
             OutputTemp(def);
@@ -196,10 +185,9 @@ namespace CustomizeBuildings
         {
             float multiplier;
             bool flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(def.PrefabID, out multiplier);
-            if (!flag)
-            {
-                flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(BuildingConfigManager_RegisterBuilding.FindBetweenLink.Match(def.Name).Groups[1].Value, out multiplier);
-            }
+            if (!flag && Helpers.GetLink(def.Name, out string link))
+                flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(link, out multiplier);
+
             if (flag)
             {
                 ElementConverter[] converters = def.BuildingComplete.GetComponents<ElementConverter>();
@@ -262,6 +250,8 @@ namespace CustomizeBuildings
         public static void OutputTemp(BuildingDef def)
         {
             CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(def.PrefabID, out var setting);
+            if (setting == null && Helpers.GetLink(def.Name, out string link))
+                CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(link, out setting);
 
             if (setting == null)
                 return;
@@ -281,149 +271,150 @@ namespace CustomizeBuildings
         {
             if (CustomizeBuildingsState.StateManager.State.AdvancedSettings == null) return;
 
-            Dictionary<string, Dictionary<string, object>> buildingEntry;
-            bool foundBuilding = CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(def.PrefabID, out buildingEntry);
+            CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(def.PrefabID, out var buildingEntry);
+            if (buildingEntry == null && Helpers.GetLink(def.Name, out string link))
+                CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(link, out buildingEntry);
 
-            if (foundBuilding)
+            if (buildingEntry == null)
+                return;
+
+            Debug.Log("Applying settings for: " + def.PrefabID);
+            foreach (KeyValuePair<string, Dictionary<string, object>> componentEntry in buildingEntry)
             {
-                Debug.Log("Applying settings for: " + def.PrefabID);
-                foreach (KeyValuePair<string, Dictionary<string, object>> componentEntry in buildingEntry)
-                {
-                    if (componentEntry.Key.Length < 4) continue;
+                if (componentEntry.Key.Length < 4) continue;
 
-                    Type componentType;
-                    UnityEngine.Object component;
+                Type componentType;
+                UnityEngine.Object component;
 
-                    if (componentEntry.Key == "BASE")
-                    { //edit BuildingDef instead
-                        componentType = def.GetType();
-                        component = def;
-                    }
-                    else if (componentEntry.Key.StartsWith("ADD:"))
-                    { //addicomponent
-                        componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
-                        if (componentType == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
-                            continue;
-                        }
-
-                        component = def.BuildingComplete.AddComponent(componentType);
-                        if (component == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": could not add component: " + componentEntry.Key);
-                            continue;
-                        }
-                    }
-                    else if (componentEntry.Key.StartsWith("DEL:"))
-                    { //delete component
-                        componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
-                        if (componentType == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
-                            continue;
-                        }
-
-                        component = def.BuildingComplete.GetComponent(componentType);
-                        if (component == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": could not get component for deletion: " + componentEntry.Key);
-                            continue;
-                        }
-                        UnityEngine.Object.DestroyImmediate(component);
+                if (componentEntry.Key == "BASE")
+                { //edit BuildingDef instead
+                    componentType = def.GetType();
+                    component = def;
+                }
+                else if (componentEntry.Key.StartsWith("ADD:"))
+                { //addicomponent
+                    componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
+                    if (componentType == null)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
                         continue;
                     }
-                    else if (Regex.IsMatch(componentEntry.Key, "AT.:"))
-                    { //edit component at index
-                        int index;
-                        if (!Int32.TryParse(componentEntry.Key.Substring(2, 2), out index))
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": index could not be parsed: " + componentEntry.Key);
-                            continue;
-                        }
 
-                        componentType = Type.GetType(componentEntry.Key + ", Assembly-CSharp", false);
-                        if (componentType == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
-                            continue;
-                        }
-
-                        component = def.BuildingComplete.GetComponent(componentType);
-                        if (component == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": does not have component: " + componentEntry.Key);
-                            continue;
-                        }
-                    }
-                    else
-                    { //edit component
-                        componentType = Type.GetType(componentEntry.Key + ", Assembly-CSharp", false);
-                        if (componentType == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
-                            continue;
-                        }
-
-                        component = def.BuildingComplete.GetComponent(componentType);
-                        if (component == null)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ": does not have component: " + componentEntry.Key);
-                            continue;
-                        }
-                    }
-
-                    foreach (KeyValuePair<string, object> fieldEntry in componentEntry.Value)
+                    component = def.BuildingComplete.AddComponent(componentType);
+                    if (component == null)
                     {
-                        object setValue = fieldEntry.Value;
-                        Debug.Log("PROCESSING: value=" + setValue.ToString() + " type=" + setValue.GetType().ToString());
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": could not add component: " + componentEntry.Key);
+                        continue;
+                    }
+                }
+                else if (componentEntry.Key.StartsWith("DEL:"))
+                { //delete component
+                    componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
+                    if (componentType == null)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
+                        continue;
+                    }
+
+                    component = def.BuildingComplete.GetComponent(componentType);
+                    if (component == null)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": could not get component for deletion: " + componentEntry.Key);
+                        continue;
+                    }
+                    UnityEngine.Object.DestroyImmediate(component);
+                    continue;
+                }
+                else if (Regex.IsMatch(componentEntry.Key, "AT.:"))
+                { //edit component at index
+                    int index;
+                    if (!Int32.TryParse(componentEntry.Key.Substring(2, 2), out index))
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": index could not be parsed: " + componentEntry.Key);
+                        continue;
+                    }
+
+                    componentType = Type.GetType(componentEntry.Key + ", Assembly-CSharp", false);
+                    if (componentType == null)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
+                        continue;
+                    }
+
+                    component = def.BuildingComplete.GetComponent(componentType);
+                    if (component == null)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": does not have component: " + componentEntry.Key);
+                        continue;
+                    }
+                }
+                else
+                { //edit component
+                    componentType = Type.GetType(componentEntry.Key + ", Assembly-CSharp", false);
+                    if (componentType == null)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
+                        continue;
+                    }
+
+                    component = def.BuildingComplete.GetComponent(componentType);
+                    if (component == null)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ": does not have component: " + componentEntry.Key);
+                        continue;
+                    }
+                }
+
+                foreach (KeyValuePair<string, object> fieldEntry in componentEntry.Value)
+                {
+                    object setValue = fieldEntry.Value;
+                    Debug.Log("PROCESSING: value=" + setValue.ToString() + " type=" + setValue.GetType().ToString());
 
 
-                        if (setValue.GetType() == typeof(double))
+                    if (setValue.GetType() == typeof(double))
+                    {
+                        setValue = Convert.ToSingle((double)setValue);
+                    }
+                    else if (setValue.GetType() == typeof(string))
+                    {
+                        Debug.Log("It's a string.");
+                        string strValue = (string)setValue; //convert string in enum if possible
+
+                        int index = strValue.LastIndexOf(".");
+                        if (index > 0 && strValue.Length > 2)
                         {
-                            setValue = Convert.ToSingle((double)setValue);
-                        }
-                        else if (setValue.GetType() == typeof(string))
-                        {
-                            Debug.Log("It's a string.");
-                            string strValue = (string)setValue; //convert string in enum if possible
-
-                            int index = strValue.LastIndexOf(".");
-                            if (index > 0 && strValue.Length > 2)
+                            string enumName = strValue.Substring(0, index);
+                            string enumConst = strValue.Substring(index + 1);
+                            Type enumType = Type.GetType(enumName + ", Assembly-CSharp");
+                            if (enumType != null)
                             {
-                                string enumName = strValue.Substring(0, index);
-                                string enumConst = strValue.Substring(index + 1);
-                                Type enumType = Type.GetType(enumName + ", Assembly-CSharp");
-                                if (enumType != null)
+                                Debug.Log("It's an enum.");
+                                try
                                 {
-                                    Debug.Log("It's an enum.");
-                                    try
-                                    {
-                                        setValue = Enum.Parse(enumType, enumConst);
-                                    }
-                                    catch (Exception)
-                                    {
-                                        PostBootDialog.ErrorList.Add("Enum does not exist: " + enumConst);
-                                        continue;
-                                    }
+                                    setValue = Enum.Parse(enumType, enumConst);
+                                }
+                                catch (Exception)
+                                {
+                                    PostBootDialog.ErrorList.Add("Enum does not exist: " + enumConst);
+                                    continue;
                                 }
                             }
                         }
-
-                        try
-                        {
-                            //Type valueType = fieldEntry.Value.GetType();
-                            AccessTools.Field(componentType, fieldEntry.Key).SetValue(component, setValue);
-                        }
-                        catch (Exception e)
-                        {
-                            PostBootDialog.ErrorList.Add(def.PrefabID + ", " + componentEntry.Key + ", " + fieldEntry.Key + " encountered an error: '" + e.Message + "' when trying to write: " + fieldEntry.Value.ToString());
-                        }
                     }
 
+                    try
+                    {
+                        //Type valueType = fieldEntry.Value.GetType();
+                        AccessTools.Field(componentType, fieldEntry.Key).SetValue(component, setValue);
+                    }
+                    catch (Exception e)
+                    {
+                        PostBootDialog.ErrorList.Add(def.PrefabID + ", " + componentEntry.Key + ", " + fieldEntry.Key + " encountered an error: '" + e.Message + "' when trying to write: " + fieldEntry.Value.ToString());
+                    }
                 }
-                CustomizeBuildingsState.StateManager.State.AdvancedSettings.Remove(def.PrefabID);
+
             }
+            CustomizeBuildingsState.StateManager.State.AdvancedSettings.Remove(def.PrefabID);
         }
     }
 }

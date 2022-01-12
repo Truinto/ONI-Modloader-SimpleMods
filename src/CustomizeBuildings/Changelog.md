@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.57.0]
+- allowing ingame names for BuildingAdvancedOutputTemp
+- fixed crash with 3rd party mods that add buildings without proper naming
+- no-dupe ice cooler does now accept ice and dirty ice
+- removed NewRecipeRockCrusher, this functionality became its own mod: Customize Recipe
+
+## [1.0.56.0] 
+- updated language file; thanks to Ventulus-lab
+
 ## [1.0.55.0] U39-490405-S
 - fixed issue that would reset settings, when using the ingame settings while not using English
 

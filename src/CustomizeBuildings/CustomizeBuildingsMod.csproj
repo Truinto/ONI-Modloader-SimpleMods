@@ -46,7 +46,6 @@
     <Compile Include="NoDupeSwitches.cs" />
     <Compile Include="Wires.cs" />
     <Compile Include="_CustomizeBuildingsState.cs" />
-    <Compile Include="RecipeAdd.cs" />
     <Compile Include="Storages.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Access.cs" />
