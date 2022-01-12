@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.16.0]
+- added additional strings for translation
+- changed so existing geyser names and descriptions take priority over settings
+- added button to enable special geysers (coolant, steel)
+- added option to teleport geyser with ALT+Q
+- added support for custom kanim geysers
+
 ## [1.0.15.0] U37-484114-S
 
 ### Fixed

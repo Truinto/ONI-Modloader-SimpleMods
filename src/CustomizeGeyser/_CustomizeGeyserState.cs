@@ -114,6 +114,33 @@ namespace CustomizeGeyser
             OptionsDialog.Last?.CheckForRestart();
             OptionsDialog.Last = null;
         };
+
+        [Option("Preset: Enable All", "Enables all geyser types, even the overpowered ones. Doesn't affect existing saves and they are generally still rare.", "Buttons", null)]
+        [JsonIgnore]
+        public System.Action<object> EnableAllGeysers => delegate (object nix)
+        {
+            foreach (var config in GeyserInfo.Config)
+            {
+                if (!StateManager.State.RNGTable.ContainsKey(config.geyserType.id))
+                {
+                    StateManager.State.RNGTable[config.geyserType.id] = 1;
+                }
+            }
+
+            //foreach (var geyser in StateManager.State.Geysers)
+            //    if (!StateManager.State.RNGTable.ContainsKey(geyser.id))
+            //        StateManager.State.RNGTable[geyser.id] = 1;
+
+            foreach (var key in StateManager.State.RNGTable.Keys.ToArray())
+            {
+                StateManager.State.RNGTable[key] = 1;
+            }
+
+            StateManager.TrySaveConfigurationState();
+            OptionsDialog.Last?.CloseDialog();
+            OptionsDialog.Last?.CheckForRestart();
+            OptionsDialog.Last = null;
+        };
         #endregion
 
         #region Fields
@@ -202,6 +229,9 @@ namespace CustomizeGeyser
         public bool GeyserMorphEnabled { get; set; } = true;
         [Option("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_Title", "CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_ToolTip", "Fields", null)]
         public int GeyserMorphWorktime { get; set; } = 300;
+
+        [Option("Geyser Teleport Enabled", "Teleport selected geyser to mouse cursor with DebugTeleport key (default: ALT+Q)", "Fields", null)]
+        public bool GeyserTeleportEnabled { get; set; } = true;
         #endregion
 
         public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.PathHelper.CreatePath("CustomizeGeyser"), true, UpdateFunction);

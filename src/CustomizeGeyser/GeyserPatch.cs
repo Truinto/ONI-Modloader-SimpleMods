@@ -31,8 +31,8 @@ namespace CustomizeGeyser
             return CustomizeGeyserState.StateManager.State.Enabled;
         }
 
-        public static readonly string[] GeyserKAnimsVanilla = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_oil_kanim", "geyser_liquid_sulfur_kanim" };
-        public static readonly string[] GeyserKAnimsDLC1 = { "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_sulfur_kanim" };
+        //public static readonly string[] GeyserKAnimsVanilla = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_oil_kanim", "geyser_liquid_sulfur_kanim" };
+        //public static readonly string[] GeyserKAnimsDLC1 = { "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_sulfur_kanim" };
 
         public static void Postfix(ref List<GeyserGenericConfig.GeyserPrefabParams> __result)
         {
@@ -49,15 +49,9 @@ namespace CustomizeGeyser
                 
                 #region Error checks
                 {
-                    if (modifier.anim != null && GeyserKAnimsDLC1.Any(s => s == modifier.anim))
+                    if (modifier.anim == null || modifier.anim.Length < 1 || !Assets.TryGetAnim(modifier.anim, out _))
                     {
-                        if (!DlcManager.IsExpansion1Active())
-                            modifier.anim = null;
-                    }
-                    else if (modifier.anim != null && !GeyserKAnimsVanilla.Any(s => s == modifier.anim))
-                    {
-                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has non standard kAnim type " + modifier.anim);
-                        modifier.anim = null;    // TODO: find a way to validate custom kAnims
+                        modifier.anim = null;
                     }
                     if (modifier.width != null && modifier.width < 1 || modifier.width > 10)
                     {
@@ -182,11 +176,11 @@ namespace CustomizeGeyser
 
                     if (modifier.Name != null)
                     {
-                        Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".NAME", modifier.Name);
+                        //Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".NAME", modifier.Name);
                     }
                     if (modifier.Description != null)
                     {
-                        Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".DESC", modifier.Description);
+                        //Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".DESC", modifier.Description);
                     }
 
                     if (modifier.Disease != null || modifier.DiseaseCount != null)
@@ -294,9 +288,18 @@ namespace CustomizeGeyser
                         modifier.IsGeneric = true;
 
                     if (modifier.Name != null)
-                        Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".NAME", modifier.Name);
+                    {
+                        string key = "STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".NAME";
+                        if (!Strings.TryGet(key, out _))
+                            Strings.Add(key, modifier.Name);
+                    }
+
                     if (modifier.Description != null)
-                        Strings.Add("STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".DESC", modifier.Description);
+                    {
+                        string key = "STRINGS.CREATURES.SPECIES.GEYSER." + modifier.id.ToUpper() + ".DESC";
+                        if (!Strings.TryGet(key, out _))
+                            Strings.Add(key, modifier.Description);
+                    }
 
                     Klei.SimUtil.DiseaseInfo diseaseInfo;
                     if (modifier.Disease == null || modifier.DiseaseCount == null)
