@@ -409,7 +409,12 @@ namespace Common
                 Print("Read language file: " + path);
 
                 foreach (var pair in Localization.LoadStringsFile(path, false))
-                    Strings.Add(pair.Key, pair.Value);
+                {
+                    if (pair.Key.Contains(".TAG."))
+                        TagManager.Create(pair.Key, pair.Value);
+                    else
+                        Strings.Add(pair.Key, pair.Value);
+                }
 
                 //string key = null;
                 //string id = null;

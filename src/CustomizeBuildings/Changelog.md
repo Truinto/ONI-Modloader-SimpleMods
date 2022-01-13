@@ -5,6 +5,7 @@
 - fixed crash with 3rd party mods that add buildings without proper naming
 - no-dupe ice cooler does now accept ice and dirty ice
 - removed NewRecipeRockCrusher, this functionality became its own mod: Customize Recipe
+- fixed issue with resolving translated Tags
 
 ## [1.0.56.0] 
 - updated language file; thanks to Ventulus-lab
