@@ -637,7 +637,7 @@ namespace CustomizeBuildings
         #region Advanced
         [Option("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_Title", "CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_ToolTip", "Miscellaneous")]
         public bool BuildingBaseSettingGlobalFlag { get; set; } = true;
-        public Dictionary<string, BuildingStruct> BuildingBaseSettings { get; set; } = new Dictionary<string, BuildingStruct> {
+        public Dictionary<string, BuildingStruct> BuildingBaseSettings { get; set; } = new Dictionary<string, BuildingStruct>(StringComparer.OrdinalIgnoreCase) {
             { WireHighWattageConfig.ID, new BuildingStruct(LocationRule: BuildLocationRule.Anywhere) },
             { WireRefinedHighWattageConfig.ID, new BuildingStruct(LocationRule: BuildLocationRule.Anywhere, BaseDecor: -5f, BaseDecorRadius: 1f) },
             { TravelTubeConfig.ID, new BuildingStruct(LocationRule: BuildLocationRule.Anywhere) },
@@ -649,14 +649,14 @@ namespace CustomizeBuildings
 
         [Option("CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_Title", "CustomizeBuildings.LOCSTRINGS.BuildingAdvancedGlobalFlag_ToolTip", "Miscellaneous")]
         public bool BuildingAdvancedGlobalFlag { get; set; } = true;
-        public Dictionary<string, float> BuildingAdvancedMachineMultiplier { get; set; } = new Dictionary<string, float> {
+        public Dictionary<string, float> BuildingAdvancedMachineMultiplier { get; set; } = new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase) {
             { "EthanolDistillery", 4f }
         };
         public List<BuildingAdv> BuildingAdvancedMaterial { get; set; } = new List<BuildingAdv>() {
             new BuildingAdv(TravelTubeConfig.ID, null, true, "Glass Ice"),
             new BuildingAdv(TravelTubeWallBridgeConfig.ID, null, true, "Glass Ice"),
         };
-        public Dictionary<string, ElementConverterContainer> BuildingAdvancedOutputTemp { get; set; } = new Dictionary<string, ElementConverterContainer>() {
+        public Dictionary<string, ElementConverterContainer> BuildingAdvancedOutputTemp { get; set; } = new Dictionary<string, ElementConverterContainer>(StringComparer.OrdinalIgnoreCase) {
             { ElectrolyzerConfig.ID, new ElementConverterContainer().ModeTemperature().Temperature(1f) },
         };
 

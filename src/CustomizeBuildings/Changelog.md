@@ -1,11 +1,12 @@
 # Changelog
 
-## [1.0.57.0]
+## [1.0.57.0] U39-490405-S
 - allowing ingame names for BuildingAdvancedOutputTemp
 - fixed crash with 3rd party mods that add buildings without proper naming
-- no-dupe ice cooler does now accept ice and dirty ice
+- no-dupe ice cooler does now accept ice and brine ice
 - removed NewRecipeRockCrusher, this functionality became its own mod: Customize Recipe
-- fixed issue with resolving translated Tags
+- fixed issue with resolving translated Tags introduced in 1.0.54.0
+- ignoring case for IDs in BuildingBaseSettings, BuildingAdvancedMachineMultiplier, BuildingAdvancedOutputTemp, and BuildingAdvancedMaterial
 
 ## [1.0.56.0] 
 - updated language file; thanks to Ventulus-lab
@@ -14,7 +15,7 @@
 - fixed issue that would reset settings, when using the ingame settings while not using English
 
 ## [1.0.54.0] U39-490405-S
-- fixed formatting issue while loading translations
+- ~~fixed formatting issue while loading translations~~
 - fixed language code when using official translations (will now load 'strings_zh.pot', instead of looking for 'strings_zh_klei.pot')
 
 ## [1.0.53.0]

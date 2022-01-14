@@ -416,5 +416,40 @@ namespace CustomizeBuildings
             }
             CustomizeBuildingsState.StateManager.State.AdvancedSettings.Remove(def.PrefabID);
         }
+
+        
+        public static void NewAdvanced(string setting)
+        {
+            var flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+
+            // patch GeneratedBuildings.LoadGeneratedBuildings, very low priority
+            // split with ':'
+            // first value is always PrefabID
+            // next values are considered fields
+            // last value is split with ;
+            // left side of '=' is the field
+            // right right of '=' will be parsed and set
+            // valid values are int, long, float, double, enum, string, and arrays/Lists of these values (split multi-values with ',')
+            // example string: "IceCooledFan: Storage#2: capacityKg = 1000;storageFilters = Ice, DirtyIce, Dirt, Sand;"
+            setting = Regex.Replace(setting, @"\s+", "");
+
+            var lines = setting.Split(':');
+            if (lines.Length < 2) throw new Exception("Missing separator ':'");
+
+            var def = Assets.BuildingDefs.FirstOrDefault(f => f.PrefabID == lines[0]);
+            if (def == null) throw new Exception("PrefabID doesn't exist");
+
+            object target = lines.Length == 2 ? def : def.BuildingComplete;
+            for (int i = 1; i < lines.Length - 1; i++)
+            {
+                target.GetType().GetNestedTypes(flags); // todo
+            }
+
+            var values = lines[lines.Length - 1].Split(';').Where(w => w.Contains('='));
+            foreach (string x in values)
+            {
+
+            }
+        }
     }
 }

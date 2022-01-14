@@ -270,6 +270,9 @@ namespace Common
             line = line.Replace("\\\"", "\"");
             line = line.Replace("\\t", "\t");
             line = line.Replace("\\n", "\n");
+            line = line.Replace("<style=“", "<style=\"");
+            line = line.Replace("”>", "\">");
+            line = line.Replace("<color=^p", "<color=#");
             return line;
         }
 
@@ -280,6 +283,7 @@ namespace Common
             line = line.Replace("\"", "\\\"");
             line = line.Replace("\t", "\\t");
             line = line.Replace("\n", "\\n");
+            line = line.Replace("<color=#", "<color=^p");
             return line;
         }
         #endregion
@@ -408,79 +412,79 @@ namespace Common
 
                 Print("Read language file: " + path);
 
-                foreach (var pair in Localization.LoadStringsFile(path, false))
-                {
-                    if (pair.Key.Contains(".TAG."))
-                        TagManager.Create(pair.Key, pair.Value);
-                    else
-                        Strings.Add(pair.Key, pair.Value);
-                }
-
-                //string key = null;
-                //string id = null;
-                //bool isTag = false;
-                //var lines = File.ReadAllLines(path);
-                //int i = 0;
-                //for (; i < lines.Length; i++) if (lines[i].StartsWith("msgctxt", StringComparison.Ordinal)) break; // ignore everything until the first msgctxt
-                //for (; i < lines.Length; i++)
+                //foreach (var pair in Localization.LoadStringsFile(path, false)) // NOTE: LoadStringsFile is the official method, but it doesn't work for TAGs
                 //{
-                //    string line = lines[i];
-                //    string quote = line.GetQuotationString();
-                //    int j = 0;
-                //    // resolve multi-line quotes
-                //    while (true)
-                //    {
-                //        if (quote == null)
-                //            break;
-                //        if (lines.Length <= i + 1)
-                //            break;
-                //        string quote2 = lines[i + 1];
-                //        if (!quote2.StartsWith("\"", StringComparison.Ordinal))
-                //            break;
-                //        quote2 = quote2.GetQuotationString();
-                //        if (quote2 == null)
-                //            break;
-                //        quote += quote2;
-                //        i++;
-                //        j++;
-                //    }
-                //    if (line.StartsWith("msgctxt", StringComparison.Ordinal))
-                //    {
-                //        isTag = line.Contains(".TAG.");
-                //        key = quote;
-                //        continue;
-                //    }
-                //    if (line.StartsWith("msgid", StringComparison.Ordinal))
-                //    {
-                //        id = quote;
-                //        continue;
-                //    }
-                //    if (line.StartsWith("msgstr", StringComparison.Ordinal))
-                //    {
-                //        if (quote == null)
-                //        {
-                //            Print($"Error: quote is null at i={i} j={j}");
-                //            continue;
-                //        }
-                //        if (!isTag && (key == null || key == ""))
-                //        {
-                //            Print($"Error: key is null at i={i} j={j} for '{quote}'");
-                //            continue;
-                //        }
-                //        if (isTag && (id == null || id == ""))
-                //        {
-                //            Print($"Error: tag id is null at i={i} j={j} for '{quote}'");
-                //            continue;
-                //        }
-                //        if (!isTag)
-                //            Strings.Add(key, quote.GetUndoLiteralString());
-                //        else
-                //            TagManager.Create(id, quote.GetUndoLiteralString());
-                //        key = null;
-                //        id = null;
-                //        continue;
-                //    }
+                //    if (pair.Key.Contains(".TAG."))
+                //        TagManager.Create(pair.Key.Substring(pair.Key.LastIndexOf('.')+1), pair.Value);
+                //    else
+                //        Strings.Add(pair.Key, pair.Value);
                 //}
+
+                string key = null;
+                string id = null;
+                bool isTag = false;
+                var lines = File.ReadAllLines(path);
+                int i = 0;
+                for (; i < lines.Length; i++) if (lines[i].StartsWith("msgctxt", StringComparison.Ordinal)) break; // ignore everything until the first msgctxt
+                for (; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    string quote = line.GetQuotationString();
+                    int j = 0;
+                    // resolve multi-line quotes
+                    while (true)
+                    {
+                        if (quote == null)
+                            break;
+                        if (lines.Length <= i + 1)
+                            break;
+                        string quote2 = lines[i + 1];
+                        if (!quote2.StartsWith("\"", StringComparison.Ordinal))
+                            break;
+                        quote2 = quote2.GetQuotationString();
+                        if (quote2 == null)
+                            break;
+                        quote += quote2;
+                        i++;
+                        j++;
+                    }
+                    if (line.StartsWith("msgctxt", StringComparison.Ordinal))
+                    {
+                        isTag = line.Contains(".TAG.");
+                        key = quote;
+                        continue;
+                    }
+                    if (line.StartsWith("msgid", StringComparison.Ordinal))
+                    {
+                        id = quote;
+                        continue;
+                    }
+                    if (line.StartsWith("msgstr", StringComparison.Ordinal))
+                    {
+                        if (quote == null)
+                        {
+                            Print($"Error: quote is null at i={i} j={j}");
+                            continue;
+                        }
+                        if (!isTag && (key == null || key == ""))
+                        {
+                            Print($"Error: key is null at i={i} j={j} for '{quote}'");
+                            continue;
+                        }
+                        if (isTag && (id == null || id == ""))
+                        {
+                            Print($"Error: tag id is null at i={i} j={j} for '{quote}'");
+                            continue;
+                        }
+                        if (!isTag)
+                            Strings.Add(key, quote.GetUndoLiteralString());
+                        else
+                            TagManager.Create(id, quote.GetUndoLiteralString());
+                        key = null;
+                        id = null;
+                        continue;
+                    }
+                }
             }
             catch (System.Exception e)
             {

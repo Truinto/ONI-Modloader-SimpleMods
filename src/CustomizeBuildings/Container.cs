@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Common;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace CustomizeBuildings
 {
@@ -145,7 +146,9 @@ namespace CustomizeBuildings
     }
     public class BuildingAdv
     {
-        public string Id;
+        public readonly string Id;
+        [JsonIgnore]
+        public readonly int hash;
         public int? Index;
         public bool MaterialAppend;
         public string MaterialOverride;
@@ -153,12 +156,16 @@ namespace CustomizeBuildings
         public BuildingAdv(string Id, int? Index = null, bool MaterialAppend = true, string MaterialOverride = null)
         {
             this.Id = Id;
+            this.hash = Hash.SDBMLower(Id);
             this.Index = Index;
             this.MaterialAppend = MaterialAppend;
             this.MaterialOverride = MaterialOverride;
         }
-        public BuildingAdv()
-        { }
+
+        public bool AppliesTo(Tag tag)
+        {
+            return this.hash == tag.GetHash();
+        }
     }
 
 }

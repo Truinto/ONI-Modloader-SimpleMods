@@ -322,7 +322,7 @@ namespace CustomizeBuildings
                     minion.SetAptitude(filter.SelectedTag.Name, 1f);
                     minion.AddExperience(-SkillStationCosts.CostAddAptitude);
                     //tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.ProperName()}";   //SkillStationAptitude
-                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude"), minion.GetProperName(), filter.SelectedTag.ProperName());
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude"), minion.GetProperName(), filter.SelectedTag.ProperName()); // TODO!! add missing locstrings!
                     break;
             }
 

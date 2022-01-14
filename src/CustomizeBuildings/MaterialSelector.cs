@@ -55,7 +55,7 @@ namespace CustomizeBuildings
         public static void Postfix(Recipe.Ingredient ingredient, Recipe recipe, MaterialSelector __instance, ToggleGroup ___toggleGroup)
         {
             int num = recipe.Ingredients.IndexOf(ingredient);
-            var setting = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMaterial?.FirstOrDefault(f => f.Id == recipe.Result && (f.Index == null || f.Index == num));
+            var setting = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMaterial?.FirstOrDefault(f => f.AppliesTo(recipe.Result) && (f.Index == null || f.Index == num));
             if (setting == null)
                 return;
 
