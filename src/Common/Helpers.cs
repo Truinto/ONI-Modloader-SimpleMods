@@ -42,6 +42,19 @@ namespace Common
             Console.WriteLine(text);
             PostBootDialog.ErrorList.Add(text);
         }
+        
+        public static void CallSafe(System.Action action)
+        {
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Print($"{action.Method.Name} caused an Exception: {e.Message}");
+            }
+            
+        }
         #endregion
 
         #region Math
@@ -289,7 +302,7 @@ namespace Common
         #endregion
 
         #region Locale
-        public static Regex FindBetweenLink = new Regex(@">(.*)<", RegexOptions.Compiled);
+        public static Regex FindBetweenLink = new Regex(@">(.*?)<\/", RegexOptions.Compiled);
 
         public static bool GetLink(string text, out string link)
         {
@@ -301,18 +314,18 @@ namespace Common
             }
             else
             {
-                link = "INVALID";
+                link = text;
                 return false;
             }
         }
 
-        public static string GetLink(string text)
+        public static string GetLink(this string text)
         {
             Match match = FindBetweenLink.Match(text);
             if (match.Success)
                 return match.Groups[1].Value;
             else
-                return "INVALID";
+                return text;
         }
 
         public static LocString GetTemperatureUnit()
@@ -347,7 +360,7 @@ namespace Common
         public static bool StringsAppend = false;
         public static void StringsPrint(string path = null)
         {
-            using (StreamWriter sw = new StreamWriter(path ?? Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_en.pot"), StringsAppend))
+            using (StreamWriter sw = new StreamWriter(path ?? Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_NEW.pot"), StringsAppend))
             {
                 foreach (var keyPair in StringsDic)
                 {
@@ -480,6 +493,7 @@ namespace Common
                             Strings.Add(key, quote.GetUndoLiteralString());
                         else
                             TagManager.Create(id, quote.GetUndoLiteralString());
+
                         key = null;
                         id = null;
                         continue;

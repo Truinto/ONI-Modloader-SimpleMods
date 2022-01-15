@@ -7,6 +7,9 @@
 - removed NewRecipeRockCrusher, this functionality became its own mod: Customize Recipe
 - fixed issue with resolving translated Tags introduced in 1.0.54.0
 - ignoring case for IDs in BuildingBaseSettings, BuildingAdvancedMachineMultiplier, BuildingAdvancedOutputTemp, and BuildingAdvancedMaterial
+- updated tuning texts, removed obsolete settings, added new settings
+- changed it so setting TuningGlobal to false will reset all tuning values to the defaults during the next bootup
+- updated language file; thanks to Ventulus-lab
 
 ## [1.0.56.0] 
 - updated language file; thanks to Ventulus-lab

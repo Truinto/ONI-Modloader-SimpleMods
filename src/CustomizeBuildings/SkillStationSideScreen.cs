@@ -85,20 +85,8 @@ namespace CustomizeBuildings
             CongenitalTraits = new HashSet<Tag>(DUPLICANTSTATS.CONGENITALTRAITS.Select(x => GetTag(x.id)));
             StressTraits = new HashSet<Tag>(DUPLICANTSTATS.STRESSTRAITS.Select(x => GetTag(x.id)));
             JoyTraits = new HashSet<Tag>(DUPLICANTSTATS.JOYTRAITS.Select(x => GetTag(x.id)));
-            Aptitudes = new HashSet<Tag>(Db.Get().SkillGroups.resources.Select(x => GetTag(x.Id)));
             Attributes = new HashSet<Tag>(DUPLICANTSTATS.ALL_ATTRIBUTES.Select(x => GetTag("Attribute " + x)));
-#if LOCALE
-            Helpers.StringsTag("CustomizeBuildings.TAG.Bad_Traits", "Bad Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Remove_Traits", "Remove Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Good_Traits", "Good Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Gene_Traits", "Gene Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Congenital_Traits", "Congenital Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Stress_Traits", "Stress Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Joy_Traits", "Joy Traits");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Aptitudes", "Aptitudes");
-            Helpers.StringsTag("CustomizeBuildings.TAG.Attributes", "Attributes");
-            Helpers.StringsPrint();
-#endif
+            Aptitudes = new HashSet<Tag>(Db.Get().SkillGroups.resources.Select(x => GetTag(x.Id)));
         }
 
 #if LOCALE
@@ -280,21 +268,21 @@ namespace CustomizeBuildings
                     Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
                     minion.gameObject.GetComponent<Traits>().Remove(trait);
                     minion.AddExperience(-SkillStationCosts.CostRemoveTrait);
-                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait"), minion.GetProperName(), trait.Name);
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait"), minion.GetProperName(), filter.SelectedTag.ProperName());
                     break;
 
                 case SkillType.GoodTrait:
                     Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
                     minion.gameObject.GetComponent<Traits>().Add(trait);
                     minion.AddExperience(-SkillStationCosts.CostAddTrait);
-                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), trait.Name);
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), filter.SelectedTag.ProperName());
                     break;
 
                 case SkillType.BadTrait:
                     Debug.Log("[SkillStation] Tag execute: " + filter.SelectedTag);
                     minion.gameObject.GetComponent<Traits>().Add(trait);
                     minion.AddExperience(-SkillStationCosts.CostBadTrait);
-                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), trait.Name);
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAddTrait"), minion.GetProperName(), filter.SelectedTag.ProperName());
                     break;
 
                 case SkillType.Attribute:
@@ -308,7 +296,7 @@ namespace CustomizeBuildings
                         attribute.SetLevel(level + 1);
                         attribute.Apply(attributes);
                         minion.AddExperience(-SkillStationCosts.CostAddAttribute);
-                        tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), attributeId, level, level + 1);
+                        tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), filter.SelectedTag.ProperName(), level, level + 1);
                     }
                     else
                     {
@@ -322,7 +310,7 @@ namespace CustomizeBuildings
                     minion.SetAptitude(filter.SelectedTag.Name, 1f);
                     minion.AddExperience(-SkillStationCosts.CostAddAptitude);
                     //tooltip = $"{minion.GetProperName()} sparked new Interests in {filter.SelectedTag.ProperName()}";   //SkillStationAptitude
-                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude"), minion.GetProperName(), filter.SelectedTag.ProperName()); // TODO!! add missing locstrings!
+                    tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude"), minion.GetProperName(), filter.SelectedTag.ProperName());
                     break;
             }
 

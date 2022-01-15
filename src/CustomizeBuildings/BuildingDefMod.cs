@@ -25,107 +25,105 @@ namespace CustomizeBuildings
                 CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(link, out entry);
 
             if (entry == null)
+                return;
+
+            #region checks
+
+            if (entry.PowerConsumption != null)
             {
-                #region checks
-
-
-                if (entry.PowerConsumption != null)
-                {
-                    buildingDef.EnergyConsumptionWhenActive = (float)entry.PowerConsumption;
-                    buildingDef.RequiresPowerInput = entry.PowerConsumption != 0f;
-                }
-
-                if (entry.OverheatTemperature != null)
-                {
-                    buildingDef.OverheatTemperature = (float)entry.OverheatTemperature;
-                }
-
-                if (entry.ExhaustKilowattsWhenActive != null)
-                {
-                    buildingDef.ExhaustKilowattsWhenActive = (float)entry.ExhaustKilowattsWhenActive;
-                }
-
-                if (entry.SelfHeatKilowattsWhenActive != null)
-                {
-                    buildingDef.SelfHeatKilowattsWhenActive = (float)entry.SelfHeatKilowattsWhenActive;
-                }
-
-                if (entry.GeneratorWattageRating != null)
-                {
-                    buildingDef.GeneratorWattageRating = (float)entry.GeneratorWattageRating;
-                }
-
-                if (entry.GeneratorBaseCapacity != null)
-                {
-                    buildingDef.GeneratorBaseCapacity = (float)entry.GeneratorBaseCapacity;
-                }
-
-                if (entry.BaseDecor != null)
-                {
-                    buildingDef.BaseDecor = (float)entry.BaseDecor;
-                }
-
-                if (entry.BaseDecorRadius != null)
-                {
-                    buildingDef.BaseDecorRadius = (float)entry.BaseDecorRadius;
-                }
-
-                if (entry.LocationRule != null)
-                {
-                    buildingDef.BuildLocationRule = (BuildLocationRule)entry.LocationRule;
-                    if (entry.LocationRule == BuildLocationRule.Anywhere)
-                        buildingDef.ContinuouslyCheckFoundation = false;
-                }
-
-                if (entry.Rotations != null)
-                {
-                    buildingDef.PermittedRotations = (PermittedRotations)entry.Rotations;
-                }
-
-                if (entry.Floodable != null)
-                {
-                    buildingDef.Floodable = (bool)entry.Floodable;
-                }
-
-                if (entry.IsFoundation != null)
-                {
-                    buildingDef.IsFoundation = (bool)entry.IsFoundation;
-                }
-
-                if (entry.ThermalConductivity != null)
-                {
-                    buildingDef.ThermalConductivity = (float)entry.ThermalConductivity;
-                }
-
-                if (entry.MaterialCategory != null)
-                {
-                    buildingDef.MaterialCategory = entry.MaterialCategory.Split(' ');
-                }
-
-                if (entry.ConstructionMass != null)
-                {
-                    buildingDef.Mass = entry.ConstructionMass;
-                }
-
-                if (buildingDef.MaterialCategory.Length != buildingDef.Mass.Length)
-                {
-                    float[] newmass = new float[buildingDef.MaterialCategory.Length];
-                    for (int i = 0; i < newmass.Length; i++)
-                    {
-                        if (i < buildingDef.Mass.Length)
-                            newmass[i] = buildingDef.Mass[i];
-                        else
-                            newmass[i] = 1f;
-                    }
-                    buildingDef.Mass = newmass;
-                }
-
-                #endregion
-
-                // public bool Cancellable = true;
-                // public bool OnePerWorld = false;
-
+                buildingDef.EnergyConsumptionWhenActive = (float)entry.PowerConsumption;
+                buildingDef.RequiresPowerInput = entry.PowerConsumption != 0f;
             }
+
+            if (entry.OverheatTemperature != null)
+            {
+                buildingDef.OverheatTemperature = (float)entry.OverheatTemperature;
+            }
+
+            if (entry.ExhaustKilowattsWhenActive != null)
+            {
+                buildingDef.ExhaustKilowattsWhenActive = (float)entry.ExhaustKilowattsWhenActive;
+            }
+
+            if (entry.SelfHeatKilowattsWhenActive != null)
+            {
+                buildingDef.SelfHeatKilowattsWhenActive = (float)entry.SelfHeatKilowattsWhenActive;
+            }
+
+            if (entry.GeneratorWattageRating != null)
+            {
+                buildingDef.GeneratorWattageRating = (float)entry.GeneratorWattageRating;
+            }
+
+            if (entry.GeneratorBaseCapacity != null)
+            {
+                buildingDef.GeneratorBaseCapacity = (float)entry.GeneratorBaseCapacity;
+            }
+
+            if (entry.BaseDecor != null)
+            {
+                buildingDef.BaseDecor = (float)entry.BaseDecor;
+            }
+
+            if (entry.BaseDecorRadius != null)
+            {
+                buildingDef.BaseDecorRadius = (float)entry.BaseDecorRadius;
+            }
+
+            if (entry.LocationRule != null)
+            {
+                buildingDef.BuildLocationRule = (BuildLocationRule)entry.LocationRule;
+                if (entry.LocationRule == BuildLocationRule.Anywhere)
+                    buildingDef.ContinuouslyCheckFoundation = false;
+            }
+
+            if (entry.Rotations != null)
+            {
+                buildingDef.PermittedRotations = (PermittedRotations)entry.Rotations;
+            }
+
+            if (entry.Floodable != null)
+            {
+                buildingDef.Floodable = (bool)entry.Floodable;
+            }
+
+            if (entry.IsFoundation != null)
+            {
+                buildingDef.IsFoundation = (bool)entry.IsFoundation;
+            }
+
+            if (entry.ThermalConductivity != null)
+            {
+                buildingDef.ThermalConductivity = (float)entry.ThermalConductivity;
+            }
+
+            if (entry.MaterialCategory != null)
+            {
+                buildingDef.MaterialCategory = entry.MaterialCategory.Split(' ');
+            }
+
+            if (entry.ConstructionMass != null)
+            {
+                buildingDef.Mass = entry.ConstructionMass;
+            }
+
+            if (buildingDef.MaterialCategory.Length != buildingDef.Mass.Length)
+            {
+                float[] newmass = new float[buildingDef.MaterialCategory.Length];
+                for (int i = 0; i < newmass.Length; i++)
+                {
+                    if (i < buildingDef.Mass.Length)
+                        newmass[i] = buildingDef.Mass[i];
+                    else
+                        newmass[i] = 1f;
+                }
+                buildingDef.Mass = newmass;
+            }
+
+            // public bool Cancellable = true;
+            // public bool OnePerWorld = false;
+
+            #endregion
         }
 
         public static bool Prepare()
@@ -165,7 +163,7 @@ namespace CustomizeBuildings
 
         public static void Prefix(BuildingDef def)
         {
-            Helpers.Print($"Loading {def.PrefabID}, {def.Name}");
+            Helpers.Print($"Loading {def.PrefabID}, {def.Name.GetLink()}");
 
             foreach (var mod in mods)
             {

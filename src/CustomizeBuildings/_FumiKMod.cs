@@ -19,18 +19,18 @@ namespace CustomizeBuildings
             instance = harmony;
             Helpers.ModName = "CustomizeBuildings";
             CustomStrings.LoadStrings();
+            CustomStrings.SkillStationStrings();
             Helpers.StringsAddClass(typeof(BuildingStruct));
             Helpers.StringsAddClass(typeof(BuildingAdv));
             Helpers.StringsAddClass(typeof(ElementConverterContainer));
 #if LOCALE
             Helpers.StringsPrint();
-#else
-            Helpers.StringsLoad();
 #endif
+            Helpers.StringsLoad();
 
             new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
 
-            Miscellaneous.OnLoad();
+            Helpers.CallSafe(Miscellaneous.OnLoad);
             Speed_Patch.OnLoad();
             base.OnLoad(harmony);
         }

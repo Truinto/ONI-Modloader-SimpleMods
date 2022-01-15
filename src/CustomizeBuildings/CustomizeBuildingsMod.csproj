@@ -20,6 +20,7 @@
     <Compile Include="..\Common\Helpers.cs" Link="Helpers.cs" />
     <Compile Include="..\Common\TechHelper.cs" Link="TechHelper.cs" />
     <Compile Include="IBuildingCompleteMod.cs" />
+    <Compile Include="OnDbInitialize.cs" />
     <Compile Include="Rads.cs" />
     <Compile Include="_FumiKMod.cs" />
   </ItemGroup>
