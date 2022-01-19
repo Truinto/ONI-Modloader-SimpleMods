@@ -82,12 +82,15 @@ namespace Common
         #region Conversion
         public static SimHashes ToSimHash(this string str, SimHashes fallback = SimHashes.Vacuum)
         {
-            SimHashes result = (SimHashes)Hash.SDBMLower(str);
+            ElementLoader.elementTable.TryGetValue(Hash.SDBMLower(str), out var element);
+            if (element != null)
+                return element.id;
 
-            if (ElementLoader.GetElementIndex(result) < 0)
-                return fallback;
+            element = ElementLoader.elements.FirstOrDefault(f => f.name.EqualIgnoreCase(str));
+            if (element != null)
+                return element.id;
 
-            return result;
+            return fallback;
         }
 
         public static SimHashes ToSimHash(this Tag tag)
@@ -98,6 +101,22 @@ namespace Common
         public static Tag ToTag(this SimHashes hash)
         {
             return new Tag(hash.ToString());
+        }
+
+        public static Element ToElement(this string str)
+        {
+            if (str == null)
+                return null;
+
+            ElementLoader.elementTable.TryGetValue(Hash.SDBMLower(str), out var element);
+            if (element != null)
+                return element;
+
+            element = ElementLoader.elements.FirstOrDefault(f => f.name.EqualIgnoreCase(str));
+            if (element != null)
+                return element;
+
+            return null;
         }
 
         public static Element ToElement(this Tag tag)
@@ -145,7 +164,16 @@ namespace Common
 
         public static bool EqualIgnoreCase(this string str1, string str2)
         {
-            return String.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
+            if (str1 == null || str2 == null)
+                return false;
+            return str1.Equals(str2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool StartsWithIgnoreCase(this string str1, string str2)
+        {
+            if (str1 == null || str2 == null)
+                return false;
+            return str1.StartsWith(str2, StringComparison.OrdinalIgnoreCase);
         }
 
         public static HashSet<Tag> RemoveRange(this HashSet<Tag> set, IEnumerable<Tag> itemsToRemove)

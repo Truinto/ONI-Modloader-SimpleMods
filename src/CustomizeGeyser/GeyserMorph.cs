@@ -33,7 +33,9 @@ namespace CustomizeGeyser
         private string buttonText;
         [Serialize]
         private string currentGeyserSelection;
-        
+        [Serialize]
+        private Tag currentGeyserSelectionTag;
+
         protected override void OnPrefabInit()
         {
             base.OnPrefabInit();
@@ -55,8 +57,8 @@ namespace CustomizeGeyser
         protected override void OnSpawn()
         {
             base.OnSpawn();
-            if (currentGeyserSelection == null)
-                currentGeyserSelection = this.gameObject.name;//GeyserInfo.config.Find(x => x.id == this.gameObject.name);
+            if (!currentGeyserSelectionTag.IsValid)
+                currentGeyserSelectionTag = "geyser_" + this.gameObject.name.Replace("GeyserGeneric_", "");
             this.UpdateButton();
             //this.morphedIndicator = new MeterController(this.GetComponent<KBatchedAnimController>(), this.meterTrackerSymbol, this.meterAnim, Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[1] { this.meterTrackerSymbol });
         }
@@ -67,8 +69,8 @@ namespace CustomizeGeyser
                 return;
 
             Game.Instance.userMenu.AddButton(this.gameObject, this.chore != null ?
-                  new KIconButtonMenu.ButtonInfo("action_morph_geyser", "Cancel morphing", new System.Action(this.ToggleChore), tooltipText: "Cancel this morphing order")
-                : new KIconButtonMenu.ButtonInfo("action_morph_geyser", "Morph geyser into:", new System.Action(this.ToggleChore), tooltipText: "Morph geyser into another type"), 1f);
+                  new KIconButtonMenu.ButtonInfo("action_morph_geyser", Strings.Get("CustomizeGeyser.LOCSTRINGS.Cancel_morphing"), new System.Action(this.ToggleChore), tooltipText: Strings.Get("CustomizeGeyser.LOCSTRINGS.Cancel_morphing_tooltip"))
+                : new KIconButtonMenu.ButtonInfo("action_morph_geyser", Strings.Get("CustomizeGeyser.LOCSTRINGS.Morph_into"), new System.Action(this.ToggleChore), tooltipText: Strings.Get("CustomizeGeyser.LOCSTRINGS.Morph_into_tooltip")), 1f);
 
             Game.Instance.userMenu.AddButton(this.gameObject, new KIconButtonMenu.ButtonInfo("action_morph_type", buttonText, new System.Action(this.NextGeyser), tooltipText: "Click for next geyser type."), 2f);
 
@@ -76,19 +78,17 @@ namespace CustomizeGeyser
 
         public void NextGeyser()
         {
-            int index = GeyserInfo.Config.FindIndex(x => x.id == this.currentGeyserSelection) + 1;
+            string selection = this.currentGeyserSelectionTag.Name.Substring(7);
+            int index = GeyserInfo.Config.FindIndex(x => x.id == selection) + 1;
             if (index >= GeyserInfo.Config.Count) index = 0;
 
-            this.currentGeyserSelection = GeyserInfo.Config[index].id;
+            this.currentGeyserSelectionTag = "geyser_" + GeyserInfo.Config[index].id.Replace("GeyserGeneric_", "");
             this.UpdateButton();
         }
 
         private void UpdateButton()
         {
-            if (currentGeyserSelection.StartsWith("GeyserGeneric_"))
-                buttonText = currentGeyserSelection.Substring(14);
-            else
-                buttonText = currentGeyserSelection;
+            buttonText = currentGeyserSelectionTag.ProperName();
         }
 
         public void ToggleChore()

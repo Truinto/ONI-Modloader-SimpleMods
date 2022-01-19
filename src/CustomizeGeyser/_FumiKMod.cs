@@ -15,6 +15,7 @@ namespace CustomizeGeyser
         {
             Helpers.ModName = "CustomizeGeyser";
             CustomStrings.LoadStrings();
+            CustomStrings.ExtraStrings();
             Helpers.StringsAddClass(typeof(GeyserStruct));
 #if LOCALE
             Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.MOLTEN_STEEL.NAME"] = "Steel Volcano";
@@ -29,9 +30,8 @@ namespace CustomizeGeyser
             Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.LIQUID_ETHANOL.DESC"] = "Ethanol Geyser";
             Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.LIQUID_ETHANOL.DESC"] = "A highly pressurized geyser that periodically erupts with boiling " + STRINGS.UI.FormatAsLink("Ethanol", "ETHANOL") + ".";
             Helpers.StringsPrint();
-#else
-            Helpers.StringsLoad();
 #endif
+            Helpers.StringsLoad();
 
             new POptions().RegisterOptions(this, typeof(CustomizeGeyserState));
 

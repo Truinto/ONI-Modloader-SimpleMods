@@ -6,6 +6,7 @@
 - added button to enable special geysers (coolant, steel)
 - added option to teleport geyser with ALT+Q
 - added support for custom kanim geysers
+- element id also accepts ingame name instead of the exact SimHash
 
 ## [1.0.15.0] U37-484114-S
 

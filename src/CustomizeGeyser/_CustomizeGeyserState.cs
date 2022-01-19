@@ -298,5 +298,38 @@ namespace CustomizeGeyser
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_ToolTip", "How long a scientist dupe will need to work on the geyser to morph it.");
             #endregion
         }
+
+        public static void ExtraStrings()
+        {
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Cancel_morphing", "Cancel morphing");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Cancel_morphing_tooltip", "Cancel this morphing order");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Morph_into", "Morph geyser into:");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Morph_into_tooltip", "Morph geyser into another type");
+
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_steam", "geyser_steam", "Steam Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_hot_steam", "geyser_hot_steam", "Hot Steam Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_hot_water", "geyser_hot_water", "Hot Water Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_slush_water", "geyser_slush_water", "Slush Water Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_filthy_water", "geyser_filthy_water", "Filthy Water Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_salt_water", "geyser_salt_water", "Salt Water Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_small_volcano", "geyser_small_volcano", "Small Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_big_volcano", "geyser_big_volcano", "Big Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_liquid_co2", "geyser_liquid_co2", "Liquid CO2 Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_hot_co2", "geyser_hot_co2", "Hot CO2 Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_hot_hydrogen", "geyser_hot_hydrogen", "Hydrogen Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_hot_po2", "geyser_hot_po2", "Poluted Oxygen Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_slimy_po2", "geyser_slimy_po2", "Toxic Oxygen Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_chlorine_gas", "geyser_chlorine_gas", "Chlorine Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_methane", "geyser_methane", "Methane Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_copper", "geyser_molten_copper", "Copper Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_iron", "geyser_molten_iron", "Iron Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_gold", "geyser_molten_gold", "Gold Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_oil_drip", "geyser_oil_drip", "Oil Drip");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_slush_salt_water", "geyser_slush_salt_water", "Salt Water Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_aluminum", "geyser_molten_aluminum", "Aluminum Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_tungsten", "geyser_molten_tungsten", "Tungsten Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_niobium", "geyser_molten_niobium", "Niobium Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_liquid_sulfur", "geyser_liquid_sulfur", "Sulfur Geyser");
+        }
     }
 }

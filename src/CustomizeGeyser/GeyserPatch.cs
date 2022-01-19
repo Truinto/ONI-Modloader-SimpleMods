@@ -34,6 +34,8 @@ namespace CustomizeGeyser
         //public static readonly string[] GeyserKAnimsVanilla = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_oil_kanim", "geyser_liquid_sulfur_kanim" };
         //public static readonly string[] GeyserKAnimsDLC1 = { "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_sulfur_kanim" };
 
+        public static Dictionary<Tag, string> ProperTags = AccessTools.Field(typeof(TagManager), "ProperNamesNoLinks").GetValue(null) as Dictionary<Tag, string>;
+
         public static void Postfix(ref List<GeyserGenericConfig.GeyserPrefabParams> __result)
         {
             GeyserInfo.Config = __result;
@@ -44,6 +46,10 @@ namespace CustomizeGeyser
             foreach (var modifier in CustomizeGeyserState.StateManager.State.Geysers)
             {
                 if (modifier.id == null) continue;
+
+                var tagID = ProperTags.FirstOrDefault(f => f.Key.Name.StartsWithIgnoreCase("geyser_") && f.Value == modifier.id);
+                if (tagID.Key.IsValid)
+                    modifier.id = tagID.Key.Name.Substring(7);
 
                 Helpers.Print("Processing " + modifier.id + " ...");
                 
@@ -63,7 +69,7 @@ namespace CustomizeGeyser
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad height");
                         modifier.height = null;
                     }
-                    if (modifier.element != null && ElementLoader.FindElementByName(modifier.element) == null)
+                    if (modifier.element != null && modifier.element.ToElement() == null)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " element " + modifier.element + " does not exist");
                         modifier.element = null;
@@ -148,7 +154,7 @@ namespace CustomizeGeyser
                 if (geyserType != null)  //edit existing geyser
                 {
                     if (modifier.element != null)
-                        geyserType.element = (SimHashes)Hash.SDBMLower(modifier.element);
+                        geyserType.element = modifier.element.ToSimHash();
                     if (modifier.temperature != null)
                         geyserType.temperature = (float)modifier.temperature;
                     if (modifier.minRatePerCycle != null)
@@ -212,7 +218,7 @@ namespace CustomizeGeyser
                         continue;
                     }
 
-                    if (ElementLoader.FindElementByName(modifier.element) == null)
+                    if (modifier.element.ToElement() == null)
                     {
                         Helpers.PrintDialog("Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element);
                         continue;
@@ -220,7 +226,7 @@ namespace CustomizeGeyser
 
                     if (modifier.anim == null)
                     {
-                        Element element = ElementLoader.FindElementByName(modifier.element);
+                        Element element = modifier.element.ToElement();
                         if (element.IsGas)
                             modifier.anim = "geyser_gas_steam_kanim";
                         else if (element.name.ToLower().Contains("molten"))
@@ -320,7 +326,7 @@ namespace CustomizeGeyser
                             (int)modifier.height,
                             new GeyserConfigurator.GeyserType(
                                 modifier.id,
-                                (SimHashes)Hash.SDBMLower(modifier.element),
+                                modifier.element.ToSimHash(),
                                 (float)modifier.temperature,
                                 (float)modifier.minRatePerCycle,
                                 (float)modifier.maxRatePerCycle,
