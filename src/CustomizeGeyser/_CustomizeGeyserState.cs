@@ -115,7 +115,7 @@ namespace CustomizeGeyser
             OptionsDialog.Last = null;
         };
 
-        [Option("Preset: Enable All", "Enables all geyser types, even the overpowered ones. Doesn't affect existing saves and they are generally still rare.", "Buttons", null)]
+        [Option("CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_Title", "CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_ToolTip", "Buttons", null)]
         [JsonIgnore]
         public System.Action<object> EnableAllGeysers => delegate (object nix)
         {
@@ -144,7 +144,7 @@ namespace CustomizeGeyser
         #endregion
 
         #region Fields
-        public int version { get; set; } = 8;
+        public int version { get; set; } = 9;
         [Option("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "Fields", null)]
         public bool Enabled { get; set; } = true;
 
@@ -230,7 +230,7 @@ namespace CustomizeGeyser
         [Option("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_Title", "CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_ToolTip", "Fields", null)]
         public int GeyserMorphWorktime { get; set; } = 300;
 
-        [Option("Geyser Teleport Enabled", "Teleport selected geyser to mouse cursor with DebugTeleport key (default: ALT+Q)", "Fields", null)]
+        [Option("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_Title", "CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_ToolTip", "Fields", null)]
         public bool GeyserTeleportEnabled { get; set; } = true;
         #endregion
 
@@ -257,6 +257,9 @@ namespace CustomizeGeyser
 
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.PresetCopy_Title", "Preset: Copy");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.PresetCopy_ToolTip", "Adds all geysers with all options copied from current game.");
+
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_Title", "Preset: Enable All");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_ToolTip", "Enables all geyser types, even the overpowered ones. Doesn't affect existing saves and they are generally still rare.");
             #endregion
             #region Fields
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.version", "version");
@@ -296,6 +299,10 @@ namespace CustomizeGeyser
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.GeyserMorphWorktime", "GeyserMorphWorktime");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_Title", "Geyser Morph Worktime");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserMorphWorktime_ToolTip", "How long a scientist dupe will need to work on the geyser to morph it.");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.GeyserTeleportEnabled", "GeyserTeleportEnabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_Title", "Geyser Teleport Enabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_ToolTip", "Teleport selected geyser to mouse cursor with DebugTeleport key (default: ALT+Q)");
             #endregion
         }
 
@@ -305,6 +312,7 @@ namespace CustomizeGeyser
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Cancel_morphing_tooltip", "Cancel this morphing order");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Morph_into", "Morph geyser into:");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Morph_into_tooltip", "Morph geyser into another type");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Next_geyser_tooltip", "Click for next geyser type");
 
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_steam", "geyser_steam", "Steam Geyser");
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_hot_steam", "geyser_hot_steam", "Hot Steam Geyser");
@@ -325,11 +333,29 @@ namespace CustomizeGeyser
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_iron", "geyser_molten_iron", "Iron Volcano");
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_gold", "geyser_molten_gold", "Gold Volcano");
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_oil_drip", "geyser_oil_drip", "Oil Drip");
-            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_slush_salt_water", "geyser_slush_salt_water", "Salt Water Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_slush_salt_water", "geyser_slush_salt_water", "Slush Salt Water Geyser");
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_aluminum", "geyser_molten_aluminum", "Aluminum Volcano");
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_tungsten", "geyser_molten_tungsten", "Tungsten Volcano");
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_niobium", "geyser_molten_niobium", "Niobium Volcano");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_cobalt", "geyser_molten_cobalt", "Cobalt Volcano");
             Helpers.StringsTag("CustomizeGeyser.TAG.geyser_liquid_sulfur", "geyser_liquid_sulfur", "Sulfur Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_glass", "geyser_molten_glass", "Glass Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_liquid_ethanol", "geyser_liquid_ethanol", "Ethanol Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_molten_steel", "geyser_molten_steel", "Steel Geyser");
+            Helpers.StringsTag("CustomizeGeyser.TAG.geyser_liquid_coolant", "geyser_liquid_coolant", "Coolant Geyser");
+#if LOCALE
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.MOLTEN_STEEL.NAME"] = "Steel Volcano";
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.MOLTEN_STEEL.DESC"] = "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Steel", "MOLTENSTEEL") + ".";
+
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.MOLTEN_GLASS.NAME"] = "Glass Volcano";
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.MOLTEN_GLASS.DESC"] = "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Glass", "MOLTENGLASS") + ".";
+
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.LIQUID_COOLANT.NAME"] = "Super Coolant Geyser";
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.LIQUID_COOLANT.DESC"] = "A highly pressurized geyser that periodically erupts with hot " + STRINGS.UI.FormatAsLink("Super Coolant", "SUPERCOOLANT") + ".";
+
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.LIQUID_ETHANOL.NAME"] = "Ethanol Geyser";
+            Helpers.StringsDic["STRINGS.CREATURES.SPECIES.GEYSER.LIQUID_ETHANOL.DESC"] = "A highly pressurized geyser that periodically erupts with boiling " + STRINGS.UI.FormatAsLink("Ethanol", "ETHANOL") + ".";
+#endif
         }
     }
 }

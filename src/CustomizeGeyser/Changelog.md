@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.16.0]
+## [1.0.16.0] U39-490405-S
 - added additional strings for translation
 - changed so existing geyser names and descriptions take priority over settings
 - added button to enable special geysers (coolant, steel)

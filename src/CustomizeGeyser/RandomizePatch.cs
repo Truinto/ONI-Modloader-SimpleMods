@@ -27,7 +27,7 @@ namespace CustomizeGeyser
 				if (!GeyserInfo.GeyserTypes.Any(a => a.id == entry))
 					itemsToRemove.Add(entry);
 
-				if (!GeyserInfo.Config.Any(a => a.id == "GeyserGeneric_" + entry)) //(a => a.geysertype.id == entry)
+				else if (!GeyserInfo.Config.Any(a => a.id == "GeyserGeneric_" + entry)) //(a => a.geysertype.id == entry)
 					itemsToRemove.Add(entry);
 
 				//if (!Assets.Prefabs.Any(a => a.PrefabID() == "GeyserGeneric_" + entry))

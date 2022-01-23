@@ -11,6 +11,8 @@
   <!-- Common build properties -->
   <PropertyGroup>
     <LangVersion>9</LangVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,16 +33,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  
-  <!-- Source folders -->
-  <PropertyGroup>
-    <SteamFolder>D:\Programme\Steam</SteamFolder>
-    <ONIManaged Condition="Exists('$(SteamFolder)')">$(SteamFolder)\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</ONIManaged>
-    <ONIManaged Condition="!Exists('$(SteamFolder)')">..\..\..\..\$non-backup\ONI sources</ONIManaged>
-    <ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev</ModFolder>
-    <ILMergeEXE>$(MSBuildThisFileDirectory)packages\ILMerge.3.0.41\tools\net452\ILMerge.exe</ILMergeEXE>
-  </PropertyGroup>
-  
+    
   <!-- DLCs installed (put empty file '_IsDLC1' into Managed folder) -->
   <PropertyGroup>
     <DefineConstants Condition="Exists('$(ONIManaged)\_IsDLC1')">$(DefineConstants);DLC1</DefineConstants>
@@ -65,7 +58,8 @@
     <Reference Include="UnityEngine.UI" HintPath="$(ONIManaged)\UnityEngine.UI.dll" />
     <Reference Include="PLibUI" HintPath="$(MSBuildThisFileDirectory)\PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
     <Reference Include="PLibCore" HintPath="$(MSBuildThisFileDirectory)\PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
-    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)\PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+    <Reference Include="PLibOptions" HintPath="$(MSBuildThisFileDirectory)\PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />	
+	<Reference Include="IndexRange" HintPath="$(MSBuildThisFileDirectory)packages\IndexRange.1.0.0\lib\net471\IndexRange.dll" />
   </ItemGroup>
   
   <PropertyGroup>
