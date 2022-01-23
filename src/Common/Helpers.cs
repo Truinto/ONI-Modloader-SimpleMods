@@ -51,7 +51,7 @@ namespace Common
             }
             catch (Exception e)
             {
-                Print($"{action.Method.Name} caused an Exception: {e.Message}");
+                Print($"{action.Method.Name} caused an Exception: {e}");
             }
             
         }
@@ -174,6 +174,20 @@ namespace Common
             if (str1 == null || str2 == null)
                 return false;
             return str1.StartsWith(str2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool TryParseEnum(Type enumType, string value, out Enum result)
+        {
+            try
+            {
+                result = (Enum)Enum.Parse(enumType, value);
+                return true;
+            }
+            catch (Exception)
+            {
+                result = default;
+                return false;
+            }
         }
 
         public static HashSet<Tag> RemoveRange(this HashSet<Tag> set, IEnumerable<Tag> itemsToRemove)

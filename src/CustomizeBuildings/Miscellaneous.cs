@@ -66,7 +66,6 @@ namespace CustomizeBuildings
             setTuning(nameof(CustomizeBuildingsState.TuningEnginePowerLateStrong), ref TUNING.ROCKETRY.ENGINE_POWER.LATE_STRONG);
             setTuning(nameof(CustomizeBuildingsState.TuningEnginePowerLateVeryStrong), ref TUNING.ROCKETRY.ENGINE_POWER.LATE_VERY_STRONG);
 
-
             setTuning(nameof(CustomizeBuildingsState.TuningFuelCostPerDistanceSugar), ref SugarEngineConfig.FUEL_EFFICIENCY);
             setTuning(nameof(CustomizeBuildingsState.TuningFuelCostPerDistanceMedium), ref TUNING.ROCKETRY.FUEL_COST_PER_DISTANCE.MEDIUM);
             setTuning(nameof(CustomizeBuildingsState.TuningFuelCostPerDistanceHigh), ref TUNING.ROCKETRY.FUEL_COST_PER_DISTANCE.HIGH);
@@ -74,7 +73,14 @@ namespace CustomizeBuildings
             setTuning(nameof(CustomizeBuildingsState.TuningFuelCostPerDistanceGasVeryLow), ref TUNING.ROCKETRY.FUEL_COST_PER_DISTANCE.GAS_VERY_LOW);
             setTuning(nameof(CustomizeBuildingsState.TuningFuelCostPerDistanceGasLow), ref TUNING.ROCKETRY.FUEL_COST_PER_DISTANCE.GAS_LOW);
             setTuning(nameof(CustomizeBuildingsState.TuningFuelCostPerDistanceParticles), ref TUNING.ROCKETRY.FUEL_COST_PER_DISTANCE.PARTICLES);
-            
+
+            setTuning(nameof(CustomizeBuildingsState.TuningRocketHeightVeryShort), ref TUNING.ROCKETRY.ROCKET_HEIGHT.VERY_SHORT); // CO2
+            setTuning(nameof(CustomizeBuildingsState.TuningRocketHeightShort), ref TUNING.ROCKETRY.ROCKET_HEIGHT.SHORT); // Sugar
+            setTuning(nameof(CustomizeBuildingsState.TuningRocketHeightMedium), ref TUNING.ROCKETRY.ROCKET_HEIGHT.MEDIUM); // Particle, Small Petroleum
+            setTuning(nameof(CustomizeBuildingsState.TuningRocketHeightTall), ref TUNING.ROCKETRY.ROCKET_HEIGHT.TALL); // Steam
+            setTuning(nameof(CustomizeBuildingsState.TuningRocketHeightVeryTall), ref TUNING.ROCKETRY.ROCKET_HEIGHT.VERY_TALL); // Hydrogen, Petroleum
+            setTuning(nameof(CustomizeBuildingsState.TuningRocketHeightModules), ref TUNING.ROCKETRY.ROCKET_HEIGHT.MAX_MODULE_STACK_HEIGHT);
+
             #endregion
 
             if (CustomizeBuildingsState.StateManager.State.MaterialIgnoreInsufficientMaterial)
@@ -101,7 +107,8 @@ namespace CustomizeBuildings
         private static void setTuning(string setting, ref int target)
         {
             var pi = AccessTools.Property(typeof(CustomizeBuildingsState), setting);
-            float state = (float)pi.GetValue(CustomizeBuildingsState.StateManager.State);
+            object obj = pi.GetValue(CustomizeBuildingsState.StateManager.State);
+            float state = obj is int ? (int)obj : (float)obj;
 
             if (CustomizeBuildingsState.StateManager.State.TuningGlobal && !float.IsNaN(state))
             {

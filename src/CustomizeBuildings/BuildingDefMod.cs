@@ -415,10 +415,11 @@ namespace CustomizeBuildings
             CustomizeBuildingsState.StateManager.State.AdvancedSettings.Remove(def.PrefabID);
         }
 
-        
+
         public static void NewAdvanced(string setting)
         {
             var flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            //var AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes());
 
             // patch GeneratedBuildings.LoadGeneratedBuildings, very low priority
             // split with ':'
@@ -428,26 +429,125 @@ namespace CustomizeBuildings
             // left side of '=' is the field
             // right right of '=' will be parsed and set
             // valid values are int, long, float, double, enum, string, and arrays/Lists of these values (split multi-values with ',')
-            // example string: "IceCooledFan: Storage#2: capacityKg = 1000;storageFilters = Ice, DirtyIce, Dirt, Sand;"
+            // example string: "IceCooledFan: Storage#1: capacityKg = 1000; Storage#2: capacityKg = 1000;storageFilters = Ice, DirtyIce, Dirt, Sand;"
             setting = Regex.Replace(setting, @"\s+", "");
 
-            var lines = setting.Split(':');
-            if (lines.Length < 2) throw new Exception("Missing separator ':'");
-
-            var def = Assets.BuildingDefs.FirstOrDefault(f => f.PrefabID == lines[0]);
-            if (def == null) throw new Exception("PrefabID doesn't exist");
-
-            object target = lines.Length == 2 ? def : def.BuildingComplete;
-            for (int i = 1; i < lines.Length - 1; i++)
+            BuildingDef def = null;
+            object target = null;
+            int j = 0;                               // pointer back
+            int numcom;                              // index of component to edit
+            for (int i = 0; i < setting.Length - 1; i++) // pointer front
             {
-                target.GetType().GetNestedTypes(flags); // todo
+                if (setting[i] == ':')
+                {
+                    if (def == null) // first read is always prefabID
+                    {
+                        string prefabID = read();
+                        def = Assets.BuildingDefs.FirstOrDefault(f => f.PrefabID == prefabID); if (def == null)
+                            throw new Exception("invalid PrefabID " + prefabID);
+                        continue;
+                    }
+
+                    string component = read();
+                    numcom = 0;
+                    var cindex = component.IndexOf('#');
+                    if (cindex >= 0)
+                    {
+                        string sub = component[(cindex + 1)..];
+                        int.TryParse(sub, out numcom);
+                        component = component[..cindex];
+                    }
+
+                    var targets = def.BuildingComplete.GetComponents<Component>().Where(w => w.GetType().Name == component).ToArray();
+                    if (targets.Length <= numcom)
+                        throw new Exception($"{def.PrefabID} has {targets.Length} of '{component}', but tried to access {numcom}");
+                    target = targets[numcom];
+
+                    continue;
+                }
+
+                if (setting[i] == ';')
+                {
+                    if (def == null)
+                        throw new Exception("missing PrefabID");
+                    if (target == null)
+                        throw new Exception("missing target component");
+
+                    var instruction = read();
+                    int findex = instruction.IndexOf('=');
+                    if (findex < 0)
+                        throw new Exception("invalid format, did not find '='");
+                    string newvalue = instruction[(findex + 1)..];
+                    string field = instruction[..findex];
+
+                    var fi = target.GetType().GetField(field, flags);
+                    if (fi == null)
+                        throw new Exception("invalid field name: " + field);
+                    var value = fi.GetValue(target);
+                    switch (value)
+                    {
+                        case Enum:
+                            if (!Helpers.TryParseEnum(fi.FieldType, newvalue, out var venum))
+                                throw new Exception("could not parse enum: " + newvalue);
+                            fi.SetValue(target, venum);
+                            Helpers.PrintDebug($"set enum {venum} to {def.PrefabID}:{fi.DeclaringType.Name}:{field}");
+                            break;
+
+                        case int:
+                            if (!int.TryParse(newvalue, out int vint))
+                                throw new Exception("could not parse int: " + newvalue);
+                            fi.SetValue(target, vint);
+                            Helpers.PrintDebug($"set int {vint} to {def.PrefabID}:{fi.DeclaringType.Name}:{field}");
+                            break;
+
+                        case float:
+                            if (!int.TryParse(newvalue, out int vfloat))
+                                throw new Exception("could not parse int: " + newvalue);
+                            fi.SetValue(target, vfloat);
+                            Helpers.PrintDebug($"set float {vfloat} to {def.PrefabID}:{fi.DeclaringType.Name}:{field}");
+                            break;
+
+                        case null:
+                            throw new Exception("target has field, but could not access");
+                        default:
+                            throw new Exception("target field is not supported");
+                    }
+
+
+                    continue;
+                }
+
+
+                continue;
+                string read() // get string between front and back pointer; advance pointer to ignore next character
+                {
+                    string result = setting[j..i];
+                    j = i + 1;
+                    return result;
+                }
             }
 
-            var values = lines[lines.Length - 1].Split(';').Where(w => w.Contains('='));
-            foreach (string x in values)
-            {
 
-            }
+
+
+            // -- old
+            //var lines = setting.Split(':');
+            //if (lines.Length < 2) throw new Exception("Missing separator ':'");
+
+            //var def = Assets.BuildingDefs.FirstOrDefault(f => f.PrefabID == lines[0]);
+            //if (def == null) throw new Exception("PrefabID doesn't exist");
+
+            //object target = lines.Length == 2 ? def : def.BuildingComplete;
+            //for (int i = 1; i < lines.Length - 1; i++)
+            //{
+            //    target.GetType().GetNestedTypes(flags); // todo
+            //}
+
+            //var values = lines[lines.Length - 1].Split(';').Where(w => w.Contains('='));
+            //foreach (string x in values)
+            //{
+
+            //}
         }
     }
 }

@@ -575,10 +575,23 @@ namespace CustomizeBuildings
         public float TuningFuelCostPerDistanceVeryHigh { get; set; } = 0.15f;
         [Option("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasVeryLow_Title", "CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasVeryLow_ToolTip", "Tuning", "F3")]
         public float TuningFuelCostPerDistanceGasVeryLow { get; set; } = 0.025f;
-        [Option("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_Title", "CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_ToolTip", "Tuning", "F2")]
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_Title", "CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceGasLow_ToolTip", "Tuning", "F8")]
         public float TuningFuelCostPerDistanceGasLow { get; set; } = 0.027777778f;
         [Option("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceParticles_Title", "CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceParticles_ToolTip", "Tuning", "F8")]
         public float TuningFuelCostPerDistanceParticles { get; set; } = 0.33333334f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryShort_Title", "CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryShort_ToolTip", "Tuning", null)]
+        public int TuningRocketHeightVeryShort { get; set; } = 10;
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightShort_Title", "CustomizeBuildings.LOCSTRINGS.TuningRocketHeightShort_ToolTip", "Tuning", null)]
+        public int TuningRocketHeightShort { get; set; } = 16;
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightMedium_Title", "CustomizeBuildings.LOCSTRINGS.TuningRocketHeightMedium_ToolTip", "Tuning", null)]
+        public int TuningRocketHeightMedium { get; set; } = 20;
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightTall_Title", "CustomizeBuildings.LOCSTRINGS.TuningRocketHeightTall_ToolTip", "Tuning", null)]
+        public int TuningRocketHeightTall { get; set; } = 25;
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryTall_Title", "CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryTall_ToolTip", "Tuning", null)]
+        public int TuningRocketHeightVeryTall { get; set; } = 35;
+        [Option("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightModules_Title", "CustomizeBuildings.LOCSTRINGS.TuningRocketHeightModules_ToolTip", "Tuning", null)]
+        public int TuningRocketHeightModules { get; set; } = 30;
         #endregion
 
         #region Advanced
@@ -1425,6 +1438,30 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningFuelCostPerDistanceParticles", "TuningFuelCostPerDistanceParticles");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceParticles_Title", "Fuel Cost Per Distance: Radbolt Engine");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningFuelCostPerDistanceParticles_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningRocketHeightVeryShort", "TuningRocketHeightVeryShort");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryShort_Title", "Rocket Height: CO2 Engine");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryShort_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningRocketHeightShort", "TuningRocketHeightShort");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightShort_Title", "Rocket Height: Sugar Engine");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightShort_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningRocketHeightMedium", "TuningRocketHeightMedium");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightMedium_Title", "Rocket Height: Particle, Small Petroleum Engine");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightMedium_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningRocketHeightTall", "TuningRocketHeightTall");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightTall_Title", "Rocket Height: Steam Engine");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightTall_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningRocketHeightVeryTall", "TuningRocketHeightVeryTall");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryTall_Title", "Rocket Height: Hydrogen, Petroleum Engine");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightVeryTall_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TuningRocketHeightModules", "TuningRocketHeightModules");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightModules_Title", "Rocket Height: Modules");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightModules_ToolTip", "");
             #endregion
         }
         

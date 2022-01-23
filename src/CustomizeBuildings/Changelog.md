@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.58.0] U39-490405-S
+- added rocket height tuning
+- fixed some tuning settings not being applied
+
 ## [1.0.57.0] U39-490405-S
 - allowing ingame names for BuildingAdvancedOutputTemp
 - fixed crash with 3rd party mods that add buildings without proper naming
