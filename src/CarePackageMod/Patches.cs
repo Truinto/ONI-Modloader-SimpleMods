@@ -45,27 +45,34 @@ namespace CarePackageMod
     {
         public static bool Prepare()
         {
-            NumberOfInterests = CarePackageState.StateManager.State.always3Interests ? 3 : 1;
+            MinInterests = Math.Max(0, CarePackageState.StateManager.State.minNumberofInterests);
+            MaxInterests = Math.Max(MinInterests + 1, CarePackageState.StateManager.State.maxNumberofInterests + 1);
             return true;
         }
 
-        public static int NumberOfInterests = 1;
+        public static int MinInterests = 1;
+        public static int MaxInterests = 4;
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
-            foreach (var line in instr)
+            var lines = instr.ToList();
+            for (int i = 0; i < lines.Count - 2; i++)
             {
-                if (line.opcode == OpCodes.Ldc_I4_1)
+                if (lines[i].opcode == OpCodes.Ldc_I4_1
+                    && lines[i].opcode == OpCodes.Ldc_I4_4
+                    && lines[i].opcode == OpCodes.Call)
                 {
-                    // line.opcode = OpCodes.Ldc_I4;
-                    // line.operand = 3;
-                    line.opcode = OpCodes.Ldsfld;
-                    line.operand = typeof(Reshuffle4).GetField(nameof(Reshuffle4.NumberOfInterests));
-                    Debug.Log($"[CarePackageMod] Patched GenerateAptitudes Ldc_I4_1 with {line.operand}");
+                    lines[i].opcode = OpCodes.Ldsfld;
+                    lines[i].operand = typeof(Reshuffle4).GetField(nameof(Reshuffle4.MinInterests));
+                    i++;
+                    lines[i].opcode = OpCodes.Ldsfld;
+                    lines[i].operand = typeof(Reshuffle4).GetField(nameof(Reshuffle4.MaxInterests));
+
+                    Debug.Log($"[CarePackageMod] Patched GenerateAptitudes Ldc_I4_1 with {lines[i].operand}");
                     break;
                 }
             }
-            return instr;
+            return lines;
         }
     }
 

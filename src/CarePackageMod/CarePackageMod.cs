@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using System.Reflection.Emit;
 using System.Reflection;
+using Common;
 
 namespace CarePackageMod
 {
@@ -12,36 +13,43 @@ namespace CarePackageMod
     [HarmonyPatch(typeof(Immigration), "RandomCarePackage")]
     public class CarePackageMod
     {
-        public static CarePackageInfo[] carePackages = null;
+        public static bool dirty = true;
+        public static List<CarePackageInfo> carePackages;
 
         public static void Prefix(ref CarePackageInfo[] ___carePackages)
         {
+            if (!CarePackageState.StateManager.State.loadPackages)
+                return;
+
             if (carePackages == null)
             {
-                List<CarePackageInfo> list = new List<CarePackageInfo>();
+                carePackages = new List<CarePackageInfo>();
 
-                Debug.Log("Setting up care packages:");
+                Helpers.Print("Setting up care packages:");
 
                 for (int i = 0; i < CarePackageState.StateManager.State.CarePackages.Count(); i++)
                 {
-                    CarePackageContainer container = CarePackageState.StateManager.State.CarePackages[i];
+                    var container = CarePackageState.StateManager.State.CarePackages[i];
                     container.multiplier = CarePackageState.StateManager.State.multiplier;
 
                     if (Assets.TryGetPrefab(container.ID) != null)
                     {
-                        Debug.Log($" id: {container.ID} quantity: {container.amount} multiplier: {container.multiplier}");
-                        list.Add(container.ToInfo());
+                        Helpers.Print($" id: {container.ID} quantity: {container.amount} multiplier: {container.multiplier}");
+                        carePackages.Add(container.ToInfo());
                     }
                     else
                     {
-                        Debug.Log("[CarePackageMod] Illegal Prefab: " + container.ID);
+                        Helpers.Print("Illegal Prefab: " + container.ID);
                     }
                 }
-
-                carePackages = list.ToArray();
+                dirty = true;
             }
 
-            ___carePackages = carePackages;
+            if (dirty)
+            {
+                ___carePackages = carePackages.ToArray();
+                dirty = false;
+            }
         }
     }
 
@@ -87,7 +95,7 @@ namespace CarePackageMod
                     // line.operand = CarePackageState.StateManager.State.rosterPackages;
                     line.opcode = OpCodes.Ldsfld;
                     line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.CarePackages));
-                    Debug.Log($"[CarePackageMod] Patched Ldc_I4_1 at {i} with {line.operand}");
+                    Helpers.Print($"Patched Ldc_I4_1 at {i} with {line.operand}");
                 }
                 else if (line.opcode == OpCodes.Ldc_I4_2)                 //56	008C	ldc.i4.2
                 {
@@ -95,7 +103,7 @@ namespace CarePackageMod
                     // line.operand = CarePackageState.StateManager.State.rosterPackages;
                     line.opcode = OpCodes.Ldsfld;
                     line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.CarePackages));
-                    Debug.Log($"[CarePackageMod] Patched Ldc_I4_2 at {i} with {line.operand}");
+                    Helpers.Print($"Patched Ldc_I4_2 at {i} with {line.operand}");
                 }
                 else if (line.opcode == OpCodes.Ldc_I4_4)            //59	0093	ldc.i4.4
                 {
@@ -103,7 +111,7 @@ namespace CarePackageMod
                     // line.operand = CarePackageState.StateManager.State.rosterDupes + CarePackageState.StateManager.State.rosterPackages;
                     line.opcode = OpCodes.Ldsfld;
                     line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.Total));
-                    Debug.Log($"[CarePackageMod] Patched Ldc_I4_4 at {i} with {line.operand}");
+                    Helpers.Print($"Patched Ldc_I4_4 at {i} with {line.operand}");
                 }
             }
 

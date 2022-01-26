@@ -20,7 +20,7 @@ namespace CarePackageMod
             {
                 if (go != null)
                 {
-                    Debug.Log("PrintingPod OnRefreshUserMenu was not NULL!");
+                    Helpers.Print("PrintingPod OnRefreshUserMenu was not NULL!");
                     go.Unsubscribe((int)GameHashes.RefreshUserMenu);
                 }
                 PrintingPod.go = inst;
@@ -55,7 +55,7 @@ namespace CarePackageMod
         public static void ReloadConfig()
         {
             CarePackageState.StateManager.TryReloadConfiguratorState();
-            Reshuffle4.NumberOfInterests = CarePackageState.StateManager.State.always3Interests ? 3 : 1;
+            Reshuffle4.Prepare();
             InitializeContainers.Total = CarePackageState.StateManager.State.rosterDupes + CarePackageState.StateManager.State.rosterPackages;
             InitializeContainers.CarePackages = CarePackageState.StateManager.State.rosterPackages;
             CarePackageMod.carePackages = null;
