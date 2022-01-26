@@ -39,6 +39,7 @@ namespace EggCritterSurplus
             BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(EggCritterSurplusConfig.Id, 1, 1, "critter_sensor_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.RAW_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER0, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
             buildingDef.AudioCategory = "Metal";
             buildingDef.ViewMode = OverlayModes.Rooms.ID;
+            buildingDef.Floodable = false;
             return buildingDef;
         }
 
@@ -131,9 +132,7 @@ namespace EggCritterSurplus
 #endif
             foreach (var egg in allEggs)
                 if (IsInRoom(egg.gameObject, room))
-                {
                     room.eggs.Add(egg.KPrefabID);
-                }
         }
 
         public void Sim4000ms(float dt)
