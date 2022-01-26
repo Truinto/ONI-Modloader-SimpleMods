@@ -17,7 +17,7 @@ namespace CustomizeBuildings
         {
             if (__instance.PrefabID() == FlowerVaseConfig.ID)
             {
-                Debug.Log($"TEST_3 prevented link to {__instance.PrefabID()}");
+                Helpers.Print($"TEST_3 prevented link to {__instance.PrefabID()}");
                 return false;
             }
 
@@ -117,7 +117,7 @@ namespace CustomizeBuildings
                         mass_max = Math.Min(element.Mass, mass_DPU);
 #if DEBUG
                         if (mass_max < 0f)
-                            Debug.Log("mass_max is less than 0!");
+                            Helpers.Print("mass_max is less than 0!");
 #endif
                         mass_max = Math.Max(mass_max, 0f);
                     }
