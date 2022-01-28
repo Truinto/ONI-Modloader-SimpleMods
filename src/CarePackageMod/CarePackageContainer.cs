@@ -40,7 +40,9 @@ namespace CarePackageMod
         {
             bool after = GameClock.Instance.GetCycle() > (afterCycle ?? 0);
             bool until = GameClock.Instance.GetCycle() <= (untilCycle ?? int.MaxValue);
-            bool discover = !CarePackageState.StateManager.State.allowOnlyDiscoveredElements || DiscoveredResources.Instance.IsDiscovered(id.ToTag());
+            bool discover = !CarePackageState.StateManager.State.allowOnlyDiscoveredElements 
+                            || ElementLoader.FindElementByName(id) == null 
+                            || DiscoveredResources.Instance.IsDiscovered(id.ToTag());
 
             return after && until && discover;
         }
