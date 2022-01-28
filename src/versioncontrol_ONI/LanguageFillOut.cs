@@ -21,7 +21,7 @@ namespace versioncontrol_ONI
      */
     public class LanguageFillOut
     {
-        public static Regex rex_variable = new Regex(@"public\s+[\w\.<>,\s]*\s+(\w+)\s+", RegexOptions.Compiled);
+        public static Regex rex_variable = new Regex(@"public\s+[\w\.<>\[\],\s]*\s+(\w+)\s+", RegexOptions.Compiled);
         public static Regex rex_numbers = new Regex(@"\d+\.?(\d*)f;", RegexOptions.Compiled);
 
         public static Dictionary<string, Data> AllData = new Dictionary<string, Data>(50);

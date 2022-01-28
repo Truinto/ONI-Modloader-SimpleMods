@@ -33,7 +33,7 @@ namespace CarePackageMod
         public static void OnRefreshUserMenu(object data)
         {
             if (go != null)
-                Helpers.AddButton(go, "Carepackage Option", "", ButtonPress, 20f);
+                Helpers.AddButton(go, Strings.Get("CarePackageMod.LOCSTRINGS.CarepackageOption"), "", ButtonPress, 20f);
         }
 
         public static void ButtonPress()

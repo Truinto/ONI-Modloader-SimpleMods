@@ -135,5 +135,10 @@ namespace CarePackageMod
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.loadPackages_ToolTip", "If false will not apply any logic to care packages (use this if you have other mods managing packages).");
             #endregion
         }
+
+        public static void ExtraStrings()
+        {
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.CarepackageOption", "Carepackage Option");
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace CarePackageMod
             Helpers.ModName = "CarePackageMod";
 
             CustomStrings.LoadStrings();
+            CustomStrings.ExtraStrings();
 #if LOCALE
             Helpers.StringsPrint();
 #endif
