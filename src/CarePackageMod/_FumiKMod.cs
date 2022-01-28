@@ -26,6 +26,7 @@ namespace CarePackageMod
 
             new PeterHan.PLib.Options.POptions().RegisterOptions(this, typeof(CarePackageState));
 
+            DuplicantStats.OnLoad();
             base.OnLoad(harmony);
         }
     }

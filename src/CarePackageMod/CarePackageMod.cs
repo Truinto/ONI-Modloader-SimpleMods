@@ -9,6 +9,21 @@ using Common;
 
 namespace CarePackageMod
 {
+    public class DuplicantStats
+    {
+        public static void OnLoad()
+        {
+            var array = new int[13];
+            for (int i = 0; i < array.Length; i++)
+                array[i] = 1;
+            array[0] = 7;
+            array[1] = 3;
+
+            AccessTools.Field(typeof(TUNING.DUPLICANTSTATS), nameof(TUNING.DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES))
+                .SetValue(null, array);
+        }
+    }
+
     //[HarmonyPatch(typeof(Immigration), "ConfigureCarePackages")]
     [HarmonyPatch(typeof(Immigration), "RandomCarePackage")]
     public class CarePackageMod

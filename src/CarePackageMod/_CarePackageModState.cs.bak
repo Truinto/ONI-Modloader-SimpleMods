@@ -27,11 +27,11 @@ namespace CarePackageMod
         public int attributeBonusChance { get; set; } = 0;
 
         [Option("CarePackageMod.LOCSTRINGS.minNumberofInterests_Title", "CarePackageMod.LOCSTRINGS.minNumberofInterests_ToolTip", "", null)]
-        [Limit(0, 3)]
+        [Limit(1, 3)]
         public int minNumberofInterests { get; set; } = 1;
         
         [Option("CarePackageMod.LOCSTRINGS.maxNumberofInterests_Title", "CarePackageMod.LOCSTRINGS.maxNumberofInterests_ToolTip", "", null)]
-        [Limit(0, 3)]
+        [Limit(1, 3)]
         public int maxNumberofInterests { get; set; } = 3;
 
         [Option("CarePackageMod.LOCSTRINGS.removeStarterRestriction_Title", "CarePackageMod.LOCSTRINGS.removeStarterRestriction_ToolTip")]
@@ -133,7 +133,14 @@ namespace CarePackageMod
             Helpers.StringsAddProperty("CarePackageMod.PROPERTY.loadPackages", "loadPackages");
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.loadPackages_Title", "Load packages from config file");
             Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.loadPackages_ToolTip", "If false will not apply any logic to care packages (use this if you have other mods managing packages).");
+
+            Helpers.StringsAddProperty("CarePackageMod.PROPERTY.CarePackages", "CarePackages");
             #endregion
+        }
+
+        public static void ExtraStrings()
+        {
+            Helpers.StringsAdd("CarePackageMod.LOCSTRINGS.CarepackageOption", "Carepackage Option");
         }
     }
 }

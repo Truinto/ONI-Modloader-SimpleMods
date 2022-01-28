@@ -46,8 +46,9 @@ namespace CarePackageMod
     {
         public static bool Prepare()
         {
-            MinInterests = Math.Max(0, CarePackageState.StateManager.State.minNumberofInterests);
-            MaxInterests = Math.Max(MinInterests + 1, CarePackageState.StateManager.State.maxNumberofInterests + 1);
+            MinInterests = Math.Max(1, CarePackageState.StateManager.State.minNumberofInterests);
+            MaxInterests = Math.Max(MinInterests, Math.Min(CarePackageState.StateManager.State.maxNumberofInterests, TUNING.DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES.Length));
+            MaxInterests += 1; // upper range is non inclusive
             return true;
         }
 
