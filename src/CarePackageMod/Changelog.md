@@ -1,6 +1,6 @@
-# Changelo
+# Changelog
 
-## [1.0.14.0]
+## [1.0.14.0] U39-490405-S U40-493472-S
 - replaced always3Interests with min and max number of interests
 - added option to not load packages (for players that only want to change interests)
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
+using Common;
 using HarmonyLib;
 
 namespace CarePackageMod
@@ -56,11 +57,12 @@ namespace CarePackageMod
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
             var lines = instr.ToList();
+            bool flag1 = true;
             for (int i = 0; i < lines.Count - 2; i++)
             {
                 if (lines[i].opcode == OpCodes.Ldc_I4_1
-                    && lines[i].opcode == OpCodes.Ldc_I4_4
-                    && lines[i].opcode == OpCodes.Call)
+                    && lines[i + 1].opcode == OpCodes.Ldc_I4_4
+                    && lines[i + 2].opcode == OpCodes.Call)
                 {
                     lines[i].opcode = OpCodes.Ldsfld;
                     lines[i].operand = typeof(Reshuffle4).GetField(nameof(Reshuffle4.MinInterests));
@@ -68,10 +70,15 @@ namespace CarePackageMod
                     lines[i].opcode = OpCodes.Ldsfld;
                     lines[i].operand = typeof(Reshuffle4).GetField(nameof(Reshuffle4.MaxInterests));
 
-                    Debug.Log($"[CarePackageMod] Patched GenerateAptitudes Ldc_I4_1 with {lines[i].operand}");
+                    Helpers.Print($"Patched GenerateAptitudes Ldc_I4_1 with {lines[i].operand}");
+                    flag1 = false;
                     break;
                 }
             }
+
+            if (flag1)
+                Helpers.Print("Error patch GenerateAptitudes failed");
+
             return lines;
         }
     }

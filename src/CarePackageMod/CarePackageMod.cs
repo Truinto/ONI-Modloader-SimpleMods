@@ -75,6 +75,9 @@ namespace CarePackageMod
 
             var referenceMethod = AccessTools.Method(typeof(UnityEngine.Random), "Range", new Type[] { typeof(int), typeof(int) });
 
+            bool flag1 = true;
+            bool flag2 = true;
+            bool flag3 = true;
             int flag = -1;
             for (int i = 0; i < codeList.Count; i++)
             {
@@ -89,31 +92,37 @@ namespace CarePackageMod
                 if (flag < 0 || i > flag)
                     continue;
 
-                if (line.opcode == OpCodes.Ldc_I4_1)            //54	0089	ldc.i4.1
+                if (flag1 && line.opcode == OpCodes.Ldc_I4_1)            //54	0089	ldc.i4.1
                 {
                     // line.opcode = OpCodes.Ldc_I4;
                     // line.operand = CarePackageState.StateManager.State.rosterPackages;
                     line.opcode = OpCodes.Ldsfld;
                     line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.CarePackages));
-                    Helpers.Print($"Patched Ldc_I4_1 at {i} with {line.operand}");
+                    Helpers.Print($"Patched InitializeContainers:Ldc_I4_1 at {i} with {line.operand}");
+                    flag1 = false;
                 }
-                else if (line.opcode == OpCodes.Ldc_I4_2)                 //56	008C	ldc.i4.2
+                else if (flag2 && line.opcode == OpCodes.Ldc_I4_2)                 //56	008C	ldc.i4.2
                 {
                     // line.opcode = OpCodes.Ldc_I4;
                     // line.operand = CarePackageState.StateManager.State.rosterPackages;
                     line.opcode = OpCodes.Ldsfld;
                     line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.CarePackages));
-                    Helpers.Print($"Patched Ldc_I4_2 at {i} with {line.operand}");
+                    Helpers.Print($"Patched InitializeContainers:Ldc_I4_2 at {i} with {line.operand}");
+                    flag2 = false;
                 }
-                else if (line.opcode == OpCodes.Ldc_I4_4)            //59	0093	ldc.i4.4
+                else if (flag3 && line.opcode == OpCodes.Ldc_I4_4)            //59	0093	ldc.i4.4
                 {
                     // line.opcode = OpCodes.Ldc_I4;
                     // line.operand = CarePackageState.StateManager.State.rosterDupes + CarePackageState.StateManager.State.rosterPackages;
                     line.opcode = OpCodes.Ldsfld;
                     line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.Total));
-                    Helpers.Print($"Patched Ldc_I4_4 at {i} with {line.operand}");
+                    Helpers.Print($"Patched InitializeContainers:Ldc_I4_4 at {i} with {line.operand}");
+                    flag3 = false;
                 }
             }
+
+            if (flag1 || flag2 || flag3)
+                Helpers.Print($"Error patch InitializeContainers failed {flag1}:{flag2}:{flag3}");
 
             if (CarePackageState.StateManager.State.rosterIsOrdered && codeList.Count >= 128)
             {

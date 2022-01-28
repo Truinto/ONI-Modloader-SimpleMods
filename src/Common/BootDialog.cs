@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Common;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,6 @@ namespace Config
     [HarmonyPatch(typeof(KMod.Manager), "Report")]
     public class PostBootDialog
     {
-        public static string ModName = "Customize X";
-
         public static List<string> ErrorList = new List<string>();
 
         public static string ToDialog(string log)
@@ -23,9 +22,9 @@ namespace Config
         {
             if (ErrorList.Count != 0)
             {
-                ErrorList.Insert(0, ModName + " encountered an issue with your configuration:");
+                ErrorList.Insert(0, Helpers.ModName + " encountered an issue with your configuration:");
                 string output = string.Join("\n  ", ErrorList.ToArray());
-                KMod.Manager.Dialog(null, ModName + " WARNING", output);
+                KMod.Manager.Dialog(null, Helpers.ModName + " WARNING", output);
                 Debug.LogWarning(output);
                 ErrorList.Clear();
             }

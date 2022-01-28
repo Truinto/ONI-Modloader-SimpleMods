@@ -9,7 +9,7 @@ namespace CustomizeElements
 {
     public class CustomizeElementsState
     {
-        public int version { get; set; } = 1;
+        public int version { get; set; } = 1; // TODO make _FumiKMod.cs and set ModName
 
         public List<ElementContainer> Elements { get; set; } = new List<ElementContainer>()
         {

@@ -542,7 +542,7 @@ namespace Common
                     }
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Print("Error reading language file: " + e.ToString());
             }

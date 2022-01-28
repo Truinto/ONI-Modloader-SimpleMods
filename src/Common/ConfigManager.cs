@@ -318,14 +318,9 @@ namespace Config
         /// <summary>
         /// returns absolute file-path
         /// </summary>
-        public static string CreatePath(string modName, bool setName = true)
+        public static string CreatePath(string name)
         {
-            if (setName)
-            {
-                PostBootDialog.ModName = modName;
-                Common.Helpers.ModName = modName;
-            }
-            return Path.Combine(ModsDirectory, modName + ".json");
+            return Path.Combine(ModsDirectory, name + ".json");
         }
     }
 

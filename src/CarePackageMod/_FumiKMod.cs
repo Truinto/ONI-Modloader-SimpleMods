@@ -15,7 +15,7 @@ namespace CarePackageMod
         public override void OnLoad(Harmony harmony)
         {
             instance = harmony;
-            Helpers.ModName = "CustomizeBuildings";
+            Helpers.ModName = "CarePackageMod";
 
             CustomStrings.LoadStrings();
 #if LOCALE
