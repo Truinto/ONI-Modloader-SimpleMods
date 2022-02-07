@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.16.1]
+- updated language file; thanks to Ventulus-lab
+
 ## [1.0.16.0] U39-490405-S
 - added additional strings for translation
 - changed so existing geyser names and descriptions take priority over settings
