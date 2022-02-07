@@ -9,7 +9,7 @@ namespace CustomizeElements
 {
     public class CustomizeElementsState
     {
-        public int version { get; set; } = 1; // TODO make _FumiKMod.cs and set ModName
+        public int version { get; set; } = 1;
 
         public List<ElementContainer> Elements { get; set; } = new List<ElementContainer>()
         {
@@ -25,7 +25,7 @@ namespace CustomizeElements
             new ElementContainer("Katairite", "BuildableRaw", "BuildableAny"),
         };
 
-        public static Config.Manager<CustomizeElementsState> StateManager = new Config.Manager<CustomizeElementsState>(Config.PathHelper.CreatePath("CustomizeElements"), true, OnUpdate, null);
+        public static Config.Manager<CustomizeElementsState> StateManager;
 
         public static bool OnUpdate(CustomizeElementsState state)
         {
