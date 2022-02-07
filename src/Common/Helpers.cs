@@ -21,6 +21,8 @@ namespace Common
         #region Log
         public static string ModName;
 
+        public static string ActiveLocale;
+
         /// <summary>Prints text to the log.</summary>
         public static void Print(string text)
         {
@@ -175,6 +177,11 @@ namespace Common
             if (str1 == null || str2 == null)
                 return false;
             return str1.StartsWith(str2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool NotEmpty(this string str)
+        {
+            return str != null && str != "";
         }
 
         public static bool TryParseEnum(Type enumType, string value, out Enum result)

@@ -19,7 +19,7 @@
   <PropertyGroup>
     <PostBuildEvent Condition="'$(TargetName)' != 'versioncontrol_ONI'">if True==$(DefineConstants.Contains('MERGE')) (
   echo Merging PLibOptions...
-  "$(ILMergeEXE)" /ndebug /out:"$(TargetName)Merged.dll" "$(TargetName).dll" "$(MSBuildThisFileDirectory)packages\PLibOptions.dll" "$(MSBuildThisFileDirectory)packages\PLibCore.dll" "$(MSBuildThisFileDirectory)packages\PLibUI.dll" /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /lib:"$(ONIManaged)"
+  "$(ILMergeEXE)" /ndebug /out:"$(TargetName)Merged.dll" "$(TargetName).dll" "$(MSBuildThisFileDirectory)PeterHanLib\PLibOptions.dll" "$(MSBuildThisFileDirectory)PeterHanLib\PLibCore.dll" "$(MSBuildThisFileDirectory)PeterHanLib\PLibUI.dll" /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /lib:"$(ONIManaged)"
   ping.exe -n 1 -w 1 127.0.0.1 &gt;nul 2&gt;&amp;1
   move /y "$(TargetName)Merged.dll" "$(TargetName).dll"
 )

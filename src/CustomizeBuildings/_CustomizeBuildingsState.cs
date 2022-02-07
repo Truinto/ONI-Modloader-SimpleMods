@@ -631,6 +631,8 @@ namespace CustomizeBuildings
         //}; // PrefabID, Component, Field, Value
         #endregion
 
+        #region _implementation
+
         public static Config.Manager<CustomizeBuildingsState> StateManager;
 
         public static void BeforeUpdate()
@@ -639,7 +641,7 @@ namespace CustomizeBuildings
             // this will rename the old config file to a new name, if the language is set to anything but English
             const string VERSION = "\": ";
             string path = Config.PathHelper.CreatePath("CustomizeBuildings");
-            string pathNew = Config.PathHelper.CreatePath("CustomizeBuildings_" + Helpers.PathLocale);
+            string pathNew = Config.PathHelper.CreatePath("CustomizeBuildings_" + Helpers.Locale);
             if (Helpers.Locale != "en" && File.Exists(Helpers.PathLocale) && File.Exists(path) && !File.Exists(pathNew))
             {
                 string text = File.ReadAllText(path);
@@ -648,6 +650,7 @@ namespace CustomizeBuildings
                 int version = int.Parse(text[index..index2]);
                 if (version < 50)
                 {
+                    Helpers.Print($"Moving config file from '{path}' to '{pathNew}'");
                     File.Move(path, pathNew);
                 }
             }
@@ -703,6 +706,21 @@ namespace CustomizeBuildings
             else
                 StateManager.TrySaveConfigurationState();
         }
+
+        public string GetConfigPath()
+        {
+            return GetStaticConfigPath();
+        }
+
+        public static string GetStaticConfigPath()
+        {
+            string path = FumiKMod.ModName;
+            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+                path += "_" + Helpers.ActiveLocale;
+            return Config.PathHelper.CreatePath(path);
+        }
+        
+        #endregion
     }
 
     public class CustomStrings

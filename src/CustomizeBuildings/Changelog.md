@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.60.0]
+## [1.0.60.0] U40-493827-S U40-494396-S
 - fixed empty settings when switching language; will now save settings separately for each language
 - fixed building substitution strings if they had no hyperlink
 - changed that pressure settings are also applied to "Supply Teleporter" (WarpConduitSender)

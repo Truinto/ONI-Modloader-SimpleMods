@@ -30,14 +30,11 @@ namespace CustomizeBuildings
             Helpers.StringsPrint();
 
             // load translation, if any
-            string loc = Helpers.StringsLoad();
+            Helpers.ActiveLocale = Helpers.StringsLoad();
 
             // load settings
             Helpers.CallSafe(CustomizeBuildingsState.BeforeUpdate);
-            string path = ModName;
-            if (loc != "en")
-                path += "_" + loc;
-            CustomizeBuildingsState.StateManager = new(Config.PathHelper.CreatePath(path), true, CustomizeBuildingsState.OnUpdate, null);
+            CustomizeBuildingsState.StateManager = new(CustomizeBuildingsState.GetStaticConfigPath(), true, CustomizeBuildingsState.OnUpdate, null);
 
             // init options menu
             new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
