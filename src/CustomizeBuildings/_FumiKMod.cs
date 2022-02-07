@@ -12,26 +12,41 @@ namespace CustomizeBuildings
 {
     public class FumiKMod : KMod.UserMod2
     {
+        public const string ModName = "CustomizeBuildings";
         public static Harmony instance;
 
         public override void OnLoad(Harmony harmony)
         {
+            // init
             instance = harmony;
-            Helpers.ModName = "CustomizeBuildings";
+            Helpers.ModName = ModName;
+
+            // predefine strings
             CustomStrings.LoadStrings();
             CustomStrings.SkillStationStrings();
             Helpers.StringsAddClass(typeof(BuildingStruct));
             Helpers.StringsAddClass(typeof(BuildingAdv));
             Helpers.StringsAddClass(typeof(ElementConverterContainer));
-#if LOCALE
             Helpers.StringsPrint();
-#endif
-            Helpers.StringsLoad();
 
+            // load translation, if any
+            string loc = Helpers.StringsLoad();
+
+            // load settings
+            Helpers.CallSafe(CustomizeBuildingsState.BeforeUpdate);
+            string path = ModName;
+            if (loc != "en")
+                path += "_" + loc;
+            CustomizeBuildingsState.StateManager = new(Config.PathHelper.CreatePath(path), true, CustomizeBuildingsState.OnUpdate, null);
+
+            // init options menu
             new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
 
+            // call OnLoad methods
             Helpers.CallSafe(Miscellaneous.OnLoad);
             Speed_Patch.OnLoad();
+
+            // patch all harmony classes
             base.OnLoad(harmony);
         }
     }

@@ -8,6 +8,27 @@ using System;
 
 namespace CustomizeBuildings
 {
+    public class WarpConduitSender_Patch : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == WarpConduitSenderConfig.ID;
+        }
+
+        public void Edit(BuildingDef def)
+        {
+            var sender = def.BuildingComplete.GetComponent<WarpConduitSender>();
+            sender.gasStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
+            sender.liquidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
+            sender.solidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize * 5f;
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [HarmonyPatch(typeof(ConduitFlow), nameof(ConduitFlow.AddElement))]
     public class ConduitFlow_AddElement
     {
@@ -19,14 +40,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(Game), "OnPrefabInit")]
-    internal class Game_OnPrefabInit
+    public class Game_OnPrefabInit
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f || CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f;
         }
 
-        internal static void Postfix(Game __instance)
+        public static void Postfix(Game __instance)
         {
             if (CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f)
                 AccessTools.Field(typeof(ConduitFlow), "MaxMass").SetValue(__instance.liquidConduitFlow, CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure);
@@ -37,15 +58,15 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(LiquidValveConfig), "ConfigureBuildingTemplate")]
-    internal class LiquidValveConfig_ConfigureBuildingTemplate
+    public class LiquidValveConfig_ConfigureBuildingTemplate
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f
                 && !LiquidValveConfig_ConfigureBuildingTemplate2.Prepare();
         }
 
-        internal static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             if (go.GetComponent<ValvePressure>() == null)
             {
@@ -57,15 +78,15 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(GasValveConfig), "ConfigureBuildingTemplate")]
-    internal class GasValveConfig_ConfigureBuildingTemplate
+    public class GasValveConfig_ConfigureBuildingTemplate
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f
                 && !GasValveConfig_ConfigureBuildingTemplate2.Prepare();
         }
 
-        internal static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             if (go.GetComponent<ValvePressure>() == null)
             {
@@ -77,42 +98,42 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(LiquidLogicValveConfig), "ConfigureBuildingTemplate")]
-    internal class LiquidLogicValveConfig_ConfigureBuildingTemplate
+    public class LiquidLogicValveConfig_ConfigureBuildingTemplate
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f;
         }
 
-        internal static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             go.AddOrGet<OperationalValve>().maxFlow = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
         }
     }
 
     [HarmonyPatch(typeof(GasLogicValveConfig), "ConfigureBuildingTemplate")]
-    internal class GasLogicValveConfig_ConfigureBuildingTemplate
+    public class GasLogicValveConfig_ConfigureBuildingTemplate
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f;
         }
 
-        internal static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             go.AddOrGet<OperationalValve>().maxFlow = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
         }
     }
 
     [HarmonyPatch(typeof(LiquidConditionerConfig), "ConfigureBuildingTemplate")]
-    internal class LiquidConditionerConfig_ConfigureBuildingTemplate
+    public class LiquidConditionerConfig_ConfigureBuildingTemplate
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f;
         }
 
-        internal static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.conduitType = ConduitType.Liquid;
@@ -123,14 +144,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(AirConditionerConfig), "ConfigureBuildingTemplate")]
-    internal class AirConditionerConfig_ConfigureBuildingTemplate
+    public class AirConditionerConfig_ConfigureBuildingTemplate
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f;
         }
 
-        internal static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.conduitType = ConduitType.Gas;
@@ -141,14 +162,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(LiquidPumpConfig), "DoPostConfigureComplete")]
-    internal class LiquidPumpConfig_DoPostConfigureComplete
+    public class LiquidPumpConfig_DoPostConfigureComplete
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeLiquidPump != 10f;
         }
 
-        private static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             ElementConsumer elementConsumer = go.GetComponent<ElementConsumer>();
             if (elementConsumer == null)
@@ -171,14 +192,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(GasPumpConfig), "DoPostConfigureComplete")]
-    internal class GasPumpConfig_DoPostConfigureComplete
+    public class GasPumpConfig_DoPostConfigureComplete
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeGasPump != 0.5f;
         }
 
-        private static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             ElementConsumer elementConsumer = go.GetComponent<ElementConsumer>();
             if (elementConsumer == null)
@@ -201,14 +222,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(LiquidMiniPumpConfig), "DoPostConfigureComplete")]
-    internal class LiquidMiniPumpConfig_DoPostConfigureComplete
+    public class LiquidMiniPumpConfig_DoPostConfigureComplete
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeLiquidPumpMini != 1f;
         }
 
-        private static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             ElementConsumer elementConsumer = go.GetComponent<ElementConsumer>();
             if (elementConsumer == null)
@@ -231,14 +252,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(GasMiniPumpConfig), "DoPostConfigureComplete")]
-    internal class GasMiniPumpConfig_DoPostConfigureComplete
+    public class GasMiniPumpConfig_DoPostConfigureComplete
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.PipeGasPumpMini != 0.05f;
         }
 
-        private static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             ElementConsumer elementConsumer = go.GetComponent<ElementConsumer>();
             if (elementConsumer == null)
@@ -261,14 +282,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(SolidConduitDispenser), "ConduitUpdate")]
-    internal class SolidConduitDispenser_ConduitUpdate
+    public class SolidConduitDispenser_ConduitUpdate
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize != 20f;
         }
 
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
             float newMass = CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize;
             List<CodeInstruction> list = instr.ToList<CodeInstruction>();

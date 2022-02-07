@@ -1,4 +1,4 @@
-#define LOCALE
+//#define LOCALE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,7 @@ using Config;
 using System.IO;
 using Klei.AI;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace Common
 {
@@ -42,7 +43,7 @@ namespace Common
             Console.WriteLine(text);
             PostBootDialog.ErrorList.Add(text);
         }
-        
+
         public static void CallSafe(System.Action action)
         {
             try
@@ -53,7 +54,7 @@ namespace Common
             {
                 Print($"{action.Method.Name} caused an Exception: {e}");
             }
-            
+
         }
         #endregion
 
@@ -344,30 +345,19 @@ namespace Common
         #endregion
 
         #region Locale
-        public static Regex FindBetweenLink = new Regex(@">(.*?)<\/", RegexOptions.Compiled);
+        public static Regex FindKeywords = new(@"<.*?>", RegexOptions.Compiled); //FindBetweenLinks   @">(.*?)<\/"
 
-        public static bool GetLink(string text, out string link)
+        public static string StripLinks(this string text)
         {
-            Match match = FindBetweenLink.Match(text);
-            if (match.Success)
-            {
-                link = match.Groups[1].Value;
-                return true;
-            }
-            else
-            {
-                link = text;
-                return false;
-            }
+            // UI.StripLinkFormatting
+            return FindKeywords.Replace(text, "");
         }
 
-        public static string GetLink(this string text)
+        public static string IdToProper(this string id)
         {
-            Match match = FindBetweenLink.Match(text);
-            if (match.Success)
-                return match.Groups[1].Value;
-            else
-                return text;
+            if (Strings.TryGet("STRINGS.BUILDINGS.PREFABS." + id.ToUpper() + ".NAME", out var building))
+                return building.String.StripLinks();
+            return id;
         }
 
         public static LocString GetTemperatureUnit()
@@ -383,7 +373,7 @@ namespace Common
             }
         }
 
-        public static string PathLocale
+        public static string Locale
         {
             get
             {
@@ -391,18 +381,27 @@ namespace Common
                 if (code == null || code == "" || code.Length < 2)
                     code = "en";
                 code = code.Substring(0, 2);
-                return Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + code + ".pot");
+                return code;
             }
         }
-#if LOCALE
-        public static Dictionary<string, string> StringsDic = new Dictionary<string, string>();
+
+        public static string PathLocale
+        {
+            get
+            {
+                return Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + Locale + ".pot");
+            }
+        }
+
+        public static Dictionary<string, string> StringsDic = new();
 
         /// Use this to create a translation file. Only works, if you have used StringsAdd or StringsTag to add to the list.
         /// Can be called multiple times. Consecutive calls will appended. Must #define LOCALE to be used.
         public static bool StringsAppend = false;
+        [System.Diagnostics.Conditional("LOCALE")]
         public static void StringsPrint(string path = null)
         {
-            using (StreamWriter sw = new StreamWriter(path ?? Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_NEW.pot"), StringsAppend))
+            using (StreamWriter sw = new(path ?? Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_NEW.pot"), StringsAppend))
             {
                 foreach (var keyPair in StringsDic)
                 {
@@ -416,7 +415,6 @@ namespace Common
             StringsAppend = true;
             StringsDic.Clear();
         }
-#endif
 
         /// Adds string to 'Strings' table.
         public static void StringsAdd(string key, string text)
@@ -452,7 +450,7 @@ namespace Common
             TagManager.Create(id, proper ?? id);
         }
 
-        public static void StringsLoad(string path = null)
+        public static string StringsLoad(string path = null)
         {
             try
             {
@@ -462,7 +460,7 @@ namespace Common
                 if (!File.Exists(path))
                 {
                     Print("Language file does not exist: " + path);
-                    return;
+                    return null;
                 }
 
                 Print("Read language file: " + path);
@@ -541,10 +539,13 @@ namespace Common
                         continue;
                     }
                 }
+
+                return Locale;
             }
             catch (Exception e)
             {
                 Print("Error reading language file: " + e.ToString());
+                return null;
             }
         }
 

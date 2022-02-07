@@ -12,9 +12,9 @@ namespace CustomizeBuildings
     [ConfigFile("CustomizeBuildings.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
     [ModInfo(null, collapse: true)]
-    public class CustomizeBuildingsState
+    public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 48;
+        public int version { get; set; } = 50;
 
         #region $Reset Button
         [JsonIgnore]
@@ -625,13 +625,33 @@ namespace CustomizeBuildings
             .Output("Oxygen", 0.040000003f).Output("Algae", 0.29033336f).Store(false, true);
 
         public Dictionary<string, Dictionary<string, Dictionary<string, object>>> AdvancedSettings { get; set; } = null;
-        
+
         //    = new Dictionary<string, Dictionary<string, Dictionary<string, object>>>() {
         //        { "LiquidHeater", new Dictionary<string, Dictionary<string, object>> { { "SpaceHeater", new Dictionary<string, object> { { "targetTemperature", 1000f} }  } } }
         //}; // PrefabID, Component, Field, Value
         #endregion
 
-        public static Config.Manager<CustomizeBuildingsState> StateManager = new Config.Manager<CustomizeBuildingsState>(Config.PathHelper.CreatePath("CustomizeBuildings"), true, OnUpdate, null);
+        public static Config.Manager<CustomizeBuildingsState> StateManager;
+
+        public static void BeforeUpdate()
+        {
+            // TODO: remove this after some time
+            // this will rename the old config file to a new name, if the language is set to anything but English
+            const string VERSION = "\": ";
+            string path = Config.PathHelper.CreatePath("CustomizeBuildings");
+            string pathNew = Config.PathHelper.CreatePath("CustomizeBuildings_" + Helpers.PathLocale);
+            if (Helpers.Locale != "en" && File.Exists(Helpers.PathLocale) && File.Exists(path) && !File.Exists(pathNew))
+            {
+                string text = File.ReadAllText(path);
+                int index = text.IndexOf(VERSION) + VERSION.Length;
+                int index2 = text.IndexOf(",", index);
+                int version = int.Parse(text[index..index2]);
+                if (version < 50)
+                {
+                    File.Move(path, pathNew);
+                }
+            }
+        }
 
         public static bool OnUpdate(CustomizeBuildingsState state)
         {
@@ -669,6 +689,19 @@ namespace CustomizeBuildings
             //}
 
             return true;
+        }
+
+        public object ReadSettings()
+        {
+            return StateManager.State;
+        }
+
+        public void WriteSettings(object settings)
+        {
+            if (settings is CustomizeBuildingsState state)
+                StateManager.TrySaveConfigurationState(state);
+            else
+                StateManager.TrySaveConfigurationState();
         }
     }
 

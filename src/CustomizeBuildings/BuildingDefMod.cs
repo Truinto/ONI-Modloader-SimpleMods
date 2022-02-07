@@ -16,13 +16,13 @@ namespace CustomizeBuildings
     {
         public static void CreateBuildingDefOverride(BuildingDef buildingDef)
         {
-            Helpers.PrintDebug(buildingDef.PrefabID + "\t\tName: " + Helpers.GetLink(buildingDef.Name));
+            Helpers.PrintDebug(buildingDef.PrefabID + "\t\tName: " + Helpers.StripLinks(buildingDef.Name));
             //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
             //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
 
             CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out var entry);
-            if (entry == null && Helpers.GetLink(buildingDef.Name, out string link))
-                CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(link, out entry);
+            if (entry == null)
+                CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.Name.StripLinks(), out entry);
 
             if (entry == null)
                 return;
@@ -163,7 +163,7 @@ namespace CustomizeBuildings
 
         public static void Prefix(BuildingDef def)
         {
-            Helpers.Print($"Loading {def.PrefabID}, {def.Name.GetLink()}");
+            Helpers.Print($"Loading {def.PrefabID}, {def.Name.StripLinks()}");
 
             foreach (var mod in mods)
             {
@@ -183,8 +183,8 @@ namespace CustomizeBuildings
         {
             float multiplier;
             bool flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(def.PrefabID, out multiplier);
-            if (!flag && Helpers.GetLink(def.Name, out string link))
-                flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(link, out multiplier);
+            if (!flag)
+                flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(def.Name.StripLinks(), out multiplier);
 
             if (flag)
             {
@@ -248,8 +248,8 @@ namespace CustomizeBuildings
         public static void OutputTemp(BuildingDef def)
         {
             CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(def.PrefabID, out var setting);
-            if (setting == null && Helpers.GetLink(def.Name, out string link))
-                CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(link, out setting);
+            if (setting == null)
+                CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(def.Name.StripLinks(), out setting);
 
             if (setting == null)
                 return;
@@ -270,8 +270,8 @@ namespace CustomizeBuildings
             if (CustomizeBuildingsState.StateManager.State.AdvancedSettings == null) return;
 
             CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(def.PrefabID, out var buildingEntry);
-            if (buildingEntry == null && Helpers.GetLink(def.Name, out string link))
-                CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(link, out buildingEntry);
+            if (buildingEntry == null)
+                CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(def.Name.StripLinks(), out buildingEntry);
 
             if (buildingEntry == null)
                 return;
