@@ -11,9 +11,9 @@ namespace CustomizePlants
 {
     [ConfigFile("CustomizePlants.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
-    public class CustomizePlantsState
+    public class CustomizePlantsState : IManualConfig
     {
-        public int version { get; set; } = 32;
+        public int version { get; set; } = 33;
 
         #region $Buttons
         [Option("CustomizePlants.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizePlants.LOCSTRINGS.ResetToCustomDefault_ToolTip", "", null)]
@@ -152,9 +152,11 @@ namespace CustomizePlants
         public HashSet<string> ModPlants { get; set; } = new HashSet<string>();
         #endregion
 
-        public static Config.Manager<CustomizePlantsState> StateManager = new Config.Manager<CustomizePlantsState>(Config.PathHelper.CreatePath("CustomizePlants"), true, UpdateFunction);
+        #region _implementation
 
-        public static bool UpdateFunction(CustomizePlantsState state)
+        public static Config.Manager<CustomizePlantsState> StateManager;
+
+        public static bool OnUpdate(CustomizePlantsState state)
         {
             if (state.version < 17)
             {
@@ -179,7 +181,33 @@ namespace CustomizePlants
             }
             return true;
         }
+        
+        public object ReadSettings()
+        {
+            return StateManager.State;
+        }
 
+        public void WriteSettings(object settings)
+        {
+            if (settings is CustomizePlantsState state)
+                StateManager.TrySaveConfigurationState(state);
+            else
+                StateManager.TrySaveConfigurationState();
+        }
+
+        public string GetConfigPath()
+        {
+            return GetStaticConfigPath();
+        }
+
+        public static string GetStaticConfigPath()
+        {
+            string path = FumiKMod.ModName;
+            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+                path += "_" + Helpers.ActiveLocale;
+            return Config.PathHelper.CreatePath(path);
+        }
+        #endregion
     }
 
     public class CustomStrings

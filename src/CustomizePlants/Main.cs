@@ -688,12 +688,12 @@ namespace CustomizePlants
             var def1 = plant.GetDef<IrrigationMonitor.Def>();
             if (def1 != null)
                 foreach (var irrigation in def1.consumedElements)
-                    setting.irrigation.Add(irrigation.tag.ToString(), irrigation.massConsumptionRate);
+                    setting.irrigation.Add(irrigation.tag.ToString(), irrigation.massConsumptionRate * 600f);
 
             var def2 = plant.GetDef<FertilizationMonitor.Def>();
             if (def2 != null)
                 foreach (var irrigation in def2.consumedElements)
-                    setting.irrigation.Add(irrigation.tag.ToString(), irrigation.massConsumptionRate);
+                    setting.irrigation.Add(irrigation.tag.ToString(), irrigation.massConsumptionRate * 600f);
             #endregion
             #region safe_elements & pressure
             var pressure = plant.GetComponent<PressureVulnerable>();
