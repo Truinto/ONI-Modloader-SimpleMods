@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 50;
+        public int version { get; set; } = 51;
 
         #region $Reset Button
         [JsonIgnore]
@@ -249,6 +249,11 @@ namespace CustomizeBuildings
         public bool MaterialIgnoreInsufficientMaterial { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "Miscellaneous")]
         public bool MaterialAutoSelect { get; set; } = true;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_Title", "CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_ToolTip", "Miscellaneous", "P0")]
+        public float CompostFreshnessPercent { get; set; } = 0f;
+        [Option("CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_Title", "CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_ToolTip", "Miscellaneous", "F0")]
+        public float CompostCaloriesPerDupe { get; set; } = 1000f;
         #endregion
 
         #region Switches
@@ -813,6 +818,14 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.MaterialAutoSelect", "MaterialAutoSelect");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "Material No Auto Select");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "If true, will keep selected building material, even if stored amount is insufficient.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CompostFreshnessPercent", "CompostFreshnessPercent");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_Title", "Auto Composter Freshness");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_ToolTip", "Auto Composter will mark food for compost, when under this freshness value. Disable with 0.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CompostCaloriesPerDupe", "CompostCaloriesPerDupe");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_Title", "Auto Composter Calories");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_ToolTip", "Auto Composter will leave at least this much kcal per duplicant.");
             #endregion
             #region No Dupe
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeGlobal", "NoDupeGlobal");

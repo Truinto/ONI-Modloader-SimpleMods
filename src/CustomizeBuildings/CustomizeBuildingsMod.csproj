@@ -23,6 +23,7 @@
     <Compile Include="..\Common\ConfigManager.cs" Link="ConfigManager.cs" />
     <Compile Include="..\Common\Helpers.cs" Link="Helpers.cs" />
     <Compile Include="..\Common\TechHelper.cs" Link="TechHelper.cs" />
+    <Compile Include="CompostManager.cs" />
     <Compile Include="IBuildingCompleteMod.cs" />
     <Compile Include="OnDbInitialize.cs" />
     <Compile Include="Rads.cs" />

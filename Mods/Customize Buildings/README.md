@@ -99,7 +99,7 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 *    - energy consumption scales with DPU
 * SpaceHeaterTargetTemperature: add a slider to space heater/liquid heater which sets the shutoff temperature; does not prevent overheating
 * AlgaeTerrariumPatch: if true, apply AlgaeTerrarium
-* AlgaeTerrarium: new input/output elements; only last liquid will be absorbed from environment; will always passively consume CO2
+* AlgaeTerrarium: new input/output elements; only last liquid will be absorbed from environment; will always passively consume CO2; only works if AlgaeTerrariumPatch is true
 * DoorSelfSealing: if true, doors will block gas flow while set to automatic
 * MaterialIgnoreInsufficientMaterial: If true, will allow placing buildings while having insufficient building material.
 * MaterialAutoSelect: If true, will keep selected building material, even if stored amount is insufficient.

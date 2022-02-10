@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.61.0] U40-494396-S
+- added CompostFreshnessPercent and CompostCaloriesPerDupe which can automatically mark stale food for compost
+
 ## [1.0.60.0] U40-493827-S U40-494396-S
 - fixed empty settings when switching language; will now save settings separately for each language
 - fixed building substitution strings if they had no hyperlink

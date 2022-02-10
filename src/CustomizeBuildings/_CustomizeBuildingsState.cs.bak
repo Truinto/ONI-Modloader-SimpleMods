@@ -12,9 +12,9 @@ namespace CustomizeBuildings
     [ConfigFile("CustomizeBuildings.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
     [ModInfo(null, collapse: true)]
-    public class CustomizeBuildingsState
+    public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 48;
+        public int version { get; set; } = 51;
 
         #region $Reset Button
         [JsonIgnore]
@@ -249,6 +249,11 @@ namespace CustomizeBuildings
         public bool MaterialIgnoreInsufficientMaterial { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "Miscellaneous")]
         public bool MaterialAutoSelect { get; set; } = true;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_Title", "CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_ToolTip", "Miscellaneous", "P0")]
+        public float CompostFreshnessPercent { get; set; } = 0f;
+        [Option("CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_Title", "CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_ToolTip", "Miscellaneous", "F0")]
+        public float CompostCaloriesPerDupe { get; set; } = 1000f;
         #endregion
 
         #region Switches
@@ -625,13 +630,36 @@ namespace CustomizeBuildings
             .Output("Oxygen", 0.040000003f).Output("Algae", 0.29033336f).Store(false, true);
 
         public Dictionary<string, Dictionary<string, Dictionary<string, object>>> AdvancedSettings { get; set; } = null;
-        
+
         //    = new Dictionary<string, Dictionary<string, Dictionary<string, object>>>() {
         //        { "LiquidHeater", new Dictionary<string, Dictionary<string, object>> { { "SpaceHeater", new Dictionary<string, object> { { "targetTemperature", 1000f} }  } } }
         //}; // PrefabID, Component, Field, Value
         #endregion
 
-        public static Config.Manager<CustomizeBuildingsState> StateManager = new Config.Manager<CustomizeBuildingsState>(Config.PathHelper.CreatePath("CustomizeBuildings"), true, OnUpdate, null);
+        #region _implementation
+
+        public static Config.Manager<CustomizeBuildingsState> StateManager;
+
+        public static void BeforeUpdate()
+        {
+            // TODO: remove this after some time
+            // this will rename the old config file to a new name, if the language is set to anything but English
+            const string VERSION = "\": ";
+            string path = Config.PathHelper.CreatePath("CustomizeBuildings");
+            string pathNew = Config.PathHelper.CreatePath("CustomizeBuildings_" + Helpers.Locale);
+            if (Helpers.Locale != "en" && File.Exists(Helpers.PathLocale) && File.Exists(path) && !File.Exists(pathNew))
+            {
+                string text = File.ReadAllText(path);
+                int index = text.IndexOf(VERSION) + VERSION.Length;
+                int index2 = text.IndexOf(",", index);
+                int version = int.Parse(text[index..index2]);
+                if (version < 50)
+                {
+                    Helpers.Print($"Moving config file from '{path}' to '{pathNew}'");
+                    File.Move(path, pathNew);
+                }
+            }
+        }
 
         public static bool OnUpdate(CustomizeBuildingsState state)
         {
@@ -670,6 +698,34 @@ namespace CustomizeBuildings
 
             return true;
         }
+
+        public object ReadSettings()
+        {
+            return StateManager.State;
+        }
+
+        public void WriteSettings(object settings)
+        {
+            if (settings is CustomizeBuildingsState state)
+                StateManager.TrySaveConfigurationState(state);
+            else
+                StateManager.TrySaveConfigurationState();
+        }
+
+        public string GetConfigPath()
+        {
+            return GetStaticConfigPath();
+        }
+
+        public static string GetStaticConfigPath()
+        {
+            string path = FumiKMod.ModName;
+            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+                path += "_" + Helpers.ActiveLocale;
+            return Config.PathHelper.CreatePath(path);
+        }
+        
+        #endregion
     }
 
     public class CustomStrings
@@ -762,6 +818,14 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.MaterialAutoSelect", "MaterialAutoSelect");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_Title", "Material No Auto Select");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.MaterialAutoSelect_ToolTip", "If true, will keep selected building material, even if stored amount is insufficient.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CompostFreshnessPercent", "CompostFreshnessPercent");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_Title", "Auto Composter Freshness");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostFreshnessPercent_ToolTip", "Auto Composter will mark food for compost, when under this freshness value. Disable with 0.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CompostCaloriesPerDupe", "CompostCaloriesPerDupe");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_Title", "Auto Composter Calories");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostCaloriesPerDupe_ToolTip", "Auto Composter will leave at least this much kcal per duplicant.");
             #endregion
             #region No Dupe
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeGlobal", "NoDupeGlobal");

@@ -16,7 +16,6 @@ namespace CustomizeBuildings
     {
         public static void CreateBuildingDefOverride(BuildingDef buildingDef)
         {
-            Helpers.PrintDebug(buildingDef.PrefabID + "\t\tName: " + Helpers.StripLinks(buildingDef.Name));
             //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
             //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
 
