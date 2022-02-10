@@ -1549,6 +1549,8 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationRemoveTrait", "{0} lost a trait '{1}'");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp", "{0} improved their {1} from {2} to {3}.");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAptitude", "{0} sparked new Interests in {1}");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CompostManager", "Compost Manager");
         }
     }
 }

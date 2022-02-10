@@ -3,6 +3,7 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -54,11 +55,7 @@ namespace CustomizeBuildings
         // fresh food comes first
         public int CompareTo(FoodStuff other)
         {
-            if (this.Freshness > other.Freshness)
-                return -1;
-            if (this.Freshness < other.Freshness)
-                return 1;
-            return 0;
+            return other.Freshness.CompareTo(this.Freshness);
         }
     }
 
@@ -66,6 +63,7 @@ namespace CustomizeBuildings
     {
         public static GameObject Master;
         public static CompostManager Instance;
+        public static MethodInfo _markForCompost = AccessTools.Method(typeof(Compostable), "OnToggleCompost");
 
         public int NextIndex;
         private readonly List<FoodStuff> foods = new();
@@ -92,21 +90,21 @@ namespace CustomizeBuildings
                 return;
 
             // get all edible food and record freshness
+            foods.Clear();
             foreach (var food in world.worldInventory.GetPickupables(GameTags.Edible) ?? Array.Empty<Pickupable>())
             {
-                Helpers.PrintDebug($"CompostManager food={food.PrefabID()}");
-
-                var compostable = food.GetComponent<Compostable>();
-                if (compostable == null || compostable.isMarkedForCompost)
-                    continue;
-
                 var rottable = food.GetSMI<Rottable.Instance>();
                 if (rottable.IsNullOrStopped())
                     continue;
 
                 float freshness = rottable.RotConstitutionPercentage;
-                foods.Add(new FoodStuff(freshness, food));
                 Helpers.PrintDebug($"CompostManager food={food.PrefabID()} percent={freshness} calories={food.GetComponent<Edible>().Calories}");
+
+                var compostable = food.GetComponent<Compostable>();
+                if (compostable == null || compostable.isMarkedForCompost)
+                    continue;
+
+                foods.Add(new FoodStuff(freshness, food));
             }
 
             // sort through fresh food first and count calories; when enough calories are available, mark stale food for compost
@@ -115,42 +113,44 @@ namespace CustomizeBuildings
             float minimumFreshness = CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent;
             foreach (var foodstuff in foods)
             {
+                Helpers.PrintDebug($"CompostManager food2={foodstuff.Pickupable.PrefabID()} percent={foodstuff.Freshness} calories={foodstuff.Pickupable.GetComponent<Edible>().Calories}");
                 if (calories > 0)
                 {
+                    Helpers.PrintDebug($"skipped because colonie needs the calories");
                     calories -= foodstuff.Pickupable.GetComponent<Edible>().Calories;
                     continue;
                 }
 
-                if (foodstuff.Freshness <= minimumFreshness)
+                if (foodstuff.Freshness < minimumFreshness)
                 {
-                    foodstuff.Pickupable.GetComponent<Compostable>().isMarkedForCompost = true;
-                    foodstuff.Pickupable.storage?.Drop(foodstuff.Pickupable.gameObject, true);
+                    Helpers.PrintDebug($"composting");
+                    _markForCompost.Invoke(foodstuff.Pickupable.GetComponent<Compostable>(), null);
                 }
             }
-            foods.Clear();
 
             // if we don't have enough food, don't compost any ingredients
             if (calories > 0)
                 return;
 
             // mark stale ingredients for compost; ingredients don't have calories
-            foreach (var food in world.worldInventory.GetPickupables(GameTags.CookingIngredient) ?? Array.Empty<Pickupable>())
+            foreach (var food in world.worldInventory.GetPickupables(GameTags.CookingIngredient)?.ToArray() ?? Array.Empty<Pickupable>())
             {
-                var compostable = food.GetComponent<Compostable>();
-                if (compostable == null || compostable.isMarkedForCompost)
-                    continue;
-
                 var rottable = food.GetSMI<Rottable.Instance>();
                 if (rottable.IsNullOrStopped())
                     continue;
 
                 float freshness = rottable.RotConstitutionPercentage;
-                if (freshness <= minimumFreshness)
+                Helpers.PrintDebug($"CompostManager food3={food.PrefabID()} percent={freshness}");
+
+                var compostable = food.GetComponent<Compostable>();
+                if (compostable == null || compostable.isMarkedForCompost)
+                    continue;
+
+                if (freshness < minimumFreshness)
                 {
-                    compostable.isMarkedForCompost = true;
-                    food.storage?.Drop(food.gameObject, true);
+                    Helpers.PrintDebug($"composting");
+                    _markForCompost.Invoke(compostable, null);
                 }
-                Helpers.PrintDebug($"CompostManager food={food.PrefabID()} percent={freshness}");
             }
         }
     }
@@ -166,28 +166,26 @@ namespace CustomizeBuildings
             }
             set
             {
-                CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent = value / 100f;
+                float newvalue = value / 100f;
+                if (newvalue != CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent)
+                {
+                    CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent = value / 100f;
+                    CustomizeBuildingsState.StateManager.TrySaveConfigurationState();
+                }
             }
         }
         public bool ActivateAboveThreshold
         {
-            get
-            {
-                return false;
-            }
-
-            set
-            {
-                CustomizeBuildingsState.StateManager.TrySaveConfigurationState();
-            }
+            get => false;
+            set => _ = value;
         }
         public float CurrentValue => 0f;
         public float RangeMin => 0f;
         public float RangeMax => 100f;
-        public LocString Title => "Compost Manager";
+        public LocString Title => new LocString("Compost Manager", "CustomizeBuildings.LOCSTRINGS.CompostManager");
         public LocString ThresholdValueName => STRINGS.CREATURES.STATS.ROT.NAME;
-        public string AboveToolTip => "save to settings";
-        public string BelowToolTip => "save to settings";
+        public string AboveToolTip => "";
+        public string BelowToolTip => "";
         public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
         public int IncrementScale => 1;
         public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
