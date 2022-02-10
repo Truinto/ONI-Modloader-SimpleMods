@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.33.0]
+## [1.0.33.0] U40-494396-S
 - fixed read all button, will now convert irrigation to kg/cycle instead of kg/second
 - fixed empty settings when switching language; will now save settings separately for each language
 
