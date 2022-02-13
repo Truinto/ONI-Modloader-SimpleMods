@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.16.2]
+- updated language file; thanks to Ventulus-lab
+
 ## [1.0.16.1]
 - updated language file; thanks to Ventulus-lab
 
