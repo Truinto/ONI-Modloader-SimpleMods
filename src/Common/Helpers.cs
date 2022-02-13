@@ -352,6 +352,50 @@ namespace Common
         #endregion
 
         #region Locale
+        public static void GenerateReadme<T>(int version, string desc) where T : class
+        {
+            //Print($"OptionAttribute AssemblyQualifiedName {typeof(PeterHan.PLib.Options.OptionAttribute).AssemblyQualifiedName}");
+
+            var type = Type.GetType("PeterHan.PLib.Options.OptionAttribute");
+            var tTitle = type?.GetProperty("Title");
+            var tTooltip = type?.GetProperty("Tooltip");
+            var tCategory = type?.GetProperty("Category");
+            if (type == null || tTitle == null || tTooltip == null || tCategory == null)
+            {
+                Print("PeterHan.PLib.Options.OptionAttribute is changed");
+                return;
+            }
+
+            using StreamWriter sw = new("README_new.md", false);
+            sw.WriteLine($"# README Customize Buildings v{version}\n");
+            sw.WriteLine(desc);
+
+            string lastcategory = null;
+            foreach (var field in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
+                var attr = field.GetCustomAttribute(type);
+                if (attr != null)
+                {
+                    string title = (string)tTitle.GetValue(attr);
+                    string tooltip = (string)tTooltip.GetValue(attr);
+                    string category = (string)tCategory.GetValue(attr);
+
+                    if (category != lastcategory)
+                    {
+                        sw.WriteLine($"\n##### {category}");
+                        lastcategory = category;
+                    }
+
+                    sw.WriteLine($"{field.Name}: {tooltip}");
+                }
+                else
+                {
+                    sw.WriteLine($"{field.Name}: ");
+                }
+            }
+
+        }
+
         public static Regex FindKeywords = new(@"<.*?>", RegexOptions.Compiled); //FindBetweenLinks   @">(.*?)<\/"
 
         public static string StripLinks(this string text)
