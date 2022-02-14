@@ -19,14 +19,18 @@ namespace CustomizeGeyser
         {
             if (!e.Consumed && e.IsAction(Action.DebugTeleport))
             {
-                if (SelectTool.Instance?.selected?.gameObject.GetComponent<GeyserConfigurator>() == null)
+                var selected = SelectTool.Instance?.selected;
+                if (selected == null)
+                    return;
+
+                if (selected.GetComponent<GeyserConfigurator>() == null && selected.PrefabID() != OilWellConfig.ID)
                     return;
 
                 int mouseCell = DebugHandler.GetMouseCell();
                 if (!Grid.IsValidBuildingCell(mouseCell))
                     return;
 
-                SelectTool.Instance.selected.transform.SetPosition(Grid.CellToPosCBC(mouseCell, Grid.SceneLayer.Move));
+                selected.transform.SetPosition(Grid.CellToPosCBC(mouseCell, Grid.SceneLayer.Move));
 
                 e.Consumed = true;
                 //PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Negative, STRINGS.UI.DEBUG_TOOLS.INVALID_LOCATION, null, DebugHandler.GetMousePos(), 1.5f, false, true);

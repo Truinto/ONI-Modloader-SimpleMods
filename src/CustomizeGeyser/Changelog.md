@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.17]
+- allowing teleport for OilWell
+
 ## [1.0.16.2]
 - updated language file; thanks to Ventulus-lab
 
