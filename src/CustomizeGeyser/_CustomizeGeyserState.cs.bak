@@ -10,7 +10,7 @@ namespace CustomizeGeyser
 {
     [ConfigFile("CustomizeGeyser.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
-    public class CustomizeGeyserState
+    public class CustomizeGeyserState : IManualConfig
     {
         public static void OnLoad()
         {
@@ -234,11 +234,40 @@ namespace CustomizeGeyser
         public bool GeyserTeleportEnabled { get; set; } = true;
         #endregion
 
-        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.PathHelper.CreatePath("CustomizeGeyser"), true, UpdateFunction);
-        public static bool UpdateFunction(CustomizeGeyserState state)
+        #region _implementation
+
+        public static Config.Manager<CustomizeGeyserState> StateManager;
+        public static bool OnUpdate(CustomizeGeyserState state)
         {
             return true;
         }
+        public object ReadSettings()
+        {
+            return StateManager.State;
+        }
+
+        public void WriteSettings(object settings)
+        {
+            if (settings is CustomizeGeyserState state)
+                StateManager.TrySaveConfigurationState(state);
+            else
+                StateManager.TrySaveConfigurationState();
+        }
+
+        public string GetConfigPath()
+        {
+            return GetStaticConfigPath();
+        }
+
+        public static string GetStaticConfigPath()
+        {
+            string path = FumiKMod.ModName;
+            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+                path += "_" + Helpers.ActiveLocale;
+            return Config.PathHelper.CreatePath(path);
+        }
+
+        #endregion
     }
 
     public class CustomStrings

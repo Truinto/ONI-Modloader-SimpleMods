@@ -1,7 +1,8 @@
 # Changelog
 
-## [1.0.17]
+## [1.0.17] U40-494396-S
 - allowing teleport for OilWell
+- fixed empty settings when switching language; will now save settings separately for each language
 
 ## [1.0.16.2]
 - updated language file; thanks to Ventulus-lab

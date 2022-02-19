@@ -10,7 +10,7 @@ namespace CustomizeGeyser
 {
     [ConfigFile("CustomizeGeyser.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
-    public class CustomizeGeyserState
+    public class CustomizeGeyserState : IManualConfig
     {
         public static void OnLoad()
         {
@@ -41,7 +41,7 @@ namespace CustomizeGeyser
         }
 
         #region Buttons
-        [Option("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip")]
+        [Option("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Buttons", null)]
         [JsonIgnore]
         public System.Action<object> ResetToCustomDefault => delegate (object nix)
         {
@@ -144,7 +144,7 @@ namespace CustomizeGeyser
         #endregion
 
         #region Fields
-        public int version { get; set; } = 9;
+        public int version { get; set; } = 10;
         [Option("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "Fields", null)]
         public bool Enabled { get; set; } = true;
 
@@ -234,11 +234,40 @@ namespace CustomizeGeyser
         public bool GeyserTeleportEnabled { get; set; } = true;
         #endregion
 
-        public static Config.Manager<CustomizeGeyserState> StateManager = new Config.Manager<CustomizeGeyserState>(Config.PathHelper.CreatePath("CustomizeGeyser"), true, UpdateFunction);
-        public static bool UpdateFunction(CustomizeGeyserState state)
+        #region _implementation
+
+        public static Config.Manager<CustomizeGeyserState> StateManager;
+        public static bool OnUpdate(CustomizeGeyserState state)
         {
             return true;
         }
+        public object ReadSettings()
+        {
+            return StateManager.State;
+        }
+
+        public void WriteSettings(object settings)
+        {
+            if (settings is CustomizeGeyserState state)
+                StateManager.TrySaveConfigurationState(state);
+            else
+                StateManager.TrySaveConfigurationState();
+        }
+
+        public string GetConfigPath()
+        {
+            return GetStaticConfigPath();
+        }
+
+        public static string GetStaticConfigPath()
+        {
+            string path = FumiKMod.ModName;
+            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+                path += "_" + Helpers.ActiveLocale;
+            return Config.PathHelper.CreatePath(path);
+        }
+
+        #endregion
     }
 
     public class CustomStrings

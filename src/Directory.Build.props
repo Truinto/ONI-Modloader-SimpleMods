@@ -10,7 +10,7 @@
   
   <!-- Common build properties -->
   <PropertyGroup>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>

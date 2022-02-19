@@ -352,11 +352,11 @@ namespace Common
         #endregion
 
         #region Locale
-        public static void GenerateReadme<T>(int version, string desc) where T : class
+        public static void GenerateReadme<T>(int version, string desc) where T : class // TODO: finish GenerateReadme
         {
             //Print($"OptionAttribute AssemblyQualifiedName {typeof(PeterHan.PLib.Options.OptionAttribute).AssemblyQualifiedName}");
 
-            var type = Type.GetType("PeterHan.PLib.Options.OptionAttribute");
+            var type = Type.GetType($"PeterHan.PLib.Options.OptionAttribute");
             var tTitle = type?.GetProperty("Title");
             var tTooltip = type?.GetProperty("Tooltip");
             var tCategory = type?.GetProperty("Category");
@@ -366,7 +366,7 @@ namespace Common
                 return;
             }
 
-            using StreamWriter sw = new("README_new.md", false);
+            using StreamWriter sw = new(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location)?.FullName, "README_new.md"), false);
             sw.WriteLine($"# README Customize Buildings v{version}\n");
             sw.WriteLine(desc);
 
