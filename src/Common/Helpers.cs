@@ -106,6 +106,14 @@ namespace Common
             return new Tag(hash.ToString());
         }
 
+        private static Tag ToTagSafe(this string id) 
+        {
+            // todo extract list of valid tags and add sanity check
+            // may also check Assets.TryGetPrefab for new entries, but that doesn't work early during bootup
+            // should probably export valid tags into game folder
+            throw new NotImplementedException();
+        }
+
         public static Element ToElement(this string str)
         {
             if (str == null)
@@ -177,6 +185,18 @@ namespace Common
             if (str1 == null || str2 == null)
                 return false;
             return str1.StartsWith(str2, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static string TrySubstring(this string str, char c, int start = 0)
+        {
+            try
+            {
+                return str.Substring(start, str.IndexOf(c, start));
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static bool NotEmpty(this string str)

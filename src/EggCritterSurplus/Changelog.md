@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.12.0] U41-496912-S
+- updated
+
 ## [1.0.11.0]
 - made building placeable underwater
 

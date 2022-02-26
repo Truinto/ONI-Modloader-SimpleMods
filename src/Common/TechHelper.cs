@@ -2,7 +2,7 @@
 using STRINGS;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Common
 {
@@ -159,22 +159,17 @@ namespace Common
             return null;
         }
 
-        public static void AddBuildingToPlanScreen(string buildingId, PlanScreens category)
+        public static void AddBuildingToPlanScreen(string buildingId, PlanScreens category, string subcategory = "uncategorized")
         {
-            bool flag = false;
-            for (int i = 0; i < TUNING.BUILDINGS.PLANORDER.Count; i++)
+            int index = TUNING.BUILDINGS.PLANORDER.FindIndex(f => f.category == category.ToString());
+            if (index < 0)
             {
-                if (TUNING.BUILDINGS.PLANORDER[i].category == category.ToString())
-                {
-                    TUNING.BUILDINGS.PLANORDER[i].data.Add(buildingId);
-                    Debug.Log($"[TECHHELPER] Added {buildingId} to {category}");
-                    flag = true;
-                    break;
-                }
+                Debug.Log($"[TECHHELPER] Could not add {buildingId} to {category}");
+                return;
             }
 
-            if (!flag)
-                Debug.Log($"[TECHHELPER] Category {category} not found");
+            TUNING.BUILDINGS.PLANORDER[index].buildingAndSubcategoryData.Add(new KeyValuePair<string, string>(buildingId, subcategory));
+            Debug.Log($"[TECHHELPER] Added {buildingId} to {category}");
         }
 
         public static void AddBuildingToTechnology(string buildingId, TechGroups group)
