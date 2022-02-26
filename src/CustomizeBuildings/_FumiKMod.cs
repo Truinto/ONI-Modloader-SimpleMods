@@ -41,7 +41,7 @@ namespace CustomizeBuildings
 
             // call OnLoad methods
             Helpers.CallSafe(Miscellaneous.OnLoad);
-            Speed_Patch.OnLoad();
+            Helpers.CallSafe(Speed_Patch.OnLoad);
 
             // patch all harmony classes
             base.OnLoad(harmony);

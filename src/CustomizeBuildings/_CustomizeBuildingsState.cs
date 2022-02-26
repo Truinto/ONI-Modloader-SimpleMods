@@ -433,9 +433,9 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeOilWellCap_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeOilWellCap_ToolTip", "No Dupe")]
         public bool NoDupeOilWellCap { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeIceCooledFan_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeIceCooledFan_ToolTip", "No Dupe")]
-        public bool NoDupeIceCooledFan { get; set; } = false; // TODO: revisit
+        public bool NoDupeIceCooledFan { get; set; } = false; // todo revisit
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeRanchStation_ToolTip", "No Dupe")]
-        public bool NoDupeRanchStation { get; set; } = false; // TODO: revisit
+        public bool NoDupeRanchStation { get; set; } = false; // todo revisit
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeTelescope_ToolTip", "No Dupe")]
         public bool NoDupeTelescope { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeAlgaeTerrarium_ToolTip", "No Dupe")]
