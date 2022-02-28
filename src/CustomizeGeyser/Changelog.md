@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.18] U41-496912-S
+- uploaded correct file, teleport works again
+
 ## [1.0.17] U40-494396-S
 - allowing teleport for OilWell
 - fixed empty settings when switching language; will now save settings separately for each language

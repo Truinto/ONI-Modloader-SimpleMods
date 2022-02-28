@@ -168,7 +168,8 @@ namespace Common
                 return;
             }
 
-            TUNING.BUILDINGS.PLANORDER[index].buildingAndSubcategoryData.Add(new KeyValuePair<string, string>(buildingId, subcategory));
+            //TUNING.BUILDINGS.PLANORDER[index].buildingAndSubcategoryData.Add(new KeyValuePair<string, string>(buildingId, subcategory));
+            ModUtil.AddBuildingToPlanScreen(category.ToString(), buildingId, subcategory);
             Debug.Log($"[TECHHELPER] Added {buildingId} to {category}");
         }
 
