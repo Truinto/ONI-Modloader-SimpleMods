@@ -1,9 +1,12 @@
 # Changelog
 
-## [1.0.18] U41-496912-S
+## [1.0.19.0] U41-498381-S
+- fixed rare crash with resource side screen
+
+## [1.0.18.0] U41-496912-S
 - uploaded correct file, teleport works again
 
-## [1.0.17] U40-494396-S
+## [1.0.17.0] U40-494396-S
 - allowing teleport for OilWell
 - fixed empty settings when switching language; will now save settings separately for each language
 

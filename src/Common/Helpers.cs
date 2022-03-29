@@ -770,6 +770,17 @@ namespace Common
         }
         #endregion
 
+        #region Harmony
+
+        public static void ReplaceCall(this CodeInstruction code, Type type, string name, Type[] parameters = null, Type[] generics = null)
+        {
+            var repl = CodeInstruction.Call(type, name, parameters, generics);
+            code.opcode = repl.opcode;
+            code.operand = repl.operand;
+        }
+
+        #endregion
+
         #region Special
         public static void ProcessTags(this KPrefabID prefab, string[] tags, bool serialize = false)
         {

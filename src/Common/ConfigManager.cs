@@ -12,7 +12,7 @@ using Common;
 
 namespace Config
 {
-    public class TranslationResolver : DefaultContractResolver
+    public class TranslationResolver : DefaultContractResolver // todo: always allow English language: https://stackoverflow.com/questions/33155458/json-deserialize-from-legacy-property-names
     {
         protected override string ResolvePropertyName(string propertyName)
         {

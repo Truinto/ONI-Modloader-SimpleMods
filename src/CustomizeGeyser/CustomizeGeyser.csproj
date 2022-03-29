@@ -21,6 +21,7 @@
     <Compile Include="..\Common\TechHelper.cs" Link="TechHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fixes.cs" />
     <Compile Include="GeyserStruct.cs" />
     <Compile Include="TeleportPatch.cs" />
     <Compile Include="_CustomizeGeyserState.cs" />
