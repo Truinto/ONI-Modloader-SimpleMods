@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.20.0] U41-498381-S
+- fixed rare crash with resource side screen, again
+
 ## [1.0.19.0] U41-498381-S
 - fixed rare crash with resource side screen
 
