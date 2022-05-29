@@ -14,7 +14,7 @@ namespace CustomizeElements
         {
             foreach (var element in ElementLoader.elements)
             {
-                var setting = CustomizeElements.CustomizeElementsState.StateManager.State.Elements.FirstOrDefault(f => f.Id == element.tag);
+                var setting = CustomizeElementsState.StateManager.State.Elements.FirstOrDefault(f => f.Id == element.tag);
                 if (setting == null)
                     continue;
 
@@ -128,6 +128,16 @@ namespace CustomizeElements
 
                 if (setting.oreTags != null)
                     element.oreTags = (Tag[])CreateOreTags(null, element.materialCategory, (Tag)element.state.ToString(), setting.oreTags.ToArray());
+
+                if (setting.attributeModifiers != null)
+                {
+                    foreach (var attribute in setting.attributeModifiers)
+                    {
+                        if (attribute.Description == null)
+                            attribute.Description = element.name;
+                        element.attributeModifiers.Add(attribute);
+                    }
+                }
             }
         }
 

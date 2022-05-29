@@ -5,6 +5,7 @@ using Common;
 using HarmonyLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using static Common.Helpers;
 
 namespace CustomizeElements
 {
@@ -49,6 +50,7 @@ namespace CustomizeElements
         public string materialCategory;
         public List<string> oreTags;
         public int? buildMenuSort;
+        public List<AttributeContainer> attributeModifiers;
 
         public ElementContainer()
         { }
@@ -57,6 +59,12 @@ namespace CustomizeElements
         {
             this.Id = Id;
             this.oreTags = tags == null || tags.Length == 0 ? null : tags.ToList();
+        }
+
+        public ElementContainer(string Id, params AttributeContainer[] attributes)
+        {
+            this.Id = Id;
+            this.attributeModifiers = attributes == null || attributes.Length == 0 ? null : attributes.ToList();
         }
     }
 

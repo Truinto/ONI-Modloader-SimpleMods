@@ -131,7 +131,7 @@ namespace Config
         }
     }
 
-    public class Manager<T>
+    public class Manager<T> where T : class, new()
     {
         public readonly string StateFilePath;
 

@@ -676,6 +676,14 @@ namespace Common
                 this.IsMultiplier = source.IsMultiplier;
             }
 
+            public AttributeContainer(string id, float value, string name = null, bool isMultiplier = false)
+            {
+                this.Description = name;
+                this.AttributeId = id;
+                this.Value = value;
+                this.IsMultiplier = isMultiplier;
+            }
+
             public static implicit operator AttributeModifier(AttributeContainer container)
             {
                 return new AttributeModifier(container.AttributeId, container.Value, container.Description, container.IsMultiplier, uiOnly: false, is_readonly: false);
