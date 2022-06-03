@@ -54,15 +54,33 @@ namespace CustomizeRecipe
 
         public static void Process(RecipeData setting)
         {
+            // try to fill out ID
             if (setting.Id == null && setting.Building != null && setting.Inputs != null && setting.Outputs != null)
                 setting.Id = ComplexRecipeManager.MakeRecipeID(setting.Building, setting.InputsList, setting.OutputsList);
 
             if (setting.Id == null)
+            {
+                Config.PostBootDialog.ErrorList.Add("Missing recipe ID, skipping entry.");
                 return;
+            }
 
+            // check ID formatting
+            if (Assets.TryGetPrefab(setting.Id.TrySubstring('_')) == null)
+            {
+                Config.PostBootDialog.ErrorList.Add($"Recipe ID is invalid. Must start with building and underscore, like this \"{RockCrusherConfig.ID}_\"");
+                return;
+            }
+
+            // try to find recipe, if non found try to generate a new one
             var recipe = ComplexRecipeManager.Get().recipes.Find(f => f.id == setting.Id);
             if (recipe == null)
             {
+                if (setting.Building == null || setting.Inputs == null || setting.Outputs == null)
+                {
+                    Config.PostBootDialog.ErrorList.Add("Trying to generate new recipe, but could not parse building, inputs, or outputs: " + recipe.id);
+                    return;
+                }
+
                 recipe = new ComplexRecipe(setting.Id, EmptyIngredient, EmptyIngredient)
                 {
                     time = 40f,
@@ -71,6 +89,7 @@ namespace CustomizeRecipe
                 };
             }
 
+            // apply modifications
             if (setting.Description != null)
                 recipe.description = setting.Description;
             if (setting.Inputs != null)

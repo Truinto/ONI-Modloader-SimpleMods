@@ -24,8 +24,8 @@ namespace CustomizeElements
             new ElementContainer("Lead", "BuildableAny", "Metal"),
             new ElementContainer("Tungsten", "BuildableAny", "Metal", "Plumbable"),
             new ElementContainer("Katairite", "BuildableRaw", "BuildableAny"),
-            new ElementContainer("Niobium", new AttributeContainer(Db.Get().BuildingAttributes.OverheatTemperature.Id, 100f), new AttributeContainer("Decor", 5f)),
-            new ElementContainer("TempConductorSolid", new AttributeContainer(Db.Get().BuildingAttributes.OverheatTemperature.Id, 100f), new AttributeContainer("Decor", 5f)),
+            new ElementContainer("Niobium", new AttributeContainer("OverheatTemperature", 100f), new AttributeContainer("Decor", 5f)),
+            new ElementContainer("TempConductorSolid", new AttributeContainer("OverheatTemperature", 100f), new AttributeContainer("Decor", 5f)),
         };
 
         public static Config.Manager<CustomizeElementsState> StateManager;

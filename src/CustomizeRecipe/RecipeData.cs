@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,11 @@ namespace CustomizeRecipe
 
             public static implicit operator ComplexRecipe.RecipeElement(RecipeElement recipe)
             {
-                return new ComplexRecipe.RecipeElement(recipe.material, recipe.amount, (ComplexRecipe.RecipeElement.TemperatureOperation)(recipe.temperatureOperation ?? 0), recipe.storeElement ?? false)
+                Tag material = recipe.material;
+                if (Assets.TryGetPrefab(material) == null) // note: this only works after Assets.CreatePrefabs(), which is the case here
+                    material = SimHashes.Unobtanium.ToString();
+
+                return new ComplexRecipe.RecipeElement(material, recipe.amount, (ComplexRecipe.RecipeElement.TemperatureOperation)(recipe.temperatureOperation ?? 0), recipe.storeElement ?? false)
                 {
                     inheritElement = recipe.inheritElement ?? false
                 };

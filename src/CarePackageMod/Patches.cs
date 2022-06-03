@@ -11,14 +11,10 @@ namespace CarePackageMod
     [HarmonyPatch(typeof(CharacterContainer), nameof(CharacterContainer.SetReshufflingState))]
     public class Reshuffle1
     {
-        public static bool Prepare()
-        {
-            return CarePackageState.StateManager.State.allowReshuffle;
-        }
-
         public static void Prefix(ref bool enable)
         {
-            enable = true;
+            if (CarePackageState.StateManager.State.allowReshuffle)
+                enable = true;
         }
     }
 

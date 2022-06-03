@@ -9,7 +9,7 @@ namespace CustomizeRecipe
 {
     [ConfigFile("CustomizeRecipe.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
-    public class CustomizeRecipeState
+    public class CustomizeRecipeState : IManualConfig
     {
         public int version { get; set; } = 1;
 
@@ -45,12 +45,42 @@ namespace CustomizeRecipe
                 .Out(SimHashes.Sand, 100f)
         };
 
-        public static Config.Manager<CustomizeRecipeState> StateManager = new Config.Manager<CustomizeRecipeState>(Config.PathHelper.CreatePath("CustomizeRecipe"), true, OnUpdate, null);
-        
+        #region _implementation
+
+        public static Config.Manager<CustomizeRecipeState> StateManager;
+
         public static bool OnUpdate(CustomizeRecipeState state)
         {
             return true;
         }
+
+        public object ReadSettings()
+        {
+            return StateManager.State;
+        }
+
+        public void WriteSettings(object settings)
+        {
+            if (settings is CustomizeRecipeState state)
+                StateManager.TrySaveConfigurationState(state);
+            else
+                StateManager.TrySaveConfigurationState();
+        }
+
+        public string GetConfigPath()
+        {
+            return GetStaticConfigPath();
+        }
+
+        public static string GetStaticConfigPath()
+        {
+            string path = FumiKMod.ModName;
+            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+                path += "_" + Helpers.ActiveLocale;
+            return Config.PathHelper.CreatePath(path);
+        }
+
+        #endregion
     }
 
     public class CustomStrings

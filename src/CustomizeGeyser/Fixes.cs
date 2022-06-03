@@ -10,10 +10,10 @@ using UnityEngine;
 
 namespace CustomizeGeyser
 {
-    [HarmonyPatch(typeof(AllResourcesScreen), "SpawnCategoryRow")]
+    //[HarmonyPatch(typeof(AllResourcesScreen), "SpawnCategoryRow")]
     public class Fixes
     {
-        public static void Prefix(Tag categoryTag, AllResourcesScreen __instance, Dictionary<Tag, GameObject> ___categoryRows)
+        public static void Unused_Prefix(Tag categoryTag, AllResourcesScreen __instance, Dictionary<Tag, GameObject> ___categoryRows)
         {
             if (!___categoryRows.ContainsKey(categoryTag))
             {

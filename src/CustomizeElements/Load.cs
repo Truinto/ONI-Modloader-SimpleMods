@@ -18,6 +18,8 @@ namespace CustomizeElements
                 if (setting == null)
                     continue;
 
+                Helpers.Print("Applying changes to " + element.name);
+
                 if (setting.specificHeatCapacity != null)
                     element.specificHeatCapacity = setting.specificHeatCapacity.Value;
 
