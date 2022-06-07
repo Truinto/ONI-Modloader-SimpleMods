@@ -780,6 +780,8 @@ namespace Common
 
         #region Harmony
 
+        public static BindingFlags AllBinding = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
         public static void ReplaceCall(this CodeInstruction code, Type type, string name, Type[] parameters = null, Type[] generics = null)
         {
             var repl = CodeInstruction.Call(type, name, parameters, generics);

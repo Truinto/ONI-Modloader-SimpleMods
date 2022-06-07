@@ -1,7 +1,7 @@
 # Changelog
 
-## [1.0.16.0]
-- fixed rosterIsOrdered
+## [1.0.16.0] U42-509629-S
+- rebuild
 
 ## [1.0.15.0] U40-493472-S
 - fixed allowOnlyDiscoveredElements preventing only packages with raw materials to spawn

@@ -111,7 +111,8 @@ namespace CarePackageMod
 
                 if (flag4 && line.opcode == OpCodes.Callvirt && (line.operand as MethodInfo) == methodSetSiblingIndex)
                 {
-                    line.operand = typeof(InitializeContainers).GetMethod(nameof(NullReplacement));
+                    //line.opcode = OpCodes.Call; // crashes?!
+                    //line.operand = AccessTools.Method(typeof(InitializeContainers), nameof(NullReplacement));
                     flag4 = false;
                 }
 
@@ -131,21 +132,21 @@ namespace CarePackageMod
                 if (flag1 && line.opcode == OpCodes.Ldc_I4_1)
                 {
                     line.opcode = OpCodes.Ldsfld;
-                    line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.CarePackages));
+                    line.operand = AccessTools.Field(typeof(InitializeContainers), nameof(InitializeContainers.CarePackages));
                     Helpers.Print($"Patched InitializeContainers:Ldc_I4_1 at {i} with {line.operand}");
                     flag1 = false;
                 }
                 else if (flag2 && line.opcode == OpCodes.Ldc_I4_2)
                 {
                     line.opcode = OpCodes.Ldsfld;
-                    line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.CarePackages));
+                    line.operand = AccessTools.Field(typeof(InitializeContainers), nameof(InitializeContainers.CarePackages));
                     Helpers.Print($"Patched InitializeContainers:Ldc_I4_2 at {i} with {line.operand}");
                     flag2 = false;
                 }
                 else if (flag3 && line.opcode == OpCodes.Ldc_I4_4)
                 {
                     line.opcode = OpCodes.Ldsfld;
-                    line.operand = typeof(InitializeContainers).GetField(nameof(InitializeContainers.Total));
+                    line.operand = AccessTools.Field(typeof(InitializeContainers), nameof(InitializeContainers.Total));
                     Helpers.Print($"Patched InitializeContainers:Ldc_I4_4 at {i} with {line.operand}");
                     flag3 = false;
                 }

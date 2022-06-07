@@ -1,6 +1,7 @@
 # Changelog
 
-## [1.0.20.0] U41-498381-S
+## [1.0.20.0] U42-509629-S
+- rebuild
 - fixed rare crash with resource side screen, again
 
 ## [1.0.19.0] U41-498381-S
