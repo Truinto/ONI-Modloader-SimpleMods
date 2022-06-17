@@ -1,0 +1,30 @@
+"TravelTube": {
+   "LocationRule": 0,
+   "MaterialCategory": "Transparent Plastic",
+   "ConstructionMass": [50 ,50]
+}
+
+"BuildingAdvancedMaterial": [
+   {
+     "Id": "TravelTube",
+     "MaterialAppend": true,
+     "Index": 0,
+     "MaterialOverride": "Aluminum"
+   },
+   {
+     "Id": "TravelTube",
+     "MaterialAppend": true,
+     "Index": 1,
+     "MaterialOverride": "Ice"
+   }
+]
+
+- to change any building from one to two ingredients set "MaterialCategory" and "ConstructionMass"
+- MaterialCategory takes a string, one word for each material group
+- ConstructionMass takes an array of mass, one float for each material group
+- material groups are defined in "Steam\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\StreamingAssets\elements\solid.yaml"
+        both "tags" and "materialCategory" count towards this
+- to change the material group, you may either edit the solid.yaml or use CustomizeElements mod
+- since material groups are global, you may also use "BuildingAdvancedMaterial" to add elements to a specific building
+- MaterialAppend preserves existing elements
+- Index is required if you work with multi material recipes
