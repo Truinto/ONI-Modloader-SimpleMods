@@ -36,7 +36,8 @@ namespace CustomizePlants
                     break;
             }
 
-            string displayName = FindBetweenLink.Match(template.GetComponent<DecorProvider>()?.overrideName ?? "null")?.Groups[1]?.Value ?? "null";
+            var match = FindBetweenLink.Match(template.GetProperName() ?? "null");
+            string displayName = match.Success ? match.Groups[1].Value : null;
             string className = classType.AssemblyQualifiedName;
             string plantName = template.name;
 

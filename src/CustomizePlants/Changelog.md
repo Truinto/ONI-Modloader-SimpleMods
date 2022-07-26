@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.34.0] U42-514967-S
+- changed so plant id will also work with plant's literal name
+
 ## [1.0.33.0] U40-494396-S
 - fixed read all button, will now convert irrigation to kg/cycle instead of kg/second
 - fixed empty settings when switching language; will now save settings separately for each language

@@ -204,7 +204,10 @@ namespace CustomizePlants
 
         public static void ProcessPlant(GameObject plant)
         {
-            PlantData setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.PrefabID());
+            var match = PlantLookupPatch.FindBetweenLink.Match(plant.GetProperName() ?? "null");
+            string displayName = match.Success ? match.Groups[1].Value : null;
+
+            PlantData setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.PrefabID() || t.id == displayName);
             if (setting == null) return;
 
             #region trait fix
