@@ -37,4 +37,27 @@ namespace CustomizeBuildings
     //    {
     //    }
     //}
+
+    public class BatteryModuleConfig_Mod : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == BatteryModuleConfig.ID && CustomizeBuildingsState.StateManager.State.SpaceBattery != 100000f;
+        }
+
+        public void Edit(BuildingDef def)
+        {
+            var ModuleBattery = def.BuildingComplete.GetComponent<ModuleBattery>();
+            if (ModuleBattery != null)
+            {
+                ModuleBattery.capacity = CustomizeBuildingsState.StateManager.State.SpaceBattery;
+                ModuleBattery.joulesLostPerSecond = 0f;
+            }
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

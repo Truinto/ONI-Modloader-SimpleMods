@@ -48,6 +48,7 @@ namespace CustomizeBuildings
             setTuning(nameof(CustomizeBuildingsState.TuningOxidizerEfficiencyVeryLow), ref TUNING.ROCKETRY.DLC1_OXIDIZER_EFFICIENCY.VERY_LOW);  //Fertilizer
             setTuning(nameof(CustomizeBuildingsState.TuningOxidizerEfficiencyLow), ref TUNING.ROCKETRY.DLC1_OXIDIZER_EFFICIENCY.LOW);   //OxyRock
             setTuning(nameof(CustomizeBuildingsState.TuningOxidizerEfficiencyHigh), ref TUNING.ROCKETRY.DLC1_OXIDIZER_EFFICIENCY.HIGH);  //LiquidOxygen
+            setTuning(nameof(CustomizeBuildingsState.TuningCargoCapacityScale), ref TUNING.ROCKETRY.CARGO_CAPACITY_SCALE);
             setTuning(nameof(CustomizeBuildingsState.TuningCargoContainerMassStaticMass), ref TUNING.ROCKETRY.CARGO_CONTAINER_MASS.STATIC_MASS);
             setTuning(nameof(CustomizeBuildingsState.TuningCargoContainerMassPayloadMass), ref TUNING.ROCKETRY.CARGO_CONTAINER_MASS.PAYLOAD_MASS);
             setTuning(nameof(CustomizeBuildingsState.TuningBurdenInsignificant), ref TUNING.ROCKETRY.BURDEN.INSIGNIFICANT);   //Unconstructed
@@ -166,6 +167,25 @@ namespace CustomizeBuildings
             RustDeoxidizer rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
             if (rustDeoxidizer != null)
                 rustDeoxidizer.maxMass = CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure;
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class RocketPlatformInvincibility : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == LaunchPadConfig.ID && CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility
+                || id == GantryConfig.ID && CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility;
+        }
+        
+        public void Edit(BuildingDef def)
+        {
+            def.BuildingComplete.GetComponent<KPrefabID>()?.AddTag(GameTags.Bunker, false);
         }
 
         public void Undo(BuildingDef def)

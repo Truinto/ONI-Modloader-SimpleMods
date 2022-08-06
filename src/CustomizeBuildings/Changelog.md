@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.64.0] U42-514967-S
+- added TuningCargoCapacityScale
+- added SpaceBattery
+- added CO2EngineKG
+- added SugarEngineKG
+- added SteamEngineKG
+- added SmallPetroleumEngineKG
+- added HEPEngineStorage
+- added LiquidFuelTankKG
+- added SmallOxidizerTankKG
+- added LargeSolidOxidizerTankKG
+- added LiquidOxidizerTankKG
+
+## [1.0.63.0]
+- updated strings file
+
+## [1.0.62.0] U42-514967-S
+- added RocketPlatformInvincibility to make rocket platforms comet immune
+
 ## [1.0.61.0] U40-494396-S
 - added CompostFreshnessPercent and CompostCaloriesPerDupe which can automatically mark stale food for compost
 

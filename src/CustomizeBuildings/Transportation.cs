@@ -34,7 +34,7 @@ namespace CustomizeBuildings
     {
         internal static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.LadderCometInvincibility;
+            return CustomizeBuildingsState.StateManager.State.LadderCometInvincibility | CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility;
         }
 
         internal static bool Prefix(int cell)

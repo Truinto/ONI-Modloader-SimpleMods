@@ -21,41 +21,16 @@ namespace CustomizeBuildings
             bool seal_container = CustomizeBuildingsState.StateManager.State.SealInsulateStorages;
 
             if (def.PrefabID == NoseconeHarvestConfig.ID)
-            {
-                var storage = def.BuildingComplete.GetComponent<Storage>();
-                storage.capacityKg = CustomizeBuildingsState.StateManager.State.DrillConeKG;
-                var manualDeliveryKG = def.BuildingComplete.GetComponent<ManualDeliveryKG>();
-                //manualDeliveryKG.minimumMass = storage.capacityKg;
-                manualDeliveryKG.capacity = storage.capacityKg;
-                manualDeliveryKG.refillMass = storage.capacityKg;
-            }
+                setStorage(CustomizeBuildingsState.StateManager.State.DrillConeKG);
 
             else if (def.PrefabID == ModularLaunchpadPortGasConfig.ID || def.PrefabID == ModularLaunchpadPortGasUnloaderConfig.ID)
-            {
-                ConduitConsumer conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
-                if (conduitConsumer != null)
-                    conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.RocketPortGas;
-                foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
-                    storage.capacityKg = CustomizeBuildingsState.StateManager.State.RocketPortGas;
-            }
+                setStorage(CustomizeBuildingsState.StateManager.State.RocketPortGas);
 
             else if (def.PrefabID == ModularLaunchpadPortLiquidConfig.ID || def.PrefabID == ModularLaunchpadPortLiquidUnloaderConfig.ID)
-            {
-                ConduitConsumer conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
-                if (conduitConsumer != null)
-                    conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.RocketPortLiquid;
-                foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
-                    storage.capacityKg = CustomizeBuildingsState.StateManager.State.RocketPortLiquid;
-            }
+                setStorage(CustomizeBuildingsState.StateManager.State.RocketPortLiquid);
 
             else if (def.PrefabID == ModularLaunchpadPortSolidConfig.ID || def.PrefabID == ModularLaunchpadPortSolidUnloaderConfig.ID)
-            {
-                var solidConduitConsumer = def.BuildingComplete.GetComponent<SolidConduitConsumer>();
-                if (solidConduitConsumer != null)
-                    solidConduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.RocketPortSolid;
-                foreach (var storage in def.BuildingComplete.GetComponents<Storage>())
-                    storage.capacityKg = CustomizeBuildingsState.StateManager.State.RocketPortSolid;
-            }
+                setStorage(CustomizeBuildingsState.StateManager.State.RocketPortSolid);
 
             else if (def.PrefabID == StorageLockerConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.LockerKG);
@@ -84,6 +59,33 @@ namespace CustomizeBuildings
             else if (def.PrefabID == SolidConduitOutboxConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.ConveyorReceptacleKG);
 
+            else if (def.PrefabID == CO2EngineConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.CO2EngineKG); //100f
+
+            else if (def.PrefabID == SugarEngineConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.SugarEngineKG); //450f
+
+            else if (def.PrefabID == SteamEngineConfig.ID || def.PrefabID == SteamEngineClusterConfig.ID) //900f, 150f
+                setStorage(CustomizeBuildingsState.StateManager.State.SteamEngineKG);
+
+            else if (def.PrefabID == KeroseneEngineClusterSmallConfig.ID) //450f
+                setStorage(CustomizeBuildingsState.StateManager.State.SmallPetroleumEngineKG);
+
+            else if (def.PrefabID == HEPEngineConfig.ID) //4000f
+                setRads(CustomizeBuildingsState.StateManager.State.HEPEngineStorage);
+
+            else if (def.PrefabID == LiquidFuelTankClusterConfig.ID || def.PrefabID == LiquidFuelTankClusterConfig.ID) //900f
+                setStorage(CustomizeBuildingsState.StateManager.State.LiquidFuelTankKG);
+
+            else if (def.PrefabID == SmallOxidizerTankConfig.ID) //450f
+                setStorage(CustomizeBuildingsState.StateManager.State.SmallOxidizerTankKG);
+
+            else if (def.PrefabID == OxidizerTankConfig.ID || def.PrefabID == OxidizerTankClusterConfig.ID) //2700f, 900f
+                setStorage(CustomizeBuildingsState.StateManager.State.LargeSolidOxidizerTankKG);
+
+            else if (def.PrefabID == OxidizerTankLiquidConfig.ID || def.PrefabID == OxidizerTankLiquidClusterConfig.ID) //2700f, 450f
+                setStorage(CustomizeBuildingsState.StateManager.State.LiquidOxidizerTankKG);
+
             void setStorage(float value)
             {
                 if ((def.InputConduitType == ConduitType.Gas || def.InputConduitType == ConduitType.Liquid) && value > 100000f)
@@ -96,8 +98,36 @@ namespace CustomizeBuildings
                         storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
                 }
 
+                foreach (var delivery in def.BuildingComplete.GetComponents<ManualDeliveryKG>())
+                {
+                    delivery.capacity = value;
+                    delivery.refillMass = value;
+                }
+
                 foreach (var consumer in def.BuildingComplete.GetComponents<ConduitConsumer>())
                     consumer.capacityKG = value;
+
+                foreach (var consumer in def.BuildingComplete.GetComponents<SolidConduitConsumer>())
+                    consumer.capacityKG = value;
+
+                foreach (var tank in def.BuildingComplete.GetComponents<FuelTank>())
+                {
+                    tank.targetFillMass = value;
+                    tank.physicalFuelCapacity = value;
+                }
+
+                foreach (var consumer in def.BuildingComplete.GetComponents<OxidizerTank>())
+                    consumer.maxFillMass = value;
+            }
+
+            void setRads(float value)
+            {
+                var pStorage = def.BuildingComplete.GetComponent<HighEnergyParticleStorage>();
+                if (pStorage != null)
+                    pStorage.capacity = value;
+                var radTank = def.BuildingComplete.GetComponent<HEPFuelTank>();
+                if (radTank != null)
+                    radTank.physicalFuelCapacity = value;
             }
         }
     }
