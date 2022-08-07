@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.65.0] U42-514967-S
+- fixed default value for SpaceBattery
+- moved batteries to "power" category
+- updated translation
+
 ## [1.0.64.0] U42-514967-S
 - added TuningCargoCapacityScale
 - added SpaceBattery

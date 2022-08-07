@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 51;
+        public int version { get; set; } = 52;
 
         #region $Reset Button
         [JsonIgnore]
@@ -195,6 +195,11 @@ namespace CustomizeBuildings
         public float SolarMaxPower { get; set; } = 600f;
         [Option("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_Title", "CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_ToolTip", "Power", "F2")]
         public float SolarEnergyMultiplier { get; set; } = 1f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "Power", "F0")]
+        public float RadBattery { get; set; } = 1000f;
+        [Option("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "Power", "F0")]
+        public float SpaceBattery { get; set; } = 100000f;
         #endregion
 
         #region Storage
@@ -240,11 +245,6 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "Storage", "F0")]
         public float RocketPortSolid { get; set; } = 20f;
 
-        [Option("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "Storage", "F0")]
-        public float RadBattery { get; set; } = 1000f;
-
-        [Option("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "Storage", "F0")]
-        public float SpaceBattery { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.CO2EngineKG_Title", "CustomizeBuildings.LOCSTRINGS.CO2EngineKG_ToolTip", "Storage", "F0")]
         public float CO2EngineKG { get; set; } = 100f;
         [Option("CustomizeBuildings.LOCSTRINGS.SugarEngineKG_Title", "CustomizeBuildings.LOCSTRINGS.SugarEngineKG_ToolTip", "Storage", "F0")]
@@ -717,25 +717,8 @@ namespace CustomizeBuildings
             }
             if (state.version < 44 && state.DrillConeKG < 1000f)
                 state.DrillConeKG = 1000f;
-            //if (state.version < 45)
-            //{
-            //    state.Capacities.Clear();
-            //    state.Capacities.Add(StorageLockerConfig.ID, state.LockerKG);
-            //    state.Capacities.Add(StorageLockerSmartConfig.ID, state.LockerSmartKG);
-            //    state.Capacities.Add(GasReservoirConfig.ID, state.GasReservoirKG);
-            //    state.Capacities.Add(LiquidReservoirConfig.ID, state.LiquidReservoirKG);
-            //    state.Capacities.Add(RationBoxConfig.ID, state.RationBoxKG);
-            //    state.Capacities.Add(RefrigeratorConfig.ID, state.FridgeKG);
-            //    state.Capacities.Add(CreatureFeederConfig.ID, state.CritterFeederKG);
-            //    state.Capacities.Add(FishFeederConfig.ID, state.FishFeederKG);
-            //    state.Capacities.Add(GasBottlerConfig.ID, state.CanisterFillerKG);
-            //    state.Capacities.Add(SolidConduitInboxConfig.ID, state.ConveyorLoaderKG);
-            //    state.Capacities.Add(SolidConduitOutboxConfig.ID, state.ConveyorReceptacleKG);
-            //    state.Capacities.Add(NoseconeHarvestConfig.ID, state.DrillConeKG);
-            //    state.Capacities.Add(ModularLaunchpadPortGasConfig.ID, state.RocketPortGas);
-            //    state.Capacities.Add(ModularLaunchpadPortLiquidConfig.ID, state.RocketPortLiquid);
-            //    state.Capacities.Add(ModularLaunchpadPortSolidConfig.ID, state.RocketPortSolid);
-            //}
+            if (state.version < 52 && state.SpaceBattery < 100000f)
+                state.SpaceBattery = 100000f;
 
             return true;
         }
@@ -1032,6 +1015,14 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SolarEnergyMultiplier", "SolarEnergyMultiplier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_Title", "Solar Energy Multiplier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_ToolTip", "Multiplies power generation. Limited up to 'Solar Max Power'.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RadBattery", "RadBattery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "Radbolt Chamber Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceBattery", "SpaceBattery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "Space Battery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "");
             #endregion
             #region Power Cable
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireSmallWatts", "WireSmallWatts");
@@ -1278,14 +1269,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortSolid", "RocketPortSolid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "Rocket Port Solid Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RadBattery", "RadBattery");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "Radbolt Chamber Capacity");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceBattery", "SpaceBattery");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "Space Battery");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CO2EngineKG", "CO2EngineKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CO2EngineKG_Title", "CO2 Engine KG");

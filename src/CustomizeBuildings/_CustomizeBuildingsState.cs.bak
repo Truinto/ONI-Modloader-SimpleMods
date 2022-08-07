@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 51;
+        public int version { get; set; } = 52;
 
         #region $Reset Button
         [JsonIgnore]
@@ -195,6 +195,11 @@ namespace CustomizeBuildings
         public float SolarMaxPower { get; set; } = 600f;
         [Option("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_Title", "CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_ToolTip", "Power", "F2")]
         public float SolarEnergyMultiplier { get; set; } = 1f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "Power", "F0")]
+        public float RadBattery { get; set; } = 1000f;
+        [Option("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "Power", "F0")]
+        public float SpaceBattery { get; set; } = 100000f;
         #endregion
 
         #region Storage
@@ -240,28 +245,23 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "Storage", "F0")]
         public float RocketPortSolid { get; set; } = 20f;
 
-        [Option("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "Storage", "F0")]
-        public float RadBattery { get; set; } = 1000f;
-
-        [Option("Space Battery", "", "Storage", "F0")]
-        public float SpaceBattery { get; set; } = 1000f;
-        [Option("CO2 Engine KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.CO2EngineKG_Title", "CustomizeBuildings.LOCSTRINGS.CO2EngineKG_ToolTip", "Storage", "F0")]
         public float CO2EngineKG { get; set; } = 100f;
-        [Option("Sugar Engine KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SugarEngineKG_Title", "CustomizeBuildings.LOCSTRINGS.SugarEngineKG_ToolTip", "Storage", "F0")]
         public float SugarEngineKG { get; set; } = 450f;
-        [Option("Steam Engine KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SteamEngineKG_Title", "CustomizeBuildings.LOCSTRINGS.SteamEngineKG_ToolTip", "Storage", "F0")]
         public float SteamEngineKG { get; set; } = 900f;
-        [Option("Small Petroleum Engine KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SmallPetroleumEngineKG_Title", "CustomizeBuildings.LOCSTRINGS.SmallPetroleumEngineKG_ToolTip", "Storage", "F0")]
         public float SmallPetroleumEngineKG { get; set; } = 450f;
-        [Option("HEP Engine Storage", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.HEPEngineStorage_Title", "CustomizeBuildings.LOCSTRINGS.HEPEngineStorage_ToolTip", "Storage", "F0")]
         public float HEPEngineStorage { get; set; } = 4000f;
-        [Option("Liquid Fuel Tank KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.LiquidFuelTankKG_Title", "CustomizeBuildings.LOCSTRINGS.LiquidFuelTankKG_ToolTip", "Storage", "F0")]
         public float LiquidFuelTankKG { get; set; } = 900f;
-        [Option("Small Oxidizer Tank KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SmallOxidizerTankKG_Title", "CustomizeBuildings.LOCSTRINGS.SmallOxidizerTankKG_ToolTip", "Storage", "F0")]
         public float SmallOxidizerTankKG { get; set; } = 900f;
-        [Option("Large Solid Oxidizer Tank KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.LargeSolidOxidizerTankKG_Title", "CustomizeBuildings.LOCSTRINGS.LargeSolidOxidizerTankKG_ToolTip", "Storage", "F0")]
         public float LargeSolidOxidizerTankKG { get; set; } = 2700f;
-        [Option("Liquid Oxidizer Tank KG", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_Title", "CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_ToolTip", "Storage", "F0")]
         public float LiquidOxidizerTankKG { get; set; } = 2700f;
 
         #endregion
@@ -717,25 +717,8 @@ namespace CustomizeBuildings
             }
             if (state.version < 44 && state.DrillConeKG < 1000f)
                 state.DrillConeKG = 1000f;
-            //if (state.version < 45)
-            //{
-            //    state.Capacities.Clear();
-            //    state.Capacities.Add(StorageLockerConfig.ID, state.LockerKG);
-            //    state.Capacities.Add(StorageLockerSmartConfig.ID, state.LockerSmartKG);
-            //    state.Capacities.Add(GasReservoirConfig.ID, state.GasReservoirKG);
-            //    state.Capacities.Add(LiquidReservoirConfig.ID, state.LiquidReservoirKG);
-            //    state.Capacities.Add(RationBoxConfig.ID, state.RationBoxKG);
-            //    state.Capacities.Add(RefrigeratorConfig.ID, state.FridgeKG);
-            //    state.Capacities.Add(CreatureFeederConfig.ID, state.CritterFeederKG);
-            //    state.Capacities.Add(FishFeederConfig.ID, state.FishFeederKG);
-            //    state.Capacities.Add(GasBottlerConfig.ID, state.CanisterFillerKG);
-            //    state.Capacities.Add(SolidConduitInboxConfig.ID, state.ConveyorLoaderKG);
-            //    state.Capacities.Add(SolidConduitOutboxConfig.ID, state.ConveyorReceptacleKG);
-            //    state.Capacities.Add(NoseconeHarvestConfig.ID, state.DrillConeKG);
-            //    state.Capacities.Add(ModularLaunchpadPortGasConfig.ID, state.RocketPortGas);
-            //    state.Capacities.Add(ModularLaunchpadPortLiquidConfig.ID, state.RocketPortLiquid);
-            //    state.Capacities.Add(ModularLaunchpadPortSolidConfig.ID, state.RocketPortSolid);
-            //}
+            if (state.version < 52 && state.SpaceBattery < 100000f)
+                state.SpaceBattery = 100000f;
 
             return true;
         }
@@ -1282,6 +1265,46 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RadBattery", "RadBattery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "Radbolt Chamber Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceBattery", "SpaceBattery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "Space Battery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CO2EngineKG", "CO2EngineKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CO2EngineKG_Title", "CO2 Engine KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CO2EngineKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SugarEngineKG", "SugarEngineKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SugarEngineKG_Title", "Sugar Engine KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SugarEngineKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamEngineKG", "SteamEngineKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamEngineKG_Title", "Steam Engine KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamEngineKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SmallPetroleumEngineKG", "SmallPetroleumEngineKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SmallPetroleumEngineKG_Title", "Small Petroleum Engine KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SmallPetroleumEngineKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.HEPEngineStorage", "HEPEngineStorage");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.HEPEngineStorage_Title", "HEP Engine Storage");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.HEPEngineStorage_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LiquidFuelTankKG", "LiquidFuelTankKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidFuelTankKG_Title", "Liquid Fuel Tank KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidFuelTankKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SmallOxidizerTankKG", "SmallOxidizerTankKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SmallOxidizerTankKG_Title", "Small Oxidizer Tank KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SmallOxidizerTankKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LargeSolidOxidizerTankKG", "LargeSolidOxidizerTankKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LargeSolidOxidizerTankKG_Title", "Large Solid Oxidizer Tank KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LargeSolidOxidizerTankKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LiquidOxidizerTankKG", "LiquidOxidizerTankKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_Title", "Liquid Oxidizer Tank KG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_ToolTip", "");
             #endregion
             #region Switches
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeValves", "NoDupeValves");
