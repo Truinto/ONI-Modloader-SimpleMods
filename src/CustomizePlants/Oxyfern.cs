@@ -27,7 +27,7 @@ namespace CustomizePlants
             }
 
             if (elementConverter.consumedElements.Count() == 1)
-                elementConverter.consumedElements[0].massConsumptionRate = oxyfernOxygenPerSecond / 50f;
+                elementConverter.consumedElements[0].MassConsumptionRate = oxyfernOxygenPerSecond / 50f;
 
             if (elementConverter.outputElements.Count() == 1)
                 elementConverter.outputElements[0].massGenerationRate = oxyfernOxygenPerSecond;

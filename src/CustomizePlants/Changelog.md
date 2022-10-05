@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.35.0] U42-514967-S
+- fixed for new version
+
 ## [1.0.34.0] U42-514967-S
 - changed so plant id will also work with plant's literal name
 

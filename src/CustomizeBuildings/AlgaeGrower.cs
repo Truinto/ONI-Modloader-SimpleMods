@@ -29,13 +29,13 @@ namespace CustomizeBuildings
             {
                 ManualDeliveryKG manualDeliveryKG = go.AddComponent<ManualDeliveryKG>();
                 manualDeliveryKG.SetStorage(storage);
-                manualDeliveryKG.requestedItemTag = element.tag;
-                manualDeliveryKG.capacity = element.massConsumptionRate * 3000f;
-                manualDeliveryKG.refillMass = element.massConsumptionRate * 600f;
+                manualDeliveryKG.RequestedItemTag = element.Tag;
+                manualDeliveryKG.capacity = element.MassConsumptionRate * 3000f;
+                manualDeliveryKG.refillMass = element.MassConsumptionRate * 600f;
                 manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 
-                if (passiveConsumer != null && element.tag.ToElement().IsLiquid)
-                    passiveConsumer.elementToConsume = element.tag.ToSimHash();
+                if (passiveConsumer != null && element.Tag.ToElement().IsLiquid)
+                    passiveConsumer.elementToConsume = element.Tag.ToSimHash();
             }
 
             foreach (var element in ec.outputElements.Where(w => w.storeOutput))

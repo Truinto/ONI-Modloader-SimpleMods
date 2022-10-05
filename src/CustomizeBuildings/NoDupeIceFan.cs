@@ -257,10 +257,10 @@ namespace CustomizeBuildings
             Prioritizable.AddRef(go);
             ManualDeliveryKG manualDeliveryKg = go.AddComponent<ManualDeliveryKG>();
             manualDeliveryKg.SetStorage(storage1);
-            manualDeliveryKg.requestedItemTag = GameTags.IceOre;
+            manualDeliveryKg.RequestedItemTag = GameTags.IceOre;
             manualDeliveryKg.capacity = storage1.capacityKg;
             manualDeliveryKg.refillMass = storage1.capacityKg * 0.2f;
-            manualDeliveryKg.minimumMass = 10f;
+            manualDeliveryKg.MinimumMass = 10f;
             manualDeliveryKg.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 
             ElementConverter elementConverter = go.AddOrGet<ElementConverter>();

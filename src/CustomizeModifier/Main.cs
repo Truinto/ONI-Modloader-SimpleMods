@@ -14,8 +14,8 @@ namespace CustomizeModifier
         public static void Postfix(GameObject go)
         {
             RanchStation.Def def = go.AddOrGetDef<RanchStation.Def>();
-            def.isCreatureEligibleToBeRanchedCb = isCreatureEligibleToBeRanched;
-            def.onRanchCompleteCb = onRanchComplete;
+            def.IsCritterEligibleToBeRanchedCb = isCreatureEligibleToBeRanched;
+            def.OnRanchCompleteCb = onRanchComplete;
         }
 
         public static bool isCreatureEligibleToBeRanched(GameObject creature_go, RanchStation.Instance ranch_station_smi)
@@ -25,7 +25,7 @@ namespace CustomizeModifier
 
         public static void onRanchComplete(GameObject creature_go)
         {
-            RanchStation.Instance targetRanchStation = creature_go.GetSMI<RanchableMonitor.Instance>().targetRanchStation;
+            RanchStation.Instance targetRanchStation = creature_go.GetSMI<RanchableMonitor.Instance>().TargetRanchStation;
             RancherChore.RancherChoreStates.Instance smi = targetRanchStation.GetSMI<RancherChore.RancherChoreStates.Instance>();
             float num = (float)(1.2 + (double)targetRanchStation.GetSMI<RancherChore.RancherChoreStates.Instance>().sm.rancher.Get(smi).GetAttributes().Get(Db.Get().Attributes.Ranching.Id).GetTotalValue() * 0.100000001490116);
             creature_go.GetComponent<Effects>().Add("Ranched", true).timeRemaining *= num;

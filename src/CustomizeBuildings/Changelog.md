@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.66.0] U42-514967-S
+- fixed for new version
+
 ## [1.0.65.0] U42-514967-S
 - fixed default value for SpaceBattery
 - moved batteries to "power" category

@@ -191,7 +191,7 @@ namespace CustomizeBuildings
                 for (int j = 0; j < converters.Count(); j++)
                 {
                     for (int i = 0; i < converters[j].consumedElements.Count(); i++)
-                        converters[j].consumedElements[i].massConsumptionRate *= multiplier;
+                        converters[j].consumedElements[i].MassConsumptionRate *= multiplier;
                     for (int i = 0; i < converters[j].outputElements.Count(); i++)
                         converters[j].outputElements[i].massGenerationRate *= multiplier;
                     Debug.Log("Multiplier: " + def.PrefabID + " x" + multiplier);
