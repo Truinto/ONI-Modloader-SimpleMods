@@ -40,6 +40,7 @@ namespace versioncontrol_ONI
                 int int_gameversion = 0;
                 bool b_exp1 = false;
                 bool overwrite_state = false;
+                bool newVersion = false;
 
                 // read args
                 #region args
@@ -113,7 +114,7 @@ namespace versioncontrol_ONI
                     var changelog = File.ReadAllLines(path_md);
                     for (int i = 0; i < changelog.Length; i++)
                     {
-                        if (changelog[i].Contains("[", StringComparison.Ordinal))
+                        if (changelog[i].Contains('[', StringComparison.Ordinal))
                         {
                             changelog[i] = changelog[i].TrimEnd();
                             int indexopen = changelog[i].IndexOf('[') + 1;
@@ -125,7 +126,10 @@ namespace versioncontrol_ONI
                                 if (gameversion != null)
                                 {
                                     if (changelog[i].IndexOf(gameversion, StringComparison.Ordinal) < 0)
+                                    {
                                         changelog[i] += (" " + gameversion);
+                                        newVersion = true;
+                                    }
                                     //int indexversion = changelog[i].IndexOf(gameversionprefix, StringComparison.Ordinal);
                                     //if (indexversion < 0)
                                     //    changelog[i] += (" " + gameversion);
@@ -147,6 +151,26 @@ namespace versioncontrol_ONI
                     string[] modinfo;
                     if (File.Exists(path_info))
                     {
+                        if (projectname != null && newVersion) // archive old version, if gameversion was printed into changelog
+                        {
+                            string path_mod = new FileInfo(path_info).Directory.FullName;
+                            string path_dll = Path.Combine(path_mod, projectname + ".dll");
+                            if (File.Exists(path_dll))
+                            {
+                                string path_archive = Path.Combine(path_mod, "archived_versions", int_gameversion.ToString());
+                                string path_archdll = Path.Combine(path_archive, projectname + ".dll");
+                                //if (!File.Exists(path_archdll))
+                                {
+                                    Directory.CreateDirectory(path_archive);
+                                    File.Copy(path_dll, path_archdll, true);
+                                    File.Copy(path_info, Path.Combine(path_archive, "mod_info.yaml"), true);
+                                    Console.WriteLine("archived old version");
+                                }
+                            }
+                            else
+                                Console.WriteLine("archiving failed");
+                        }
+
                         modinfo = File.ReadAllLines(path_info);
                         for (int i = 0; i < modinfo.Length; i++)
                             if (modinfo[i].StartsWith("minimumSupportedBuild:", StringComparison.Ordinal))

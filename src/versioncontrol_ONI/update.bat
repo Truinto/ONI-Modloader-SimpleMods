@@ -1,1 +1,1 @@
-..\versioncontrol_ONI\bin\Release\netcoreapp3.1\versioncontrol_ONI.exe -state _CustomizeRecipeState.cs
+..\versioncontrol_ONI\bin\Release\net6.0\versioncontrol_ONI.exe -state _CustomizeRecipeState.cs

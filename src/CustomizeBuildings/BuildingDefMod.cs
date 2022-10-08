@@ -188,55 +188,55 @@ namespace CustomizeBuildings
             if (flag)
             {
                 ElementConverter[] converters = def.BuildingComplete.GetComponents<ElementConverter>();
-                for (int j = 0; j < converters.Count(); j++)
+                for (int j = 0; j < converters.Length; j++)
                 {
-                    for (int i = 0; i < converters[j].consumedElements.Count(); i++)
+                    for (int i = 0; i < converters[j].consumedElements.Length; i++)
                         converters[j].consumedElements[i].MassConsumptionRate *= multiplier;
-                    for (int i = 0; i < converters[j].outputElements.Count(); i++)
+                    for (int i = 0; i < converters[j].outputElements.Length; i++)
                         converters[j].outputElements[i].massGenerationRate *= multiplier;
                     Debug.Log("Multiplier: " + def.PrefabID + " x" + multiplier);
                 }
 
                 Storage[] storages = def.BuildingComplete.GetComponents<Storage>();
-                for (int i = 0; i < storages.Count(); i++)
+                for (int i = 0; i < storages.Length; i++)
                 {
                     storages[i].capacityKg *= multiplier;
                 }
 
                 ManualDeliveryKG[] manualDeliveryKGs = def.BuildingComplete.GetComponents<ManualDeliveryKG>();
-                for (int i = 0; i < manualDeliveryKGs.Count(); i++)
+                for (int i = 0; i < manualDeliveryKGs.Length; i++)
                 {
                     manualDeliveryKGs[i].capacity *= multiplier;
                 }
 
                 ConduitConsumer[] conduitConsumer = def.BuildingComplete.GetComponents<ConduitConsumer>();
-                for (int i = 0; i < conduitConsumer.Count(); i++)
+                for (int i = 0; i < conduitConsumer.Length; i++)
                 {
                     conduitConsumer[i].capacityKG *= multiplier;
                     conduitConsumer[i].consumptionRate *= multiplier;
                 }
 
                 PassiveElementConsumer[] elementConsumer = def.BuildingComplete.GetComponents<PassiveElementConsumer>();
-                for (int i = 0; i < elementConsumer.Count(); i++)
+                for (int i = 0; i < elementConsumer.Length; i++)
                 {
                     elementConsumer[i].consumptionRate *= multiplier;
                     elementConsumer[i].capacityKG *= multiplier;
                 }
 
                 BuildingElementEmitter[] buildingElementEmitter = def.BuildingComplete.GetComponents<BuildingElementEmitter>();
-                for (int i = 0; i < elementConsumer.Count(); i++)
+                for (int i = 0; i < buildingElementEmitter.Length; i++)
                 {
                     buildingElementEmitter[i].emitRate *= multiplier;
                 }
 
                 AlgaeDistillery[] algaeDistillery = def.BuildingComplete.GetComponents<AlgaeDistillery>();
-                for (int i = 0; i < elementConsumer.Count(); i++)
+                for (int i = 0; i < algaeDistillery.Length; i++)
                 {
                     algaeDistillery[i].emitMass *= multiplier;
                 }
 
                 ElementDropper[] elementDropper = def.BuildingComplete.GetComponents<ElementDropper>();
-                for (int i = 0; i < elementConsumer.Count(); i++)
+                for (int i = 0; i < elementDropper.Length; i++)
                 {
                     elementDropper[i].emitMass *= multiplier;
                 }

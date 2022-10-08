@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.67.0] U43-526233-S
+- fixed bug in BuildingAdvancedMachineMultiplier
+
+## [1.0.67.0] U43-526233-S
+- added archive version
+
 ## [1.0.66.0] U42-514967-S
 - fixed for new version
 

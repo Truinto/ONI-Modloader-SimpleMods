@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.36.0] 
+- added archive version
+
 ## [1.0.35.0] U42-514967-S
 - fixed for new version
 
