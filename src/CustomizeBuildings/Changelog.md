@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.0.67.0] U43-526233-S
+## [1.0.69.0] U43-526946-S
+- fixed space scanner
+
+## [1.0.68.0] U43-526233-S
 - fixed bug in BuildingAdvancedMachineMultiplier
 
 ## [1.0.67.0] U43-526233-S

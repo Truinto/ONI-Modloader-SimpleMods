@@ -6,19 +6,24 @@ using System.Collections.Generic;
 
 namespace CustomizeBuildings
 {
-
-    [HarmonyPatch(typeof(CometDetector.Instance), "RerollAccuracy")]
+    [HarmonyPatch]
     public class CometDetector_RerollAccuracy
     {
-        public static void Postfix(DetectorNetwork.Def ___detectorNetworkDef)
+        [HarmonyPatch(typeof(CometDetector.Instance), "RerollAccuracy")]
+        [HarmonyPostfix]
+        public static void Postfix1(DetectorNetwork.Def ___detectorNetworkDef)
         {
             if (___detectorNetworkDef == null) return;
-            
-            ___detectorNetworkDef.interferenceRadius = CustomizeBuildingsState.StateManager.State.ScannerInterferenceRadius;
+
+            ___detectorNetworkDef.interferenceRadius = Math.Max(1, CustomizeBuildingsState.StateManager.State.ScannerInterferenceRadius);
             ___detectorNetworkDef.worstWarningTime = CustomizeBuildingsState.StateManager.State.ScannerWorstWarningTime;
             ___detectorNetworkDef.bestWarningTime = CustomizeBuildingsState.StateManager.State.ScannerBestWarningTime;
-            ___detectorNetworkDef.bestNetworkSize = CustomizeBuildingsState.StateManager.State.ScannerBestNetworkSize;
+            ___detectorNetworkDef.bestNetworkSize = Math.Max(1, CustomizeBuildingsState.StateManager.State.ScannerBestNetworkSize);
         }
+
+        [HarmonyPatch(typeof(ClusterCometDetector.Instance), "RerollAccuracy")]
+        [HarmonyPostfix]
+        public static void Postfix2(DetectorNetwork.Def ___detectorNetworkDef) => Postfix1(___detectorNetworkDef);
     }
 
     [HarmonyPatch(typeof(ClusterTelescopeConfig), nameof(ClusterTelescopeConfig.ConfigureBuildingTemplate))]
