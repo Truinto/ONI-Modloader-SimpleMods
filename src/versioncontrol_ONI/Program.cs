@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace versioncontrol_ONI
 {
@@ -157,7 +158,9 @@ namespace versioncontrol_ONI
                             string path_dll = Path.Combine(path_mod, projectname + ".dll");
                             if (File.Exists(path_dll))
                             {
-                                string path_archive = Path.Combine(path_mod, "archived_versions", int_gameversion.ToString());
+                                string int_oldversion = Regex.Match(File.ReadAllText(Path.Combine(path_mod, "mod_info.yaml")), "minimumSupportedBuild: (\\d+)").Groups[1].Value;
+
+                                string path_archive = Path.Combine(path_mod, "archived_versions", int_oldversion);
                                 string path_archdll = Path.Combine(path_archive, projectname + ".dll");
                                 //if (!File.Exists(path_archdll))
                                 {

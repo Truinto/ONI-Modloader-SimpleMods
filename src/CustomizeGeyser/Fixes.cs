@@ -10,35 +10,27 @@ using UnityEngine;
 
 namespace CustomizeGeyser
 {
-    //[HarmonyPatch(typeof(AllResourcesScreen), "SpawnCategoryRow")]
+    [HarmonyPatch]
     public class Fixes
     {
-        public static void Unused_Prefix(Tag categoryTag, AllResourcesScreen __instance, Dictionary<Tag, GameObject> ___categoryRows)
+        [HarmonyPatch(typeof(AllResourcesScreen), "SpawnCategoryRow")]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Transpiler1(IEnumerable<CodeInstruction> instr)
         {
-            if (!___categoryRows.ContainsKey(categoryTag))
-            {
-                __instance.currentlyDisplayedRows.Remove(categoryTag);
-                __instance.units.Remove(categoryTag);
-            }
-        }
+            var original = AccessTools.Method(typeof(Debug), nameof(Debug.LogError), new Type[] { typeof(object) });
 
-        public static IEnumerable<CodeInstruction> Unused_Transpiler(IEnumerable<CodeInstruction> instr)
-        {
-            var original = AccessTools.Method(typeof(Dictionary<Tag, GameUtil.MeasureUnit>), nameof(Dictionary<Tag, GameUtil.MeasureUnit>.Add));
-
-            int i = 0;
             foreach (var line in instr)
             {
                 if (line.Calls(original))
-                {
-                    Helpers.Print("Transpiler AllResourcesScreen at " + i);
-                    line.ReplaceCall(typeof(Dictionary<Tag, GameUtil.MeasureUnit>), "set_Item");
-                    Helpers.Print($"Transpiler AllResourcesScreen at {i} {(line.operand as MethodInfo)?.FullDescription()}");
-                }
+                    line.ReplaceCall(Patch);
 
                 yield return line;
-                i++;
             }
+        }
+
+        public static void Patch(object obj)
+        {
+            Debug.Log(obj);
         }
     }
 }

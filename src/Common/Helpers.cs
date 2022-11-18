@@ -13,6 +13,7 @@ using System.IO;
 using Klei.AI;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Reflection.Emit;
 
 namespace Common
 {
@@ -787,6 +788,12 @@ namespace Common
             var repl = CodeInstruction.Call(type, name, parameters, generics);
             code.opcode = repl.opcode;
             code.operand = repl.operand;
+        }
+
+        public static void ReplaceCall(this CodeInstruction code, Delegate newFunc)
+        {
+            code.opcode = OpCodes.Call;
+            code.operand = newFunc.Method;
         }
 
         #endregion

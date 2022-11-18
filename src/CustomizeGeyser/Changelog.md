@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.21.0] U43-526946-S
+- fixed rare crash with resource side screen, again?
+
 ## [1.0.20.0] U42-509629-S
 - rebuild
 - fixed rare crash with resource side screen, again
