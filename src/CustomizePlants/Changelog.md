@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.38.0] U43-531669-S
+- changed irrigation tag to accept any tag instead of just basic ones
+
 ## [1.0.37.0] U43-526233-S
 - added archive version
 

@@ -341,12 +341,15 @@ namespace CustomizePlants
                 List<PlantElementAbsorber.ConsumeInfo> fertilization = new List<PlantElementAbsorber.ConsumeInfo>(3);
                 foreach (KeyValuePair<string, float> entry in setting.irrigation)
                 {
-                    if (GameTags.LiquidElements.Contains(entry.Key))
-                        irrigation.Add(new PlantElementAbsorber.ConsumeInfo(entry.Key, entry.Value / 600f));
-                    else if (GameTags.SolidElements.Contains(entry.Key))
-                        fertilization.Add(new PlantElementAbsorber.ConsumeInfo(entry.Key, entry.Value / 600f));
+                    Tag tag = entry.Key;
+                    var element = ElementLoader.elements.FirstOrDefault(f => f.tag == tag || f.oreTags.Contains(tag));
+
+                    if (element.IsSolid)
+                        fertilization.Add(new PlantElementAbsorber.ConsumeInfo(tag, entry.Value / 600f));
+                    else if (element.IsLiquid)
+                        irrigation.Add(new PlantElementAbsorber.ConsumeInfo(tag, entry.Value / 600f));
                     else
-                        Debug.Log(ToDialog("Irrigation for " + setting.id + " defines bad element: " + entry.Key));
+                        Debug.Log(ToDialog("Irrigation for " + setting.id + " defines bad element: " + tag));
                 }
                 if (irrigation.Count > 0)
                     EntityTemplates.ExtendPlantToIrrigated(plant, irrigation.ToArray());
