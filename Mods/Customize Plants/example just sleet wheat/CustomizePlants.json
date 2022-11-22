@@ -1,0 +1,33 @@
+{
+  "version": 33,
+  "PlantSettings": [
+    {
+      "id": "ColdWheat",
+      "temperatures": [
+        118.149994,
+        218.15,
+        283.15,
+        358.15
+      ]
+    }
+  ],
+  "SpecialCropSettings": {
+    "placeholder1": {
+      "Algae": 40,
+      "Clay": 20
+    }
+  },
+  "print_mutations": false,
+  "MutationSettings": [ ],
+  "MutantPlantsDropSeeds": false,
+  "SeedsGoIntoAnyFlowerPots": false,
+  "WheezewortTempDelta": -5.0,
+  "OxyfernOxygenPerSecond": 0.03125,
+  "CheatMutationAnalyze": false,
+  "CheatFlowerVase": false,
+  "WildFlowerVase": false,
+  "ApplyBugFixes": true,
+  "AutomaticallyAddModPlants": false,
+  "IgnoreList": [],
+  "ModPlants": []
+}
