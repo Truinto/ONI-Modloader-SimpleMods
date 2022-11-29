@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.70.0] U43-531669-S
+- added oxygen defuser to ElectrolyzerMaxPressure
+
 ## [1.0.69.0] U43-526946-S
 - fixed space scanner
 

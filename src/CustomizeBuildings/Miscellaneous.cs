@@ -154,8 +154,8 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id == ElectrolyzerConfig.ID && CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure != 1.8f
-                || id == RustDeoxidizerConfig.ID && CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure != 1.8f;
+            return CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure != 1.8f &&
+                (id == ElectrolyzerConfig.ID || id == RustDeoxidizerConfig.ID || id == MineralDeoxidizerConfig.ID);
         }
 
         public void Edit(BuildingDef def)
@@ -182,7 +182,7 @@ namespace CustomizeBuildings
             return id == LaunchPadConfig.ID && CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility
                 || id == GantryConfig.ID && CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility;
         }
-        
+
         public void Edit(BuildingDef def)
         {
             def.BuildingComplete.GetComponent<KPrefabID>()?.AddTag(GameTags.Bunker, false);
