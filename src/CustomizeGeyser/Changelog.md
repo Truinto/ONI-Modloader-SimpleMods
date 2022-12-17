@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.22.0] U44-535842-S
+- updated and added "shape" property
+
 ## [1.0.21.0] U43-526946-S
 - fixed rare crash with resource side screen, again?
 

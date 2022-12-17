@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace CustomizeGeyser
 {
@@ -8,6 +10,8 @@ namespace CustomizeGeyser
         public string id;
         public string element;
         public string anim;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public GeyserConfigurator.GeyserShape? shape;
         public int? width;
         public int? height;
         public float? temperature;

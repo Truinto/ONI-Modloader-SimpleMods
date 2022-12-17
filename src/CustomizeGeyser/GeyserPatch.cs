@@ -235,6 +235,17 @@ namespace CustomizeGeyser
                             modifier.anim = "geyser_liquid_water_slush_kanim";
                     }
 
+                    if (modifier.shape == null)
+                    {
+                        Element element = modifier.element.ToElement();
+                        if (element.IsGas)
+                            modifier.shape = GeyserConfigurator.GeyserShape.Gas;
+                        else if (element.name.ToLower().Contains("molten"))
+                            modifier.shape = GeyserConfigurator.GeyserShape.Molten;
+                        else
+                            modifier.shape = GeyserConfigurator.GeyserShape.Liquid;
+                    }
+
                     if (modifier.width == null || modifier.height == null)
                     {
                         if (modifier.anim.Contains("_gas_"))
@@ -327,6 +338,7 @@ namespace CustomizeGeyser
                             new GeyserConfigurator.GeyserType(
                                 modifier.id,
                                 modifier.element.ToSimHash(),
+                                modifier.shape.Value,
                                 (float)modifier.temperature,
                                 (float)modifier.minRatePerCycle,
                                 (float)modifier.maxRatePerCycle,
