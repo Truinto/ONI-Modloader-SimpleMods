@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.71.0] U44-535842-S
+- updated
+
 ## [1.0.70.0] U43-531669-S
 - added oxygen defuser to ElectrolyzerMaxPressure
 
