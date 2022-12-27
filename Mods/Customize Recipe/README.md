@@ -19,7 +19,8 @@ List of Settings
 * - Inputs: List of ingredients.
 * - Outputs: List of results.
 * - Time: Time needed to craft one recipe.
-* - HEP: High Energy Particle, only valid on buildings that have these; will cause crash otherwise
+* - HEP: input High Energy Particle, only valid on buildings that have these; will cause crash otherwise
+* - HEPout: output of High Energy Particle, only valid on buildings that have these; will cause crash otherwise
 * - Description: Only really useful for new custom recipes.
 * RecipeElement
 * - material: tag of element or item related to the recipe

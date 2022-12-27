@@ -40,6 +40,8 @@ namespace CustomizeRecipe
             foreach (var recipe in ComplexRecipeManager.Get().recipes)
                 Helpers.Print($"id: {recipe.id}, description: {recipe.description}, building: {recipe.fabricators.FirstOrDefault()}");
 #endif
+            UnlockStorage();
+
             foreach (var setting in CustomizeRecipeState.StateManager.State.RecipeSettings)
                 Process(setting);
 
@@ -50,6 +52,37 @@ namespace CustomizeRecipe
                 foreach (var recipe in ComplexRecipeManager.Get().recipes)
                     for (int i = 0; i < recipe.ingredients.Length; i++)
                         recipe.ingredients[i] = new ComplexRecipe.RecipeElement(recipe.ingredients[i].material, 0f, recipe.ingredients[i].temperatureOperation, recipe.ingredients[i].storeElement);
+        }
+
+        /// <summary>
+        /// Fix some buildings always store produce and overwrite recipe instead.
+        /// </summary>
+        public static void UnlockStorage()
+        {
+            var recipes = ComplexRecipeManager.Get().recipes;
+
+            foreach (var building in Assets.BuildingDefs)
+            {
+                var fabricator = building?.BuildingComplete?.GetComponent<ComplexFabricator>();
+                if (fabricator != null && fabricator.storeProduced == true)
+                {
+                    foreach (var recipe in recipes)
+                    {
+                        if (recipe.fabricators.Contains(building.Tag))
+                        {
+                            foreach (var output in recipe.results)
+                            {
+                                var element = output.material.ToElement();
+                                if (element != null && element.IsLiquid)
+                                {
+                                    output.storeElement = true;
+                                    fabricator.storeProduced = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static void Process(RecipeData setting)
@@ -100,14 +133,24 @@ namespace CustomizeRecipe
                 recipe.time = setting.Time.Value;
             if (setting.HEP != null)
                 recipe.consumedHEP = setting.HEP.Value;
+            if (setting.HEPout != null)
+                recipe.producedHEP = setting.HEPout.Value;
         }
-    
+
         public static void Print()
         {
             CustomizeRecipeState.StateManager.State.RecipeSettings.Clear();
             foreach (var recipe in ComplexRecipeManager.Get().recipes)
             {
-                RecipeData item = new RecipeData(recipe.id, recipe.fabricators.FirstOrDefault().ToString(), recipe.time, recipe.consumedHEP, recipe.description, recipe.ingredients, recipe.results);
+                var item = new RecipeData(
+                    recipe.id,
+                    recipe.fabricators.FirstOrDefault().ToString(),
+                    recipe.time,
+                    recipe.consumedHEP,
+                    recipe.producedHEP,
+                    recipe.description,
+                    recipe.ingredients,
+                    recipe.results);
                 CustomizeRecipeState.StateManager.State.RecipeSettings.Add(item);
             }
         }
@@ -141,7 +184,7 @@ namespace CustomizeRecipe
         public static void Prefix(int index, ComplexFabricator __instance, List<int> ___openOrderCounts)
         {
             if (___openOrderCounts[index] <= 0)
-            ___openOrderCounts[index] = 1;
+                ___openOrderCounts[index] = 1;
         }
     }
 }

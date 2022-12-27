@@ -18,6 +18,7 @@ namespace CustomizeRecipe
         public List<RecipeElement> Outputs;
         public float? Time;
         public int? HEP;
+        public int? HEPout;
         public string Description;
 
         public class RecipeElement
@@ -43,7 +44,7 @@ namespace CustomizeRecipe
                 if (Assets.TryGetPrefab(material) == null) // note: this only works after Assets.CreatePrefabs(), which is the case here
                     material = SimHashes.Unobtanium.ToString();
 
-                return new ComplexRecipe.RecipeElement(material, recipe.amount, (ComplexRecipe.RecipeElement.TemperatureOperation)(recipe.temperatureOperation ?? 0), recipe.storeElement ?? false)
+                return new ComplexRecipe.RecipeElement(material, recipe.amount, (ComplexRecipe.RecipeElement.TemperatureOperation)(recipe.temperatureOperation ?? 0), recipe.storeElement ?? material.ToElement()?.IsLiquid ?? false)
                 {
                     inheritElement = recipe.inheritElement ?? false
                 };
@@ -71,12 +72,13 @@ namespace CustomizeRecipe
 
         public RecipeData() { }
 
-        public RecipeData(string Id = null, string Building = null, float? Time = null, int? HEP = null, string Description = null, ComplexRecipe.RecipeElement[] ingredients = null, ComplexRecipe.RecipeElement[] results = null)
+        public RecipeData(string Id = null, string Building = null, float? Time = null, int? HEP = null, int? HEPout = null, string Description = null, ComplexRecipe.RecipeElement[] ingredients = null, ComplexRecipe.RecipeElement[] results = null)
         {
             this.Id = Id;
             this.Building = Building;
             this.Time = Time;
             this.HEP = HEP;
+            this.HEPout = HEPout;
             this.Description = Description;
 
             if (ingredients != null)
