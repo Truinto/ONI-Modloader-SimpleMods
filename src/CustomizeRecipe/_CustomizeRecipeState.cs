@@ -31,7 +31,7 @@ namespace CustomizeRecipe
         public bool CheatFree { get; set; } = false;
 
         [Option("CustomizeRecipe.LOCSTRINGS.AllowZeroInput_Title", "CustomizeRecipe.LOCSTRINGS.AllowZeroInput_ToolTip", "", null)]
-        public bool AllowZeroInput { get; set; } = false;
+        public bool AllowZeroInput { get; set; } = true;
 
         public List<RecipeData> RecipeSettings { get; set; } = new List<RecipeData>() {
             new RecipeData("RockCrusher_I_Fossil_O_Lime_SedimentaryRock", RockCrusherConfig.ID)
