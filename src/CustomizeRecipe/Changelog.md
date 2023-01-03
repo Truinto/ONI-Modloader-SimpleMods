@@ -1,7 +1,7 @@
 # Changelog
 
 ## [1.0.3.0] U44-535842-S
-- fixed buildings so they don't force store outputs (effects GlassForge and UraniumCentrifuge)
+- fixed buildings so they don't force store outputs (affects GlassForge and UraniumCentrifuge)
 - recipes with missing storeElement property will default to true, if the element is liquid
 - added new setting HEPout (only for buildings that can produce them)
 
