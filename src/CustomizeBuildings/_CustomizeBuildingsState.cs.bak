@@ -106,6 +106,7 @@ namespace CustomizeBuildings
             StateManager.State.ConveyorLoaderHasSlider = false;
             StateManager.State.ConveyorReceptacleHasSlider = false;
             StateManager.State.ConveyorLoaderAcceptLiquidsGas = false;
+            StateManager.State.ConductivePanelPressure = 10f;
             StateManager.State.AutoSweeperCapacity = 1000f;
             StateManager.State.AutoSweeperRange = 4;
             StateManager.State.AutoSweeperSlider = false;
@@ -377,6 +378,9 @@ namespace CustomizeBuildings
 
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "Pipes")]
         public bool ConveyorLoaderAcceptLiquidsGas { get; set; } = false;
+
+        [Option("Conductive Panel Pressure", "Liquid pressure.", "Pipes")]
+        public float ConductivePanelPressure { get; set; } = 10f;
         #endregion
 
         #region Auto Sweeper
@@ -1015,6 +1019,14 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SolarEnergyMultiplier", "SolarEnergyMultiplier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_Title", "Solar Energy Multiplier");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SolarEnergyMultiplier_ToolTip", "Multiplies power generation. Limited up to 'Solar Max Power'.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RadBattery", "RadBattery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "Radbolt Chamber Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceBattery", "SpaceBattery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "Space Battery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "");
             #endregion
             #region Power Cable
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireSmallWatts", "WireSmallWatts");
@@ -1261,14 +1273,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortSolid", "RocketPortSolid");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_Title", "Rocket Port Solid Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortSolid_ToolTip", "");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RadBattery", "RadBattery");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_Title", "Radbolt Chamber Capacity");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RadBattery_ToolTip", "");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceBattery", "SpaceBattery");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "Space Battery");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CO2EngineKG", "CO2EngineKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CO2EngineKG_Title", "CO2 Engine KG");

@@ -106,6 +106,7 @@ namespace CustomizeBuildings
             StateManager.State.ConveyorLoaderHasSlider = false;
             StateManager.State.ConveyorReceptacleHasSlider = false;
             StateManager.State.ConveyorLoaderAcceptLiquidsGas = false;
+            StateManager.State.ConductivePanelPressure = 10f;
             StateManager.State.AutoSweeperCapacity = 1000f;
             StateManager.State.AutoSweeperRange = 4;
             StateManager.State.AutoSweeperSlider = false;
@@ -377,6 +378,9 @@ namespace CustomizeBuildings
 
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "Pipes")]
         public bool ConveyorLoaderAcceptLiquidsGas { get; set; } = false;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Pipes", "F0")]
+        public float ConductivePanelPressure { get; set; } = 10f;
         #endregion
 
         #region Auto Sweeper
@@ -994,6 +998,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderAcceptLiquidsGas", "ConveyorLoaderAcceptLiquidsGas");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "Conveyor Loader Accepts Liquids Gases");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "If true, add liquids and gases to the filter list.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConductivePanelPressure", "ConductivePanelPressure");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "Conductive Panel Pressure");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Liquid pressure.");
             #endregion
             #region Power
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BatterySmartKJ", "BatterySmartKJ");

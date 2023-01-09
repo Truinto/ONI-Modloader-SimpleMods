@@ -98,6 +98,7 @@ namespace versioncontrol_ONI
                             {
                                 index += 22;
                                 gameversion = line[index..];
+                                gameversion = gameversion.Trim();
                                 gameversionprefix = gameversion[..gameversion.IndexOf('-')];
                                 int.TryParse(HelperStrings.GetQuotationString(gameversion, 1, '-'), out int_gameversion);
                                 Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}, prefix: {gameversionprefix}");
@@ -152,23 +153,29 @@ namespace versioncontrol_ONI
                     string[] modinfo;
                     if (File.Exists(path_info))
                     {
-                        if (projectname != null && newVersion) // archive old version, if gameversion was printed into changelog
+                        if (projectname != null /* && newVersion*/) // archive old version, if gameversion was printed into changelog
                         {
                             string path_mod = new FileInfo(path_info).Directory.FullName;
                             string path_dll = Path.Combine(path_mod, projectname + ".dll");
                             if (File.Exists(path_dll))
                             {
-                                string int_oldversion = Regex.Match(File.ReadAllText(Path.Combine(path_mod, "mod_info.yaml")), "minimumSupportedBuild: (\\d+)").Groups[1].Value;
+                                string oldgameversion = Regex.Match(File.ReadAllText(Path.Combine(path_mod, "mod_info.yaml")), "minimumSupportedBuild: (\\d+)").Groups[1].Value;
+                                oldgameversion = oldgameversion.Trim();
 
-                                string path_archive = Path.Combine(path_mod, "archived_versions", int_oldversion);
-                                string path_archdll = Path.Combine(path_archive, projectname + ".dll");
-                                //if (!File.Exists(path_archdll))
+                                if (gameversion == oldgameversion)
                                 {
-                                    Directory.CreateDirectory(path_archive);
-                                    File.Copy(path_dll, path_archdll, true);
-                                    File.Copy(path_info, Path.Combine(path_archive, "mod_info.yaml"), true);
-                                    Console.WriteLine("archived old version");
+                                    string path_archive = Path.Combine(path_mod, "archived_versions", oldgameversion);
+                                    string path_archdll = Path.Combine(path_archive, projectname + ".dll");
+                                    //if (!File.Exists(path_archdll))
+                                    {
+                                        Directory.CreateDirectory(path_archive);
+                                        File.Copy(path_dll, path_archdll, true);
+                                        File.Copy(path_info, Path.Combine(path_archive, "mod_info.yaml"), true);
+                                        Console.WriteLine("archived old version");
+                                    }
                                 }
+                                else
+                                    Console.WriteLine("didn't archive");
                             }
                             else
                                 Console.WriteLine("archiving failed");

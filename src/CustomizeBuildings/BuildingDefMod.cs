@@ -167,7 +167,11 @@ namespace CustomizeBuildings
             foreach (var mod in mods)
             {
                 if (mod.Enabled(def.PrefabID))
-                    mod.Edit(def); // TODO: update all capacity patches to new IBuildingCompleteMod
+                    try
+                    {
+                        mod.Edit(def); // TODO: update all capacity patches to new IBuildingCompleteMod
+                    }
+                    catch (Exception e) { Helpers.Print(e.ToString()); }
             }
 
             if (!CustomizeBuildingsState.StateManager.State.BuildingAdvancedGlobalFlag)

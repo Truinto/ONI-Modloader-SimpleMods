@@ -29,6 +29,31 @@ namespace CustomizeBuildings
         }
     }
 
+    public class ConductionPanel_Patch : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == ContactConductivePipeBridgeConfig.ID && CustomizeBuildingsState.StateManager.State.ConductivePanelPressure != 10f;
+        }
+
+        public void Edit(BuildingDef def)
+        {
+            var storage = def.BuildingComplete.GetComponent<Storage>();
+            storage.capacityKg = CustomizeBuildingsState.StateManager.State.ConductivePanelPressure;
+
+            var conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
+            conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.ConductivePanelPressure;
+
+            var conductiveDef = def.BuildingComplete.GetDef<ContactConductivePipeBridge.Def>();
+            conductiveDef.pumpKGRate = CustomizeBuildingsState.StateManager.State.ConductivePanelPressure;
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [HarmonyPatch(typeof(ConduitFlow), nameof(ConduitFlow.AddElement))]
     public class ConduitFlow_AddElement
     {

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.72.0] U44-535842-S
+- added option ConductivePanelPressure
+
 ## [1.0.71.0] U44-535842-S
 - updated
 
