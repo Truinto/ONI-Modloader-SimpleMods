@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Authors>Truinto</Authors>
+		<Title>$(MSBuildProjectName)</Title>
+		<RepositoryUrl>https://github.com/Truinto/</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RootNamespace>$(MSBuildProjectName)</RootNamespace>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+	<!-- Compile Constants -->
+	<PropertyGroup>
+		<DefineConstants Condition="Exists('$(ProjectDir)_MERGE')">$(DefineConstants);MERGE</DefineConstants>
+		<DefineConstants Condition="Exists('$(ProjectDir)_MERGE') and '$(Configuration)'=='Debug'">$(DefineConstants);LOCALE</DefineConstants>
+	</PropertyGroup>
+
+	<!-- Shared Libs -->
+	<ItemGroup>
+		<Compile Include="$(SolutionDir)Common\BootDialog.cs" Link="BootDialog.cs" />
+		<Compile Include="$(SolutionDir)Common\ConfigManager.cs" Link="ConfigManager.cs" />
+		<Compile Include="$(SolutionDir)Common\Helpers.cs" Link="Helpers.cs" />
+		<Compile Include="$(SolutionDir)Common\TechHelper.cs" Link="TechHelper.cs" />
+	</ItemGroup>
+
+	<!-- Nuget Packages -->
+	<ItemGroup>
+		<PackageReference Include="AssemblyPublicizer" Version="1.0.2" ExcludeAssets="runtime" />
+		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<!-- Common References -->
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Xml" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="System.Data.DataSetExtensions" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Data" />
+		<Reference Include="System.Net.Http" />
+	</ItemGroup>
+
+	<!-- Project References -->
+	<ItemGroup>
+		<Reference Include="0Harmony" HintPath="$(GameManaged)\0Harmony.dll" />
+		<Reference Include="Assembly-CSharp_public" HintPath="$(GameManaged)\Assembly-CSharp_public.dll" />
+		<Reference Include="Assembly-CSharp-firstpass" HintPath="$(GameManaged)\Assembly-CSharp-firstpass.dll" />
+		<Reference Include="Newtonsoft.Json" HintPath="$(GameManaged)\Newtonsoft.Json.dll" />
+		<Reference Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
+		<Reference Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
+		<Reference Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
+		<Reference Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+	</ItemGroup>
+
+	<!-- Other Files -->
+	<ItemGroup>
+		<None Remove="$(ProjectDir)_MERGE" />
+		<None Update="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<!-- Publicize -->
+	<Target Name="Publicize" BeforeTargets="PreBuildEvent" AfterTargets="">
+		<ItemGroup>
+			<PublicizeInput Include="$(GameManaged)\Assembly-CSharp.dll" />
+		</ItemGroup>
+		<PublicizeTask InputAssemblies="@(PublicizeInput)" OutputDir="$(GameManaged)\" />
+	</Target>
+
+	<!-- Update build version and run code editing (if enabled) -->
+	<Target Name="Versioning" BeforeTargets="PreBuildEvent">
+		<Exec Condition="$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI\bin\Release\net6.0\versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties\AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)\mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
+		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI\bin\Release\net6.0\versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties\AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)\mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
+	</Target>
+
+	<!-- ILMerge and copy to mod folder -->
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<_MergeItems Include="$(TargetDir)$(TargetName).dll" />
+			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibOptions.dll" />
+			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibCore.dll" />
+			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibUI.dll" />
+
+			<_CopyItems Include="$(TargetDir)\*" />
+		</ItemGroup>
+		<Message Condition="$(DefineConstants.Contains('MERGE'))" Text="Merging PLibOptions..." Importance="High" />
+		<!--<Exec Condition="$(DefineConstants.Contains('MERGE'))" Command="&quot;$(ILMergeEXE)&quot; /ndebug /out:&quot;$(TargetDir)$(TargetName)Merged.dll&quot; &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir)PeterHanLib\PLibOptions.dll&quot; &quot;$(SolutionDir)PeterHanLib\PLibCore.dll&quot; &quot;$(SolutionDir)PeterHanLib\PLibUI.dll&quot; /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /lib:&quot;$(GameManaged) &quot;" />-->
+		<!--<Move Condition="$(DefineConstants.Contains('MERGE'))" SourceFiles="$(TargetDir)$(TargetName)Merged.dll" DestinationFiles="$(TargetDir)$(TargetName).dll" />-->
+		<ILRepack Condition="$(DefineConstants.Contains('MERGE'))" Parallel="true" Union="true" CopyAttributes="true" AllowMultiple="true" Internalize="true" LibraryPath="$(GameManaged)" InputAssemblies="@(_MergeItems)" TargetKind="Dll" OutputFile="$(TargetDir)$(TargetName).dll" />
+		<!-- TargetPlatformVersion="v4" TargetPlatformDirectory="C:\Windows\Microsoft.NET\Framework64\v4.0.30319" -->
+		<Exec Condition="$(DefineConstants.Contains('MERGE'))" Command="ping.exe -n 1 -w 1 127.0.0.1 &gt;nul 2&gt;&amp;1" />
+		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ModFolder)\$(TargetName)\%(RecursiveDir)" />
+		<Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(ModFolder)" Command="&quot;$(Zip7)&quot; u &quot;-x!*.zip&quot; &quot;$(TargetName)\$(TargetName).zip&quot; &gt;NUL" />
+		<Message Condition="'$(Configuration)'=='Release'" Text="Updated $(TargetName).zip" Importance="High" />
+	</Target>
+
+</Project>

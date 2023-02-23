@@ -1,0 +1,218 @@
+﻿using HarmonyLib;
+using UnityEngine;
+using System;
+using System.Linq;
+
+namespace CustomizeBuildings
+{
+    #region Autosweeper
+    [HarmonyPatch(typeof(SolidTransferArm), "IsPickupableRelevantToMyInterests")]
+    public class SolidTransferarm_MoveAnything
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperPickupAnything;
+        }
+
+        public static bool Prefix(ref bool __result, SolidTransferArm __instance, KPrefabID prefabID, int storage_cell)
+        {
+            __result = !prefabID.HasAnyTags(ref tagsCreatures) && __instance.IsCellReachable(storage_cell);
+
+            return false;
+        }
+
+        public static TagBits tagsCreatures = new TagBits(new Tag[] { GameTags.BagableCreature, GameTags.SwimmingCreature });
+    }
+
+    [HarmonyPatch(typeof(SolidTransferArm), "OnPrefabInit")]
+    public class SolidTransferArm_OnPrefabInit
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperCapacity != 1000f;
+        }
+        public static void Prefix(ref float ___max_carry_weight)
+        {
+            ___max_carry_weight = CustomizeBuildingsState.StateManager.State.AutoSweeperCapacity;
+            //__instance.pickupRange = 12;
+        }
+    }
+
+    [HarmonyPatch(typeof(SolidTransferArmConfig), "DoPostConfigureComplete")]
+    internal class SolidTransferArmConfig_DoPostConfigureComplete
+    {
+        private static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperRange != 4;
+        }
+        private static void Postfix(GameObject go)
+        {
+            go.AddOrGet<SolidTransferArm>().pickupRange = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
+        }
+    }
+
+    [HarmonyPatch(typeof(SolidTransferArmConfig), "DoPostConfigureComplete")]
+    internal class SolidTransferArmConfig_DoPostConfigureComplete2
+    {
+        private static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperSlider;
+        }
+        private static void Postfix(GameObject go)
+        {
+            go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
+        }
+    }
+
+    [HarmonyPatch(typeof(SolidTransferArmConfig), "AddVisualizer")]
+    internal class SolidTransferArmConfig_AddVisualizer
+    {
+        private static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperRange != 4;
+        }
+        private static bool Prefix(GameObject prefab, bool movable)
+        {
+            int range = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
+            StationaryChoreRangeVisualizer choreRangeVisualizer = prefab.AddOrGet<StationaryChoreRangeVisualizer>();
+            choreRangeVisualizer.x = -range;
+            choreRangeVisualizer.y = -range;
+            choreRangeVisualizer.width = range * 2 + 1;
+            choreRangeVisualizer.height = range * 2 + 1;
+            choreRangeVisualizer.movable = movable;
+            return false;
+        }
+    }
+    #endregion
+
+    #region Robominer
+    [HarmonyPatch(typeof(AutoMinerConfig), "DoPostConfigureComplete")]
+    public class AutoMinerConfig_OnPrefabInit
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerWidth != 16
+                || CustomizeBuildingsState.StateManager.State.RoboMinerHeight != 9
+                || CustomizeBuildingsState.StateManager.State.RoboMinerOffset != 0;
+        }
+        public static void Postfix(GameObject go)
+        {
+            int width = CustomizeBuildingsState.StateManager.State.RoboMinerWidth;
+            int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
+            int offset = CustomizeBuildingsState.StateManager.State.RoboMinerOffset;
+
+            AutoMiner autoMiner = go.AddOrGet<AutoMiner>();
+            autoMiner.x = 1 - (width / 2);
+            autoMiner.y = offset;
+            autoMiner.width = width;
+            autoMiner.height = height;
+            autoMiner.vision_offset = new CellOffset(0, 1);
+        }
+    }
+
+    [HarmonyPatch(typeof(AutoMinerConfig), "AddVisualizer")]
+    public class AutoMinerConfig_AddVisualizer
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerWidth != 16
+                || CustomizeBuildingsState.StateManager.State.RoboMinerHeight != 9
+                || CustomizeBuildingsState.StateManager.State.RoboMinerOffset != 0;
+        }
+        public static void Postfix(GameObject prefab, bool movable)
+        {
+            int width = CustomizeBuildingsState.StateManager.State.RoboMinerWidth;
+            int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
+            int offset = CustomizeBuildingsState.StateManager.State.RoboMinerOffset;
+
+            StationaryChoreRangeVisualizer choreRangeVisualizer = prefab.GetComponent<StationaryChoreRangeVisualizer>();
+            if (choreRangeVisualizer != null)
+            {
+                choreRangeVisualizer.x = 1 - (width / 2);
+                choreRangeVisualizer.y = offset;
+                choreRangeVisualizer.width = width;
+                choreRangeVisualizer.height = height;
+                //choreRangeVisualizer.vision_offset = new CellOffset(0, 1);
+                //choreRangeVisualizer.movable = movable;
+                //choreRangeVisualizer.blocking_tile_visible = false;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(AutoMiner), "DigBlockingCB")]
+    public class AutoMiner_DigBlockingCB
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile || CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass;
+        }
+
+        public static bool Prefix(int cell, ref bool __result)
+        {
+            try
+            {
+                __result = (Grid.Foundation[cell] && !Grid.Transparent[cell] || !CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass) || Grid.Element[cell].hardness >= (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile ? (byte)255 : (byte)150);
+                return false;
+            }
+            catch (Exception) { }
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(AutoMiner), "ValidDigCell")]
+    public class AutoMiner_ValidDigCell
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
+        }
+
+        public static bool Prefix(int cell, ref bool __result)
+        {
+            try
+            {
+                __result = Grid.Solid[cell] && !Grid.Foundation[cell] && Grid.Element[cell].hardness < (byte)255;
+                return false;
+            }
+            catch (Exception) { }
+            return true;
+        }
+    }
+
+
+    [HarmonyPatch(typeof(AutoMiner), "UpdateDig")]
+    public class AutoMiner_UpdateDig
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerRegolithTurbo;
+        }
+
+        public static void Prefix(ref float dt, int ___dig_cell)
+        {
+            try
+            {
+                if (Grid.Element[___dig_cell].id == SimHashes.Regolith)
+                    dt *= 6f;
+            }
+            catch (Exception) { }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(AutoMiner), "UpdateDig")]
+    public class AutoMiner_UpdateDig2
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerSpeedMult != 1f;
+        }
+
+        public static void Prefix(ref float dt)
+        {
+            dt *= CustomizeBuildingsState.StateManager.State.RoboMinerSpeedMult;
+        }
+    }
+    #endregion
+
+}

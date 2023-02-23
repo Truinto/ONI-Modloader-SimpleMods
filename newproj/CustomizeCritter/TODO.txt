@@ -1,0 +1,9 @@
+TODO:
+Low priority:
+- fix lifespan
+- color_override by string
+
+Bugs: ?
+
+------------
+Special components:
