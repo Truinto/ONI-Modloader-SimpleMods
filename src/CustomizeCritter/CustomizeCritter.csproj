@@ -1,41 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DA085F9F-AB2C-4BF3-B28A-10891FD4020E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CustomizeCritter</RootNamespace>
-    <AssemblyName>CustomizeCritter</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <LangVersion>9</LangVersion>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <Compile Include="..\Common\BootDialog.cs" Link="BootDialog.cs" />
-    <Compile Include="..\Common\ConfigManager.cs" Link="ConfigManager.cs" />
-    <Compile Include="..\Common\Helpers.cs" Link="Helpers.cs" />
-    <Compile Include="..\Common\TechHelper.cs" Link="TechHelper.cs" />
+    <Compile Remove="_obsolete.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Containers.cs" />
-    <Compile Include="GrowthTime.cs" />
-    <Compile Include="HappyEffects.cs" />
-    <Compile Include="Hunger.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="Scales.cs" />
-    <Compile Include="Wildness.cs" />
-    <Compile Include="_CustomizeCritterState.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Access.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Changelog.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

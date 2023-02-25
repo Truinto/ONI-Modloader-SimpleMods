@@ -175,16 +175,8 @@ namespace Common
 
         public static void AddBuildingToTechnology(string buildingId, TechGroups group)
         {
-#if DLC1
             var tech = Db.Get().Techs.TryGet(group.ToString());//"Ranching"
             tech.unlockedItemIDs.Add(buildingId);
-#else
-            List<string> stringList = new List<string>(Database.Techs.TECH_GROUPING[group.ToString()])
-            {
-                buildingId
-            };
-            Database.Techs.TECH_GROUPING[group.ToString()] = stringList.ToArray();
-#endif
         }
 
         public static List<TechContainer> AddOnLoad { get; set; } = new List<TechContainer>();

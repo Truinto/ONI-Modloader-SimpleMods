@@ -62,33 +62,31 @@ namespace versioncontrol_ONI
 
                 // read current version from log
                 #region log
-                path_log = path_log ?? (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\..\LocalLow\Klei\Oxygen Not Included\Player.log");
+                path_log ??= (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\..\LocalLow\Klei\Oxygen Not Included\Player.log");
                 if (File.Exists(path_log))
                 {
-                    using (var log = File.OpenText(path_log))
+                    //Console.WriteLine("Reading log file...");
+                    using var log = File.OpenText(path_log);
+                    int counter = 0;
+                    while (!log.EndOfStream && counter++ < 50)
                     {
-                        //Console.WriteLine("Reading log file...");
-                        int counter = 0;
-                        while (!log.EndOfStream && counter++ < 50)
+                        var line = log.ReadLine();
+                        if (line.Contains("[INFO] Expansion1: True", StringComparison.Ordinal))
                         {
-                            var line = log.ReadLine();
-                            if (line.Contains("[INFO] Expansion1: True", StringComparison.Ordinal))
-                            {
-                                b_exp1 = true;
-                                break;
-                            }
+                            b_exp1 = true;
+                            break;
+                        }
 
-                            int index = line.IndexOf("[INFO] release Build: ", StringComparison.Ordinal);
-                            if (index < 0) index = line.IndexOf("[INFO] preview Build: ", StringComparison.Ordinal);
-                            if (index >= 0)
-                            {
-                                index += 22;
-                                gameversion = line[index..];
-                                gameversion = gameversion.Trim();
-                                gameversionprefix = gameversion[..gameversion.IndexOf('-')];
-                                int.TryParse(HelperStrings.GetQuotationString(gameversion, 1, '-'), out int_gameversion);
-                                Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}, prefix: {gameversionprefix}");
-                            }
+                        int index = line.IndexOf("[INFO] release Build: ", StringComparison.Ordinal);
+                        if (index < 0) index = line.IndexOf("[INFO] preview Build: ", StringComparison.Ordinal);
+                        if (index >= 0)
+                        {
+                            index += 22;
+                            gameversion = line[index..];
+                            gameversion = gameversion.Trim();
+                            gameversionprefix = gameversion[..gameversion.IndexOf('-')];
+                            _ = int.TryParse(HelperStrings.GetQuotationString(gameversion, 1, '-'), out int_gameversion);
+                            Console.WriteLine($"gameversion is {gameversion}, parsed as build: {int_gameversion}, prefix: {gameversionprefix}");
                         }
                     }
                 }

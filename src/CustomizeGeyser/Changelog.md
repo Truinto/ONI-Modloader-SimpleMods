@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.23.0] U45-544793-S
+- fixed teleporting
+
 ## [1.0.22.0] U44-535842-S
 - updated and added "shape" property
 

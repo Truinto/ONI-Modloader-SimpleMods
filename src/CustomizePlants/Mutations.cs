@@ -47,8 +47,6 @@ namespace CustomizePlants
         }
     }
 
-#if DLC1
-
     [HarmonyPatch(typeof(Db), nameof(Db.Initialize))]
     public class Db_Initialize_MutationsPatch
     {
@@ -291,8 +289,6 @@ namespace CustomizePlants
             CustomizePlantsState.StateManager.TrySaveConfigurationState();
         }
     }
-
-#endif
 
     public class PlantMutationData
     {

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <PropertyGroup>
-    <SteamFolder>D:\Programme\Steam</SteamFolder>
-    <ONIManaged Condition="Exists('$(SteamFolder)')">$(SteamFolder)\SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed</ONIManaged>
-    <ONIManaged Condition="!Exists('$(SteamFolder)')">..\..\..\..\@non-backup\ONI sources</ONIManaged>
-    <ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev</ModFolder>
-    <ILMergeEXE>$(MSBuildThisFileDirectory)packages\ILMerge.3.0.41\tools\net452\ILMerge.exe</ILMergeEXE>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Zip7>C:\Program Files\7-Zip\7z.exe</Zip7>
+		<ProgramFolder>D:\Programme\Steam\</ProgramFolder>
+		<GameManaged Condition="Exists('$(ProgramFolder)')">$(ProgramFolder)SteamApps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\</GameManaged>
+		<GameManaged Condition="!Exists('$(ProgramFolder)')">$(SolutionDir)..\..\..\@non-backup\ONI sources\</GameManaged>
+		<ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev\</ModFolder>
+		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
+	</PropertyGroup>
 </Project>

@@ -1,36 +1,3 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BB7A56BA-C5B7-4F1E-AA71-4DE60A799E66}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CustomizeRecipe</RootNamespace>
-    <AssemblyName>CustomizeRecipe</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <LangVersion>9</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\Common\BootDialog.cs" Link="BootDialog.cs" />
-    <Compile Include="..\Common\ConfigManager.cs" Link="ConfigManager.cs" />
-    <Compile Include="..\Common\Helpers.cs" Link="Helpers.cs" />
-    <Compile Include="..\Common\TechHelper.cs" Link="TechHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecipeData.cs" />
-    <Compile Include="_CustomizeRecipeState.cs" />
-    <Compile Include="_FumiKMod.cs" />
-    <Compile Include="RecipePatch.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Changelog.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
 </Project>

@@ -104,11 +104,7 @@ namespace CustomizeGeyser
 
 		public static System.Random GetRNG(Transform transform)
         {
-#if DLC1
 			return new System.Random(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)transform.GetPosition().x + (int)transform.GetPosition().y);
-#else
-			return new System.Random(SaveLoader.Instance.worldDetailSave.globalWorldSeed + (int)transform.GetPosition().x + (int)transform.GetPosition().y);
-#endif
 		}
 	}
 
@@ -161,11 +157,7 @@ namespace CustomizeGeyser
 			{
 				System.Random RNG;
 				if (CustomizeGeyserState.StateManager.State.RandomizerUsesMapSeed)
-#if DLC1
 					RNG = new System.Random(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)__instance.transform.GetPosition().x + (int)__instance.transform.GetPosition().y);
-#else
-					RNG = new System.Random(SaveLoader.Instance.worldDetailSave.globalWorldSeed + (int)__instance.transform.GetPosition().x + (int)__instance.transform.GetPosition().y);
-#endif
 				else
 					RNG = new System.Random();
 

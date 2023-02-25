@@ -41,7 +41,7 @@ namespace CustomizeGeyser
         }
 
         #region Buttons
-        [Option("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip")]
+        [Option("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Buttons", null)]
         [JsonIgnore]
         public System.Action<object> ResetToCustomDefault => delegate (object nix)
         {
@@ -144,7 +144,7 @@ namespace CustomizeGeyser
         #endregion
 
         #region Fields
-        public int version { get; set; } = 9;
+        public int version { get; set; } = 10;
         [Option("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "Fields", null)]
         public bool Enabled { get; set; } = true;
 
@@ -274,6 +274,11 @@ namespace CustomizeGeyser
     {
         public static void LoadStrings()
         {
+
+
+
+
+
             #region Buttons
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "Reset: Custom Default");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Re-installs mod's default settings.");

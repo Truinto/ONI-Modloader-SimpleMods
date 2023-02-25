@@ -125,11 +125,7 @@ namespace EggCritterSurplus
         public void RefreshCavityEggs(CavityInfo room)
         {
             room.eggs.Clear();
-#if DLC1
             var allEggs = this.GetMyWorld().worldInventory.GetPickupables(GameTags.Egg);
-#else
-            var allEggs = WorldInventory.Instance.GetPickupables(GameTags.Egg);
-#endif
             foreach (var egg in allEggs)
                 if (IsInRoom(egg.gameObject, room))
                     room.eggs.Add(egg.KPrefabID);

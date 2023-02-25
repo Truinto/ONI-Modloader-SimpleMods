@@ -2,6 +2,7 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace CustomizeGeyser
 
         public static void Postfix(KButtonEvent e)
         {
+            Helpers.PrintDebug($"CustomizeGeyser.TeleportPatch consumed={e.Consumed} action={e.GetAction()} select={SelectTool.Instance?.selected == null} geyser={SelectTool.Instance?.selected?.GetComponent<GeyserConfigurator>()?.PrefabID()}");
+
             if (!e.Consumed && e.IsAction(Action.DebugTeleport))
             {
                 var selected = SelectTool.Instance?.selected;
@@ -29,7 +32,10 @@ namespace CustomizeGeyser
 
                 int mouseCell = DebugHandler.GetMouseCell();
                 if (!Grid.IsValidBuildingCell(mouseCell))
+                {
+                    Helpers.PrintDebug("CustomizeGeyser.TeleportPatch cell not valid");
                     return;
+                }
 
                 selected.transform.SetPosition(Grid.CellToPosCBC(mouseCell, Grid.SceneLayer.Move));
 

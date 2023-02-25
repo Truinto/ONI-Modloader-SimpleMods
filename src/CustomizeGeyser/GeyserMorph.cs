@@ -35,7 +35,7 @@ namespace CustomizeGeyser
         [Serialize]
         private Tag currentGeyserSelectionTag;
 
-        protected override void OnPrefabInit()
+        public override void OnPrefabInit()
         {
             base.OnPrefabInit();
             this.Subscribe((int)GameHashes.RefreshUserMenu, OnRefreshUserMenu);
@@ -53,7 +53,7 @@ namespace CustomizeGeyser
             this.SetWorkTime( Math.Max(CustomizeGeyserState.StateManager.State.GeyserMorphWorktime, 3) );
         }
 
-        protected override void OnSpawn()
+        public override void OnSpawn()
         {
             base.OnSpawn();
             if (!currentGeyserSelectionTag.IsValid)
@@ -136,7 +136,7 @@ namespace CustomizeGeyser
             this.statusItemGuid = this.GetComponent<KSelectable>().RemoveStatusItem(this.workerStatusItem, false);
         }
 
-        protected override void OnCompleteWork(Worker worker)
+        public override void OnCompleteWork(Worker worker)
         {
             Helpers.PrintDebug("DEBUG OnCompleteWork");
             this.CancelChore();

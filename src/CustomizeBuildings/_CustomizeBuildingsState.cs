@@ -687,23 +687,6 @@ namespace CustomizeBuildings
 
         public static void BeforeUpdate()
         {
-            // TODO: remove this after some time
-            // this will rename the old config file to a new name, if the language is set to anything but English
-            const string VERSION = "\": ";
-            string path = Config.PathHelper.CreatePath("CustomizeBuildings");
-            string pathNew = Config.PathHelper.CreatePath("CustomizeBuildings_" + Helpers.Locale);
-            if (Helpers.Locale != "en" && File.Exists(Helpers.PathLocale) && File.Exists(path) && !File.Exists(pathNew))
-            {
-                string text = File.ReadAllText(path);
-                int index = text.IndexOf(VERSION) + VERSION.Length;
-                int index2 = text.IndexOf(",", index);
-                int version = int.Parse(text[index..index2]);
-                if (version < 50)
-                {
-                    Helpers.Print($"Moving config file from '{path}' to '{pathNew}'");
-                    File.Move(path, pathNew);
-                }
-            }
         }
 
         public static bool OnUpdate(CustomizeBuildingsState state)

@@ -1,5 +1,3 @@
-//#define DLC1
-
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -108,7 +106,7 @@ namespace CustomizeCritter
                         //container.navGridName = go.GetComponent<Navigator>()?.NavGridName;
                         //container.navi = go.GetComponent<Navigator>()?.CurrentNavType.ToString();
                         container.moveSpeed = go.GetComponent<Navigator>()?.defaultSpeed;
-                        container.dropOnDeath = go.GetComponent<Butcherable>()?.Drops;
+                        container.dropOnDeath = go.GetComponent<Butcherable>()?.drops;
                         //container.canDrown = go.GetComponent<DrowningMonitor>() != null;
                         //container.canCrushed = go.GetComponent<EntombVulnerable>() != null;
                         //container.canBurrow = go.GetDef<BurrowMonitor.Def>() != null;
@@ -469,11 +467,7 @@ namespace CustomizeCritter
                 {
                     Modifiers modifiers = go.AddOrGet<Modifiers>();
                     if (setting.traitId != "")
-#if DLC1
                         modifiers.initialTraits = new List<string>() { setting.traitId };
-#else
-                        modifiers.initialTraits = new string[] { setting.traitId };
-#endif
                     else
                         modifiers.initialTraits = null;
                     if (!modifiers.initialAmounts.Contains(Db.Get().Amounts.HitPoints.Id))
@@ -593,11 +587,7 @@ namespace CustomizeCritter
                     kPrefab.AddTag(GameTags.BagableCreature, false);
                     kPrefab.prefabSpawnFn += delegate (GameObject inst)
                     {
-#if DLC1
                         DiscoveredResources.Instance.Discover(kPrefab.PrefabTag, DiscoveredResources.GetCategoryForTags(kPrefab.Tags));
-#else
-                        WorldInventory.Instance.Discover(kPrefab.PrefabTag, WorldInventory.GetCategoryForTags(kPrefab.Tags));
-#endif
                     };
                 }
                 // end CreateAndRegisterBaggedCreature
@@ -698,13 +688,10 @@ namespace CustomizeCritter
 
                     if (setting.eggId != null) go.AddOrGetDef<FertilityMonitor.Def>().eggPrefab = new Tag(setting.eggId);
                     if (setting.egg_chances != null) go.AddOrGetDef<FertilityMonitor.Def>().initialBreedingWeights = setting.egg_chances.Select(x => Helpers.BreedingChance(x.Key, x.Value)).ToList();
-#if DLC1
+
                     if (setting.eggId != null) kPrefab.prefabSpawnFn += delegate (GameObject inst) { DiscoveredResources.Instance.Discover(setting.eggId.ToTag(), DiscoveredResources.GetCategoryForTags(egg_tags)); };
                     if (setting.babyId != null) kPrefab.prefabSpawnFn += delegate (GameObject inst) { DiscoveredResources.Instance.Discover(setting.babyId.ToTag(), DiscoveredResources.GetCategoryForTags(kPrefab.Tags)); };
-#else
-                    if (setting.eggId != null) kPrefab.prefabSpawnFn += delegate (GameObject inst) { WorldInventory.Instance.Discover(setting.eggId.ToTag(), WorldInventory.GetCategoryForTags(egg_tags)); };
-                    if (setting.babyId != null) kPrefab.prefabSpawnFn += delegate (GameObject inst) { WorldInventory.Instance.Discover(setting.babyId.ToTag(), WorldInventory.GetCategoryForTags(kPrefab.Tags)); };
-#endif
+
                     if (setting.is_ranchable != null)
                     {
                         if (setting.is_ranchable.Value)

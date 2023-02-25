@@ -98,11 +98,7 @@ namespace CustomizePlants
     #endregion
 
     #region Multi-Fruit
-#if DLC1
     [HarmonyPatch(typeof(Crop), "SpawnConfiguredFruit")]
-#else
-    [HarmonyPatch(typeof(Crop), "SpawnFruit")]
-#endif
     public static class Crop_SpawnConfiguredFruit
     {
         public static bool Prefix(Crop __instance)
@@ -114,11 +110,7 @@ namespace CustomizePlants
 
             foreach (KeyValuePair<string, int> entry in setting)
             {
-#if DLC1
                 __instance.SpawnSomeFruit(entry.Key, entry.Value);
-#else
-                SpawnFruit(__instance, entry.Key, entry.Value);
-#endif
             }
 
             __instance.Trigger((int)GameHashes.CropPicked, __instance);
@@ -209,7 +201,6 @@ namespace CustomizePlants
             if (setting == null) return;
 
             #region trait fix
-#if DLC1
             plant.AddOrGet<Traits>();
             Modifiers modifiers = plant.AddOrGet<Modifiers>();
             Trait baseTrait;
@@ -227,7 +218,6 @@ namespace CustomizePlants
                     baseTrait = Db.Get().traits.Get(traitName) ?? throw new Exception(plant.PrefabID() + " adds a trait that doesn't exist.");
                 }
             }
-#endif
             #endregion
             #region decor plant fixes; including seeds
             if (setting.fruitId != null)    //decor plant fixes
@@ -275,7 +265,6 @@ namespace CustomizePlants
             #endregion
 
             #region fruitId
-#if DLC1
             if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
             {
                 GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, plant.PrefabID().ToString());
@@ -306,29 +295,6 @@ namespace CustomizePlants
 
                 plant.AddOrGet<StandardCropPlant>();
             }
-#else
-            if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
-            {
-                Crop crop = plant.AddOrGet<Crop>();
-                Crop.CropVal cropval = crop.cropVal;   //this is a copy
-                if (setting.fruitId != null) cropval.cropId = setting.fruitId;
-                if (cropval.cropId == "") cropval.cropId = "WoodLog";
-                if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
-                if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
-                if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
-                if (cropval.numProduced < 1) cropval.numProduced = 1;
-                crop.Configure(cropval);
-
-                KPrefabID prefab = plant.GetComponent<KPrefabID>();
-                GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, prefab.PrefabID().ToString());
-                Growing growing = plant.AddOrGet<Growing>();
-                growing.growthTime = cropval.cropDuration;
-                if (setting.id != ForestTreeConfig.ID)  // don't harvest arbor trees directly
-                    plant.AddOrGet<Harvestable>();
-                plant.AddOrGet<HarvestDesignatable>();
-                plant.AddOrGet<StandardCropPlant>();
-            }
-#endif
             #endregion
             #region irrigation
             if (setting.irrigation != null)
@@ -393,11 +359,8 @@ namespace CustomizePlants
                     if (cropSleep == null)
                         cropSleep = plant.AddOrGetDef<CropSleepingMonitor.Def>();
                     cropSleep.prefersDarkness = false;
-#if DLC1
+
                     EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.MinLightLux.Id, setting.illumination.Value);
-#else
-                    cropSleep.lightIntensityThreshold = (float)setting.illumination;
-#endif
                 }
             }
             #endregion
@@ -644,7 +607,6 @@ namespace CustomizePlants
             }
             #endregion
             #region radiation
-#if DLC1
             if (setting.radiation != null)
             {
                 var radiation = plant.AddOrGet<RadiationEmitter>();
@@ -659,7 +621,6 @@ namespace CustomizePlants
                     radiation.emitRadiusY = radiation.emitRadiusX;
                 }
             }
-#endif
             #endregion
             #region radiation_threshold
             if (setting.radiation_threshold_min != null)

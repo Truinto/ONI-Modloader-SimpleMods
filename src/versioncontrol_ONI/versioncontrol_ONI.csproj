@@ -1,21 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <Configurations>Debug;Release</Configurations>
-    <!--<EnableDefaultItems>false</EnableDefaultItems>
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences> -->
-    <LangVersion>9</LangVersion>
-    <Copyright>Copyright © Trunito 2022</Copyright>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="LanguageFillOut.cs.bak" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Program.cs" />
-    <None Include="HelperStrings.cs" />
-    <None Include="MDConvert.cs" />
-    <None Include="LanguageFillOut.cs" />
-  </ItemGroup>
+	
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Title>$(MSBuildProjectName)</Title>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RootNamespace>$(MSBuildProjectName)</RootNamespace>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<DebugType>embedded</DebugType>
+		<!--<EnableDefaultItems>false</EnableDefaultItems>
+		<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences> -->
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Remove="LanguageFillOut.cs.bak" />
+	</ItemGroup>
+	
 </Project>

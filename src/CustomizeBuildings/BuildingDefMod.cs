@@ -456,9 +456,9 @@ namespace CustomizeBuildings
                     var cindex = component.IndexOf('#');
                     if (cindex >= 0)
                     {
-                        string sub = component[(cindex + 1)..];
+                        string sub = component.Substring(cindex + 1);
                         int.TryParse(sub, out numcom);
-                        component = component[..cindex];
+                        component = component.Substring(0, cindex);
                     }
 
                     var targets = def.BuildingComplete.GetComponents<Component>().Where(w => w.GetType().Name == component).ToArray();
@@ -480,8 +480,8 @@ namespace CustomizeBuildings
                     int findex = instruction.IndexOf('=');
                     if (findex < 0)
                         throw new Exception("invalid format, did not find '='");
-                    string newvalue = instruction[(findex + 1)..];
-                    string field = instruction[..findex];
+                    string newvalue = instruction.Substring(findex + 1);
+                    string field = instruction.Substring(0, findex);
 
                     var fi = target.GetType().GetField(field, flags);
                     if (fi == null)
@@ -524,7 +524,7 @@ namespace CustomizeBuildings
                 continue;
                 string read() // get string between front and back pointer; advance pointer to ignore next character
                 {
-                    string result = setting[j..i];
+                    string result = setting.Substring(j, i - j);
                     j = i + 1;
                     return result;
                 }

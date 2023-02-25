@@ -379,7 +379,7 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "Pipes")]
         public bool ConveyorLoaderAcceptLiquidsGas { get; set; } = false;
 
-        [Option("Conductive Panel Pressure", "Liquid pressure.", "Pipes")]
+        [Option("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Pipes", "F0")]
         public float ConductivePanelPressure { get; set; } = 10f;
         #endregion
 
@@ -687,23 +687,6 @@ namespace CustomizeBuildings
 
         public static void BeforeUpdate()
         {
-            // TODO: remove this after some time
-            // this will rename the old config file to a new name, if the language is set to anything but English
-            const string VERSION = "\": ";
-            string path = Config.PathHelper.CreatePath("CustomizeBuildings");
-            string pathNew = Config.PathHelper.CreatePath("CustomizeBuildings_" + Helpers.Locale);
-            if (Helpers.Locale != "en" && File.Exists(Helpers.PathLocale) && File.Exists(path) && !File.Exists(pathNew))
-            {
-                string text = File.ReadAllText(path);
-                int index = text.IndexOf(VERSION) + VERSION.Length;
-                int index2 = text.IndexOf(",", index);
-                int version = int.Parse(text[index..index2]);
-                if (version < 50)
-                {
-                    Helpers.Print($"Moving config file from '{path}' to '{pathNew}'");
-                    File.Move(path, pathNew);
-                }
-            }
         }
 
         public static bool OnUpdate(CustomizeBuildingsState state)
@@ -998,6 +981,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderAcceptLiquidsGas", "ConveyorLoaderAcceptLiquidsGas");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "Conveyor Loader Accepts Liquids Gases");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "If true, add liquids and gases to the filter list.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConductivePanelPressure", "ConductivePanelPressure");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "Conductive Panel Pressure");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Liquid pressure.");
             #endregion
             #region Power
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BatterySmartKJ", "BatterySmartKJ");

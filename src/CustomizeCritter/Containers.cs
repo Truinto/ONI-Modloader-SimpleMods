@@ -436,7 +436,7 @@ namespace CustomizeCritter
             if (species == GameTags.Creatures.Species.SquirrelSpecies)
             {
                 Add(new TreeClimbStates.Def());
-                Add(new SeedPlantingStates.Def());
+                Add(new SeedPlantingStates.Def(null)); // todo
             }
 
             //Pufts
@@ -697,7 +697,7 @@ namespace CustomizeCritter
         private static Func<FallStates.Instance, string> _pacu_fall = (Func<FallStates.Instance, string>)Delegate.CreateDelegate(typeof(Func<FallStates.Instance, string>), AccessTools.Method(typeof(BasePacuConfig), "GetLandAnim"));
         private static string GetLandAnim(FallStates.Instance smi)
         {
-            if (smi.GetSMI<CreatureFallMonitor.Instance>().CanSwimAtCurrentLocation(true))
+            if (smi.GetSMI<CreatureFallMonitor.Instance>().CanSwimAtCurrentLocation())
             {
                 return "idle_loop";
             }

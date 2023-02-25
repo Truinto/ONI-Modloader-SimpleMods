@@ -72,14 +72,14 @@ namespace CustomizeBuildings
     [SerializationConfig(MemberSerialization.OptIn)]
     public class ValvePressure : ValveBase//, IActivationRangeTarget
     {
-        protected override void OnPrefabInit()
+        public override void OnPrefabInit()
         {
             //base.OnPrefabInit();
             this.Subscribe((int)GameHashes.RefreshUserMenu, OnRefreshUserMenu); //#
             this.flowAccumulator = Game.Instance.accumulators.Add("Flow", this);
         }
 
-        protected override void OnSpawn()
+        public override void OnSpawn()
         {
             //base.OnSpawn();
             Building component = base.GetComponent<Building>();
@@ -90,7 +90,7 @@ namespace CustomizeBuildings
             this.OnCmpEnable();
         }
 
-        protected override void OnCleanUp()
+        public override void OnCleanUp()
         {
             this.Unsubscribe((int)GameHashes.RefreshUserMenu);
             Game.Instance.accumulators.Remove(this.flowAccumulator);
@@ -125,7 +125,7 @@ namespace CustomizeBuildings
             }
         }
 
-        private void ConduitUpdate(float dt)
+        private new void ConduitUpdate(float dt)
         {
             ConduitFlow flowManager = Conduit.GetFlowManager(this.conduitType);
             if (!flowManager.HasConduit(this.inputCell) || !flowManager.HasConduit(this.outputCell))
@@ -174,9 +174,9 @@ namespace CustomizeBuildings
         [SerializeField]
         private bool limitPressure;
 
-        private int inputCell;
-        private int outputCell;
-        private int curFlowIdx = -1;
+        private new int inputCell;
+        private new int outputCell;
+        private new int curFlowIdx = -1;
 
 
         public float ActivateValue { get; set; }

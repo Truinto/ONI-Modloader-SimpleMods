@@ -5,18 +5,27 @@ using System.Text;
 using HarmonyLib;
 using UnityEngine;
 
-namespace CustomizeModifier
+namespace NoRemains
 {
+    [HarmonyPatch(typeof(BuildingConfigManager), nameof(BuildingConfigManager.RegisterBuilding))]
+    public class Patch_Test
+    {
+        public static void Postfix()
+        {
+            try
+            {
+                //Debug.Log($"HELLO WORLD Test patch {BuildingConfigManager.Instance.baseTemplate?.GetType()}");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(DeathMonitor.Instance), "ApplyDeath")]
     public class DeathMonitor_ApplyDeath
     {
-        public static bool deleteMinionOnDeath = true;
-
-        public static bool Prepare()
-        {
-            return deleteMinionOnDeath;
-        }
-
         public static bool Prefix(DeathMonitor.Instance __instance, bool ___isDuplicant)
         {
             if (!___isDuplicant)
@@ -34,11 +43,6 @@ namespace CustomizeModifier
     [HarmonyPatch(typeof(SuffocationMonitor.Instance), "Kill")]
     public class SuffocationPatch
     {
-        public static bool Prepare()
-        {
-            return DeathMonitor_ApplyDeath.deleteMinionOnDeath;
-        }
-
         public static bool Prefix()
         {
             return false;

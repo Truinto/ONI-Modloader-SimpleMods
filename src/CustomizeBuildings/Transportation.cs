@@ -143,10 +143,10 @@ namespace CustomizeBuildings
         public static void OnLoad()
         {
             return;
-            TUNING.DUPLICANTSTATS.MOVEMENT.BONUS_2 = 1.25f;     // Standard Tile
-            TUNING.DUPLICANTSTATS.MOVEMENT.BONUS_3 = 1.5f;      // Metal, Plastic Tile
-            TUNING.DUPLICANTSTATS.MOVEMENT.PENALTY_2 = 0.75f;   // Carpet
-            TUNING.DUPLICANTSTATS.MOVEMENT.PENALTY_3 = 0.5f;    // Travel Tube Bridge
+            //TUNING.DUPLICANTSTATS.MOVEMENT.BONUS_2 = 1.25f;     // Standard Tile
+            //TUNING.DUPLICANTSTATS.MOVEMENT.BONUS_3 = 1.5f;      // Metal, Plastic Tile
+            //TUNING.DUPLICANTSTATS.MOVEMENT.PENALTY_2 = 0.75f;   // Carpet
+            //TUNING.DUPLICANTSTATS.MOVEMENT.PENALTY_3 = 0.5f;    // Travel Tube Bridge
         }
     }
 
