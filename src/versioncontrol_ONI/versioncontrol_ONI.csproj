@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-	
+
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
@@ -16,9 +16,24 @@
 		<!--<EnableDefaultItems>false</EnableDefaultItems>
 		<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences> -->
 	</PropertyGroup>
-	
+
+	<!-- Nuget Packages -->
+	<ItemGroup>
+		<PackageReference Include="MSBuildTasks" Version="1.5.0.235" PrivateAssets="all" ExcludeAssets="runtime" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<None Remove="LanguageFillOut.cs.bak" />
 	</ItemGroup>
-	
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<_CopyItems Include="$(TargetDir)\*" />			
+			<!--<_CopyItems Include="C:\Temp\1\**\*.*" Exclude="C:\Temp\1\**\*.zip" />-->
+		</ItemGroup>
+
+		<!--<Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(_CopyItems)" DestinationFolder=".\%(RecursiveDir)" />-->
+		<!--<Zip WorkingDirectory="C:\Temp\1" Files="@(_CopyItems)" ZipFileName="C:\Temp\1\zip.zip" />-->
+	</Target>
+
 </Project>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "versioncontrol_ONI": {
+      "commandName": "Project",
+      "commandLineArgs": "-md \"E:\\Github\\ONI-Modloader-SimpleMods\\src\\NoRemains\\Changelog.md\"\r\n-asbly \"E:\\Github\\ONI-Modloader-SimpleMods\\src\\NoRemains\\Properties\\AssemblyInfo.cs\"\r\n-info \"C:\\Users\\Fumihiko\\Documents\\Klei\\OxygenNotIncluded\\mods\\dev\\NoRemains\\mod_info.yaml\"\r\n-projectname \"NoRemains\""
+    }
+  }
+}
