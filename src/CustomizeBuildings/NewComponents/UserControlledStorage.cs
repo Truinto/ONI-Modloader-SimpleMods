@@ -16,19 +16,19 @@ namespace CustomizeBuildings
         [MyCmpReq]
         private Storage storage;
 
-        protected override void OnPrefabInit()
+        public override void OnPrefabInit()
         {
             base.OnPrefabInit();
         }
 
-        protected override void OnSpawn()
+        public override void OnSpawn()
         {
             base.OnSpawn();
 
             storage.capacityKg = this.UserMaxCapacity;
         }
 
-        protected override void OnCleanUp()
+        public override void OnCleanUp()
         {
             base.OnCleanUp();
         }

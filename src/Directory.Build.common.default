@@ -30,7 +30,7 @@
 
 	<!-- Nuget Packages -->
 	<ItemGroup>
-		<PackageReference Include="AssemblyPublicizer" Version="1.0.2" ExcludeAssets="runtime" />
+		<PackageReference Include="AssemblyPublicizer" Version="1.0.3" ExcludeAssets="runtime" />
 		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" ExcludeAssets="runtime" />
 		<PackageReference Include="MSBuildTasks" Version="1.5.0.235" PrivateAssets="all" ExcludeAssets="" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
 	</ItemGroup>
@@ -51,11 +51,13 @@
 	<ItemGroup>
 		<Reference Include="0Harmony" HintPath="$(GameManaged)\0Harmony.dll" />
 		<Reference Include="Assembly-CSharp_public" HintPath="$(GameManaged)\Assembly-CSharp_public.dll" />
-		<Reference Include="Assembly-CSharp-firstpass" HintPath="$(GameManaged)\Assembly-CSharp-firstpass.dll" />
+		<Reference Include="Assembly-CSharp-firstpass_public" HintPath="$(GameManaged)\Assembly-CSharp-firstpass_public.dll" />
 		<Reference Include="Newtonsoft.Json" HintPath="$(GameManaged)\Newtonsoft.Json.dll" />
 		<Reference Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
 		<Reference Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
 		<Reference Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
+
+		<Reference Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod.dll" />
 		<Reference Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
@@ -71,6 +73,7 @@
 	<Target Name="Publicize" BeforeTargets="PreBuildEvent" AfterTargets="">
 		<ItemGroup>
 			<PublicizeInput Include="$(GameManaged)\Assembly-CSharp.dll" />
+			<PublicizeInput Include="$(GameManaged)\Assembly-CSharp-firstpass.dll" />
 		</ItemGroup>
 		<PublicizeTask InputAssemblies="@(PublicizeInput)" OutputDir="$(GameManaged)\" />
 	</Target>
@@ -85,21 +88,22 @@
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<_MergeItems Include="$(TargetDir)$(TargetName).dll" />
-			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibOptions.dll" />
-			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibCore.dll" />
-			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibUI.dll" />
+			<_MergeItems Include="$(SolutionDir)@Shared\UnityMod.dll" />
+			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
+			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
+			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
 
 			<_CopyItems Include="$(TargetDir)\*" />
 		</ItemGroup>
 		
 		<Message Condition="$(DefineConstants.Contains('MERGE'))" Text="Merging PLibOptions..." Importance="High" />
-		<ILRepack Condition="$(DefineConstants.Contains('MERGE'))" Union="true" LibraryPath="$(GameManaged)" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" />
+		<ILRepack Union="true" LibraryPath="$(GameManaged)" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" />
 		<!--<ILMerge Condition="$(DefineConstants.Contains('MERGE'))" ToolPath="packages\ilmerge.2.13.0307" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" SearchDirectories="$(GameManaged)" />-->
 		<Sleep Milliseconds="1000" />
 		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ModFolder)$(TargetName)\%(RecursiveDir)" />
 		<Message Text="Copied to $(ModFolder)$(TargetName)\" Importance="High" />
-		<!--<Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(ModFolder)\$(TargetName)" Command="&quot;$(Zip7)&quot; u &quot;-x!*.zip&quot; &quot;$(SolutionDir)..\Mods\$(TargetName)\$(TargetName)-latest.zip&quot; &gt;NUL" />
-		<Message Condition="'$(Configuration)'=='Release'" Text="Updated $(TargetName).zip" Importance="High" />-->
+		<Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(ModFolder)\$(TargetName)" Command="&quot;$(Zip7)&quot; u &quot;-x!*.zip&quot; &quot;$(SolutionDir)..\Mods\$(TargetName)\$(TargetName)-latest.zip&quot; &gt;NUL" />
+		<Message Condition="'$(Configuration)'=='Release'" Text="Updated $(TargetName)-latest.zip" Importance="High" />
 	</Target>
 
 </Project>

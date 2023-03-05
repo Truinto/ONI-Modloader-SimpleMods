@@ -81,7 +81,7 @@ namespace CustomizeBuildings
 
     public class SweepOnlyNoFetchAtAll : KMonoBehaviour
     {
-        protected override void OnSpawn()
+        public override void OnSpawn()
         {
             base.OnSpawn();
             Storage storage = this.GetComponent<Storage>();
@@ -91,7 +91,7 @@ namespace CustomizeBuildings
             }
         }
 
-        protected override void OnCleanUp()
+        public override void OnCleanUp()
         {
             Storage storage = this.GetComponent<Storage>();
             if (storage != null)

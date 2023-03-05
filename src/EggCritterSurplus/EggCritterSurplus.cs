@@ -61,7 +61,7 @@ namespace EggCritterSurplus
         [Serialize] public bool attackSurplus;
         private static StatusItem capacityStatusItem;
 
-        protected override void OnPrefabInit()
+        public override void OnPrefabInit()
         {
             base.OnPrefabInit();
 

@@ -14,7 +14,7 @@ namespace CustomizeBuildings
         public float userMaxCapacity = float.PositiveInfinity;
         private FilteredStorage filteredStorage;
 
-        protected override void OnPrefabInit()
+        public override void OnPrefabInit()
         {
             base.OnPrefabInit();
 
@@ -26,7 +26,7 @@ namespace CustomizeBuildings
             }
         }
 
-        protected override void OnCleanUp()
+        public override void OnCleanUp()
         {
             filteredStorage = null;
             base.OnCleanUp();

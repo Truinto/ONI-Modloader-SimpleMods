@@ -162,7 +162,7 @@ namespace CustomizeBuildings
         private EnergyConsumer energyConsumer;
         private float factorDPU;
 
-        protected override void OnSpawn()
+        public override void OnSpawn()
         {
             base.OnSpawn();
             energyConsumer = this.GetComponent<EnergyConsumer>();
@@ -328,7 +328,7 @@ namespace CustomizeBuildings
         float IThresholdSwitch.ProcessedInputValue(float input) => GameUtil.GetTemperatureConvertedToKelvin(input);
         #endregion
 
-        protected override void OnSpawn()
+        public override void OnSpawn()
         {
             base.OnSpawn();
             this.spaceHeater = this.GetComponent<SpaceHeater>();

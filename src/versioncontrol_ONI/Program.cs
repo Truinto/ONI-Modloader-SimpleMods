@@ -142,7 +142,7 @@ namespace versioncontrol_ONI
             if (data.Path_MD == null)            
                 return;
 
-            var rx = new Regex(@"^## \[([\d\.]+)\] ");
+            var rx = new Regex(@"\[([\d\.]+)\]");
             
             var changelog = File.ReadAllLines(data.Path_MD);
             for (int i = 0; i < changelog.Length; i++)
@@ -164,32 +164,6 @@ namespace versioncontrol_ONI
         }
 
         /// <summary>
-        /// Copy dll and info file into archived_versions folder, if game version is newer.
-        /// </summary>
-        private static void CreateBackup(Data data)
-        {
-            if (data.Path_Info == null)
-                return;
-
-            string path_mod = new FileInfo(data.Path_Info).Directory.FullName;
-            var match = Regex.Match(File.ReadAllText(data.Path_Info), "^minimumSupportedBuild: (\\d+)", RegexOptions.Multiline);
-            if (!match.Success)
-                return;
-
-            string oldgameversion = match.Groups[1].Value;
-            if (data.GameVersion == oldgameversion)
-                return;
-
-            string path_archive = Path.Combine(path_mod, "archived_versions", oldgameversion);
-
-            Directory.CreateDirectory(path_archive);
-            foreach (var dll in Directory.GetFiles(path_mod, "*.dll"))
-                File.Copy(dll, Path.Combine(path_archive, new FileInfo(dll).Name), true);
-            File.Copy(Path.Combine(path_mod, "mod_info.yaml"), Path.Combine(path_archive, "mod_info.yaml"), true);
-            Console.WriteLine("archived old version");
-        }
-
-        /// <summary>
         /// Bump assembly version, if not newer.
         /// </summary>
         private static void UpdateRevisionVersion(Data data)
@@ -206,7 +180,33 @@ namespace versioncontrol_ONI
             if (v_changelog > v_info)
                 return;
 
-            data.AssemblyVersion = $"{v_info.Major}.{v_info.Minor}.{v_info.Build}.{v_info.Revision+1}";
+            data.AssemblyVersion = $"{v_info.Major}.{v_info.Minor}.{v_info.Build}.{v_info.Revision + 1}";
+        }
+
+        /// <summary>
+        /// Copy dll and info file into archived_versions folder, if game version is newer.
+        /// </summary>
+        private static void CreateBackup(Data data)
+        {
+            if (data.Path_Info == null)
+                return;
+
+            string path_mod = new FileInfo(data.Path_Info).Directory.FullName;
+            var match = Regex.Match(File.ReadAllText(data.Path_Info), "^minimumSupportedBuild: (\\d+)", RegexOptions.Multiline);
+            if (!match.Success)
+                return;
+
+            string oldgameversion = match.Groups[1].Value;
+            if (data.GameVersion_Int.ToString() == oldgameversion)
+                return;
+
+            string path_archive = Path.Combine(path_mod, "archived_versions", oldgameversion);
+
+            Directory.CreateDirectory(path_archive);
+            foreach (var dll in Directory.GetFiles(path_mod, "*.dll"))
+                File.Copy(dll, Path.Combine(path_archive, new FileInfo(dll).Name), true);
+            File.Copy(Path.Combine(path_mod, "mod_info.yaml"), Path.Combine(path_archive, "mod_info.yaml"), true);
+            Console.WriteLine("archived old version");
         }
 
         /// <summary>

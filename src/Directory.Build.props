@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-	<Import Condition=" !Exists('Directory.Build.props.user') " Project="Directory.Build.props.default" />
-	<Import Condition=" Exists('Directory.Build.props.user') " Project="Directory.Build.props.user" />
-
-	<Import Condition="!Exists('Directory.Build.common.user') And '$(MSBuildProjectName)' != 'versioncontrol_ONI'" Project="Directory.Build.common.default" />
-	<Import Condition="Exists('Directory.Build.common.user') And '$(MSBuildProjectName)' != 'versioncontrol_ONI'" Project="Directory.Build.common.user" />
-
+	<PropertyGroup>
+		<Company>Truinto</Company>
+		<Authors>Truinto</Authors>
+		<Copyright>Copyright © Truinto 2023</Copyright>
+		<DoILRepack>false</DoILRepack>
+	</PropertyGroup>
+	
 	<ItemDefinitionGroup>
 		<Reference Private="false" />
 		<ProjectReference Private="false" />
 	</ItemDefinitionGroup>
 
-	<PropertyGroup>
-		<Product>Truinto ONI Mods</Product>
-		<Authors>Truinto</Authors>
-		<Copyright>Copyright Truinto 2023</Copyright>
-		<RepositoryUrl>https://github.com/Truinto/</RepositoryUrl>
-	</PropertyGroup>
+	<Import Project="Directory.Build.props.default" />
+	<Import Condition="Exists('Directory.Build.props.user')" Project="Directory.Build.props.user" />
+	
+	<Import Condition="'$(MSBuildProjectName)' != 'versioncontrol_ONI'" Project="Directory.Build.common.default" />
+	<Import Condition="Exists('Directory.Build.common.user') And '$(MSBuildProjectName)' != 'versioncontrol_ONI'" Project="Directory.Build.common.user" />
 </Project>
-

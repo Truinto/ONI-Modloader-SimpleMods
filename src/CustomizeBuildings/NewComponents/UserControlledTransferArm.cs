@@ -19,18 +19,18 @@ namespace CustomizeBuildings
         [MyCmpGet]
         private SolidTransferArm transferArm;
 
-        protected override void OnPrefabInit()
+        public override void OnPrefabInit()
         {
             base.OnPrefabInit();
         }
 
-        protected override void OnSpawn()
+        public override void OnSpawn()
         {
             base.OnSpawn();
             UserMaxCapacity = UserValue;
         }
 
-        protected override void OnCleanUp()
+        public override void OnCleanUp()
         {
             visualizer = null;
             transferArm = null;

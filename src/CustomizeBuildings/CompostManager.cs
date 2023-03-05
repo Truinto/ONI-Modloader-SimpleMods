@@ -68,7 +68,7 @@ namespace CustomizeBuildings
         public int NextIndex;
         private readonly List<FoodStuff> foods = new();
 
-        protected override void OnPrefabInit()
+        public override void OnPrefabInit()
         {
             base.OnPrefabInit();
             CompostManager.Instance = this;

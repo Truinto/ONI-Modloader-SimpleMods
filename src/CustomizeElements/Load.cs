@@ -129,7 +129,27 @@ namespace CustomizeElements
                     element.materialCategory = setting.materialCategory;
 
                 if (setting.oreTags != null)
-                    element.oreTags = (Tag[])CreateOreTags(null, element.materialCategory, (Tag)element.state.ToString(), setting.oreTags.ToArray());
+                {
+                    var list = new List<Tag>();
+                    if (element.materialCategory.IsValid)
+                        list.Add(element.materialCategory);
+                    list.Add(element.state.ToString());
+                    foreach (var oreTag in setting.oreTags)
+                    {
+                        if (oreTag == null || oreTag.Length == 0)
+                            continue;
+
+                        Tag tag2 = oreTag;
+                        if (!TagManager.ProperNames.ContainsKey(tag2))
+                        {
+                            TagManager.ProperNames[tag2] = oreTag;
+                            TagManager.ProperNamesNoLinks[tag2] = oreTag;
+                        }
+                        list.Add(oreTag);
+                    }
+                    element.oreTags = list.ToArray();
+                    //element.oreTags = ElementLoader.CreateOreTags(element.materialCategory, element.state.ToString().ToTag(), setting.oreTags.ToArray());
+                }
 
                 if (setting.attributeModifiers != null)
                 {
@@ -142,7 +162,5 @@ namespace CustomizeElements
                 }
             }
         }
-
-        public static FastInvokeHandler CreateOreTags = MethodInvoker.GetHandler(AccessTools.Method("ElementLoader:CreateOreTags"));
     }
 }
