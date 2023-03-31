@@ -14,7 +14,7 @@ namespace CustomizePlants
     [HarmonyPatch(typeof(EntityTemplates), "ExtendEntityToBasicPlant")]
     public static class PlantLookupPatch
     {
-        public static System.Text.RegularExpressions.Regex FindBetweenLink = new System.Text.RegularExpressions.Regex(@">(.*)<", System.Text.RegularExpressions.RegexOptions.Compiled);
+        public static System.Text.RegularExpressions.Regex FindBetweenLink = new(@">(.*)<", System.Text.RegularExpressions.RegexOptions.Compiled);
 
         public static bool AutomaticallyAdd = false;
 

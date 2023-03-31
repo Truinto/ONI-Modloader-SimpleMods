@@ -182,7 +182,7 @@ namespace CustomizeBuildings
         public float CurrentValue => 0f;
         public float RangeMin => 0f;
         public float RangeMax => 100f;
-        public LocString Title => new LocString("Compost Manager", "CustomizeBuildings.LOCSTRINGS.CompostManager");
+        public LocString Title => new("Compost Manager", "CustomizeBuildings.LOCSTRINGS.CompostManager");
         public LocString ThresholdValueName => STRINGS.CREATURES.STATS.ROT.NAME;
         public string AboveToolTip => "";
         public string BelowToolTip => "";

@@ -21,10 +21,10 @@ namespace versioncontrol_ONI
      */
     public class LanguageFillOut
     {
-        public static Regex rex_variable = new Regex(@"public\s+[\w\.<>\[\],\s]*\s+(\w+)\s+", RegexOptions.Compiled);
-        public static Regex rex_numbers = new Regex(@"\d+\.?(\d*)f;", RegexOptions.Compiled);
+        public static Regex rex_variable = new(@"public\s+[\w\.<>\[\],\s]*\s+(\w+)\s+", RegexOptions.Compiled);
+        public static Regex rex_numbers = new(@"\d+\.?(\d*)f;", RegexOptions.Compiled);
 
-        public static Dictionary<string, Data> AllData = new Dictionary<string, Data>(50);
+        public static Dictionary<string, Data> AllData = new(50);
         public static string Namespace;
 
         public class Data

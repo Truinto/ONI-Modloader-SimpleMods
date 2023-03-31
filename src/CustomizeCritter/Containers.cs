@@ -251,7 +251,7 @@ namespace CustomizeCritter
 
     public class DietContainer
     {
-        public HashSet<string> consumedTags = new HashSet<string>();
+        public HashSet<string> consumedTags = new();
         public string producedTag;
         public float caloriesPerKg;
         public float producedConversionRate;
@@ -829,27 +829,27 @@ namespace CustomizeCritter
 
         public System.Action Convert()
         {
-            if (id == null)
-                throw new InvalidOperationException("[CustomizeCritter] EggModifiers must set id");
-            if (eggTag == null)
-                throw new InvalidOperationException("[CustomizeCritter] EggModifiers must set eggTag");
-            if (weight == 0f)
-                Debug.Log("[CustomizeCritter] Warning: EggModifiers weight is 0");
-            if ((foodTags != null ? 1 : 0) + (nearbyCreature != null ? 1 : 0) + (minTemperature != null || maxTemperature != null ? 1 : 0) > 1)
-                Debug.Log("[CustomizeCritter] Warning: EggModifiers has set multiple modifiers. Only one will be applied!");
+            // todo
+            //if (id == null)
+            //    throw new InvalidOperationException("[CustomizeCritter] EggModifiers must set id");
+            //if (eggTag == null)
+            //    throw new InvalidOperationException("[CustomizeCritter] EggModifiers must set eggTag");
+            //if (weight == 0f)
+            //    Debug.Log("[CustomizeCritter] Warning: EggModifiers weight is 0");
+            //if ((foodTags != null ? 1 : 0) + (nearbyCreature != null ? 1 : 0) + (minTemperature != null || maxTemperature != null ? 1 : 0) > 1)
+            //    Debug.Log("[CustomizeCritter] Warning: EggModifiers has set multiple modifiers. Only one will be applied!");
 
-            if (foodTags != null && foodTags.Length > 0)
-                return (System.Action)CreateDietaryModifier.Invoke(null, new object[] { id, eggTag.ToTag(), new TagBits(foodTags.Select(x => x.ToTag()).ToArray()), weight * multiplicator2 }); //string id, Tag eggTag, TagBits foodTags, float modifierPerCal
-            else if (nearbyCreature != null && nearbyCreature != "")
-                return (System.Action)CreateNearbyCreatureModifier.Invoke(null, new object[] { id, eggTag.ToTag(), nearbyCreature.ToTag(), weight * multiplicator2, alsoInvert }); //string id, Tag eggTag, Tag nearbyCreature, float modifierPerSecond, bool alsoInvert
-            else if (maxTemperature != null && minTemperature != null)
-                return (System.Action)CreateTemperatureModifier.Invoke(null, new object[] { id, eggTag.ToTag(), minTemperature.Value, maxTemperature.Value, weight * multiplicator2, alsoInvert }); //string id, Tag eggTag, float minTemp, float maxTemp, float modifierPerSecond, bool alsoInvert
+            //if (foodTags != null && foodTags.Length > 0)
+            //    return (System.Action)CreateDietaryModifier.Invoke(null, new object[] { id, eggTag.ToTag(), new TagBits(foodTags.Select(x => x.ToTag()).ToArray()), weight * multiplicator2 }); //string id, Tag eggTag, TagBits foodTags, float modifierPerCal
+            //else if (nearbyCreature != null && nearbyCreature != "")
+            //    return (System.Action)CreateNearbyCreatureModifier.Invoke(null, new object[] { id, eggTag.ToTag(), nearbyCreature.ToTag(), weight * multiplicator2, alsoInvert }); //string id, Tag eggTag, Tag nearbyCreature, float modifierPerSecond, bool alsoInvert
+            //else if (maxTemperature != null && minTemperature != null)
+            //    return (System.Action)CreateTemperatureModifier.Invoke(null, new object[] { id, eggTag.ToTag(), minTemperature.Value, maxTemperature.Value, weight * multiplicator2, alsoInvert }); //string id, Tag eggTag, float minTemp, float maxTemp, float modifierPerSecond, bool alsoInvert
 
-            Debug.Log("[CustomizeCritter] Warning: Empty EggModifier");
+            //Debug.Log("[CustomizeCritter] Warning: Empty EggModifier");
             return Empty;
         }
 
-        public static MethodInfo CreateDietaryModifier = AccessTools.Method(typeof(TUNING.CREATURES.EGG_CHANCE_MODIFIERS), "CreateDietaryModifier", new Type[] { typeof(string), typeof(Tag), typeof(TagBits), typeof(float) });
         public static MethodInfo CreateNearbyCreatureModifier = AccessTools.Method(typeof(TUNING.CREATURES.EGG_CHANCE_MODIFIERS), "CreateNearbyCreatureModifier");
         public static MethodInfo CreateTemperatureModifier = AccessTools.Method(typeof(TUNING.CREATURES.EGG_CHANCE_MODIFIERS), "CreateTemperatureModifier");
 

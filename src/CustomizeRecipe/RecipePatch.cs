@@ -12,7 +12,7 @@ namespace CustomizeRecipe
     //[HarmonyPatch(typeof(ComplexFabricator), "StartWorkingOrder")]
     public class BugSearch
     {
-        public static Dictionary<ComplexFabricator, int> Handles = new Dictionary<ComplexFabricator, int>();
+        public static Dictionary<ComplexFabricator, int> Handles = new();
 
         public static void Prefix(int index, ComplexFabricator __instance, int ___workingOrderIdx, List<int> ___openOrderCounts)
         {

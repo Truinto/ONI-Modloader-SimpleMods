@@ -13,7 +13,7 @@ namespace CustomizeCritter
     public class Patch_AddCreatureBrain
     {
         // remember all the ChoreTable.Builder, since they are not preserved normally
-        public static Dictionary<string, ChoreTable.Builder> CreatureBrains = new Dictionary<string, ChoreTable.Builder>();
+        public static Dictionary<string, ChoreTable.Builder> CreatureBrains = new();
 
         public static void Prefix(GameObject prefab, ChoreTable.Builder chore_table)
         {
@@ -345,7 +345,7 @@ namespace CustomizeCritter
             }
         }
 
-        public static HashSet<Tag> egg_tags = new HashSet<Tag>() { GameTags.Egg, GameTags.IncubatableEgg, GameTags.PedestalDisplayable };
+        public static HashSet<Tag> egg_tags = new() { GameTags.Egg, GameTags.IncubatableEgg, GameTags.PedestalDisplayable };
 
         /// Modifies existing critters and adds new ones, if ID is missing
         public static void ChangeCritters()

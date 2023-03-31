@@ -190,7 +190,7 @@ namespace CustomizePlants
     public static class PlantHelper
     {
         public static PropertyInfo _AttributeModifierValue = AccessTools.Property(typeof(AttributeModifier), "Value");
-        public static StandardCropPlant.AnimSet DecorAnim = new StandardCropPlant.AnimSet() { grow = "idle", grow_pst = "idle", harvest = "idle", idle_full = "idle", wilt_base = "wilt1" };   //wilt1, grow_seed
+        public static StandardCropPlant.AnimSet DecorAnim = new() { grow = "idle", grow_pst = "idle", harvest = "idle", idle_full = "idle", wilt_base = "wilt1" };   //wilt1, grow_seed
 
         public static void ProcessPlant(GameObject plant)
         {

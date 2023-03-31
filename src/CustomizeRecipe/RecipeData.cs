@@ -26,16 +26,17 @@ namespace CustomizeRecipe
             public string material;
             public float amount;
             [JsonConverter(typeof(StringEnumConverter))]
-            public TemperatureOperation? temperatureOperation;
+            public ComplexRecipe.RecipeElement.TemperatureOperation? temperatureOperation;
             public bool? storeElement;
             public bool? inheritElement;
 
             public RecipeElement() { }
 
-            public RecipeElement(string material, float amount)
+            public RecipeElement(string material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation? temperatureOperation = null)
             {
                 this.material = material;
                 this.amount = amount;
+                this.temperatureOperation = temperatureOperation;
             }
 
             public static implicit operator ComplexRecipe.RecipeElement(RecipeElement recipe)
@@ -44,7 +45,7 @@ namespace CustomizeRecipe
                 if (Assets.TryGetPrefab(material) == null) // note: this only works after Assets.CreatePrefabs(), which is the case here
                     material = SimHashes.Unobtanium.ToString();
 
-                return new ComplexRecipe.RecipeElement(material, recipe.amount, (ComplexRecipe.RecipeElement.TemperatureOperation)(recipe.temperatureOperation ?? 0), recipe.storeElement ?? material.ToElement()?.IsLiquid ?? false)
+                return new ComplexRecipe.RecipeElement(material, recipe.amount, recipe.temperatureOperation ?? 0, recipe.storeElement ?? material.ToElement()?.IsLiquid ?? false)
                 {
                     inheritElement = recipe.inheritElement ?? false
                 };
@@ -54,20 +55,13 @@ namespace CustomizeRecipe
             {
                 var result = new RecipeElement(recipe.material.ToString(), recipe.amount);
                 if (recipe.temperatureOperation != 0)
-                    result.temperatureOperation = (TemperatureOperation)recipe.temperatureOperation;
+                    result.temperatureOperation = recipe.temperatureOperation;
                 if (recipe.storeElement)
                     result.storeElement = true;
                 if (recipe.inheritElement)
                     result.inheritElement = true;
                 return result;
             }
-        }
-
-        public enum TemperatureOperation
-        {
-            AverageTemperature = 0,
-            Heated = 1,
-            Melted = 2
         }
 
         public RecipeData() { }
@@ -124,11 +118,11 @@ namespace CustomizeRecipe
             return this;
         }
 
-        public RecipeData Out(string material, float amount)
+        public RecipeData Out(string material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation? temperatureOperation = null)
         {
             if (this.Outputs == null)
                 this.Outputs = new List<RecipeElement>();
-            this.Outputs.Add(new RecipeElement(material, amount));
+            this.Outputs.Add(new RecipeElement(material, amount, temperatureOperation));
             return this;
         }
 
@@ -137,9 +131,9 @@ namespace CustomizeRecipe
             return In(material.ToString(), amount);
         }
 
-        public RecipeData Out(SimHashes material, float amount)
+        public RecipeData Out(SimHashes material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation? temperatureOperation = null)
         {
-            return Out(material.ToString(), amount);
+            return Out(material.ToString(), amount, temperatureOperation);
         }
 
         [JsonIgnore]

@@ -261,10 +261,10 @@ namespace CustomizeBuildings
         [MyCmpReq] private KSelectable selectable;
         [MyCmpReq] private Operational operational;
 #pragma warning restore
-        private static readonly Operational.Flag hotFlag = new Operational.Flag("TooHot", Operational.Flag.Type.Requirement);
+        private static readonly Operational.Flag hotFlag = new("TooHot", Operational.Flag.Type.Requirement);
         private const int radius = 2;
         private const float minimumCellMass = 0;
-        private List<int> monitorCells = new List<int>();
+        private List<int> monitorCells = new();
         #endregion
     }
 

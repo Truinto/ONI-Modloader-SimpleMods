@@ -42,7 +42,10 @@ namespace CustomizeRecipe
                 .Out(SimHashes.Lime, 25f).Out(SimHashes.SedimentaryRock, 10f),
             new RecipeData(null, RockCrusherConfig.ID, 40f, 0, 0, "Turns Regolith into Sand and Dirt.")
                 .In(SimHashes.Regolith, 100f)
-                .Out(SimHashes.Sand, 100f)
+                .Out(SimHashes.Sand, 100f),
+            new RecipeData(null, GlassForgeConfig.ID, 40f, 0, 0, "Extracts pure <link=\"LIQUIDPHOSPHORUS\">Phosphorus</link> from <link=\"PHOSPHORITE\">Phosphorite</link>.")
+                .In(SimHashes.Phosphorite, 100f)
+                .Out(SimHashes.LiquidPhosphorus, 100f, ComplexRecipe.RecipeElement.TemperatureOperation.Melted)
         };
 
         #region _implementation

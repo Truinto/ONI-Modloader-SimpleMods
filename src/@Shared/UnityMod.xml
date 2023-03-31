@@ -184,41 +184,6 @@
             Adds items to a list, which are not already in the list. Types can be different. Compares with Equal() of <typeparamref name="T2"/>.
             </summary>
         </member>
-        <member name="T:Shared.Logger">
-            <summary>
-            Methods to print to standard output.
-            </summary>
-        </member>
-        <member name="M:Shared.Logger.PrintDebug(System.String,System.String)">
-            <summary>
-            Only prints in DEBUG.
-            </summary>
-        </member>
-        <member name="M:Shared.Logger.Print(System.String)">
-            <summary>
-            Prints to standard output.
-            </summary>
-        </member>
-        <member name="M:Shared.Logger.PrintWarning(System.String,System.String)">
-            <summary>
-            Prints to standard output.
-            </summary>
-        </member>
-        <member name="M:Shared.Logger.PrintError(System.String,System.String)">
-            <summary>
-            Prints to standard output.
-            </summary>
-        </member>
-        <member name="M:Shared.Logger.PrintException(System.Exception)">
-            <summary>
-            Prints to standard output.
-            </summary>
-        </member>
-        <member name="T:Shared.SerializationTool">
-            <summary>
-            Tool to handle (de-)serialization.
-            </summary>
-        </member>
         <member name="T:Shared.BaseSettings`1">
             <summary>
             Inherit this class in your settings class. Implements basic load/save functions.
@@ -281,6 +246,15 @@
             <summary>
             Tool to automate transpiler modifications.
             </summary>
+        </member>
+        <member name="F:Shared.TranspilerTool.BindingAll">
+            <summary></summary>
+        </member>
+        <member name="F:Shared.TranspilerTool.BindingInstance">
+            <summary></summary>
+        </member>
+        <member name="F:Shared.TranspilerTool.BindingStatic">
+            <summary></summary>
         </member>
         <member name="F:Shared.TranspilerTool.Index">
             <summary>Index of the currently selected line. 'Index' usually refers to this variable.</summary>
@@ -463,7 +437,8 @@
         <member name="M:Shared.TranspilerTool.InsertBefore(System.Delegate)">
             <summary>
             Injects call. Increments index (still pointing to the same code). <br/>
-            Delegate may return void. Otherwise the first parameter is taken from the stack and replaced with the return value.
+            Delegate may return void. Otherwise the <b>first parameter is taken from the stack and replaced with the return value</b>.<br/>
+            <b>[T] Function([T __stack], [object __instance], [object arg0], [object arg1...])</b>
             </summary>
             <param name="func"><b>[T] Function([T __stack], [object __instance], [object arg0], [object arg1...])</b></param>
             <remarks>
@@ -476,7 +451,8 @@
         <member name="M:Shared.TranspilerTool.InsertAfter(System.Delegate)">
             <summary>
             Injects call. Increments index (pointing to the new code). <br/>
-            Delegate may return void. Otherwise the first parameter is taken from the stack and replaced with the return value.
+            Delegate may return void. Otherwise the <b>first parameter is taken from the stack and replaced with the return value</b>.<br/>
+            <b>[T] Function([T __stack], [object __instance], [object arg0], [object arg1...])</b>
             </summary>
             <param name="func"><b>[T] Function([T __stack], [object __instance], [object arg0], [object arg1...])</b></param>
             <remarks>
@@ -489,7 +465,8 @@
         <member name="M:Shared.TranspilerTool.InsertReturn(System.Delegate,System.Boolean)">
             <summary>
             Injects return value. Returns original method, if returning false or void. If the original has a return value, then it must be supplied with __result. <br/>
-            This function will inject necessary load OpCodes.
+            This function will inject necessary load OpCodes.<br/>
+            <b>[bool] Function(T out __result, [object __instance], [object arg0], [object arg1...])</b>
             </summary>
             <param name="func"><b>[bool] Function(T out __result, [object __instance], [object arg0], [object arg1...])</b></param>
             <param name="before">If true will inject delegate before current line (still pointing to the same code). Otherwise after (pointing to the new code).</param>
@@ -503,7 +480,8 @@
         <member name="M:Shared.TranspilerTool.ReplaceCall(System.Delegate)">
             <summary>
             <b>Instance methods need their instance as the first parameter!</b><br/>
-            Replaces the current IL line with call. The delegate must return the replacement return type and must have the same parameters with identical names and order.
+            Replaces the current IL line with call. The delegate must return the replacement return type and <b>must have the same parameters with identical names and order</b>.<br/>
+            <b>object Function(object object_instance, object parameter0, object parameter1..., [object __instance], [object arg0], [object arg1...])</b>
             </summary>
             <param name="func"><b>object Function(object object_instance, object parameter0, object parameter1..., [object __instance], [object arg0], [object arg1...])</b></param>
             <remarks>
@@ -708,6 +686,11 @@
             Returns true, if operation must use dereference.
             </summary>
         </member>
+        <member name="M:Shared.TranspilerTool.GetCallers(System.Reflection.MethodInfo,System.String[],System.String[])">
+            <summary>
+            Untested. Returns all methods calling a particular method.
+            </summary>
+        </member>
         <member name="T:Shared.LabelInfo">
             <summary>
             Struct to hold Label and string.
@@ -787,6 +770,41 @@
         </member>
         <member name="M:Shared.LocalInfo.op_Implicit(Shared.LocalInfo)~System.Int32">
             <summary></summary>
+        </member>
+        <member name="T:Shared.SerializationTool">
+            <summary>
+            Tool to handle (de-)serialization.
+            </summary>
+        </member>
+        <member name="T:Shared.Logger">
+            <summary>
+            Methods to print to standard output.
+            </summary>
+        </member>
+        <member name="M:Shared.Logger.PrintDebug(System.String,System.String)">
+            <summary>
+            Only prints in DEBUG.
+            </summary>
+        </member>
+        <member name="M:Shared.Logger.Print(System.String)">
+            <summary>
+            Prints to standard output.
+            </summary>
+        </member>
+        <member name="M:Shared.Logger.PrintWarning(System.String,System.String)">
+            <summary>
+            Prints to standard output.
+            </summary>
+        </member>
+        <member name="M:Shared.Logger.PrintError(System.String,System.String)">
+            <summary>
+            Prints to standard output.
+            </summary>
+        </member>
+        <member name="M:Shared.Logger.PrintException(System.Exception)">
+            <summary>
+            Prints to standard output.
+            </summary>
         </member>
     </members>
 </doc>

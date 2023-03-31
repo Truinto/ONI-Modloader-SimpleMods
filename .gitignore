@@ -1,6 +1,6 @@
 non-public/
 /src/@Shared/General/ConsoleHelper.cs
-/src/@Shared/NetcoreProject*
+/src/@Shared/NetstandardProject*
 /src/@Shared/WinFormProject*
 
 ## Ignore Visual Studio temporary files, build results, and

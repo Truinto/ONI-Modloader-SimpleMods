@@ -10,11 +10,11 @@ namespace CustomizeGeyser
     public static class GeyserInfo
     {
         /// <summary>Reference to the geyser configs. Only after GeyserGenericConfig_GenerateConfigs.Postfix has executed.</summary>
-        public static List<GeyserGenericConfig.GeyserPrefabParams> Config;
+        public static List<GeyserGenericConfig.GeyserPrefabParams> Config = new();
 
         public static List<GeyserConfigurator.GeyserType> GeyserTypes = (List<GeyserConfigurator.GeyserType>)AccessTools.Field(typeof(GeyserConfigurator), "geyserTypes").GetValue(null);
 
-        public static List<string> IdsBaseGame = new List<string>();
+        public static List<string> IdsBaseGame = new();
 
         public static string ConvertGeyserId(this HashedString hash)
         {

@@ -10,7 +10,7 @@ namespace Config
     [HarmonyPatch(typeof(KMod.Manager), "Report")]
     public class PostBootDialog
     {
-        public static List<string> ErrorList = new List<string>();
+        public static List<string> ErrorList = new();
 
         public static string ToDialog(string log)
         {

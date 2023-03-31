@@ -58,7 +58,7 @@ namespace CarePackageMod
         public CarePackageContainer[] CarePackages { get; set; } = CarePackageList.GetPackages();
         #endregion
 
-        public static Config.Manager<CarePackageState> StateManager = new Config.Manager<CarePackageState>(Config.PathHelper.CreatePath("Care Package Manager"), true, UpdateFunction);
+        public static Config.Manager<CarePackageState> StateManager = new(Config.PathHelper.CreatePath("Care Package Manager"), true, UpdateFunction);
 
         public static bool UpdateFunction(CarePackageState state)
         {

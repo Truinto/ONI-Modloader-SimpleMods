@@ -16,12 +16,12 @@ namespace CustomizeBuildings
 
         public static bool Prefix(ref bool __result, SolidTransferArm __instance, KPrefabID prefabID, int storage_cell)
         {
-            __result = !prefabID.HasAnyTags(ref tagsCreatures) && __instance.IsCellReachable(storage_cell);
+            __result = !prefabID.HasAnyTags(tagsCreatures) && __instance.IsCellReachable(storage_cell);
 
             return false;
         }
 
-        public static TagBits tagsCreatures = new TagBits(new Tag[] { GameTags.BagableCreature, GameTags.SwimmingCreature });
+        public static Tag[] tagsCreatures = { GameTags.BagableCreature, GameTags.SwimmingCreature };
     }
 
     [HarmonyPatch(typeof(SolidTransferArm), "OnPrefabInit")]

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.4.0]  U45-546664-S
+- new default recipe
+
 ## [1.0.3.0] U44-535842-S
 - fixed buildings so they don't force store outputs (affects GlassForge and UraniumCentrifuge)
 - recipes with missing storeElement property will default to true, if the element is liquid

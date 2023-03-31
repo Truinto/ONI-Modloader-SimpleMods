@@ -8,7 +8,7 @@ namespace versioncontrol_ONI
 {
     public class MDConvert
     {
-        public static Regex RegexURL = new Regex(@"\[\*\*(.*?)\*\*\]\((.*?)\)", RegexOptions.Compiled);
+        public static Regex RegexURL = new(@"\[\*\*(.*?)\*\*\]\((.*?)\)", RegexOptions.Compiled);
 
         public static void Convert(string path)
         {
