@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.40.0] U46-550759-S
+- fix disease settings
+
 ## [1.0.39.0] U44-535842-S
 - updated
 

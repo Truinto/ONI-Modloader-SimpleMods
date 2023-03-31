@@ -529,9 +529,11 @@ namespace CustomizePlants
                 if (setting.disease != null)
                     def.diseaseIdx = Db.Get().Diseases.GetIndex(setting.disease);
                 if (setting.disease_amount != null)
+                    def.averageEmitPerSecond = (int)setting.disease_amount;
+                if (setting.disease_once != null)
                     def.singleEmitQuantity = (int)setting.disease_amount;
 
-                if (def.diseaseIdx == byte.MaxValue || def.singleEmitQuantity == 0)
+                if (def.diseaseIdx == byte.MaxValue || (def.averageEmitPerSecond == 0 && def.singleEmitQuantity == 0))
                     Common.Helpers.RemoveDef(plant, def);
             }
             #endregion
