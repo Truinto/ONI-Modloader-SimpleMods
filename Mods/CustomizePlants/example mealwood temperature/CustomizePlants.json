@@ -1,0 +1,640 @@
+{
+  "version": 33,
+  "PlantSettings": [
+    {
+      "id": "BasicSingleHarvestPlant",
+      "fruitId": "BasicPlantFood",
+      "fruit_grow_time": 1800.0,
+      "fruit_amount": 1,
+      "irrigation": {
+        "Dirt": 10.000001
+      },
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide",
+        "Hydrogen"
+      ],
+      "temperatures": [
+        218.15,
+        268.15,
+        373.15,
+        473.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "SeaLettuce",
+      "fruitId": "Lettuce",
+      "fruit_grow_time": 7200.0,
+      "fruit_amount": 12,
+      "irrigation": {
+        "SaltWater": 5.00000048,
+        "BleachStone": 0.5
+      },
+      "safe_elements": [
+        "Water",
+        "SaltWater",
+        "Brine"
+      ],
+      "temperatures": [
+        248.15,
+        295.15,
+        338.15,
+        398.15
+      ]
+    },
+    {
+      "id": "BasicFabricPlant",
+      "fruitId": "BasicFabric",
+      "fruit_grow_time": 1200.0,
+      "fruit_amount": 1,
+      "irrigation": {
+        "DirtyWater": 160.000015
+      },
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide",
+        "DirtyWater",
+        "Water"
+      ],
+      "temperatures": [
+        248.15,
+        295.15,
+        310.15,
+        398.15
+      ]
+    },
+    {
+      "id": "BeanPlant",
+      "fruitId": "BeanPlantSeed",
+      "fruit_grow_time": 12600.0,
+      "fruit_amount": 12,
+      "irrigation": {
+        "Ethanol": 20.0000019,
+        "Dirt": 5.00000048
+      },
+      "safe_elements": [
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        198.15,
+        248.15,
+        273.15,
+        323.15
+      ],
+      "pressures": [
+        0.0,
+        0.025,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "BulbPlant",
+      "irrigation": {},
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        288.0,
+        293.15,
+        313.15,
+        333.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "CactusPlant",
+      "irrigation": {},
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        200.0,
+        273.15,
+        373.15,
+        400.0
+      ]
+    },
+    {
+      "id": "ColdWheat",
+      "fruitId": "ColdWheatSeed",
+      "fruit_grow_time": 10800.0,
+      "fruit_amount": 18,
+      "irrigation": {
+        "Water": 20.0000019,
+        "Dirt": 5.00000048
+      },
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        118.149994,
+        218.15,
+        278.15,
+        358.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "EvilFlower",
+      "irrigation": {},
+      "safe_elements": [
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        168.15,
+        258.15,
+        513.15,
+        563.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "ForestTreeBranch",
+      "fruitId": "WoodLog",
+      "fruit_grow_time": 2700.0,
+      "fruit_amount": 300,
+      "irrigation": {},
+      "safe_elements": [],
+      "temperatures": [
+        258.15,
+        288.15,
+        313.15,
+        448.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "ForestTree",
+      "fruitId": "WoodLog",
+      "fruit_grow_time": 2700.0,
+      "fruit_amount": 300,
+      "irrigation": {
+        "DirtyWater": 70.0,
+        "Dirt": 10.000001
+      },
+      "safe_elements": [],
+      "temperatures": [
+        258.15,
+        288.15,
+        313.15,
+        448.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "GasGrass",
+      "fruitId": "GasGrassHarvested",
+      "fruit_grow_time": 2400.0,
+      "fruit_amount": 1,
+      "irrigation": {
+        "Chlorine": 0.5
+      },
+      "safe_elements": [],
+      "temperatures": [
+        218.15,
+        0.0,
+        348.15,
+        373.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "LeafyPlant",
+      "irrigation": {},
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide",
+        "ChlorineGas",
+        "Hydrogen"
+      ],
+      "temperatures": [
+        288.0,
+        293.15,
+        323.15,
+        373.0
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "MushroomPlant",
+      "fruitId": "Mushroom",
+      "fruit_grow_time": 4500.0,
+      "fruit_amount": 1,
+      "irrigation": {
+        "SlimeMold": 4.0
+      },
+      "safe_elements": [
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        228.15,
+        278.15,
+        308.15,
+        398.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "PrickleFlower",
+      "fruitId": "PrickleFruit",
+      "fruit_grow_time": 3600.0,
+      "fruit_amount": 1,
+      "irrigation": {
+        "Water": 20.0000019
+      },
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        218.15,
+        278.15,
+        303.15,
+        398.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "PrickleGrass",
+      "irrigation": {},
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        218.15,
+        283.15,
+        303.15,
+        398.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "SaltPlant",
+      "fruitId": "Salt",
+      "fruit_grow_time": 3600.0,
+      "fruit_amount": 65,
+      "irrigation": {
+        "Sand": 7.0
+      },
+      "safe_elements": [
+        "ChlorineGas"
+      ],
+      "temperatures": [
+        198.15,
+        248.15,
+        323.15,
+        393.15
+      ],
+      "pressures": [
+        0.0,
+        0.025,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "SpiceVine",
+      "fruitId": "SpiceNut",
+      "fruit_grow_time": 4800.0,
+      "fruit_amount": 4,
+      "irrigation": {
+        "DirtyWater": 35.0,
+        "Phosphorite": 1.0
+      },
+      "safe_elements": [],
+      "temperatures": [
+        258.15,
+        308.15,
+        358.15,
+        448.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "SwampLily",
+      "fruitId": "SwampLilyFlower",
+      "fruit_grow_time": 7200.0,
+      "fruit_amount": 2,
+      "irrigation": {},
+      "safe_elements": [
+        "ChlorineGas"
+      ],
+      "temperatures": [
+        258.15,
+        308.15,
+        358.15,
+        448.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "ColdBreather",
+      "irrigation": {
+        "Phosphorite": 4.0
+      },
+      "temperatures": [
+        183.15,
+        213.15,
+        368.15,
+        463.15
+      ]
+    },
+    {
+      "id": "Oxyfern",
+      "irrigation": {
+        "Water": 19.0,
+        "Dirt": 4.0
+      },
+      "safe_elements": [
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        253.15,
+        273.15,
+        313.15,
+        373.15
+      ],
+      "pressures": [
+        0.0,
+        0.025,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "SuperWormPlant",
+      "fruitId": "WormSuperFruit",
+      "fruit_grow_time": 4800.0,
+      "fruit_amount": 8,
+      "irrigation": {
+        "Sulfur": 10.000001
+      },
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        273.15,
+        288.15,
+        323.15,
+        373.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "WormPlant",
+      "fruitId": "WormBasicFruit",
+      "fruit_grow_time": 2400.0,
+      "fruit_amount": 1,
+      "irrigation": {
+        "Sulfur": 10.000001
+      },
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        273.15,
+        288.15,
+        323.15,
+        373.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "SwampHarvestPlant",
+      "fruitId": "SwampFruit",
+      "fruit_grow_time": 3960.0,
+      "fruit_amount": 1,
+      "irrigation": {
+        "DirtyWater": 40.0000038
+      },
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        218.15,
+        283.15,
+        303.15,
+        398.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "ToePlant",
+      "irrigation": {},
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        173.0,
+        183.0,
+        273.0,
+        283.0
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "WineCups",
+      "irrigation": {},
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        218.15,
+        283.15,
+        303.15,
+        398.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "CritterTrapPlant",
+      "fruitId": "PlantMeat",
+      "fruit_grow_time": 18000.0,
+      "fruit_amount": 10,
+      "irrigation": {
+        "DirtyWater": 10.000001
+      },
+      "safe_elements": [],
+      "temperatures": [
+        173.0,
+        183.0,
+        273.0,
+        283.0
+      ]
+    },
+    {
+      "id": "Cylindrica",
+      "irrigation": {},
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide"
+      ],
+      "temperatures": [
+        288.15,
+        293.15,
+        323.15,
+        373.15
+      ],
+      "pressures": [
+        0.0,
+        0.15,
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "FilterPlant",
+      "fruitId": "Water",
+      "fruit_grow_time": 6000.0,
+      "fruit_amount": 350,
+      "irrigation": {
+        "DirtyWater": 65.0,
+        "Sand": 5.00000048
+      },
+      "safe_elements": [
+        "Oxygen"
+      ],
+      "temperatures": [
+        253.15,
+        293.15,
+        383.15,
+        443.15
+      ],
+      "pressures": [
+        0.0,
+        0.025,
+        10.0,
+        30.0
+      ]
+    }
+  ],
+  "SpecialCropSettings": {},
+  "print_mutations": false,
+  "MutationSettings": [],
+  "MutantPlantsDropSeeds": false,
+  "SeedsGoIntoAnyFlowerPots": false,
+  "WheezewortTempDelta": -5.0,
+  "OxyfernOxygenPerSecond": 0.03125,
+  "CheatMutationAnalyze": false,
+  "CheatFlowerVase": false,
+  "WildFlowerVase": false,
+  "ApplyBugFixes": true,
+  "AutomaticallyAddModPlants": false,
+  "IgnoreList": [],
+  "ModPlants": []
+}
