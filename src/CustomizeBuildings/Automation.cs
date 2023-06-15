@@ -6,7 +6,7 @@ using System.Linq;
 namespace CustomizeBuildings
 {
     #region Autosweeper
-    [HarmonyPatch(typeof(SolidTransferArm), "IsPickupableRelevantToMyInterests")]
+    [HarmonyPatch(typeof(SolidTransferArm), nameof(SolidTransferArm.IsPickupableRelevantToMyInterests))]
     public class SolidTransferarm_MoveAnything
     {
         public static bool Prepare()
@@ -24,13 +24,9 @@ namespace CustomizeBuildings
         public static Tag[] tagsCreatures = { GameTags.BagableCreature, GameTags.SwimmingCreature };
     }
 
-    [HarmonyPatch(typeof(SolidTransferArm), "OnPrefabInit")]
+    [HarmonyPatch(typeof(SolidTransferArm), nameof(SolidTransferArm.OnPrefabInit))]
     public class SolidTransferArm_OnPrefabInit
     {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.AutoSweeperCapacity != 1000f;
-        }
         public static void Prefix(ref float ___max_carry_weight)
         {
             ___max_carry_weight = CustomizeBuildingsState.StateManager.State.AutoSweeperCapacity;
@@ -38,20 +34,16 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(SolidTransferArmConfig), "DoPostConfigureComplete")]
+    [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.DoPostConfigureComplete))]
     internal class SolidTransferArmConfig_DoPostConfigureComplete
     {
-        private static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.AutoSweeperRange != 4;
-        }
         private static void Postfix(GameObject go)
         {
             go.AddOrGet<SolidTransferArm>().pickupRange = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
         }
     }
 
-    [HarmonyPatch(typeof(SolidTransferArmConfig), "DoPostConfigureComplete")]
+    [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.DoPostConfigureComplete))]
     internal class SolidTransferArmConfig_DoPostConfigureComplete2
     {
         private static bool Prepare()
@@ -60,33 +52,29 @@ namespace CustomizeBuildings
         }
         private static void Postfix(GameObject go)
         {
-            go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
+            go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange * 2;
         }
     }
 
-    [HarmonyPatch(typeof(SolidTransferArmConfig), "AddVisualizer")]
+    [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.AddVisualizer))]
     internal class SolidTransferArmConfig_AddVisualizer
     {
-        private static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.AutoSweeperRange != 4;
-        }
         private static bool Prefix(GameObject prefab, bool movable)
         {
             int range = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
-            StationaryChoreRangeVisualizer choreRangeVisualizer = prefab.AddOrGet<StationaryChoreRangeVisualizer>();
-            choreRangeVisualizer.x = -range;
-            choreRangeVisualizer.y = -range;
-            choreRangeVisualizer.width = range * 2 + 1;
-            choreRangeVisualizer.height = range * 2 + 1;
-            choreRangeVisualizer.movable = movable;
+            RangeVisualizer rangeVisualizer = prefab.AddOrGet<RangeVisualizer>();
+            rangeVisualizer.RangeMin.x = -range;
+            rangeVisualizer.RangeMin.y = -range;
+            rangeVisualizer.RangeMax.x = range;
+            rangeVisualizer.RangeMax.y = range;
+            rangeVisualizer.BlockingTileVisible = true;
             return false;
         }
     }
     #endregion
 
     #region Robominer
-    [HarmonyPatch(typeof(AutoMinerConfig), "DoPostConfigureComplete")]
+    [HarmonyPatch(typeof(AutoMinerConfig), nameof(AutoMinerConfig.DoPostConfigureComplete))]
     public class AutoMinerConfig_OnPrefabInit
     {
         public static bool Prepare()
@@ -110,7 +98,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(AutoMinerConfig), "AddVisualizer")]
+    [HarmonyPatch(typeof(AutoMinerConfig), nameof(AutoMinerConfig.AddVisualizer))]
     public class AutoMinerConfig_AddVisualizer
     {
         public static bool Prepare()
@@ -125,13 +113,14 @@ namespace CustomizeBuildings
             int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
             int offset = CustomizeBuildingsState.StateManager.State.RoboMinerOffset;
 
-            StationaryChoreRangeVisualizer choreRangeVisualizer = prefab.GetComponent<StationaryChoreRangeVisualizer>();
-            if (choreRangeVisualizer != null)
+            RangeVisualizer rangeVisualizer = prefab.GetComponent<RangeVisualizer>();
+            if (rangeVisualizer != null)
             {
-                choreRangeVisualizer.x = 1 - (width / 2);
-                choreRangeVisualizer.y = offset;
-                choreRangeVisualizer.width = width;
-                choreRangeVisualizer.height = height;
+                rangeVisualizer.RangeMin.x = 1 - (width / 2);
+                rangeVisualizer.RangeMin.y = 3 - (height / 2) + offset;
+                rangeVisualizer.RangeMax.x = (width / 2);
+                rangeVisualizer.RangeMax.y = 3 + (height / 2) + offset;
+
                 //choreRangeVisualizer.vision_offset = new CellOffset(0, 1);
                 //choreRangeVisualizer.movable = movable;
                 //choreRangeVisualizer.blocking_tile_visible = false;
@@ -139,7 +128,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(AutoMiner), "DigBlockingCB")]
+    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
     public class AutoMiner_DigBlockingCB
     {
         public static bool Prepare()
@@ -159,7 +148,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(AutoMiner), "ValidDigCell")]
+    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.ValidDigCell))]
     public class AutoMiner_ValidDigCell
     {
         public static bool Prepare()
@@ -180,7 +169,7 @@ namespace CustomizeBuildings
     }
 
 
-    [HarmonyPatch(typeof(AutoMiner), "UpdateDig")]
+    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.UpdateDig))]
     public class AutoMiner_UpdateDig
     {
         public static bool Prepare()
@@ -200,7 +189,7 @@ namespace CustomizeBuildings
     }
 
 
-    [HarmonyPatch(typeof(AutoMiner), "UpdateDig")]
+    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.UpdateDig))]
     public class AutoMiner_UpdateDig2
     {
         public static bool Prepare()

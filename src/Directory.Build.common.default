@@ -96,7 +96,7 @@
 			<_CopyItems Include="$(TargetDir)\*" />
 		</ItemGroup>
 		
-		<Message Condition="$(DefineConstants.Contains('MERGE'))" Text="Merging PLibOptions..." Importance="High" />
+		<Message Text="Merging PLibOptions..." Importance="High" />
 		<ILRepack Union="true" LibraryPath="$(GameManaged)" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" />
 		<!--<ILMerge Condition="$(DefineConstants.Contains('MERGE'))" ToolPath="packages\ilmerge.2.13.0307" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" SearchDirectories="$(GameManaged)" />-->
 		<Sleep Milliseconds="1000" />

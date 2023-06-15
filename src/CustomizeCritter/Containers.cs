@@ -356,7 +356,7 @@ namespace CustomizeCritter
             //is fish
             if (go.HasTag(GameTags.SwimmingCreature))
             {
-                Add(new FallStates.Def { getLandAnim = new Func<FallStates.Instance, string>(GetLandAnim) });
+                Add(new FallStates.Def() { getLandAnim = new Func<FallStates.Instance, string>(GetLandAnim) });
                 Add(new FlopStates.Def());
                 Add(new FixedCaptureStates.Def());
             }
@@ -420,11 +420,11 @@ namespace CustomizeCritter
             Tag species = go.GetComponent<CreatureBrain>().species;
 
             if (species == GameTags.Creatures.Species.MooSpecies || species == GameTags.Creatures.Species.PuftSpecies)
-                Add(new IdleStates.Def { customIdleAnim = new IdleStates.Def.IdleAnimCallback(CustomIdleAnim_Moo_Puft) });
+                Add(new IdleStates.Def() { customIdleAnim = new IdleStates.Def.IdleAnimCallback(CustomIdleAnim_Moo_Puft) });
             else if (species == GameTags.Creatures.Species.DreckoSpecies)
-                Add(new IdleStates.Def { customIdleAnim = new IdleStates.Def.IdleAnimCallback(CustomIdleAnim_Drecko) });
+                Add(new IdleStates.Def() { customIdleAnim = new IdleStates.Def.IdleAnimCallback(CustomIdleAnim_Drecko) });
             else if (species == GameTags.Creatures.Species.MoleSpecies)
-                Add(new IdleStates.Def { customIdleAnim = new IdleStates.Def.IdleAnimCallback(CustomIdleAnim_Mole) });
+                Add(new IdleStates.Def() { customIdleAnim = new IdleStates.Def.IdleAnimCallback(CustomIdleAnim_Mole) });
             else
                 Add(new IdleStates.Def());
 

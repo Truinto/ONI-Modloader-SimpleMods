@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.75.0] U47-561558-S
+- update
+- removed ScannerInterferenceRadius, ScannerWorstWarningTime, ScannerBestWarningTime, ScannerBestNetworkSize
+- added ScannerQualityMultiplier
+
 ## [1.0.74.0] U46-550759-S
 - update
 

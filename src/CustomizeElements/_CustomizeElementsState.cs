@@ -14,7 +14,7 @@ namespace CustomizeElements
 
         public List<ElementContainer> Elements { get; set; } = new List<ElementContainer>()
         {
-            new ElementContainer{ Id = "Oxygen", molarMass = 15.9f },
+            new ElementContainer() { Id = "Oxygen", molarMass = 15.9f },
             new ElementContainer("Aluminum", "BuildableAny", "Metal"),
             new ElementContainer("Copper", "BuildableAny", "Metal"),
             new ElementContainer("DepletedUranium", "BuildableAny", "Metal"),

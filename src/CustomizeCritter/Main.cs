@@ -454,7 +454,7 @@ namespace CustomizeCritter
                         float num = 0.5f * (float)((width + 1) % 2);
                         kboxCollider2D.offset = new Vector2f(num, (float)height / 2f);
                         go.GetComponent<KBatchedAnimController>().Offset = new Vector3(num, 0f, 0f);
-                        go.AddOrGet<OccupyArea>().OccupiedCellsOffsets = EntityTemplates.GenerateOffsets((int)Math.Round(width, 0), (int)Math.Round(height, 0));
+                        go.AddOrGet<OccupyArea>()._RotatedOccupiedCellsOffsets = EntityTemplates.GenerateOffsets((int)Math.Round(width, 0), (int)Math.Round(height, 0));
                     }
 
                 }

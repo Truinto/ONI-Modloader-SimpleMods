@@ -15,7 +15,7 @@ namespace CustomizeBuildings
         public int Min = 1;
         public LocString Unit = "";
         [MyCmpGet]
-        private StationaryChoreRangeVisualizer visualizer;
+        private RangeVisualizer visualizer;
         [MyCmpGet]
         private SolidTransferArm transferArm;
 
@@ -80,10 +80,10 @@ namespace CustomizeBuildings
             {
                 UserValue = Helpers.MinMax(Min, (int)value, Max);
                 transferArm.pickupRange = UserValue;
-                visualizer.x = -UserValue;
-                visualizer.y = -UserValue;
-                visualizer.width = UserValue * 2 + 1;
-                visualizer.height = visualizer.width;
+                visualizer.RangeMin.x = -UserValue;
+                visualizer.RangeMin.y = -UserValue;
+                visualizer.RangeMax.x = UserValue;
+                visualizer.RangeMax.y = UserValue;
             }
         }
 

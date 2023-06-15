@@ -7,23 +7,14 @@ using System.Collections.Generic;
 namespace CustomizeBuildings
 {
     [HarmonyPatch]
-    public class CometDetector_RerollAccuracy
+    public static class Comet_UpdateNetworkQualityFor
     {
-        [HarmonyPatch(typeof(CometDetector.Instance), "RerollAccuracy")]
+        [HarmonyPatch(typeof(SpaceScannerNetworkManager), nameof(SpaceScannerNetworkManager.CalcWorldNetworkQuality))]
         [HarmonyPostfix]
-        public static void Postfix1(DetectorNetwork.Def ___detectorNetworkDef)
+        public static void Postfix(ref float __result)
         {
-            if (___detectorNetworkDef == null) return;
-
-            ___detectorNetworkDef.interferenceRadius = Math.Max(1, CustomizeBuildingsState.StateManager.State.ScannerInterferenceRadius);
-            ___detectorNetworkDef.worstWarningTime = CustomizeBuildingsState.StateManager.State.ScannerWorstWarningTime;
-            ___detectorNetworkDef.bestWarningTime = CustomizeBuildingsState.StateManager.State.ScannerBestWarningTime;
-            ___detectorNetworkDef.bestNetworkSize = Math.Max(1, CustomizeBuildingsState.StateManager.State.ScannerBestNetworkSize);
+            __result *= CustomizeBuildingsState.StateManager.State.ScannerQualityMultiplier;
         }
-
-        [HarmonyPatch(typeof(ClusterCometDetector.Instance), "RerollAccuracy")]
-        [HarmonyPostfix]
-        public static void Postfix2(DetectorNetwork.Def ___detectorNetworkDef) => Postfix1(___detectorNetworkDef);
     }
 
     [HarmonyPatch(typeof(ClusterTelescopeConfig), nameof(ClusterTelescopeConfig.ConfigureBuildingTemplate))]

@@ -193,7 +193,7 @@ namespace CustomizeGeyser
         public bool RandomizerPopupGeyserDiscoveryInfo { get; set; } = true;
         public bool RandomizerHighlanderMode { get; set; } = false;
         public bool RandomizerHighlanderRetroactive { get; set; } = false;
-        public Dictionary<string, int> RNGTable { get; set; } = new Dictionary<string, int> {
+        public Dictionary<string, int> RNGTable { get; set; } = new Dictionary<string, int>() {
             { "steam", 1 },
             { "hot_steam", 1 },
             { "hot_water", 1 },

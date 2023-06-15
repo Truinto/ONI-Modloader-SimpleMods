@@ -73,10 +73,7 @@ namespace CustomizeBuildings
             StateManager.State.NoDupeSwitches = false;
             StateManager.State.NoDupeToogleBuildings = false;
             StateManager.State.NoDupeToogleDoors = false;
-            StateManager.State.ScannerInterferenceRadius = 15;
-            StateManager.State.ScannerWorstWarningTime = 1f;
-            StateManager.State.ScannerBestWarningTime = 200f;
-            StateManager.State.ScannerBestNetworkSize = 6;
+            StateManager.State.ScannerQualityMultiplier = 1f;
             StateManager.State.TelescopeClearCellRadius = 5;
             StateManager.State.TelescopeAnalyzeRadius = 3;
             StateManager.State.LadderCometInvincibility = false;
@@ -306,15 +303,10 @@ namespace CustomizeBuildings
         #endregion
 
         #region Space Scanner
-        [Option("CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_Title", "CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_ToolTip", "Space Scanner", "F1")]
-        public int ScannerInterferenceRadius { get; set; } = 5;
-        [Option("CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_Title", "CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_ToolTip", "Space Scanner", "F1")]
-        public float ScannerWorstWarningTime { get; set; } = 30f;
-        [Option("CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_Title", "CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_ToolTip", "Space Scanner", "F1")]
-        public float ScannerBestWarningTime { get; set; } = 60f;
-        [Option("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_Title", "CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_ToolTip", "Space Scanner")]
-        public int ScannerBestNetworkSize { get; set; } = 2;
-        [Option("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_Title", "CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_ToolTip", "Space Scanner")]
+        [Option("CustomizeBuildings.LOCSTRINGS.ScannerQualityMultiplier_Title", "CustomizeBuildings.LOCSTRINGS.ScannerQualityMultiplier_ToolTip", "Space Scanner", "F2")]
+        [Limit(0d, 10d)]
+        public float ScannerQualityMultiplier { get; set; } = 1.00f;
+
         public bool LadderCometInvincibility { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPlatformInvincibility_Title", "CustomizeBuildings.LOCSTRINGS.RocketPlatformInvincibility_ToolTip", "Space Scanner", null)]
         public bool RocketPlatformInvincibility { get; set; } = true;
@@ -743,6 +735,18 @@ namespace CustomizeBuildings
     {
         public static void LoadStrings()
         {
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_Title", "Scanner Interference Radius");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_ToolTip", "Radius looking for heavy machinery and free sky tiles.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_Title", "Scanner Worst Warning Time");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_ToolTip", "Worst time before a network will detect incoming meteors.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_Title", "Scanner Best Warning Time");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_ToolTip", "Best time before a network will detect incoming meteors.");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_Title", "Scanner Best Network Size");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_ToolTip", "Amount of scanners needed for best warning time.");
+
             #region 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.version", "version");
 
@@ -1103,21 +1107,9 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1.");
             #endregion
             #region Space Scanner
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerInterferenceRadius", "ScannerInterferenceRadius");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_Title", "Scanner Interference Radius");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerInterferenceRadius_ToolTip", "Radius looking for heavy machinery and free sky tiles.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerWorstWarningTime", "ScannerWorstWarningTime");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_Title", "Scanner Worst Warning Time");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerWorstWarningTime_ToolTip", "Worst time before a network will detect incoming meteors.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerBestWarningTime", "ScannerBestWarningTime");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_Title", "Scanner Best Warning Time");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestWarningTime_ToolTip", "Best time before a network will detect incoming meteors.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerBestNetworkSize", "ScannerBestNetworkSize");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_Title", "Scanner Best Network Size");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_ToolTip", "Amount of scanners needed for best warning time.");
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerQualityMultiplier", "ScannerQualityMultiplier");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerQualityMultiplier_Title", "Scanner Quality Multiplier");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerQualityMultiplier_ToolTip", "Multiplier to modify scanner results by. Values below 1 will worsen all scanner networks, while values above 1 will improvem them.");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LadderCometInvincibility", "LadderCometInvincibility");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LadderCometInvincibility_Title", "Ladder Comet Invincibility");
