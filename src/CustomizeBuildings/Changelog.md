@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.76.0] U47-562200-S
+- fixed autosweeper range doubling
+
 ## [1.0.75.0] U47-561558-S
 - update
 - removed ScannerInterferenceRadius, ScannerWorstWarningTime, ScannerBestWarningTime, ScannerBestNetworkSize

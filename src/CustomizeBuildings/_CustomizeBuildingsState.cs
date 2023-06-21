@@ -379,6 +379,7 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.AutoSweeperCapacity_Title", "CustomizeBuildings.LOCSTRINGS.AutoSweeperCapacity_ToolTip", "Auto Sweeper", "F0")]
         public float AutoSweeperCapacity { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.AutoSweeperRange_Title", "CustomizeBuildings.LOCSTRINGS.AutoSweeperRange_ToolTip", "Auto Sweeper")]
+        [Limit(0, 32)]
         public int AutoSweeperRange { get; set; } = 4;
         [Option("CustomizeBuildings.LOCSTRINGS.AutoSweeperSlider_Title", "CustomizeBuildings.LOCSTRINGS.AutoSweeperSlider_ToolTip", "Auto Sweeper")]
         public bool AutoSweeperSlider { get; set; } = true;

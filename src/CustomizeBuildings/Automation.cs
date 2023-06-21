@@ -52,7 +52,7 @@ namespace CustomizeBuildings
         }
         private static void Postfix(GameObject go)
         {
-            go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange * 2;
+            go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
         }
     }
 

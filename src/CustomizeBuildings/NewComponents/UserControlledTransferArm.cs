@@ -10,7 +10,7 @@ namespace CustomizeBuildings
     public class UserControlledTransferArm : KMonoBehaviour, IUserControlledCapacity
     {
         [Serialize]
-        public int UserValue = 99;
+        public int UserValue = 4;
         public int Max = 10;
         public int Min = 1;
         public LocString Unit = "";
