@@ -204,4 +204,49 @@ namespace CustomizeBuildings
     }
     #endregion
 
+    #region Drill Cone
+    [HarmonyPatch]
+    public static class DrillCone_Consumption1
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.DrillConeConsumption != 0.05f;
+        }
+
+        [HarmonyPatch(typeof(ResourceHarvestModule.StatesInstance), nameof(ResourceHarvestModule.StatesInstance.ConsumeDiamond))]
+        [HarmonyPrefix]
+        public static void Prefix1(ref float amount)
+        {
+            amount = amount / 0.05f * CustomizeBuildingsState.StateManager.State.DrillConeConsumption;
+        }
+
+        [HarmonyPatch(typeof(ResourceHarvestModule.StatesInstance), nameof(ResourceHarvestModule.StatesInstance.GetMaxExtractKGFromDiamondAvailable))]
+        [HarmonyPostfix]
+        public static void Postfix2(ref float __result)
+        {
+            var con = CustomizeBuildingsState.StateManager.State.DrillConeConsumption;
+            __result = con == 0f ? float.PositiveInfinity : __result * 0.05f / con;
+        }
+    }
+
+    public class DrillCone_Speed : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == NoseconeHarvestConfig.ID && CustomizeBuildingsState.StateManager.State.DrillConeSpeed != 7.5f;
+        }
+
+        public void Edit(BuildingDef def)
+        {
+            def.BuildingComplete.GetDef<ResourceHarvestModule.Def>().harvestSpeed = CustomizeBuildingsState.StateManager.State.DrillConeSpeed;
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            // 2700f * 10f / 3600f = 7.5f
+            def.BuildingComplete.GetDef<ResourceHarvestModule.Def>().harvestSpeed 
+                = TUNING.ROCKETRY.SOLID_CARGO_BAY_CLUSTER_CAPACITY * TUNING.ROCKETRY.CARGO_CAPACITY_SCALE / new NoseconeHarvestConfig().timeToFill; 
+        }
+    }
+    #endregion
 }

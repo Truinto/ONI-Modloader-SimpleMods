@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.77.0] U47-562200-S
+- added new option group "Drill Cone"
+- added DrillConeConsumption
+- added DrillConeSpeed
+
 ## [1.0.76.0] U47-562200-S
 - fixed autosweeper range doubling
 

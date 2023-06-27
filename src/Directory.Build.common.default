@@ -70,7 +70,7 @@
 	</ItemGroup>
 
 	<!-- Publicize -->
-	<Target Name="Publicize" BeforeTargets="PreBuildEvent" AfterTargets="">
+	<Target Name="Publicize" BeforeTargets="PreBuildEvent;Clean" AfterTargets="">
 		<ItemGroup>
 			<PublicizeInput Include="$(GameManaged)\Assembly-CSharp.dll" />
 			<PublicizeInput Include="$(GameManaged)\Assembly-CSharp-firstpass.dll" />

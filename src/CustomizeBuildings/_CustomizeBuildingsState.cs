@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 52;
+        public int version { get; set; } = 53;
 
         #region $Reset Button
         [JsonIgnore]
@@ -115,6 +115,8 @@ namespace CustomizeBuildings
             StateManager.State.RoboMinerRegolithTurbo = false;
             StateManager.State.RoboMinerDigThroughGlass = false;
             StateManager.State.RoboMinerDigAnyTile = false;
+            StateManager.State.DrillConeConsumption = 0.05f;
+            StateManager.State.DrillConeSpeed = 7.5f;
             StateManager.State.WireSmallWatts = 1000;
             StateManager.State.WireRefinedWatts = 2000;
             StateManager.State.WireHeavyWatts = 20000;
@@ -234,8 +236,6 @@ namespace CustomizeBuildings
         public bool ReservoirManualDelivery { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "Storage", "F0")]
         public float RailgunMaxLaunch { get; set; } = 200f;
-        [Option("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "Storage", "F0")]
-        public float DrillConeKG { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortGas_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortGas_ToolTip", "Storage", "F0")]
         public float RocketPortGas { get; set; } = 1f;
         [Option("CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_Title", "CustomizeBuildings.LOCSTRINGS.RocketPortLiquid_ToolTip", "Storage", "F0")]
@@ -402,6 +402,17 @@ namespace CustomizeBuildings
         public bool RoboMinerDigThroughGlass { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.RoboMinerDigAnyTile_Title", "CustomizeBuildings.LOCSTRINGS.RoboMinerDigAnyTile_ToolTip", "Robo Miner")]
         public bool RoboMinerDigAnyTile { get; set; } = true;
+        #endregion
+
+        #region Drill Cone
+        [Option("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "Drill Cone", "F0")]
+        public float DrillConeKG { get; set; } = 1000f;
+        [Option("CustomizeBuildings.LOCSTRINGS.DrillConeConsumption_Title", "CustomizeBuildings.LOCSTRINGS.DrillConeConsumption_ToolTip", "Drill Cone", "F2")]
+        [Limit(0, 0.1)]
+        public float DrillConeConsumption { get; set; } = 0.05f;
+        [Option("CustomizeBuildings.LOCSTRINGS.DrillConeSpeed_Title", "CustomizeBuildings.LOCSTRINGS.DrillConeSpeed_ToolTip", "Drill Cone", "F1")]
+        [Limit(0.1, 100)]
+        public float DrillConeSpeed { get; set; } = 7.5f;
         #endregion
 
         #region Power Cable
@@ -797,6 +808,19 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AutoSweeperPickupAnything", "AutoSweeperPickupAnything");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperPickupAnything_Title", "Auto Sweeper Pickup Anything");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AutoSweeperPickupAnything_ToolTip", "If true, Auto Sweeper can move/store anything that dupes can.");
+            #endregion
+            #region Drill Cone
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.DrillConeKG", "DrillConeKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "Drillcone Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.DrillConeConsumption", "DrillConeConsumption");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeConsumption_Title", "Drillcone Consumption");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeConsumption_ToolTip", "Drillcone consumption of diamond in kg per kg of material. Default: 0.05");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.DrillConeSpeed", "DrillConeSpeed");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeSpeed_Title", "Drillcone Speed");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeSpeed_ToolTip", "Drillcone harvest speed in kg/s. Default: 7.5");
             #endregion
             #region Miscellaneous
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ElectrolizerMaxPressure", "ElectrolizerMaxPressure");
@@ -1237,10 +1261,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RailgunMaxLaunch", "RailgunMaxLaunch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_Title", "Railgun Max Launch");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RailgunMaxLaunch_ToolTip", "How much material can be send per launch. Storage is at least twice at much.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.DrillConeKG", "DrillConeKG");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_Title", "Drillcone Capacity");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.DrillConeKG_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.RocketPortGas", "RocketPortGas");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.RocketPortGas_Title", "Rocket Port Gas Capacity");
