@@ -65,6 +65,8 @@
 
 	<!-- Other Files -->
 	<ItemGroup>
+		<GlobalAnalyzerConfigFiles Include="$(SolutionDir)\@Shared\.globalconfiguration" Link=".globalconfiguration" />
+		
 		<None Remove="$(ProjectDir)_MERGE" />
 		<None Update="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>

@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using Common;
 
 namespace CustomizeBuildings
 {
@@ -62,6 +63,13 @@ namespace CustomizeBuildings
         private static bool Prefix(GameObject prefab, bool movable)
         {
             int range = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
+
+            if (range > 20)
+            {
+                prefab.RemoveComponent<RangeVisualizer>();
+                return false;
+            }
+
             RangeVisualizer rangeVisualizer = prefab.AddOrGet<RangeVisualizer>();
             rangeVisualizer.RangeMin.x = -range;
             rangeVisualizer.RangeMin.y = -range;
@@ -107,11 +115,17 @@ namespace CustomizeBuildings
                 || CustomizeBuildingsState.StateManager.State.RoboMinerHeight != 9
                 || CustomizeBuildingsState.StateManager.State.RoboMinerOffset != 0;
         }
-        public static void Postfix(GameObject prefab, bool movable)
+        public static void Postfix(GameObject prefab)
         {
             int width = CustomizeBuildingsState.StateManager.State.RoboMinerWidth;
             int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
             int offset = CustomizeBuildingsState.StateManager.State.RoboMinerOffset;
+
+            if (width * height > 300)
+            {
+                prefab.RemoveComponent<RangeVisualizer>();
+                return;
+            }
 
             RangeVisualizer rangeVisualizer = prefab.GetComponent<RangeVisualizer>();
             if (rangeVisualizer != null)
@@ -140,7 +154,9 @@ namespace CustomizeBuildings
         {
             try
             {
-                __result = (Grid.Foundation[cell] && !Grid.Transparent[cell] || !CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass) || Grid.Element[cell].hardness >= (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile ? (byte)255 : (byte)150);
+                __result = Grid.Foundation[cell] && Grid.Solid[cell]
+                    //|| Grid.Transparent[cell] || CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass
+                    || Grid.Element[cell].hardness >= (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile ? 255 : 150);
                 return false;
             }
             catch (Exception) { }
@@ -160,7 +176,7 @@ namespace CustomizeBuildings
         {
             try
             {
-                __result = Grid.Solid[cell] && !Grid.Foundation[cell] && Grid.Element[cell].hardness < (byte)255;
+                __result = Grid.Solid[cell] && !Grid.Foundation[cell] && Grid.Element[cell].hardness < 255;
                 return false;
             }
             catch (Exception) { }

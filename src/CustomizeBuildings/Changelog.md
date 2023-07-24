@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.78.0] U47-562984-S
+- disabled AutoMiner visualizer if area is greater than 300 tiles and AutoSweeper if reach is greater than 20
+- added Automatable to reservoir, which can toggle whenever dupes can store material in them
+
 ## [1.0.77.0] U47-562200-S
 - added new option group "Drill Cone"
 - added DrillConeConsumption
