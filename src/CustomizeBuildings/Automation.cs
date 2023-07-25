@@ -64,11 +64,8 @@ namespace CustomizeBuildings
         {
             int range = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
 
-            if (range > 20)
-            {
-                prefab.RemoveComponent<RangeVisualizer>();
-                return false;
-            }
+            if (range > 30)
+                range = 1;
 
             RangeVisualizer rangeVisualizer = prefab.AddOrGet<RangeVisualizer>();
             rangeVisualizer.RangeMin.x = -range;
@@ -121,15 +118,15 @@ namespace CustomizeBuildings
             int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
             int offset = CustomizeBuildingsState.StateManager.State.RoboMinerOffset;
 
-            if (width * height > 300)
-            {
-                prefab.RemoveComponent<RangeVisualizer>();
-                return;
-            }
-
             RangeVisualizer rangeVisualizer = prefab.GetComponent<RangeVisualizer>();
             if (rangeVisualizer != null)
             {
+                if (width * height > 400)
+                {
+                    width = 1;
+                    height = 1;
+                }
+
                 rangeVisualizer.RangeMin.x = 1 - (width / 2);
                 rangeVisualizer.RangeMin.y = 3 - (height / 2) + offset;
                 rangeVisualizer.RangeMax.x = (width / 2);
@@ -260,8 +257,8 @@ namespace CustomizeBuildings
         public void Undo(BuildingDef def)
         {
             // 2700f * 10f / 3600f = 7.5f
-            def.BuildingComplete.GetDef<ResourceHarvestModule.Def>().harvestSpeed 
-                = TUNING.ROCKETRY.SOLID_CARGO_BAY_CLUSTER_CAPACITY * TUNING.ROCKETRY.CARGO_CAPACITY_SCALE / new NoseconeHarvestConfig().timeToFill; 
+            def.BuildingComplete.GetDef<ResourceHarvestModule.Def>().harvestSpeed
+                = TUNING.ROCKETRY.SOLID_CARGO_BAY_CLUSTER_CAPACITY * TUNING.ROCKETRY.CARGO_CAPACITY_SCALE / new NoseconeHarvestConfig().timeToFill;
         }
     }
     #endregion

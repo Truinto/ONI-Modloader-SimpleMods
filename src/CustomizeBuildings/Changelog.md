@@ -1,8 +1,12 @@
 # Changelog
 
+## [1.0.79.0] U47-562984-S
+- fixed crash; visualizer will display a single tile instead of being removed
+
 ## [1.0.78.0] U47-562984-S
 - disabled AutoMiner visualizer if area is greater than 300 tiles and AutoSweeper if reach is greater than 20
-- added Automatable to reservoir, which can toggle whenever dupes can store material in them
+- added Automatable to reservoir, which can toggle whenever dupes can access material in them
+- added button to disallow removal from reservoir (disabled Automatable supersedes this)
 
 ## [1.0.77.0] U47-562200-S
 - added new option group "Drill Cone"

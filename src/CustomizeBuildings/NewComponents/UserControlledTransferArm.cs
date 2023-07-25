@@ -80,10 +80,21 @@ namespace CustomizeBuildings
             {
                 UserValue = Helpers.MinMax(Min, (int)value, Max);
                 transferArm.pickupRange = UserValue;
-                visualizer.RangeMin.x = -UserValue;
-                visualizer.RangeMin.y = -UserValue;
-                visualizer.RangeMax.x = UserValue;
-                visualizer.RangeMax.y = UserValue;
+
+                if (UserValue > 30)
+                {
+                    visualizer.RangeMin.x = -1;
+                    visualizer.RangeMin.y = -1;
+                    visualizer.RangeMax.x = 1;
+                    visualizer.RangeMax.y = 1;
+                }
+                else
+                {
+                    visualizer.RangeMin.x = -UserValue;
+                    visualizer.RangeMin.y = -UserValue;
+                    visualizer.RangeMax.x = UserValue;
+                    visualizer.RangeMax.y = UserValue;
+                }
             }
         }
 

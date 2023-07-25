@@ -2,5 +2,5 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("CustomizeBuildings")]
 [assembly: AssemblyProduct("CustomizeBuildings")]
-[assembly: AssemblyVersion("1.0.78.1")]
-[assembly: AssemblyFileVersion("1.0.78.1")]
+[assembly: AssemblyVersion("1.0.79.1")]
+[assembly: AssemblyFileVersion("1.0.79.1")]
