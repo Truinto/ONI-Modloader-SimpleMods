@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.80.0] U48-568201-S
+- changed autosweeper works through farm/hydro tiles (fixes line of sight issues)
+
 ## [1.0.79.0] U47-562984-S
 - fixed crash; visualizer will display a single tile instead of being removed
 

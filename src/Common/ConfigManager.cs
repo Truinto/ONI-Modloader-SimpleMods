@@ -249,7 +249,7 @@ namespace Config
                         bool shouldSave = true;
                         if (updateCallback != null) shouldSave = updateCallback(State);
                         State.GetType().GetProperty("version").SetValue(State, newVersion, null);
-                        if (shouldSave) this.TrySaveConfigurationState();
+                        if (shouldSave) TrySaveConfigurationState();
                     }
                 }
             }

@@ -140,6 +140,15 @@ namespace Common
             return element;
         }
 
+        public static Element ToElement(this SimHashes hash)
+        {
+            if (ElementLoader.elementTable == null)
+                return null;
+
+            ElementLoader.elementTable.TryGetValue((int)hash, out Element element);
+            return element;
+        }
+
         public static string ToDiseaseId(this byte diseaseIdx)
         {
             if (diseaseIdx < Db.Get().Diseases.Count)
@@ -819,6 +828,18 @@ namespace Common
                 egg = tag.ToTag(),
                 weight = weight
             };
+        }
+
+        /// <summary>
+        /// Get a cell of a building. Takes rotation into account
+        /// </summary>
+        public static int GetCellWithOffset(this Building building, CellOffset offset)
+        {
+            Vector3 position = building.transform.GetPosition();
+            int bottomLeftCell = Grid.PosToCell(position);
+
+            CellOffset rotatedOffset = building.GetRotatedOffset(offset);
+            return Grid.OffsetCell(bottomLeftCell, rotatedOffset);
         }
         #endregion
 

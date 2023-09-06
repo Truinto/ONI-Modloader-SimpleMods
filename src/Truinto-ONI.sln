@@ -4,26 +4,58 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoRemains", "NoRemains\NoRemains.csproj", "{7370C020-5572-4A33-B1A9-2C42BEDA65C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarePackageMod", "CarePackageMod\CarePackageMod.csproj", "{173268FA-D342-4787-AFAD-3B45473856CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizeBuildings", "CustomizeBuildings\CustomizeBuildings.csproj", "{C8EA17DF-6EDA-4B94-91F0-76A4FD63AA8F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizeCritter", "CustomizeCritter\CustomizeCritter.csproj", "{10032FD2-8AAC-4132-969B-12776B186079}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizeElements", "CustomizeElements\CustomizeElements.csproj", "{F2A74799-BE1C-44EF-834C-635F75CA62B3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizeGeyser", "CustomizeGeyser\CustomizeGeyser.csproj", "{ABF9903B-C0A8-468B-A140-A33EBD2A29F5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizeModifier", "CustomizeModifier\CustomizeModifier.csproj", "{FB040B67-35F6-4831-8B69-FB9F0BBE72DC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizePlants", "CustomizePlants\CustomizePlants.csproj", "{2B1E3802-E20A-4D47-AC89-CE3E732616DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizeRecipe", "CustomizeRecipe\CustomizeRecipe.csproj", "{86FD05C0-E060-44F7-978E-05315BD178A5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EggCritterSurplus", "EggCritterSurplus\EggCritterSurplus.csproj", "{713C2081-D47E-4825-861B-4B026D29F0CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "versioncontrol_ONI", "versioncontrol_ONI\versioncontrol_ONI.csproj", "{B1EBE5C7-520D-40A5-BEA5-970853895E9E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipedEverything", "PipedEverything\PipedEverything.csproj", "{CD6E1C0A-FB6C-4B48-864E-60F4BED4EE92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +103,14 @@ Global
 		{713C2081-D47E-4825-861B-4B026D29F0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{713C2081-D47E-4825-861B-4B026D29F0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{713C2081-D47E-4825-861B-4B026D29F0CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B1EBE5C7-520D-40A5-BEA5-970853895E9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1EBE5C7-520D-40A5-BEA5-970853895E9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{B1EBE5C7-520D-40A5-BEA5-970853895E9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1EBE5C7-520D-40A5-BEA5-970853895E9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD6E1C0A-FB6C-4B48-864E-60F4BED4EE92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD6E1C0A-FB6C-4B48-864E-60F4BED4EE92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD6E1C0A-FB6C-4B48-864E-60F4BED4EE92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD6E1C0A-FB6C-4B48-864E-60F4BED4EE92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

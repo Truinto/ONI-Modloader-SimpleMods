@@ -3,6 +3,11 @@ using UnityEngine;
 using System;
 using System.Linq;
 using Common;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Reflection;
+using Shared;
+using TemplateClasses;
 
 namespace CustomizeBuildings
 {
@@ -35,47 +40,67 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.DoPostConfigureComplete))]
-    internal class SolidTransferArmConfig_DoPostConfigureComplete
+    [HarmonyPatch]
+    public class SolidTransferArmConfig_Patches
     {
-        private static void Postfix(GameObject go)
+        [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.DoPostConfigureComplete))]
+        [HarmonyPostfix]
+        private static void Postfix1(GameObject go)
         {
+            // set range logic
             go.AddOrGet<SolidTransferArm>().pickupRange = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
-        }
-    }
 
-    [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.DoPostConfigureComplete))]
-    internal class SolidTransferArmConfig_DoPostConfigureComplete2
-    {
-        private static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.AutoSweeperSlider;
+            // add slider
+            if (CustomizeBuildingsState.StateManager.State.AutoSweeperSlider)
+                go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
         }
-        private static void Postfix(GameObject go)
-        {
-            go.AddOrGet<UserControlledTransferArm>().Max = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
-        }
-    }
 
-    [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.AddVisualizer))]
-    internal class SolidTransferArmConfig_AddVisualizer
-    {
-        private static bool Prefix(GameObject prefab, bool movable)
+        [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.AddVisualizer))]
+        [HarmonyPrefix]
+        private static bool Prefix2(GameObject prefab)
         {
+            // set range visual
             int range = CustomizeBuildingsState.StateManager.State.AutoSweeperRange;
-
             if (range > 30)
                 range = 1;
-
             RangeVisualizer rangeVisualizer = prefab.AddOrGet<RangeVisualizer>();
             rangeVisualizer.RangeMin.x = -range;
             rangeVisualizer.RangeMin.y = -range;
             rangeVisualizer.RangeMax.x = range;
             rangeVisualizer.RangeMax.y = range;
             rangeVisualizer.BlockingTileVisible = true;
+
+            // fix farm tile
+            rangeVisualizer.BlockingCb = BlockingCbx;
+
             return false;
         }
+
+        [HarmonyPatch(typeof(SolidTransferArm), nameof(SolidTransferArm.AsyncUpdate))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Transpiler3(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            // fix farm tile
+            var data = new TranspilerTool(instructions, generator, original);
+
+            if (1 != data.ReplaceAllCalls(typeof(Grid), nameof(Grid.IsPhysicallyAccessible), patch))
+                throw new Exception("");
+
+            return data;
+
+            bool patch(int x, int y, int x2, int y2, bool blocking_tile_visible)
+            {
+                return Grid.TestLineOfSight(x, y, x2, y2, BlockingCbx, blocking_tile_visible);
+            }
+        }
+
+        public static Tag[] BuildingsIgnoreLOS = new Tag[] { FarmTileConfig.ID, HydroponicFarmConfig.ID };
+        public static bool BlockingCbx(int cell)
+        {
+            return Grid.Solid[cell] && Grid.Objects[cell, 1]?.GetComponent<KPrefabID>()?.IsAnyPrefabID(BuildingsIgnoreLOS) != true;
+        }
     }
+
     #endregion
 
     #region Robominer
