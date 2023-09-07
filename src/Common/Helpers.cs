@@ -833,6 +833,16 @@ namespace Common
         /// <summary>
         /// Get a cell of a building. Takes rotation into account
         /// </summary>
+        public static int GetCellWithOffset(this KMonoBehaviour go, CellOffset offset)
+        {
+            var building = go.GetComponent<Building>() ?? throw new Exception("KMonoBehaviour has no Building to get CellWithOffset from.");
+
+            return building.GetCellWithOffset(offset);
+        }
+
+        /// <summary>
+        /// Get a cell of a building. Takes rotation into account
+        /// </summary>
         public static int GetCellWithOffset(this Building building, CellOffset offset)
         {
             Vector3 position = building.transform.GetPosition();

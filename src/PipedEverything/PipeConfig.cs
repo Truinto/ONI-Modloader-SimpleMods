@@ -12,6 +12,7 @@ namespace PipedEverything
     public class PipeConfig
     {
         public string Id;
+        public bool Input;
         public int OffsetX;
         public int OffsetY;
         public string[] Filter;

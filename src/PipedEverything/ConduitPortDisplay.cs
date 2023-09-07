@@ -4,7 +4,7 @@ using Common;
 namespace PipedEverything
 {
     [SkipSaveFileSerialization]
-    internal class PortDisplay2 : KMonoBehaviour
+    public class PortDisplay2 : KMonoBehaviour
     {
         private GameObject portObject;
 
@@ -24,9 +24,6 @@ namespace PipedEverything
         internal CellOffset offset;
 
         [SerializeField]
-        internal CellOffset offsetFlipped;
-
-        [SerializeField]
         internal bool input;
 
         [SerializeField]
@@ -35,20 +32,22 @@ namespace PipedEverything
         [SerializeField]
         internal Sprite sprite;
 
-        internal void AssignPort(DisplayConduitPortInfo port)
+        [SerializeField]
+        internal SimHashes[] filter;
+
+        public void AssignPort(DisplayConduitPortInfo port)
         {
             this.type = port.type;
             this.offset = port.offset;
-            this.offsetFlipped = port.offsetFlipped;
             this.input = port.input;
             this.color = port.color;
             this.sprite = GetSprite();
+            this.filter = port.filter;
         }
 
-        internal void Draw(GameObject obj, BuildingCellVisualizer visualizer, bool force)
+        public void Draw(GameObject obj, BuildingCellVisualizer visualizer, bool force)
         {
-            Building building = visualizer.building;
-            int utilityCell = building.GetCellWithOffset(building.Orientation == Orientation.Neutral ? this.offset : this.offsetFlipped);
+            int utilityCell = visualizer.building.GetCellWithOffset(this.offset);
 
             // redraw if anything changed
             if (force || utilityCell != this.lastUtilityCell || color != this.lastColor)
@@ -106,6 +105,12 @@ namespace PipedEverything
             {
                 UnityEngine.Object.Destroy(this.portObject);
             }
+        }
+
+        public bool IsConnected()
+        {
+            int layer = this.type == ConduitType.Gas ? 12 : this.type == ConduitType.Liquid ? 16 : 20;
+            return Grid.Objects[this.lastUtilityCell, layer] != null;
         }
     }
 }

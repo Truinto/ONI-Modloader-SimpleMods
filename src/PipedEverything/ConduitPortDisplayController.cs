@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace PipedEverything
 {
@@ -82,6 +84,28 @@ namespace PipedEverything
             if (mode == OverlayModes.SolidConveyor.ID) return this.solidOverlay;
 
             return new List<PortDisplay2>();
+        }
+
+        public bool IsInputConnected(Element element)
+        {
+            var hash = element.id;
+            foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
+            {
+                if (port.input && port.filter.Contains(hash))
+                    return port.IsConnected();
+            }
+            return false;
+        }
+
+        public bool IsOutputConnected(Element element)
+        {
+            var hash = element.id;
+            foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
+            {
+                if (!port.input && port.filter.Contains(hash))
+                    return port.IsConnected();
+            }
+            return false;
         }
     }
 }

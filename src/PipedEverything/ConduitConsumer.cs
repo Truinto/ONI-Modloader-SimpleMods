@@ -19,9 +19,6 @@ namespace PipedEverything
         internal CellOffset conduitOffset;
 
         [SerializeField]
-        internal CellOffset conduitOffsetFlipped;
-
-        [SerializeField]
         internal ConduitType conduitType;
 
         [SerializeField]
@@ -72,7 +69,6 @@ namespace PipedEverything
         {
             this.conduitType = port.type;
             this.conduitOffset = port.offset;
-            this.conduitOffsetFlipped = port.offsetFlipped;
         }
 
         internal bool IsConnected
@@ -173,8 +169,7 @@ namespace PipedEverything
 
         private int GetInputCell()
         {
-            var building = base.GetComponent<Building>();
-            return building.GetCellWithOffset(building.Orientation == Orientation.Neutral ? this.conduitOffset : this.conduitOffsetFlipped);
+            return this.GetCellWithOffset(this.conduitOffset);
         }
 
         public override void OnSpawn()

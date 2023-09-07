@@ -1,18 +1,60 @@
 ﻿using HarmonyLib;
 using Newtonsoft.Json;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace PipedEverything
 {
+    [HarmonyPatch]
     public static class Patches
     {
+        // need patch: BuildingElementEmitter, 
+        // maybe patch: ElementDropper
 
+        // TODO: if conduit connection is removed, dump storage
+        // TODO: increase all storages by a bit
+
+        [HarmonyPatch(typeof(ElementConverter), nameof(ElementConverter.ConvertMass))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ElementConverter_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(typeof(ElementConverter.OutputElement), nameof(ElementConverter.OutputElement.storeOutput)); // if (outputElement.storeOutput)
+            data.InsertAfter(shouldStore);
+
+            return data;
+
+            bool shouldStore(bool storeOutput, ElementConverter __instance, [LocalParameter(IndexByType = 0)] Element element)
+            {
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
+            }
+        }
+
+        [HarmonyPatch(typeof(EnergyGenerator), nameof(EnergyGenerator.Emit))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> EnergyGenerator_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(typeof(EnergyGenerator.OutputItem), nameof(EnergyGenerator.OutputItem.store));
+            data.InsertAfter(shouldStore);
+
+            return data;
+
+            bool shouldStore(bool storeOutput, EnergyGenerator __instance, [LocalParameter(IndexByType = 0)] Element element)
+            {
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
+            }
+        }
 
         /// <summary>
         /// Attach pipe logic to buildings.

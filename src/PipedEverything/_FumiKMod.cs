@@ -25,6 +25,7 @@ namespace PipedEverything
             // load translation, if any
 
             // load settings
+            PipedEverythingState.StateManager = new(PipedEverythingState.GetStaticConfigPath(), true, PipedEverythingState.OnUpdate, null);
 
             // init options menu
 

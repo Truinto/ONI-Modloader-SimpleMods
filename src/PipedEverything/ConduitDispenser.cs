@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Common;
+using System.Linq;
 
 namespace PipedEverything
 {
     [SerializationConfig(MemberSerialization.OptIn)]
-    public class ConduitDispenser2 : KMonoBehaviour, ISaveLoadable
+    public class ConduitDispenser2 : PortConduitDispenserBase
     {
 
     }
@@ -16,13 +17,10 @@ namespace PipedEverything
     // Use a subclass to inherit this and doesn't add anything
     // This is to avoid crashes on loading savegames due to class name clashes
     [SerializationConfig(MemberSerialization.OptIn)]
-    public abstract class PortConduitDispenserBase : KMonoBehaviour, ISaveLoadable
+    public class PortConduitDispenserBase : KMonoBehaviour, ISaveLoadable
     {
         [SerializeField]
         public CellOffset conduitOffset;
-
-        [SerializeField]
-        public CellOffset conduitOffsetFlipped;
 
         [SerializeField]
         public ConduitType conduitType;
@@ -34,10 +32,10 @@ namespace PipedEverything
         public bool invertElementFilter;
 
         [SerializeField]
-        public bool alwaysDispense;
+        public bool alwaysDispense = true;
 
         [SerializeField]
-        public bool SkipSetOperational = false;
+        public bool SkipSetOperational = true;
 
         private static readonly Operational.Flag outputConduitFlag = new("output_conduit", Operational.Flag.Type.Functional);
 
@@ -55,14 +53,14 @@ namespace PipedEverything
 
         private int elementOutputOffset;
 
-        internal void AssignPort(PortDisplayOutput port)
+        public void AssignPort(DisplayConduitPortInfo port)
         {
             this.conduitType = port.type;
             this.conduitOffset = port.offset;
-            this.conduitOffsetFlipped = port.offsetFlipped;
+            this.elementFilter = port.filter;
         }
 
-        internal ConduitType TypeOfConduit
+        public ConduitType TypeOfConduit
         {
             get
             {
@@ -70,7 +68,7 @@ namespace PipedEverything
             }
         }
 
-        internal ConduitFlow.ConduitContents ConduitContents
+        public ConduitFlow.ConduitContents ConduitContents
         {
             get
             {
@@ -86,7 +84,7 @@ namespace PipedEverything
             }
         }
 
-        internal bool IsConnected
+        public bool IsConnected
         {
             get
             {
@@ -95,23 +93,18 @@ namespace PipedEverything
             }
         }
 
-        internal void SetConduitData(ConduitType type)
+        public void SetConduitData(ConduitType type)
         {
             this.conduitType = type;
         }
 
-        internal ConduitFlow GetConduitManager()
+        public ConduitFlow GetConduitManager()
         {
-            ConduitType conduitType = this.conduitType;
-            if (conduitType == ConduitType.Gas)
-            {
-                return Game.Instance.gasConduitFlow;
-            }
-            if (conduitType != ConduitType.Liquid)
-            {
-                return null;
-            }
-            return Game.Instance.liquidConduitFlow;
+            if (this.conduitType == ConduitType.Gas)            
+                return Game.Instance.gasConduitFlow;            
+            if (this.conduitType == ConduitType.Liquid)            
+                return Game.Instance.liquidConduitFlow;            
+            return null;
         }
 
         private void OnConduitConnectionChanged(object data)
@@ -128,8 +121,7 @@ namespace PipedEverything
         {
             base.OnSpawn();
 
-            var building = base.GetComponent<Building>();
-            this.utilityCell = building.GetCellWithOffset(building.Orientation == Orientation.Neutral ? this.conduitOffset : this.conduitOffsetFlipped);
+            this.utilityCell = this.GetCellWithOffset(this.conduitOffset);
             IUtilityNetworkMgr networkManager = Conduit.GetNetworkManager(this.conduitType);
             this.networkItem = new FlowUtilityNetwork.NetworkItem(this.conduitType, Endpoint.Source, this.utilityCell, base.gameObject);
             networkManager.AddToNetworks(this.utilityCell, this.networkItem, true);
@@ -154,7 +146,7 @@ namespace PipedEverything
         {
             if (!SkipSetOperational)
             {
-                this.operational.SetFlag(outputConduitFlag, this.IsConnected);
+                this.operational.SetFlag(ConduitDispenser.outputConduitFlag, this.IsConnected);
             }
             if (this.operational.IsOperational || this.alwaysDispense)
             {
@@ -195,7 +187,7 @@ namespace PipedEverything
 
         private bool IsFilteredElement(SimHashes element)
         {
-            for (int num = 0; num != this.elementFilter.Length; num++)
+            for (int num = 0; num < this.elementFilter.Length; num++)
             {
                 if (this.elementFilter[num] == element)
                 {

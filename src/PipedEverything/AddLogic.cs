@@ -12,9 +12,10 @@ namespace PipedEverything
     {
         public static void TryAddLogic(BuildingDef def)
         {
-            var configs = PipedEverythingState.StateManager.State.Configs.Where(w => w.Id == def.PrefabID).ToArray();
+            if (def?.PrefabID == null)
+                return;
 
-            foreach (var config in configs)
+            foreach (var config in PipedEverythingState.StateManager.State.Configs.Where(w => w.Id == def.PrefabID))
             {
                 var conduitType = ConduitType.None;
                 var offset = new CellOffset(config.OffsetX, config.OffsetY);
@@ -44,21 +45,60 @@ namespace PipedEverything
                     filters.Add(element.id);
                 }
 
-                var outputPort = new PortDisplayOutput(conduitType, offset, null, color); // add filter?
+                if (conduitType == ConduitType.None)
+                {
+                    Helpers.PrintDialog($"No valid filter for {config.Id}");
+                    continue;
+                }
+
+                var portInfo = new DisplayConduitPortInfo(filters.ToArray(), conduitType, offset, config.Input, color);
                 var controller = def.BuildingComplete.AddOrGet<PortDisplayController>();
                 controller.Init(def.BuildingComplete);
-                controller.AssignPort(def.BuildingComplete, outputPort);
+                controller.AssignPort(def.BuildingComplete, portInfo);
                 controller = def.BuildingUnderConstruction.AddOrGet<PortDisplayController>();
                 controller.Init(def.BuildingUnderConstruction);
-                controller.AssignPort(def.BuildingUnderConstruction, outputPort);
+                controller.AssignPort(def.BuildingUnderConstruction, portInfo);
                 controller = def.BuildingPreview.AddOrGet<PortDisplayController>();
                 controller.Init(def.BuildingPreview);
-                controller.AssignPort(def.BuildingPreview, outputPort);
+                controller.AssignPort(def.BuildingPreview, portInfo);
 
-                // add dispenser?
-                // redirect output?
+                def.BuildingComplete.AddOrGet<Storage>();
 
-                Helpers.PrintDebug($"Controller added {config.Id} {conduitType} {offset}");
+                if (config.Input)
+                {
+                    // TODO: add input port logic
+
+                    // if input
+                    //ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
+                    //conduitConsumer.conduitType = ConduitType.Liquid;
+                    //conduitConsumer.consumptionRate = 1f;
+                    //conduitConsumer.capacityTag = ElementLoader.FindElementByHash(SimHashes.Water).tag;
+                    //conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
+                    //SolidConduitConsumer
+
+                    if (conduitType != ConduitType.Solid)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    if (conduitType != ConduitType.Solid)
+                    {
+                        var dispenser = def.BuildingComplete.AddComponent<PortConduitDispenserBase>();
+                        dispenser.AssignPort(portInfo);
+                    }
+                    else
+                    {
+                        // TODO: solid dispenser
+                    }
+                }
+
+                Helpers.PrintDebug($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");
             }
         }
 

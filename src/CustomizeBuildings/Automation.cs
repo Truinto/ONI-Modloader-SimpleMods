@@ -97,7 +97,16 @@ namespace CustomizeBuildings
         public static Tag[] BuildingsIgnoreLOS = new Tag[] { FarmTileConfig.ID, HydroponicFarmConfig.ID };
         public static bool BlockingCbx(int cell)
         {
-            return Grid.Solid[cell] && Grid.Objects[cell, 1]?.GetComponent<KPrefabID>()?.IsAnyPrefabID(BuildingsIgnoreLOS) != true;
+            if (!Grid.Solid[cell])
+                return false;
+
+            try
+            {
+                return Grid.Objects[cell, 1]?.GetComponent<KPrefabID>()?.IsAnyPrefabID(BuildingsIgnoreLOS) != true;
+            }
+            catch (Exception) { }
+
+            return true;
         }
     }
 

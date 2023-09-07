@@ -5,32 +5,31 @@ namespace PipedEverything
 {
     public class PortDisplayInput : DisplayConduitPortInfo
     {
-        public PortDisplayInput(ConduitType type, CellOffset offset, CellOffset? offsetFlipped = null, Color? color = null) : base(type, offset, offsetFlipped, true, color) { }
+        public PortDisplayInput(SimHashes[] filter, ConduitType type, CellOffset offset, Color? color = null) : base(filter, type, offset, true, color) { }
     }
 
     public class PortDisplayOutput : DisplayConduitPortInfo
     {
-        public PortDisplayOutput(ConduitType type, CellOffset offset, CellOffset? offsetFlipped = null, Color? color = null) : base(type, offset, offsetFlipped, false, color) { }
+        public PortDisplayOutput(SimHashes[] filter, ConduitType type, CellOffset offset, Color? color = null) : base(filter, type, offset, false, color) { }
     }
 
 
     // can't be stored in components. It somehow gets reset before it's used
     // Serialization doesn't seem to help at all
-    public abstract class DisplayConduitPortInfo
+    public class DisplayConduitPortInfo
     {
         public readonly ConduitType type;
         public readonly CellOffset offset;
-        public readonly CellOffset offsetFlipped;
         public readonly bool input;
         public readonly Color color;
+        public readonly SimHashes[] filter;
 
-        public DisplayConduitPortInfo(ConduitType type, CellOffset offset, CellOffset? offsetFlipped, bool input, Color? color)
+        public DisplayConduitPortInfo(SimHashes[] filter, ConduitType type, CellOffset offset, bool input, Color? color)
         {
+            this.filter = filter;
             this.type = type;
             this.offset = offset;
             this.input = input;
-
-            this.offsetFlipped = offsetFlipped ?? offset;
 
             // assign port colors
             if (color != null)
