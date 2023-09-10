@@ -6,17 +6,86 @@ using HarmonyLib;
 using System.IO;
 using System;
 using UnityEngine;
+using static STRINGS.ELEMENTS;
+using static STRINGS.BUILDINGS.PREFABS;
 
 namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 1;
+        public int version { get; set; } = 2;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
-            new PipeConfig() { Id = ElectrolyzerConfig.ID, OffsetX = 0, OffsetY = 1, Filter = new string[] { SimHashes.Oxygen.ToString() }, Color = Color.blue },
-            new PipeConfig() { Id = ElectrolyzerConfig.ID, OffsetX = 1, OffsetY = 1, Filter = new string[] { SimHashes.Hydrogen.ToString() }, Color = Color.magenta },
+            // Power
+            new PipeConfig(GeneratorConfig.ID, true, x: 0, y: 0, SimHashes.Carbon),
+            new PipeConfig(GeneratorConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide),
+
+            new PipeConfig(WoodGasGeneratorConfig.ID, true, x: 0, y: 0, SimHashes.Creature), // ?
+            new PipeConfig(WoodGasGeneratorConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
+
+            new PipeConfig(PetroleumGeneratorConfig.ID, false, x: 0, y: 3, SimHashes.CarbonDioxide),
+            new PipeConfig(PetroleumGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.DirtyWater),
+
+            new PipeConfig(MethaneGeneratorConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
+            new PipeConfig(MethaneGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.DirtyWater),
+
+            // Refinement
+            new PipeConfig(OilRefineryConfig.ID, false, x: -1, y: 3, SimHashes.Methane),
+
+            new PipeConfig(FertilizerMakerConfig.ID, true, x: 0, y: 0, SimHashes.Dirt) { Filter = new string[] { SimHashes.Dirt.ToString(), SimHashes.Phosphorite.ToString() } },
+            //new PipeConfig(FertilizerMakerConfig.ID, true, x: 1, y: 0, SimHashes.Phosphorite),
+            new PipeConfig(FertilizerMakerConfig.ID, false, x: 2, y: 1, SimHashes.Fertilizer),
+            new PipeConfig(FertilizerMakerConfig.ID, false, x: 2, y: 2, SimHashes.Methane),
+
+            new PipeConfig(EthanolDistilleryConfig.ID, true, x: 2, y: 0, SimHashes.Creature), // ?
+            new PipeConfig(EthanolDistilleryConfig.ID, false, x: 0, y: 0, SimHashes.ToxicSand, Color.gray),
+            new PipeConfig(EthanolDistilleryConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
+
+            new PipeConfig(PolymerizerConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
+            new PipeConfig(PolymerizerConfig.ID, false, x: 1, y: 0, SimHashes.Steam),
+
+            new PipeConfig(MilkFatSeparatorConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
+
+            new PipeConfig(DesalinatorConfig.ID, false, x: 0, y: 0, SimHashes.Salt),
+
+            new PipeConfig(AlgaeDistilleryConfig.ID, false, x: 1, y: 0, SimHashes.Algae),
+
+            // Oxygen
+            new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
+            new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater, storageIndex: 1),
+
+            new PipeConfig(ElectrolyzerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen),
+            new PipeConfig(ElectrolyzerConfig.ID, false, x: 0, y: 1, SimHashes.Hydrogen),
+
+            new PipeConfig(RustDeoxidizerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen),
+            new PipeConfig(RustDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.ChlorineGas),
+
+            new PipeConfig(MineralDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
+
+            new PipeConfig(SublimationStationConfig.ID, false, x: 0, y: 0, SimHashes.ContaminatedOxygen),
+
+            // Cooking            
+            new PipeConfig(GourmetCookingStationConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide),
+
+            // Utility & other
+            new PipeConfig(OilWellCapConfig.ID, false, x: 2, y: 1, SimHashes.CrudeOil),
+            new PipeConfig(OilWellCapConfig.ID, false, x: 1, y: 1, SimHashes.Methane),
+
+            new PipeConfig(DecontaminationShowerConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater),
+
+            new PipeConfig(WallToiletConfig.ID, false, x: -1, y: 0, SimHashes.DirtyWater),
+
+            // Advanced Generator+
+            new PipeConfig("RefinedCarbonGenerator", true, x: 0, y: 0, SimHashes.RefinedCarbon),
+            new PipeConfig("RefinedCarbonGenerator", false, x: 1, y: 2, SimHashes.CarbonDioxide),
+
+            new PipeConfig("NaphthaGenerator", false, x: 0, y: 3, SimHashes.CarbonDioxide, storageIndex: 1),
+
+            new PipeConfig("EcoFriendlyMethaneGenerator", true, x: 0, y: 0, SimHashes.Sand),
+            new PipeConfig("EcoFriendlyMethaneGenerator", false, x: 2, y: 2, SimHashes.CarbonDioxide),
+            new PipeConfig("EcoFriendlyMethaneGenerator", false, x: 1, y: 1, SimHashes.Water, storageIndex: 1),
+
         };
 
         #region _implementation
@@ -29,6 +98,21 @@ namespace PipedEverything
 
         public static bool OnUpdate(PipedEverythingState state)
         {
+            if (state.version < 2)
+            {
+                state.Configs.AddRange(new PipeConfig[] {
+                    // Advanced Generator+
+                    new PipeConfig("RefinedCarbonGenerator", true, x: 0, y: 0, SimHashes.RefinedCarbon),
+                    new PipeConfig("RefinedCarbonGenerator", false, x: 1, y: 2, SimHashes.CarbonDioxide),
+
+                    new PipeConfig("NaphthaGenerator", false, x: 0, y: 3, SimHashes.CarbonDioxide, storageIndex: 1),
+
+                    new PipeConfig("EcoFriendlyMethaneGenerator", true, x: 0, y: 0, SimHashes.Sand),
+                    new PipeConfig("EcoFriendlyMethaneGenerator", false, x: 2, y: 2, SimHashes.CarbonDioxide),
+                    new PipeConfig("EcoFriendlyMethaneGenerator", false, x: 1, y: 1, SimHashes.Water, storageIndex: 1),
+                });
+            }
+
             return true;
         }
 

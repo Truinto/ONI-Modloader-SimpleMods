@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Common;
+using static LogicPorts;
+using System.Linq;
 
 namespace PipedEverything
 {
@@ -8,13 +10,8 @@ namespace PipedEverything
     {
         private GameObject portObject;
 
-        // The cache for last location/color.
-        // The default values doesn't matter and will be overwritten on first call.
-        // However there is a theoredical risk that no default value can cause a crash, hence setting them to something.
-        [SerializeField]
         private int lastUtilityCell = -1;
 
-        [SerializeField]
         private Color lastColor = Color.black;
 
         [SerializeField]
@@ -35,7 +32,17 @@ namespace PipedEverything
         [SerializeField]
         internal SimHashes[] filter;
 
-        public void AssignPort(DisplayConduitPortInfo port)
+        [SerializeField]
+        internal int storageIndex;
+
+        [SerializeField]
+        internal int storageCapacity;
+
+        private Storage storage;
+
+        public Storage Storage => storage ??= GetComponents<Storage>()[this.storageIndex];
+
+        public void AssignPort(PortDisplayInfo port)
         {
             this.type = port.type;
             this.offset = port.offset;
@@ -43,6 +50,8 @@ namespace PipedEverything
             this.color = port.color;
             this.sprite = GetSprite();
             this.filter = port.filter;
+            this.storageIndex = port.StorageIndex;
+            this.storageCapacity = port.StorageCapacity;
         }
 
         public void Draw(GameObject obj, BuildingCellVisualizer visualizer, bool force)
@@ -50,7 +59,7 @@ namespace PipedEverything
             int utilityCell = visualizer.building.GetCellWithOffset(this.offset);
 
             // redraw if anything changed
-            if (force || utilityCell != this.lastUtilityCell || color != this.lastColor)
+            if (force || utilityCell != this.lastUtilityCell || this.color != this.lastColor)
             {
                 this.lastColor = color;
                 this.lastUtilityCell = utilityCell;
@@ -109,8 +118,48 @@ namespace PipedEverything
 
         public bool IsConnected()
         {
+            if (this.lastUtilityCell < 0)
+                this.lastUtilityCell = this.GetCellWithOffset(this.offset);
+
             int layer = this.type == ConduitType.Gas ? 12 : this.type == ConduitType.Liquid ? 16 : 20;
             return Grid.Objects[this.lastUtilityCell, layer] != null;
+        }
+
+        public float GetCapacity(SimHashes element)
+        {
+            if (!filter.Contains(element))
+                return 0f;
+
+            if (this.Storage == null)
+                return this.storageCapacity;
+
+            float capacityElement = this.storageCapacity;
+            float capacityStorage = this.Storage.capacityKg;
+            foreach (var item in this.Storage.items)
+            {
+                if (item == null)
+                    continue;
+
+                var element2 = item.GetComponent<PrimaryElement>();
+                capacityStorage -= element2.Mass;
+                if (element == element2.ElementID)
+                    capacityElement -= element2.Mass;
+            }
+
+            return Mathf.Min(capacityElement, capacityStorage);
+        }
+
+        public bool TryStore(Element element, float mass, float temperature)
+        {
+            if (GetCapacity(element.id) < 0)
+                return false;
+
+            if (element.IsGas)
+                this.Storage.AddGasChunk(element.id, mass, temperature, 0, 0, keep_zero_mass: true);
+            else if (element.IsLiquid)
+                this.Storage.AddLiquid(element.id, mass, temperature, 0, 0, keep_zero_mass: true);
+
+            return true;
         }
     }
 }

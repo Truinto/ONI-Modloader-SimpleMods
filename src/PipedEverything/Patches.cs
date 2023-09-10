@@ -1,8 +1,10 @@
-﻿using HarmonyLib;
+﻿using Common;
+using HarmonyLib;
 using Newtonsoft.Json;
 using Shared;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,26 +18,20 @@ namespace PipedEverything
     [HarmonyPatch]
     public static class Patches
     {
-        // need patch: BuildingElementEmitter, 
-        // maybe patch: ElementDropper
-
-        // TODO: if conduit connection is removed, dump storage
-        // TODO: increase all storages by a bit
-
         [HarmonyPatch(typeof(ElementConverter), nameof(ElementConverter.ConvertMass))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ElementConverter_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
         {
             var data = new TranspilerTool(instructions, generator, original);
 
-            data.Seek(typeof(ElementConverter.OutputElement), nameof(ElementConverter.OutputElement.storeOutput)); // if (outputElement.storeOutput)
+            data.Seek(typeof(ElementConverter.OutputElement), nameof(ElementConverter.OutputElement.storeOutput));
             data.InsertAfter(shouldStore);
 
             return data;
 
             bool shouldStore(bool storeOutput, ElementConverter __instance, [LocalParameter(IndexByType = 0)] Element element)
             {
-                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.CanStore(element) == true;
             }
         }
 
@@ -52,8 +48,76 @@ namespace PipedEverything
 
             bool shouldStore(bool storeOutput, EnergyGenerator __instance, [LocalParameter(IndexByType = 0)] Element element)
             {
-                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.CanStore(element) == true;
             }
+        }
+
+        [HarmonyPatch(typeof(AutoStorageDropper.Instance), nameof(AutoStorageDropper.Instance.Drop))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> AutoStorageDropper_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.InsertBefore(getController);
+            data.Seek(typeof(AutoStorageDropper.Instance), nameof(AutoStorageDropper.Instance.AllowedToDrop));
+            data.InsertAfter(shouldDrop);
+
+            return data;
+
+            void getController(AutoStorageDropper.Instance __instance, [LocalParameter("controller")] ref PortDisplayController controller)
+            {
+                controller = __instance.GetComponent<PortDisplayController>();
+            }
+
+            bool shouldDrop(bool shouldDrop, AutoStorageDropper.Instance __instance, [LocalParameter(IndexByType = 0)] PrimaryElement element, [LocalParameter("controller")] PortDisplayController controller)
+            {
+                return shouldDrop && controller?.CanStore(element.Element) != true;
+            }
+        }
+
+        [HarmonyPatch(typeof(BuildingElementEmitter), nameof(BuildingElementEmitter.Sim200ms))]
+        [HarmonyPrefix]
+        public static bool BuildingElementEmitter_Prefix(float dt, BuildingElementEmitter __instance)
+        {
+            // do nothing, if not operational
+            if (!__instance.simActive)
+                return true;
+
+            var controller = __instance.GetComponent<PortDisplayController>();
+            if (controller == null)
+                return true;
+
+            // check if port is connected; if not, maybe clean
+            bool emitting = __instance.statusHandle != Guid.Empty;
+            var element = __instance.element.ToElement();
+            var port = controller.GetPort(false, element.GetConduitType(), element.id);
+            if (!port.IsConnected())
+            {
+                if (!emitting)
+                    __instance.dirty = true;
+                return true;
+            }
+
+            // try store; if not, maybe clean
+            float mass = __instance.emitRate * 0.2f;
+            if (!port.TryStore(element, mass, __instance.temperature))
+            {
+                if (!emitting)
+                    __instance.dirty = true;
+                return true;
+            }
+
+            // trick sim to not emit
+            if (emitting)
+                __instance.dirty = true;
+            __instance.simActive = false;
+            __instance.UnsafeUpdate(dt);
+            __instance.simActive = true;
+
+            Game.Instance.accumulators.Accumulate(__instance.accumulator, mass);
+            if (__instance.element == SimHashes.Oxygen)
+                ReportManager.Instance.ReportValue(ReportManager.ReportType.OxygenCreated, mass, __instance.gameObject.GetProperName());
+            return false;
         }
 
         /// <summary>
@@ -124,6 +188,26 @@ namespace PipedEverything
                 __result = __instance.IsValidConduitConnection(source_go, portDisplay.type, utility_cell, ref fail_reason);
                 if (!__result)
                     return;
+            }
+        }
+    }
+
+    public class Patches_AdvancedGenerators
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            Helpers.PrintDebug($"Patches_AdvancedGenerators {original}");
+
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(typeof(EnergyGenerator.OutputItem), nameof(EnergyGenerator.OutputItem.store));
+            data.InsertAfter(shouldStore);
+
+            return data;
+
+            bool shouldStore(bool storeOutput, KMonoBehaviour __instance, [LocalParameter(IndexByType = 0)] Element element)
+            {
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.CanStore(element) == true;
             }
         }
     }

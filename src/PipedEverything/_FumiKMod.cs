@@ -33,6 +33,14 @@ namespace PipedEverything
 
             // patch all harmony classes
             base.OnLoad(harmony);
+            var advancedGen = Type.GetType("AdvancedGenerators.Common.AdvancedEnergyGenerator, AdvancedGenerators");
+            if (advancedGen != null)
+            {
+                harmony.Patch(
+                    advancedGen.GetMethod("EmitElements", Helpers.AllBinding), 
+                    transpiler: new HarmonyMethod(typeof(Patches_AdvancedGenerators).GetMethod(nameof(Patches_AdvancedGenerators.Transpiler)))
+                    );
+            }
         }
     }
 }

@@ -22,5 +22,17 @@ namespace PipedEverything
         public int? StorageCapacity;
 
         public PipeConfig() { }
+
+        public PipeConfig(string id, bool input, int x, int y, SimHashes filter, Color32? color = null, int? storageIndex = null, int? storageCapacity = null)
+        {
+            this.Id = id;
+            this.Input = input;
+            this.OffsetX = x;
+            this.OffsetY = y;
+            this.Filter = new string[] { filter.ToString() };
+            this.Color = color;
+            this.StorageIndex = storageIndex;
+            this.StorageCapacity = storageCapacity;
+        }
     }
 }

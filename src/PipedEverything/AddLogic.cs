@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Common;
+using static Storage;
 
 namespace PipedEverything
 {
@@ -15,12 +16,13 @@ namespace PipedEverything
             if (def?.PrefabID == null)
                 return;
 
-            foreach (var config in PipedEverythingState.StateManager.State.Configs.Where(w => w.Id == def.PrefabID))
+            foreach (var config in PipedEverythingState.StateManager.State.Configs.Where(w => w.Id == def.PrefabID || w.Id == def.Name.StripLinks()))
             {
                 var conduitType = ConduitType.None;
                 var offset = new CellOffset(config.OffsetX, config.OffsetY);
                 var color = config.Color;
                 var filters = new List<SimHashes>();
+                bool isToxic = false;
                 Helpers.PrintDebug($"AddLogic adding {config.Id} {offset}");
                 foreach (var filter in config.Filter)
                 {
@@ -41,7 +43,10 @@ namespace PipedEverything
                         continue;
                     }
 
-                    config.Color ??= GetColor(element);
+                    if (element.sublimateId != 0)
+                        isToxic = true;
+
+                    color ??= GetColor(element);
                     filters.Add(element.id);
                 }
 
@@ -51,51 +56,38 @@ namespace PipedEverything
                     continue;
                 }
 
-                var portInfo = new DisplayConduitPortInfo(filters.ToArray(), conduitType, offset, config.Input, color);
-                var controller = def.BuildingComplete.AddOrGet<PortDisplayController>();
-                controller.Init(def.BuildingComplete);
-                controller.AssignPort(def.BuildingComplete, portInfo);
-                controller = def.BuildingUnderConstruction.AddOrGet<PortDisplayController>();
-                controller.Init(def.BuildingUnderConstruction);
-                controller.AssignPort(def.BuildingUnderConstruction, portInfo);
-                controller = def.BuildingPreview.AddOrGet<PortDisplayController>();
-                controller.Init(def.BuildingPreview);
-                controller.AssignPort(def.BuildingPreview, portInfo);
+                var portInfo = new PortDisplayInfo(filters.ToArray(), conduitType, offset, config.Input, color, config.StorageIndex, config.StorageCapacity);
+                def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
+                def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
+                def.BuildingPreview.AddOrGet<PortDisplayController>().AssignPort(def.BuildingPreview, portInfo);
 
+                // ensure enough room for new elements and is sealed
                 def.BuildingComplete.AddOrGet<Storage>();
+                var storage = def.BuildingComplete.GetComponents<Storage>()[portInfo.StorageIndex];
+                storage.capacityKg += portInfo.StorageCapacity * portInfo.filter.Length;
+                if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
+                    storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
 
+                // add conduit consumer/dispenser
                 if (config.Input)
                 {
-                    // TODO: add input port logic
-
-                    // if input
-                    //ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
-                    //conduitConsumer.conduitType = ConduitType.Liquid;
-                    //conduitConsumer.consumptionRate = 1f;
-                    //conduitConsumer.capacityTag = ElementLoader.FindElementByHash(SimHashes.Water).tag;
-                    //conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
-                    //SolidConduitConsumer
-
-                    if (conduitType != ConduitType.Solid)
-                    {
-
-                    }
+                    if (conduitType != ConduitType.Solid)                    
+                        def.BuildingComplete.AddComponent<ConduitConsumerOptional>().AssignPort(portInfo);                    
                     else
-                    {
-
-                    }
+                        def.BuildingComplete.AddComponent<ConduitConsumerOptionalSolid>().AssignPort(portInfo);
                 }
                 else
                 {
                     if (conduitType != ConduitType.Solid)
-                    {
-                        var dispenser = def.BuildingComplete.AddComponent<PortConduitDispenserBase>();
-                        dispenser.AssignPort(portInfo);
-                    }
+                        def.BuildingComplete.AddComponent<ConduitDispenserOptional>().AssignPort(portInfo);
                     else
-                    {
-                        // TODO: solid dispenser
-                    }
+                        def.BuildingComplete.AddComponent<ConduitDispenserOptionalSolid>().AssignPort(portInfo);
+                }
+
+                // fix for gourment station; ComplexFabricator drops ingredients from inStorage, if they are not in the selected recipe (like carbon dioxide)
+                if (config.Id == GourmetCookingStationConfig.ID)
+                {
+                    def.BuildingComplete.GetComponent<ComplexFabricator>().keepAdditionalTag = SimHashes.CarbonDioxide.ToTag();
                 }
 
                 Helpers.PrintDebug($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");

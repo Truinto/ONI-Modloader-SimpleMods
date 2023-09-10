@@ -107,7 +107,7 @@ namespace Common
             return new Tag(hash.ToString());
         }
 
-        private static Tag ToTagSafe(this string id) 
+        private static Tag ToTagSafe(this string id)
         {
             // todo extract list of valid tags and add sanity check
             // may also check Assets.TryGetPrefab for new entries, but that doesn't work early during bootup
@@ -160,6 +160,15 @@ namespace Common
         public static byte ToDiseaseIdx(this string diseaseId)
         {
             return Db.Get().Diseases.GetIndex(diseaseId);
+        }
+
+        public static ConduitType GetConduitType(this Element element)
+        {
+            if (element.IsGas)
+                return ConduitType.Gas;
+            if (element.IsLiquid)
+                return ConduitType.Liquid;
+            return ConduitType.Solid;
         }
         #endregion
 
@@ -378,6 +387,14 @@ namespace Common
             line = line.Replace("\n", "\\n");
             line = line.Replace("<color=#", "<color=^p");
             return line;
+        }
+
+        public static void Fill<T>(this T[] array, T value)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = value;
+            }
         }
         #endregion
 
@@ -835,7 +852,16 @@ namespace Common
         /// </summary>
         public static int GetCellWithOffset(this KMonoBehaviour go, CellOffset offset)
         {
-            var building = go.GetComponent<Building>() ?? throw new Exception("KMonoBehaviour has no Building to get CellWithOffset from.");
+            var building = go.GetComponent<Building>();
+
+            if (building == null)
+            {
+#if DEBUG
+                throw new Exception("KMonoBehaviour has no Building to get CellWithOffset from.");
+#else
+                return 0;
+#endif
+            }
 
             return building.GetCellWithOffset(offset);
         }
