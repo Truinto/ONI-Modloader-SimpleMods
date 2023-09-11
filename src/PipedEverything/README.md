@@ -15,7 +15,7 @@ Format:
 * Filter: string[] | Collection of SimHashes that can pass through the port (tags NOT allowed)
 * Color: Color32 | Port's color scheme like "Color":{"r": 128,"g": 128,"b": 128,"a": 255}, default based on SimHashes
 * StorageIndex: int | Which storage to use, default 0
-* StorageCapacity int | How much of each element can be stored, default 100
+* StorageCapacity int | How much of each element can be stored, default 100kg (except gas with 2kg)
 
 Github:
 https://github.com/Truinto/ONI-Modloader-SimpleMods

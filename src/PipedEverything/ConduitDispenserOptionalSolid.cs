@@ -11,6 +11,7 @@ using Common;
 
 namespace PipedEverything
 {
+    [SkipSaveFileSerialization]
     public class ConduitDispenserOptionalSolid : KMonoBehaviour, ISaveLoadable, IConduitDispenser
     {
         [SerializeField]

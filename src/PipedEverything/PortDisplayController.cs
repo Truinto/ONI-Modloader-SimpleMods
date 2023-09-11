@@ -13,6 +13,9 @@ namespace PipedEverything
         private HashedString lastMode = OverlayModes.None.ID;
 
         [SerializeField]
+        private List<PortDisplay2> outputPorts = new();
+
+        [SerializeField]
         private List<PortDisplay2> gasOverlay = new();
 
         [SerializeField]
@@ -20,6 +23,22 @@ namespace PipedEverything
 
         [SerializeField]
         private List<PortDisplay2> solidOverlay = new();
+
+        [MyCmpReq]
+        private Operational operational;
+
+        public override void OnSpawn()
+        {
+            base.OnSpawn();
+
+            if (outputPorts.Count > 0)
+            {
+                base.Subscribe((int)GameHashes.OnStorageChange, o =>
+                {
+                    this.operational.SetFlag(ConduitDispenser.outputConduitFlag, !AnyBlockedOutput());
+                });
+            }
+        }
 
         public void AssignPort(GameObject go, PortDisplayInfo port)
         {
@@ -38,6 +57,9 @@ namespace PipedEverything
                     this.solidOverlay.Add(portDisplay);
                     break;
             }
+
+            if (port.input == false)
+                outputPorts.Add(portDisplay);
 
             // criteria for drawing port icons on buildings
             // vanilla will only attempt to draw icons on buildings with BuildingCellVisualizer
@@ -109,6 +131,16 @@ namespace PipedEverything
         {
             var port = GetPort(false, element.GetConduitType(), element.id);
             return port != null && port.IsConnected() && port.GetCapacity(element.id) > 0f;
+        }
+
+        public bool AnyBlockedOutput()
+        {
+            foreach (var port in outputPorts)
+            {
+                if (port.IsBlocked())
+                    return true;
+            }
+            return false;
         }
 
         public PortDisplay2 GetPort(bool input, ConduitType conduitType, SimHashes hash)

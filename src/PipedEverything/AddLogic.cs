@@ -26,6 +26,22 @@ namespace PipedEverything
                 Helpers.PrintDebug($"AddLogic adding {config.Id} {offset}");
                 foreach (var filter in config.Filter)
                 {
+                    if (filter == "Solid")
+                    {
+                        conduitType = ConduitType.Solid;
+                        continue;
+                    }
+                    if (filter == "Liquid")
+                    {
+                        conduitType = ConduitType.Liquid;
+                        continue;
+                    }
+                    if (filter == "Gas")
+                    {
+                        conduitType = ConduitType.Gas;
+                        continue;
+                    }
+
                     var element = filter.ToElement();
                     if (element == null)
                     {

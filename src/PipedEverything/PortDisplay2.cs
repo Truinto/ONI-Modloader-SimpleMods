@@ -130,9 +130,6 @@ namespace PipedEverything
             if (!filter.Contains(element))
                 return 0f;
 
-            if (this.Storage == null)
-                return this.storageCapacity;
-
             float capacityElement = this.storageCapacity;
             float capacityStorage = this.Storage.capacityKg;
             foreach (var item in this.Storage.items)
@@ -149,10 +146,25 @@ namespace PipedEverything
             return Mathf.Min(capacityElement, capacityStorage);
         }
 
+        public bool IsBlocked()
+        {
+            float capacityElement = this.storageCapacity;
+            foreach (var item in this.Storage.items)
+            {
+                if (item == null)
+                    continue;
+
+                var element2 = item.GetComponent<PrimaryElement>();
+                if (this.filter.Contains(element2.ElementID) && element2.Mass > capacityElement)
+                    return true;
+            }
+            return false;
+        }
+
         public bool TryStore(Element element, float mass, float temperature)
         {
-            if (GetCapacity(element.id) < 0)
-                return false;
+            //if (GetCapacity(element.id) < 0)
+            //    return false;
 
             if (element.IsGas)
                 this.Storage.AddGasChunk(element.id, mass, temperature, 0, 0, keep_zero_mass: true);

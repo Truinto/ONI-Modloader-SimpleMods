@@ -23,7 +23,7 @@ namespace PipedEverything
             this.input = input;
             this.color = color ?? Color.white;
             this.StorageIndex = storageIndex ?? 0;
-            this.StorageCapacity = storageCapacity ?? 100;
+            this.StorageCapacity = storageCapacity ?? (type == ConduitType.Gas ? 2 : 100);
 
             //var resources = BuildingCellVisualizerResources.Instance();
             //var ioColors = type == ConduitType.Gas ? resources.gasIOColours : resources.liquidIOColours;

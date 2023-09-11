@@ -382,11 +382,11 @@ namespace PipedEverything
 
         private float CapacityForElement(SimHashes element)
         {
+            if (elementFilter.Length == 0)
+                return this.Storage.RemainingCapacity();
+
             if (!elementFilter.Contains(element))
                 return 0f;
-
-            if (this.Storage == null)
-                return this.capacityKG;
 
             float capacityElement = this.capacityKG;
             float capacityStorage = this.Storage.capacityKg;

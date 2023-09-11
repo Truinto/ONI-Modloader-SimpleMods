@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace PipedEverything
 {
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SkipSaveFileSerialization]
     public class ConduitDispenserOptional : KMonoBehaviour, ISaveLoadable, IConduitDispenser
     {
         [SerializeField]

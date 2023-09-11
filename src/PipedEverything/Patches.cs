@@ -15,6 +15,8 @@ using UnityEngine;
 
 namespace PipedEverything
 {
+    // TODO: fix ComplexFabricator dropping elements
+
     [HarmonyPatch]
     public static class Patches
     {
@@ -29,9 +31,9 @@ namespace PipedEverything
 
             return data;
 
-            bool shouldStore(bool storeOutput, ElementConverter __instance, [LocalParameter(IndexByType = 0)] Element element)
+            bool shouldStore(bool storeOutput, KMonoBehaviour __instance, [LocalParameter(IndexByType = 0)] Element element)
             {
-                return storeOutput || __instance.GetComponent<PortDisplayController>()?.CanStore(element) == true;
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
             }
         }
 
@@ -46,9 +48,9 @@ namespace PipedEverything
 
             return data;
 
-            bool shouldStore(bool storeOutput, EnergyGenerator __instance, [LocalParameter(IndexByType = 0)] Element element)
+            bool shouldStore(bool storeOutput, KMonoBehaviour __instance, [LocalParameter(IndexByType = 0)] Element element)
             {
-                return storeOutput || __instance.GetComponent<PortDisplayController>()?.CanStore(element) == true;
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
             }
         }
 
@@ -71,7 +73,7 @@ namespace PipedEverything
 
             bool shouldDrop(bool shouldDrop, AutoStorageDropper.Instance __instance, [LocalParameter(IndexByType = 0)] PrimaryElement element, [LocalParameter("controller")] PortDisplayController controller)
             {
-                return shouldDrop && controller?.CanStore(element.Element) != true;
+                return shouldDrop && controller?.IsOutputConnected(element.Element) != true;
             }
         }
 
@@ -207,7 +209,7 @@ namespace PipedEverything
 
             bool shouldStore(bool storeOutput, KMonoBehaviour __instance, [LocalParameter(IndexByType = 0)] Element element)
             {
-                return storeOutput || __instance.GetComponent<PortDisplayController>()?.CanStore(element) == true;
+                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
             }
         }
     }
