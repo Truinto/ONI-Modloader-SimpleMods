@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.4.0] U48-568201-S
+- fixed crash with displaying building preview
+
 ## [1.0.3.0] U48-568201-S
 - changed building to cease operation, if storage is full (output blocked)
 

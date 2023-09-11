@@ -24,14 +24,14 @@ namespace PipedEverything
         [SerializeField]
         private List<PortDisplay2> solidOverlay = new();
 
-        [MyCmpReq]
+        [MyCmpGet]
         private Operational operational;
 
         public override void OnSpawn()
         {
             base.OnSpawn();
 
-            if (outputPorts.Count > 0)
+            if (this.operational != null && outputPorts.Count > 0)
             {
                 base.Subscribe((int)GameHashes.OnStorageChange, o =>
                 {
