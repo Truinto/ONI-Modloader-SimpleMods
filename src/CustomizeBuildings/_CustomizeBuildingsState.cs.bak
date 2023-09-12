@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 53;
+        public int version { get; set; } = 54;
 
         #region $Reset Button
         [JsonIgnore]
@@ -51,6 +51,10 @@ namespace CustomizeBuildings
             StateManager.State.RocketPortLiquid = 10f;
             StateManager.State.RocketPortSolid = 20f;
             StateManager.State.RadBattery = 1000f;
+
+            StateManager.State.SweepyStationKG = 1000f;
+            StateManager.State.SweepBotKG = 500f;
+            StateManager.State.SweepyTidySpeedKG = 10f;
 
             StateManager.State.SpaceBattery = 100000f;
             StateManager.State.CO2EngineKG = 100f;
@@ -261,6 +265,19 @@ namespace CustomizeBuildings
         public float LargeSolidOxidizerTankKG { get; set; } = 2700f;
         [Option("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_Title", "CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_ToolTip", "Storage", "F0")]
         public float LiquidOxidizerTankKG { get; set; } = 2700f;
+
+        #endregion
+
+        #region Sweepy
+
+        [Option("Sweepy Station Capacity", "", "Sweepy", "F0")]
+        public float SweepyStationKG { get; set; } = 100000f;
+
+        [Option("Sweepy Capacity", "", "Sweepy", "F0")]
+        public float SweepBotKG { get; set; } = 10000f;
+
+        [Option("Sweepy Tidy Speed", "How much Sweepy can pick up per tick.", "Sweepy", "F0")]
+        public float SweepyTidySpeedKG { get; set; } = 1000f;
 
         #endregion
 

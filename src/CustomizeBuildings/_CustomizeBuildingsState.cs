@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 53;
+        public int version { get; set; } = 54;
 
         #region $Reset Button
         [JsonIgnore]
@@ -51,6 +51,10 @@ namespace CustomizeBuildings
             StateManager.State.RocketPortLiquid = 10f;
             StateManager.State.RocketPortSolid = 20f;
             StateManager.State.RadBattery = 1000f;
+
+            StateManager.State.SweepyStationKG = 1000f;
+            StateManager.State.SweepBotKG = 500f;
+            StateManager.State.SweepyTidySpeedKG = 10f;
 
             StateManager.State.SpaceBattery = 100000f;
             StateManager.State.CO2EngineKG = 100f;
@@ -261,6 +265,19 @@ namespace CustomizeBuildings
         public float LargeSolidOxidizerTankKG { get; set; } = 2700f;
         [Option("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_Title", "CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_ToolTip", "Storage", "F0")]
         public float LiquidOxidizerTankKG { get; set; } = 2700f;
+
+        #endregion
+
+        #region Sweepy
+
+        [Option("CustomizeBuildings.LOCSTRINGS.SweepyStationKG_Title", "CustomizeBuildings.LOCSTRINGS.SweepyStationKG_ToolTip", "Sweepy", "F0")]
+        public float SweepyStationKG { get; set; } = 100000f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.SweepBotKG_Title", "CustomizeBuildings.LOCSTRINGS.SweepBotKG_ToolTip", "Sweepy", "F0")]
+        public float SweepBotKG { get; set; } = 10000f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_Title", "CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_ToolTip", "Sweepy", "F0")]
+        public float SweepyTidySpeedKG { get; set; } = 1000f;
 
         #endregion
 
@@ -1309,6 +1326,19 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LiquidOxidizerTankKG", "LiquidOxidizerTankKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_Title", "Liquid Oxidizer Tank KG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_ToolTip", "");
+            #endregion
+            #region Sweepy
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SweepyStationKG", "SweepyStationKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyStationKG_Title", "Sweepy Station Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyStationKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SweepBotKG", "SweepBotKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepBotKG_Title", "Sweepy Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepBotKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SweepyTidySpeedKG", "SweepyTidySpeedKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_Title", "Sweepy Tidy Speed");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_ToolTip", "How much Sweepy can pick up per tick.");
             #endregion
             #region Switches
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeValves", "NoDupeValves");

@@ -296,4 +296,44 @@ namespace CustomizeBuildings
         }
     }
     #endregion
+
+    #region Sweepy
+    [HarmonyPatch]
+    public static class Sweepy_Patches
+    {
+        [HarmonyPatch(typeof(SweepBotConfig), nameof(SweepBotConfig.CreatePrefab))]
+        [HarmonyPostfix]
+        public static void Sweepy_Storage(GameObject __result)
+        {
+            __result.GetComponents<Storage>()[1].capacityKg = CustomizeBuildingsState.StateManager.State.SweepBotKG;
+        }
+
+        [HarmonyPatch(typeof(SweepBotStationConfig), nameof(SweepBotStationConfig.ConfigureBuildingTemplate))]
+        [HarmonyPostfix]
+        public static void SweepyStation_Storage(GameObject go)
+        {
+            go.GetComponent<SweepBotStation>().sweepStorage.capacityKg = CustomizeBuildingsState.StateManager.State.SweepyStationKG;
+        }
+
+        [HarmonyPatch(typeof(SweepStates), nameof(SweepStates.TryMop))]
+        [HarmonyPrefix]
+        public static void Sweepy_Mop(ref float dt)
+        {
+            dt = CustomizeBuildingsState.StateManager.State.SweepBotKG;
+        }
+
+        [HarmonyPatch(typeof(SweepStates), nameof(SweepStates.TryStore))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Sweepy_Sweep(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            int count = data.ReplaceAllConstant(10f, CustomizeBuildingsState.StateManager.State.SweepBotKG);
+            if (count != 2)
+                throw new Exception($"Sweepy_Sweep replaced {count} constants, instead of 2");
+
+            return data;
+        }
+    }
+    #endregion
 }

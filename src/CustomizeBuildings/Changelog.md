@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.82.0] U48-568201-S
+- added sweepy settings
+
 ## [1.0.81.0] U48-568201-S
 - fixed crash, probably
 
