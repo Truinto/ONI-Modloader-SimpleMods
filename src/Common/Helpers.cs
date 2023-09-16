@@ -523,6 +523,15 @@ namespace Common
             Strings.Add(key, text);
         }
 
+        public static LocString StringsAddShort(string text, string key_short)
+        {
+#if LOCALE
+            StringsDic[key_short] = text;
+#endif
+            Strings.Add(key_short, text);
+            return new LocString(text, $"{Helpers.ModName}.LOCSTRINGS.{key_short}");
+        }
+
         [System.Diagnostics.Conditional("LOCALE")]
         public static void StringsAddProperty(string key, string text)
         {
@@ -544,6 +553,15 @@ namespace Common
 #if LOCALE
             key = key.Replace(' ', '_');
             StringsDic[key] = id;
+#endif
+            TagManager.Create(id, proper ?? id);
+        }
+
+        public static void StringsTagShort(string id, string short_key, string proper = null)
+        {
+#if LOCALE
+            short_key = $"{Helpers.ModName}.TAG.{short_key.Replace(' ', '_')}";
+            StringsDic[short_key] = id;
 #endif
             TagManager.Create(id, proper ?? id);
         }

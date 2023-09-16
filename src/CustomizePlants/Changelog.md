@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.41.0]  U48-568201-S
+- fixed CheatFlowerVase, it no longer consumes material
+
 ## [1.0.40.0] U46-550759-S
 - fix disease settings
 

@@ -7,6 +7,7 @@ using HarmonyLib;
 using UnityEngine;
 using Common;
 using System.Reflection;
+using Shared;
 
 namespace CustomizePlants
 {
@@ -40,12 +41,12 @@ namespace CustomizePlants
         }
     }
 
-    [HarmonyPatch(typeof(PlantablePlot), "RegisterWithPlant")]
+    [HarmonyPatch(typeof(PlantablePlot), nameof(PlantablePlot.RegisterWithPlant))]
     public class FlowerVase_Wild
     {
         public static bool Prepare()
         {
-            return CustomizePlants.CustomizePlantsState.StateManager.State.WildFlowerVase;
+            return CustomizePlantsState.StateManager.State.WildFlowerVase;
         }
 
         public static bool Prefix(PlantablePlot __instance)
@@ -60,17 +61,41 @@ namespace CustomizePlants
         }
     }
 
-    [HarmonyPatch(typeof(FlowerVaseConfig), "ConfigureBuildingTemplate")]
+    [HarmonyPatch]
     public static class FlowerVaseConfig_Cheat
     {
+        public static Tag FlowerVaseTag = new(FlowerVaseConfig.ID);
+
         public static bool Prepare()
         {
             return CustomizePlantsState.StateManager.State.CheatFlowerVase;
         }
 
-        public static void Postfix(GameObject go)
+        public static IEnumerable<MethodBase> TargetMethods()
         {
-            FlowerPotHelper.EnableCheats(go);
+            yield return AccessTools.Method(typeof(IrrigationMonitor.Instance), nameof(IrrigationMonitor.Instance.UpdateIrrigation));
+            yield return AccessTools.Method(typeof(IrrigationMonitor.Instance), nameof(IrrigationMonitor.Instance.UpdateAbsorbing));
+            yield return AccessTools.Method(typeof(FertilizationMonitor.Instance), nameof(FertilizationMonitor.Instance.UpdateFertilization));
+            yield return AccessTools.Method(typeof(FertilizationMonitor.Instance), nameof(FertilizationMonitor.Instance.StartAbsorbing));
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(typeof(Klei.AI.AttributeInstance), nameof(Klei.AI.AttributeInstance.GetTotalValue));
+            data.InsertAfter(getTotalValue);
+
+            return data;
+
+            float getTotalValue(float modifier, StateMachine.Instance __instance)
+            {
+                if (__instance is FertilizationMonitor.Instance fert && fert.storage.GetComponent<KPrefabID>().PrefabTag == FlowerVaseTag)
+                    return 0f;
+                if (__instance is IrrigationMonitor.Instance irr && irr.storage.GetComponent<KPrefabID>().PrefabTag == FlowerVaseTag)
+                    return 0f;
+                return modifier;
+            }
         }
     }
 
