@@ -29,7 +29,7 @@ namespace CarePackageMod
     {
         public static void Postfix()
         {
-            CarePackageMod.dirty = true; // TODO: debug
+            CarePackageMod.dirty = true;
         }
     }
 

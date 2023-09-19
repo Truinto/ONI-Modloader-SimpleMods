@@ -87,18 +87,14 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f
-                && !LiquidValveConfig_ConfigureBuildingTemplate2.Prepare();
+            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f;
         }
 
         public static void Postfix(GameObject go)
         {
-            if (go.GetComponent<ValvePressure>() == null)
-            {
-                var valveBase = go.AddOrGet<ValveBase>();
-                if (valveBase != null)
-                    valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
-            }
+            var valveBase = go.AddOrGet<ValveBase>();
+            if (valveBase != null)
+                valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
         }
     }
 
@@ -107,18 +103,15 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f
-                && !GasValveConfig_ConfigureBuildingTemplate2.Prepare();
+            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f;
         }
 
         public static void Postfix(GameObject go)
         {
-            if (go.GetComponent<ValvePressure>() == null)
-            {
-                var valveBase = go.AddOrGet<ValveBase>();
-                if (valveBase != null)
-                    valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
-            }
+            var valveBase = go.AddOrGet<ValveBase>();
+            if (valveBase != null)
+                valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
+
         }
     }
 

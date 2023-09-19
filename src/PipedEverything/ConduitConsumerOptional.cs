@@ -267,6 +267,8 @@ namespace PipedEverything
             this.GetConduitManager().RemoveConduitUpdater(ConduitUpdate);
             GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
             base.OnCleanUp();
+
+            Conduit.GetNetworkManager(this.conduitType).RemoveFromNetworks(this.utilityCell, this.networkItem, is_endpoint: true);
         }
 
         private void OnConduitConnectionChanged(object data)

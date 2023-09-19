@@ -17,7 +17,7 @@
 	<!-- Compile Constants -->
 	<PropertyGroup>
 		<DefineConstants Condition="Exists('$(ProjectDir)_MERGE')">$(DefineConstants);MERGE</DefineConstants>
-		<DefineConstants Condition="Exists('$(ProjectDir)_MERGE') and '$(Configuration)'=='Debug'">$(DefineConstants);LOCALE</DefineConstants>
+		<DefineConstants Condition="'$(Configuration)'=='Debug'">$(DefineConstants);LOCALE</DefineConstants>
 	</PropertyGroup>
 
 	<!-- Shared Libs -->
@@ -56,7 +56,8 @@
 		<Reference Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
 		<Reference Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
 		<Reference Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
-
+		<Reference Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
+    
 		<Reference Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod.dll" />
 		<Reference Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />

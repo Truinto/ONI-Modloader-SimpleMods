@@ -98,7 +98,6 @@ namespace CustomizeBuildings
             StateManager.State.PipeThroughputPercent = 1.0f;
             StateManager.State.PipeLiquidMaxPressure = 10f;
             StateManager.State.PipeGasMaxPressure = 1f;
-            StateManager.State.PipeValvePressureButtonShow = false;
             StateManager.State.PipeLiquidPump = 10f;
             StateManager.State.PipeGasPump = 0.5f;
             StateManager.State.PipeLiquidPumpMini = 1f;
@@ -270,13 +269,13 @@ namespace CustomizeBuildings
 
         #region Sweepy
 
-        [Option("Sweepy Station Capacity", "", "Sweepy", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SweepyStationKG_Title", "CustomizeBuildings.LOCSTRINGS.SweepyStationKG_ToolTip", "Sweepy", "F0")]
         public float SweepyStationKG { get; set; } = 100000f;
 
-        [Option("Sweepy Capacity", "", "Sweepy", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SweepBotKG_Title", "CustomizeBuildings.LOCSTRINGS.SweepBotKG_ToolTip", "Sweepy", "F0")]
         public float SweepBotKG { get; set; } = 10000f;
 
-        [Option("Sweepy Tidy Speed", "How much Sweepy can pick up per tick.", "Sweepy", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_Title", "CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_ToolTip", "Sweepy", "F0")]
         public float SweepyTidySpeedKG { get; set; } = 1000f;
 
         #endregion
@@ -368,8 +367,6 @@ namespace CustomizeBuildings
         public float PipeLiquidMaxPressure { get; set; } = 10f;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_Title", "CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_ToolTip", "Pipes", "F2")]
         public float PipeGasMaxPressure { get; set; } = 1.0f;
-        [Option("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_Title", "CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_ToolTip", "Pipes")]
-        public bool PipeValvePressureButtonShow { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_Title", "CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_ToolTip", "Pipes", "F2")]
         public float PipeLiquidPump { get; set; } = 10.0f;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeGasPump_Title", "CustomizeBuildings.LOCSTRINGS.PipeGasPump_ToolTip", "Pipes", "F2")]
@@ -992,10 +989,6 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_Title", "Pipe Gas Max Pressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_ToolTip", "Gas pipe pressure.");
 
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeValvePressureButtonShow", "PipeValvePressureButtonShow");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_Title", "Pipe Valve Pressure Button Show");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_ToolTip", "If true, will display a 'limit' button in the building window. While limited, output tile cannot exceed flow rate.");
-
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeLiquidPump", "PipeLiquidPump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_Title", "Pipe Liquid Pump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_ToolTip", "Amount of liquid pumped at once from Liquid Pumps.");
@@ -1326,6 +1319,19 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LiquidOxidizerTankKG", "LiquidOxidizerTankKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_Title", "Liquid Oxidizer Tank KG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LiquidOxidizerTankKG_ToolTip", "");
+            #endregion
+            #region Sweepy
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SweepyStationKG", "SweepyStationKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyStationKG_Title", "Sweepy Station Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyStationKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SweepBotKG", "SweepBotKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepBotKG_Title", "Sweepy Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepBotKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SweepyTidySpeedKG", "SweepyTidySpeedKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_Title", "Sweepy Tidy Speed");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SweepyTidySpeedKG_ToolTip", "How much Sweepy can pick up per tick.");
             #endregion
             #region Switches
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeValves", "NoDupeValves");

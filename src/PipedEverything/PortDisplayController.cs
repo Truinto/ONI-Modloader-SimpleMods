@@ -13,16 +13,16 @@ namespace PipedEverything
         private HashedString lastMode = OverlayModes.None.ID;
 
         [SerializeField]
-        private List<PortDisplay2> outputPorts = new();
+        public List<PortDisplay2> outputPorts = new();
 
         [SerializeField]
-        private List<PortDisplay2> gasOverlay = new();
+        public List<PortDisplay2> gasOverlay = new();
 
         [SerializeField]
-        private List<PortDisplay2> liquidOverlay = new();
+        public List<PortDisplay2> liquidOverlay = new();
 
         [SerializeField]
-        private List<PortDisplay2> solidOverlay = new();
+        public List<PortDisplay2> solidOverlay = new();
 
         [MyCmpGet]
         private Operational operational;
@@ -107,10 +107,12 @@ namespace PipedEverything
 
         public bool IsInputConnected(Element element)
         {
+            if (element == null)
+                return false;
             var hash = element.id;
             foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
             {
-                if (port.input && port.filter.Contains(hash))
+                if (port.input && (port.filter.Length == 0 && element.GetConduitType() == port.type || port.filter.Contains(hash)))
                     return port.IsConnected();
             }
             return false;
@@ -118,10 +120,12 @@ namespace PipedEverything
 
         public bool IsOutputConnected(Element element)
         {
+            if (element == null)
+                return false;
             var hash = element.id;
             foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
             {
-                if (!port.input && port.filter.Contains(hash))
+                if (!port.input && (port.filter.Length == 0 && element.GetConduitType() == port.type || port.filter.Contains(hash)))
                     return port.IsConnected();
             }
             return false;
@@ -129,6 +133,8 @@ namespace PipedEverything
 
         public bool CanStore(Element element)
         {
+            if (element == null)
+                return false;
             var port = GetPort(false, element.GetConduitType(), element.id);
             return port != null && port.IsConnected() && port.GetCapacity(element.id) > 0f;
         }

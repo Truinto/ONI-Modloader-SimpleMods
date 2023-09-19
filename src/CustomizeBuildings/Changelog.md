@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.83.0] U48-568201-S
+- added button to control reservoir store
+- fixed reservoir control being ignored by automation
+- fixed autominer visualizer
+- removed pressure limit on valves
+- added temperature limit on valves
+
 ## [1.0.82.0] U48-568201-S
 - added sweepy settings
 

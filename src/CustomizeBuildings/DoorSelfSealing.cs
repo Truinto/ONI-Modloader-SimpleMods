@@ -33,7 +33,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(Door), "OnPrefabInit")]
+    [HarmonyPatch(typeof(Door), nameof(Door.OnPrefabInit))]
     public class DoorOnPrefabInit_Patch
     {
         public static void Postfix(ref Door __instance)
@@ -45,7 +45,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(Door), "OnCleanUp")]
+    [HarmonyPatch(typeof(Door), nameof(Door.OnCleanUp))]
     public class DoorOnCleanUp_Patch
     {
         public static void Postfix(Door __instance)
@@ -58,7 +58,7 @@ namespace CustomizeBuildings
     }
 
 
-    [HarmonyPatch(typeof(Door), "SetSimState")]
+    [HarmonyPatch(typeof(Door), nameof(Door.SetSimState))]
     public class DoorSelfSealing_Patch
     {
         public static bool Prepare()
@@ -80,23 +80,18 @@ namespace CustomizeBuildings
                 SimMessages.SetCellProperties(cell, 4);
                 if (is_door_open)
                 {
-                    var delegateDoorOpen = (System.Action)Delegate.CreateDelegate(typeof(System.Action), __instance, OnSimDoorOpened);
-                    var handleOpen = Game.Instance.callbackManager.Add(new Game.CallbackInfo(delegateDoorOpen, false));
+                    var handleOpen = Game.Instance.callbackManager.Add(new Game.CallbackInfo(__instance.OnSimDoorOpened, false));
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorOpen, mass, pElement.Temperature, byte.MaxValue, 0, handleOpen.index);
                     //SimMessages.ClearCellProperties(cell, 3);
                 }
                 else
                 {
-                    var delegateDoorClose = (System.Action)Delegate.CreateDelegate(typeof(System.Action), __instance, OnSimDoorClosed);
-                    var handleClose = Game.Instance.callbackManager.Add(new Game.CallbackInfo(delegateDoorClose, false));
+                    var handleClose = Game.Instance.callbackManager.Add(new Game.CallbackInfo(__instance.OnSimDoorClosed, false));
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorClose, mass, pElement.Temperature, byte.MaxValue, 0, handleClose.index);
                     //SimMessages.SetCellProperties(cell, 3);
                 }
             }
             return false;
         }
-
-        public static MethodInfo OnSimDoorOpened = AccessTools.Method(typeof(Door), "OnSimDoorOpened");
-        public static MethodInfo OnSimDoorClosed = AccessTools.Method(typeof(Door), "OnSimDoorClosed");
     }
 }

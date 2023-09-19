@@ -158,13 +158,13 @@ namespace CustomizeBuildings
                 if (width * height > 400)
                 {
                     width = 1;
-                    height = 1;
+                    height = 2;
                 }
 
                 rangeVisualizer.RangeMin.x = 1 - (width / 2);
-                rangeVisualizer.RangeMin.y = 3 - (height / 2) + offset;
-                rangeVisualizer.RangeMax.x = (width / 2);
-                rangeVisualizer.RangeMax.y = 3 + (height / 2) + offset;
+                rangeVisualizer.RangeMin.y = offset - 1;
+                rangeVisualizer.RangeMax.x = rangeVisualizer.RangeMin.x + width;
+                rangeVisualizer.RangeMax.y = height - 2;
 
                 //choreRangeVisualizer.vision_offset = new CellOffset(0, 1);
                 //choreRangeVisualizer.movable = movable;
@@ -185,9 +185,25 @@ namespace CustomizeBuildings
         {
             try
             {
-                __result = Grid.Foundation[cell] && Grid.Solid[cell]
-                    //|| Grid.Transparent[cell] || CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass
-                    || Grid.Element[cell].hardness >= (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile ? 255 : 150);
+                if (CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass && Grid.Transparent[cell])
+                {
+                    __result = false;
+                    return false;
+                }
+
+                if (Grid.Foundation[cell] && Grid.Solid[cell])
+                {
+                    __result = true;
+                    return false;
+                }
+
+                if (Grid.Element[cell].hardness >= (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile ? 255 : 150))
+                {
+                    __result = true;
+                    return false;
+                }
+
+                __result = false;
                 return false;
             }
             catch (Exception) { }

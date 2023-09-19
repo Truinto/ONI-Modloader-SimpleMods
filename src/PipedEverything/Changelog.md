@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.5.0] U48-568201-S
+- fixed issue with removing buildings
+- added support for ComplexFabricator
+- allowing 'Solid', 'Liquid', and 'Gas' as general filter options
+
 ## [1.0.4.0] U48-568201-S
 - fixed crash with displaying building preview
 

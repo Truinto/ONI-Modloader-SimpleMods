@@ -3,8 +3,6 @@ using Common;
 
 namespace PipedEverything
 {
-    // can't be stored in components. It somehow gets reset before it's used
-    // Serialization doesn't seem to help at all
     public class PortDisplayInfo
     {
         public readonly ConduitType type;
@@ -13,9 +11,9 @@ namespace PipedEverything
         public readonly Color color;
         public readonly SimHashes[] filter;
         public readonly int StorageIndex;
-        public readonly int StorageCapacity;
+        public readonly float StorageCapacity;
 
-        public PortDisplayInfo(SimHashes[] filter, ConduitType type, CellOffset offset, bool input, Color? color, int? storageIndex, int? storageCapacity)
+        public PortDisplayInfo(SimHashes[] filter, ConduitType type, CellOffset offset, bool input, Color? color, int? storageIndex, float? storageCapacity)
         {
             this.filter = filter;
             this.type = type;
@@ -23,12 +21,7 @@ namespace PipedEverything
             this.input = input;
             this.color = color ?? Color.white;
             this.StorageIndex = storageIndex ?? 0;
-            this.StorageCapacity = storageCapacity ?? (type == ConduitType.Gas ? 2 : 100);
-
-            //var resources = BuildingCellVisualizerResources.Instance();
-            //var ioColors = type == ConduitType.Gas ? resources.gasIOColours : resources.liquidIOColours;
-            //var colorSet = input ? ioColors.input : ioColors.output;
-            //this.color = colorSet.connected;
+            this.StorageCapacity = storageCapacity ?? (type == ConduitType.Gas ? 2f : 200f);
         }
     }
 }

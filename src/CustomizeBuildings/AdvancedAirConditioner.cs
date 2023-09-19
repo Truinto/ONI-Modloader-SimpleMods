@@ -291,51 +291,12 @@ namespace CustomizeBuildings
         public static void Postfix(GameObject go) => go.AddOrGet<SpaceHeaterSlider>();
     }
 
-    public class SpaceHeaterSlider : KMonoBehaviour, IThresholdSwitch, ISim1000ms
+    [SerializationConfig(MemberSerialization.OptIn)]
+    public class SpaceHeaterSlider : SliderTemperatureSideScreen, ISim1000ms
     {
-        private SpaceHeater spaceHeater;
+        [MyCmpGet] private SpaceHeater spaceHeater;
 
-        #region IThresholdSwitch
-        public float CurrentTemperature;
-        [Serialize] public float SetTemperature = 273.15f + 80f;
-        [Serialize] public bool Switch;
-
-        float IThresholdSwitch.Threshold
-        {
-            get => this.SetTemperature;
-            set
-            {
-                this.SetTemperature = value;
-                this.UpdateThreshold();
-            }
-        }
-        bool IThresholdSwitch.ActivateAboveThreshold { get => this.Switch; set => this.Switch = value; }
-        float IThresholdSwitch.CurrentValue => this.CurrentTemperature;
-        float IThresholdSwitch.RangeMin => 0f;
-        float IThresholdSwitch.RangeMax => 1273.15f;
-        LocString IThresholdSwitch.Title => STRINGS.UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE;
-        LocString IThresholdSwitch.ThresholdValueName => STRINGS.UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE;
-        string IThresholdSwitch.AboveToolTip => "Above";
-        string IThresholdSwitch.BelowToolTip => "Below";
-        ThresholdScreenLayoutType IThresholdSwitch.LayoutType => ThresholdScreenLayoutType.InputField;
-        int IThresholdSwitch.IncrementScale => 1;
-        NonLinearSlider.Range[] IThresholdSwitch.GetRanges => NonLinearSlider.GetDefaultRange(((IThresholdSwitch)this).RangeMax);
-        float IThresholdSwitch.GetRangeMinInputField() => GameUtil.GetConvertedTemperature(((IThresholdSwitch)this).RangeMin, false);
-        float IThresholdSwitch.GetRangeMaxInputField() => GameUtil.GetConvertedTemperature(((IThresholdSwitch)this).RangeMax, false);
-        LocString IThresholdSwitch.ThresholdValueUnits() => Helpers.GetTemperatureUnit();
-        string IThresholdSwitch.Format(float value, bool units) => GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, units, false);
-        float IThresholdSwitch.ProcessedSliderValue(float input) => Mathf.Round(input);
-        float IThresholdSwitch.ProcessedInputValue(float input) => GameUtil.GetTemperatureConvertedToKelvin(input);
-        #endregion
-
-        public override void OnSpawn()
-        {
-            base.OnSpawn();
-            this.spaceHeater = this.GetComponent<SpaceHeater>();
-            this.UpdateThreshold();
-        }
-
-        public void UpdateThreshold()
+        public override void Update()
         {
             if (this.spaceHeater != null)
             {
@@ -345,7 +306,7 @@ namespace CustomizeBuildings
 
         public void Sim1000ms(float dt)
         {
-            this.CurrentTemperature = Grid.Temperature[Grid.PosToCell(this)];
+            this.CurrentValue = Grid.Temperature[Grid.PosToCell(this)];
         }
     }
 

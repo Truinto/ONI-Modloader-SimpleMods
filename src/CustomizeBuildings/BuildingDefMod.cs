@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace CustomizeBuildings
 {
-    [HarmonyPatch(typeof(BuildingConfigManager), "RegisterBuilding")]
+    [HarmonyPatch(typeof(BuildingConfigManager), nameof(BuildingConfigManager.RegisterBuilding))]
     public class BuildingConfigManager_RegisterBuilding
     {
         public static void CreateBuildingDefOverride(BuildingDef buildingDef)
@@ -172,6 +172,13 @@ namespace CustomizeBuildings
                         mod.Edit(def); // TODO: update all capacity patches to new IBuildingCompleteMod
                     }
                     catch (Exception e) { Helpers.Print(e.ToString()); }
+            }
+
+            if (def.PrefabID == RefrigeratorConfig.ID 
+                && CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(RefrigeratorConfig.ID, out var baseSetting))
+            {
+                if (baseSetting.PowerConsumption.HasValue)
+                    def.BuildingComplete.GetDef<RefrigeratorController.Def>().powerSaverEnergyUsage = baseSetting.PowerConsumption.Value / 6f;
             }
 
             if (!CustomizeBuildingsState.StateManager.State.BuildingAdvancedGlobalFlag)

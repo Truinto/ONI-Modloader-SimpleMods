@@ -98,7 +98,6 @@ namespace CustomizeBuildings
             StateManager.State.PipeThroughputPercent = 1.0f;
             StateManager.State.PipeLiquidMaxPressure = 10f;
             StateManager.State.PipeGasMaxPressure = 1f;
-            StateManager.State.PipeValvePressureButtonShow = false;
             StateManager.State.PipeLiquidPump = 10f;
             StateManager.State.PipeGasPump = 0.5f;
             StateManager.State.PipeLiquidPumpMini = 1f;
@@ -368,8 +367,6 @@ namespace CustomizeBuildings
         public float PipeLiquidMaxPressure { get; set; } = 10f;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_Title", "CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_ToolTip", "Pipes", "F2")]
         public float PipeGasMaxPressure { get; set; } = 1.0f;
-        [Option("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_Title", "CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_ToolTip", "Pipes")]
-        public bool PipeValvePressureButtonShow { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_Title", "CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_ToolTip", "Pipes", "F2")]
         public float PipeLiquidPump { get; set; } = 10.0f;
         [Option("CustomizeBuildings.LOCSTRINGS.PipeGasPump_Title", "CustomizeBuildings.LOCSTRINGS.PipeGasPump_ToolTip", "Pipes", "F2")]
@@ -991,10 +988,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeGasMaxPressure", "PipeGasMaxPressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_Title", "Pipe Gas Max Pressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeGasMaxPressure_ToolTip", "Gas pipe pressure.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeValvePressureButtonShow", "PipeValvePressureButtonShow");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_Title", "Pipe Valve Pressure Button Show");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeValvePressureButtonShow_ToolTip", "If true, will display a 'limit' button in the building window. While limited, output tile cannot exceed flow rate.");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeLiquidPump", "PipeLiquidPump");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.PipeLiquidPump_Title", "Pipe Liquid Pump");

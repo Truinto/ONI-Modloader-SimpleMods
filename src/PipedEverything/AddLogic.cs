@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Common;
 using static Storage;
+using Shared;
 
 namespace PipedEverything
 {
@@ -72,6 +73,13 @@ namespace PipedEverything
                     continue;
                 }
 
+                // set default for outputs on ComplexFabricator to 3rd storage (usually)
+                var complexFabricator = def.BuildingComplete.GetComponent<ComplexFabricator>();
+                if (complexFabricator != null)
+                {
+                    config.StorageIndex ??= def.BuildingComplete.GetComponents<Storage>().FindIndex(f => ReferenceEquals(f, config.Input ? complexFabricator.inStorage : complexFabricator.outStorage));
+                }
+
                 var portInfo = new PortDisplayInfo(filters.ToArray(), conduitType, offset, config.Input, color, config.StorageIndex, config.StorageCapacity);
                 def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
                 def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
@@ -80,15 +88,16 @@ namespace PipedEverything
                 // ensure enough room for new elements and is sealed
                 def.BuildingComplete.AddOrGet<Storage>();
                 var storage = def.BuildingComplete.GetComponents<Storage>()[portInfo.StorageIndex];
-                storage.capacityKg += portInfo.StorageCapacity * portInfo.filter.Length;
+                if (portInfo.StorageCapacity < float.MaxValue)
+                    storage.capacityKg += portInfo.StorageCapacity * portInfo.filter.Length;
                 if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
                     storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
 
                 // add conduit consumer/dispenser
                 if (config.Input)
                 {
-                    if (conduitType != ConduitType.Solid)                    
-                        def.BuildingComplete.AddComponent<ConduitConsumerOptional>().AssignPort(portInfo);                    
+                    if (conduitType != ConduitType.Solid)
+                        def.BuildingComplete.AddComponent<ConduitConsumerOptional>().AssignPort(portInfo);
                     else
                         def.BuildingComplete.AddComponent<ConduitConsumerOptionalSolid>().AssignPort(portInfo);
                 }
@@ -98,12 +107,6 @@ namespace PipedEverything
                         def.BuildingComplete.AddComponent<ConduitDispenserOptional>().AssignPort(portInfo);
                     else
                         def.BuildingComplete.AddComponent<ConduitDispenserOptionalSolid>().AssignPort(portInfo);
-                }
-
-                // fix for gourment station; ComplexFabricator drops ingredients from inStorage, if they are not in the selected recipe (like carbon dioxide)
-                if (config.Id == GourmetCookingStationConfig.ID)
-                {
-                    def.BuildingComplete.GetComponent<ComplexFabricator>().keepAdditionalTag = SimHashes.CarbonDioxide.ToTag();
                 }
 
                 Helpers.PrintDebug($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");

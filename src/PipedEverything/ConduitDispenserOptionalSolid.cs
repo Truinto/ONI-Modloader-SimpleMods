@@ -12,7 +12,7 @@ using Common;
 namespace PipedEverything
 {
     [SkipSaveFileSerialization]
-    public class ConduitDispenserOptionalSolid : KMonoBehaviour, ISaveLoadable, IConduitDispenser
+    public class ConduitDispenserOptionalSolid : KMonoBehaviour, IConduitDispenser
     {
         [SerializeField]
         public CellOffset conduitOffset;
@@ -88,6 +88,8 @@ namespace PipedEverything
             GetConduitFlow().RemoveConduitUpdater(ConduitUpdate);
             GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
             base.OnCleanUp();
+
+            Game.Instance.solidConduitSystem.RemoveFromNetworks(this.utilityCell, this.networkItem, is_endpoint: true);
         }
 
         private void OnConduitConnectionChanged(object data)
@@ -127,13 +129,14 @@ namespace PipedEverything
             var list3 = new List<GameObject>(list.Count);
             foreach (var item in list)
             {
-                if (this.elementFilter.Contains(item.GetComponent<PrimaryElement>().ElementID))
+                var element2 = item.GetComponent<PrimaryElement>();
+                if (this.elementFilter.Length == 0 && element2.Element.IsSolid || this.elementFilter.Contains(element2.ElementID))
                     list3.Add(item);
             }
 
             if (list3.Count < 1)
                 return null;
-            
+
             this.round_robin_index %= list3.Count;
             return list3[this.round_robin_index++]?.GetComponent<Pickupable>();
         }

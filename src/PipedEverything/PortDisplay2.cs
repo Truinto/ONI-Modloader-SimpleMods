@@ -15,28 +15,31 @@ namespace PipedEverything
         private Color lastColor = Color.black;
 
         [SerializeField]
-        internal ConduitType type;
+        public ConduitType type;
 
         [SerializeField]
-        internal CellOffset offset;
+        public CellOffset offset;
 
         [SerializeField]
-        internal bool input;
+        public bool input;
 
         [SerializeField]
-        internal Color32 color;
+        public Color32 color;
 
         [SerializeField]
-        internal Sprite sprite;
+        public Sprite sprite;
 
         [SerializeField]
-        internal SimHashes[] filter;
+        public SimHashes[] filter;
 
         [SerializeField]
-        internal int storageIndex;
+        public Tag[] tags;
 
         [SerializeField]
-        internal int storageCapacity;
+        public int storageIndex;
+
+        [SerializeField]
+        public float storageCapacity;
 
         private Storage storage;
 
@@ -50,6 +53,7 @@ namespace PipedEverything
             this.color = port.color;
             this.sprite = GetSprite();
             this.filter = port.filter;
+            this.tags = port.filter.Select(s => s.ToTag()).ToArray();
             this.storageIndex = port.StorageIndex;
             this.storageCapacity = port.StorageCapacity;
         }
@@ -96,7 +100,7 @@ namespace PipedEverything
             return null;
         }
 
-        internal void DisableIcons()
+        public void DisableIcons()
         {
             if (this.portObject != null)
             {
@@ -121,7 +125,7 @@ namespace PipedEverything
             if (this.lastUtilityCell < 0)
                 this.lastUtilityCell = this.GetCellWithOffset(this.offset);
 
-            int layer = this.type == ConduitType.Gas ? 12 : this.type == ConduitType.Liquid ? 16 : 20;
+            int layer = this.type == ConduitType.Gas ? (int)ObjectLayer.GasConduit : this.type == ConduitType.Liquid ? (int)ObjectLayer.LiquidConduit : (int)ObjectLayer.SolidConduit;
             return Grid.Objects[this.lastUtilityCell, layer] != null;
         }
 
@@ -155,7 +159,7 @@ namespace PipedEverything
                     continue;
 
                 var element2 = item.GetComponent<PrimaryElement>();
-                if (this.filter.Contains(element2.ElementID) && element2.Mass > capacityElement)
+                if ((this.filter.Length == 0 && element2.Element.GetConduitType() == this.type || this.filter.Contains(element2.ElementID)) && element2.Mass > capacityElement)
                     return true;
             }
             return false;

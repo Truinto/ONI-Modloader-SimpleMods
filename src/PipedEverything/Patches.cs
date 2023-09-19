@@ -15,7 +15,7 @@ using UnityEngine;
 
 namespace PipedEverything
 {
-    // TODO: fix ComplexFabricator dropping elements
+    // TODO new ports:
 
     [HarmonyPatch]
     public static class Patches
@@ -74,6 +74,49 @@ namespace PipedEverything
             bool shouldDrop(bool shouldDrop, AutoStorageDropper.Instance __instance, [LocalParameter(IndexByType = 0)] PrimaryElement element, [LocalParameter("controller")] PortDisplayController controller)
             {
                 return shouldDrop && controller?.IsOutputConnected(element.Element) != true;
+            }
+        }
+
+        [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.DropExcessIngredients))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ComplexFabricator_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(d => d.IsStloc(typeof(HashSet<Tag>)));
+            data.InsertAfter(patch);
+
+            return data;
+
+            void patch(ComplexFabricator __instance, [LocalParameter(IndexByType = 0)] HashSet<Tag> keepTags)
+            {
+                var controller = __instance.GetComponent<PortDisplayController>();
+                if (controller == null) 
+                    return;
+
+                foreach (var port in controller.outputPorts)
+                {
+                    if (port.IsConnected())
+                        foreach (var element in port.tags) // this won't stop empty filters from dropping
+                            keepTags.Add(element);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.SpawnOrderProduct))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ComplexFabricator_Transpiler2(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            if (2 != data.InsertAfterAll(typeof(ComplexFabricator), nameof(ComplexFabricator.storeProduced), patch))
+                throw new Exception();
+
+            return data;
+
+            bool patch(bool forceStore, ComplexFabricator __instance, [LocalParameter(IndexByType = 2)] ComplexRecipe.RecipeElement element3)
+            {
+                return forceStore || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element3.material.ToElement()) == true;
             }
         }
 

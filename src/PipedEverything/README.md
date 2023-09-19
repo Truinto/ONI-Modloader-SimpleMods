@@ -1,13 +1,13 @@
 Adds liquid, gas, and solid pipes to buildings. Settings can be configured. Can work for modded buildings, but requires editing the settings.
 
-Default settings include all ports from 'Piped Output' and more. If a pipe is not connected or the building's storage is full, it will return to its default behavior (meaning emit into the environment).
+Default settings include all ports from 'Piped Output' and more. If a pipe is connected but blocked, it will store materials internally until 'StorageCapacity' is exceeded. Then it will disable the building.
 
-Settings here:
-Windows: %userprofile%\documents\Klei\OxygenNotIncluded\mods\PipedEverything.json
-Mac: ~Library/Application Support/unity.Klei.Oxygen Not Included/mods/PipedEverything.json
+### Settings here
+Windows: %userprofile%\documents\Klei\OxygenNotIncluded\mods\PipedEverything.json \
+Mac: ~Library/Application Support/unity.Klei.Oxygen Not Included/mods/PipedEverything.json \
 Ubuntu: ~/.config/unity3d/Klei/Oxygen Not Included/mods/PipedEverything.json
 
-Format:
+### Format
 * Id: string | Building ID or exact localized string (including spaces)
 * Input: bool | If true act as input, otherwise as output
 * OffsetX: int | Port's X position relative to origin cell
@@ -17,7 +17,9 @@ Format:
 * StorageIndex: int | Which storage to use, default 0
 * StorageCapacity int | How much of each element can be stored, default 100kg (except gas with 2kg)
 
-Github:
-https://github.com/Truinto/ONI-Modloader-SimpleMods
-
+### Source
+[Github](https://github.com/Truinto/ONI-Modloader-SimpleMods) \
 Thanks to Nightinggale for the ground work of this project. [Link](https://github.com/Nightinggale/ONI-mods/tree/master)
+
+### Notes
+* Filter accepts the string 'Solid', 'Liquid', and 'Gas' for ports; this will process any element of that type

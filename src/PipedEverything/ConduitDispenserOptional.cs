@@ -12,7 +12,7 @@ using UnityEngine;
 namespace PipedEverything
 {
     [SkipSaveFileSerialization]
-    public class ConduitDispenserOptional : KMonoBehaviour, ISaveLoadable, IConduitDispenser
+    public class ConduitDispenserOptional : KMonoBehaviour, IConduitDispenser
     {
         [SerializeField]
         public ConduitType conduitType;
@@ -117,6 +117,8 @@ namespace PipedEverything
             GetConduitManager().RemoveConduitUpdater(ConduitUpdate);
             GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
             base.OnCleanUp();
+
+            Conduit.GetNetworkManager(this.conduitType).RemoveFromNetworks(this.utilityCell, this.networkItem, is_endpoint: true);
         }
 
         public void SetOnState(bool onState)

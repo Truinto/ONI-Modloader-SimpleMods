@@ -140,6 +140,8 @@ namespace PipedEverything
             this.GetConduitFlow().RemoveConduitUpdater(ConduitUpdate);
             GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
             base.OnCleanUp();
+
+            Game.Instance.solidConduitSystem.RemoveFromNetworks(this.utilityCell, this.networkItem, is_endpoint: true);
         }
 
         private void OnConduitConnectionChanged(object data)
