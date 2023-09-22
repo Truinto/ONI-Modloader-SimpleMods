@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.23.0] U48-568201-S
+## [1.0.24.0] U48-568201-S
 - force all geysers to show up as generic
 
 ## [1.0.23.0] U45-544793-S
