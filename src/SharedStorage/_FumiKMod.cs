@@ -23,6 +23,7 @@ namespace SharedStorage
 
             // predefine strings
             CustomStrings.LoadStrings();
+            CustomStrings.ExtraStrings();
             Helpers.StringsPrint();
 
             // load translation, if any

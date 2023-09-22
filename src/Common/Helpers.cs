@@ -396,6 +396,22 @@ namespace Common
                 array[i] = value;
             }
         }
+
+        public static bool Ensure<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value, Func<TValue> getter)
+        {
+            if (dic.TryGetValue(key, out value))
+                return false;
+            dic[key] = value = getter();
+            return true;
+        }
+
+        public static TValue Ensure<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, Func<TValue> getter)
+        {
+            if (dic.TryGetValue(key, out TValue value))
+                return value;
+            dic[key] = value = getter();
+            return value;
+        }
         #endregion
 
         #region Locale

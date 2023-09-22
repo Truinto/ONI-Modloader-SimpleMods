@@ -98,7 +98,7 @@ namespace SharedStorage
 
             Helpers.StringsAddProperty("SharedStorage.PROPERTY.Enabled", "Enabled");
             Helpers.StringsAdd("SharedStorage.LOCSTRINGS.Enabled_Title", "Enabled");
-            Helpers.StringsAdd("SharedStorage.LOCSTRINGS.Enabled_ToolTip", "If false, stops the background task from transfering items.");
+            Helpers.StringsAdd("SharedStorage.LOCSTRINGS.Enabled_ToolTip", "If false, stops buildings from trading their contents.");
 
             Helpers.StringsAddProperty("SharedStorage.PROPERTY.AllowCrossWorld", "AllowCrossWorld");
             Helpers.StringsAdd("SharedStorage.LOCSTRINGS.AllowCrossWorld_Title", "Allow Cross World");
@@ -122,7 +122,7 @@ namespace SharedStorage
 
             Helpers.StringsAddProperty("SharedStorage.PROPERTY.MinClothes", "MinClothes");
             Helpers.StringsAdd("SharedStorage.LOCSTRINGS.MinClothes_Title", "Split Clothes");
-            Helpers.StringsAdd("SharedStorage.LOCSTRINGS.MinClothes_ToolTip", "Minimum amount of clothing to move.");
+            Helpers.StringsAdd("SharedStorage.LOCSTRINGS.MinClothes_ToolTip", "Minimum amount of clothing to move");
 
             Helpers.StringsAddProperty("SharedStorage.PROPERTY.RefreshRate", "RefreshRate");
             Helpers.StringsAdd("SharedStorage.LOCSTRINGS.RefreshRate_Title", "Refresh Rate");
