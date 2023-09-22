@@ -21,7 +21,7 @@ namespace CarePackageMod
                 if (go != null)
                 {
                     Helpers.Print("PrintingPod OnRefreshUserMenu was not NULL!");
-                    go.Unsubscribe((int)GameHashes.RefreshUserMenu);
+                    go.Unsubscribe((int)GameHashes.RefreshUserMenu, OnRefreshUserMenu);
                 }
                 PrintingPod.go = inst;
                 inst.Subscribe((int)GameHashes.RefreshUserMenu, OnRefreshUserMenu);

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.17.0] U48-568201-S
+- compatibility patch
+
 ## [1.0.16.0] U42-514967-S
 - rebuild
 
