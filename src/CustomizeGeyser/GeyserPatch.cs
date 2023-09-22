@@ -56,7 +56,7 @@ namespace CustomizeGeyser
                     modifier.id = tagID.Key.Name.Substring(7);
 
                 Helpers.Print("Processing " + modifier.id + " ...");
-                
+
                 #region Error checks
                 {
                     if (modifier.anim == null || modifier.anim.Length < 1 || !Assets.TryGetAnim(modifier.anim, out _))
@@ -125,6 +125,19 @@ namespace CustomizeGeyser
                 }
                 #endregion
 
+                #region Fix DLC
+                if (modifier.anim == "geyser_molten_aluminum_kanim")
+                    modifier.anim = "geyser_molten_iron_kanim";
+                if (modifier.anim == "geyser_molten_tungsten_kanim")
+                    modifier.anim = "geyser_molten_iron_kanim";
+                if (modifier.anim == "geyser_molten_niobium_kanim")
+                    modifier.anim = "geyser_molten_iron_kanim";
+                if (modifier.anim == "geyser_molten_cobalt_kanim")
+                    modifier.anim = "geyser_molten_iron_kanim";
+                if (modifier.anim == "geyser_liquid_sulfur_kanim")
+                    modifier.anim = "geyser_liquid_water_slush_kanim";
+                #endregion
+
                 int i = __result.FindIndex(x => x.geyserType.id == modifier.id);
 
                 if (i >= 0) //edit base
@@ -145,14 +158,13 @@ namespace CustomizeGeyser
                     }
                 }
 
-                GeyserConfigurator.GeyserType geyserType = GeyserInfo.GeyserTypes.Find(x => x.id == modifier.id);
-
                 // make sure there is both a GeyserTypes and a GeyserConfig; if not delete the type
+                GeyserConfigurator.GeyserType geyserType = GeyserInfo.GeyserTypes.Find(x => x.id == modifier.id);
                 if (geyserType != null && !GeyserInfo.Config.Any(a => a.id == "GeyserGeneric_" + geyserType.id))
                 {
+                    Helpers.Print($"{geyserType.id} has no valid geyser type");
                     GeyserInfo.GeyserTypes.Remove(geyserType);
                     geyserType = null;
-                    Helpers.Print($"{geyserType.id} has no valid geyser type");
                 }
 
                 #region existing geyser

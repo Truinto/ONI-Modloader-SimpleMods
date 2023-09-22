@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.25.0] U48-568201-S
+- fixed an issue for non DLC players
+
 ## [1.0.24.0] U48-568201-S
 - force all geysers to show up as generic
 
