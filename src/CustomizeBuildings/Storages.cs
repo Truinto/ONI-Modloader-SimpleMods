@@ -86,6 +86,10 @@ namespace CustomizeBuildings
             else if (def.PrefabID == OxidizerTankLiquidConfig.ID || def.PrefabID == OxidizerTankLiquidClusterConfig.ID) //2700f, 450f
                 setStorage(CustomizeBuildingsState.StateManager.State.LiquidOxidizerTankKG);
 
+            else if (def.PrefabID == SpiceGrinderConfig.ID)
+                foreach (var spiceStorage in def.BuildingComplete.GetComponents<Storage>())
+                    spiceStorage.SetDefaultStoredItemModifiers(GourmetCookingStationConfig.GourmetCookingStationStoredItemModifiers);
+
             void setStorage(float value)
             {
                 if ((def.InputConduitType == ConduitType.Gas || def.InputConduitType == ConduitType.Liquid) && value > 100000f)
