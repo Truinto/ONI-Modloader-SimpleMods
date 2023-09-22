@@ -70,6 +70,8 @@ namespace PipedEverything
             // ComplexFabricator            
             new PipeConfig(GourmetCookingStationConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide),
 
+            new PipeConfig(MicrobeMusherConfig.ID, true, x: 1, y: 0, SimHashes.Water),
+
             new PipeConfig(KilnConfig.ID, true, x: 0, y: 0, SimHashes.Carbon, SimHashes.Clay) { StorageCapacity = 500f },
             new PipeConfig(KilnConfig.ID, false, x: 1, y: 0, SimHashes.Ceramic, SimHashes.RefinedCarbon) { StorageIndex = 2 },
 
