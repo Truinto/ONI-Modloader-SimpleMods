@@ -2,7 +2,6 @@
 using System.Linq;
 using HarmonyLib;
 using System.Collections.Generic;
-using static Config.PostBootDialog;
 using Common;
 
 namespace CustomizeGeyser
@@ -23,7 +22,7 @@ namespace CustomizeGeyser
     }
 
 
-    [HarmonyPatch(typeof(GeyserGenericConfig), "GenerateConfigs")]
+    [HarmonyPatch(typeof(GeyserGenericConfig), nameof(GeyserGenericConfig.GenerateConfigs))]
     public class GeyserGenericConfig_GenerateConfigs
     {
         internal static bool Prepare()
@@ -40,8 +39,13 @@ namespace CustomizeGeyser
         {
             GeyserInfo.Config = __result;
 
-            foreach (var config in __result)
-                GeyserInfo.IdsBaseGame.Add(config.geyserType.id);
+            for (int i = 0; i < __result.Count; i++)
+            {
+                var prefParm = __result[i];
+                prefParm.isGenericGeyser = true;
+                __result[i] = prefParm;
+                GeyserInfo.IdsBaseGame.Add(prefParm.geyserType.id);
+            }
 
             foreach (var modifier in CustomizeGeyserState.StateManager.State.Geysers)
             {
@@ -148,6 +152,7 @@ namespace CustomizeGeyser
                 {
                     GeyserInfo.GeyserTypes.Remove(geyserType);
                     geyserType = null;
+                    Helpers.Print($"{geyserType.id} has no valid geyser type");
                 }
 
                 #region existing geyser
