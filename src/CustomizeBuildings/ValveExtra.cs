@@ -15,7 +15,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return true;
+            return CustomizeBuildingsState.StateManager.State.ValveEnableTemperatureFilter;
         }
 
         public static void Prefix(GameObject go)
@@ -29,7 +29,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return true;
+            return CustomizeBuildingsState.StateManager.State.ValveEnableTemperatureFilter;
         }
 
         public static void Prefix(GameObject go)

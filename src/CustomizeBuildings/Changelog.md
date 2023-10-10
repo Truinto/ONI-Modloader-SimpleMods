@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.83.0] U48-568201-S
+## [1.0.83.0] U48-568201-S U49-575720-S
 - added button to control reservoir store
 - fixed reservoir control being ignored by automation
 - fixed autominer visualizer

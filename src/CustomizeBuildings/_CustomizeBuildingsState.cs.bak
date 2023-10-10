@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 55;
+        public int version { get; set; } = 54;
 
         #region $Reset Button
         [JsonIgnore]
@@ -389,7 +389,7 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Pipes", "F0")]
         public float ConductivePanelPressure { get; set; } = 10f;
 
-        [Option("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_Title", "CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_ToolTip", "Pipes", null)]
+        [Option("Valve Enable Temperature Filter", "If true, will add slider to filter elements by temperature.", "Pipes")]
         public bool ValveEnableTemperatureFilter { get; set; } = false;
         #endregion
 
@@ -1028,10 +1028,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConductivePanelPressure", "ConductivePanelPressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "Conductive Panel Pressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Liquid pressure.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ValveEnableTemperatureFilter", "ValveEnableTemperatureFilter");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_Title", "Valve Enable Temperature Filter");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_ToolTip", "If true, will add slider to filter elements by temperature.");
             #endregion
             #region Power
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BatterySmartKJ", "BatterySmartKJ");
