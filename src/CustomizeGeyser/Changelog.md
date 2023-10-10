@@ -1,8 +1,5 @@
 # Changelog
 
-## [1.0.26.0]
-- added settings for Valve Temperature Filter
-
 ## [1.0.25.0] U48-568201-S
 - fixed an issue for non DLC players
 
