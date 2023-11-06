@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.6.0] U49-577063-S
+- fixed rare crash #47
+
 ## [1.0.5.0] U48-568201-S
 - fixed issue with removing buildings
 - added support for ComplexFabricator
