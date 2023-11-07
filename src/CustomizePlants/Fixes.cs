@@ -77,7 +77,8 @@ namespace CustomizePlants
 
             public static Exception Finalizer(Exception __exception)
             {
-                Debug.Log(__exception.StackTrace);
+                if (__exception != null)
+                    Debug.Log(__exception.StackTrace);
                 return null;
             }
         }
