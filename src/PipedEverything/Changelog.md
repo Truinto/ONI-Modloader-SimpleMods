@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.8.0] U50-581979-S
+- update
+
 ## [1.0.7.0] U49-577063-S
 - fixed rare crash #47, really
 

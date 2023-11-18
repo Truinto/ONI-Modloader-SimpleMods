@@ -109,8 +109,8 @@ namespace PipedEverything
         {
             var data = new TranspilerTool(instructions, generator, original);
 
-            if (2 != data.InsertAfterAll(typeof(ComplexFabricator), nameof(ComplexFabricator.storeProduced), patch))
-                throw new Exception();
+            if (3 != data.InsertAfterAll(typeof(ComplexFabricator), nameof(ComplexFabricator.storeProduced), patch))
+                throw new Exception("storeProduced count invalid");
 
             return data;
 
