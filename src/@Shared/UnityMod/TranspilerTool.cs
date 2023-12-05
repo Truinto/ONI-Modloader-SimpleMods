@@ -99,8 +99,8 @@ namespace Shared
             this.Generator = generator ?? throw new ArgumentNullException();
             this.Original = (MethodInfo)original ?? throw new ArgumentNullException();
             Locals = original.GetMethodBody().LocalVariables;
-            LocalsExtended = new();
-            LabelsExtended = new();
+            LocalsExtended = [];
+            LabelsExtended = [];
 
             foreach (var local in Locals)
                 LocalsExtended.Add(new(local, "V_" + local.LocalIndex));
@@ -1281,8 +1281,8 @@ namespace Shared
         #region Statics
 
         /// <summary>Collection of Ldc_i opcodes.</summary>
-        public static OpCode[] OpCode_Ldc_i = new OpCode[]
-        {
+        public static OpCode[] OpCode_Ldc_i =
+        [
             OpCodes.Ldc_I4_M1,
             OpCodes.Ldc_I4_0,
             OpCodes.Ldc_I4_1,
@@ -1296,23 +1296,23 @@ namespace Shared
             OpCodes.Ldc_I4,
             OpCodes.Ldc_I4_S,
             OpCodes.Ldc_I8,
-        };
+        ];
 
         /// <summary>Collection of Ldc_r opcodes.</summary>
-        public static OpCode[] OpCode_Ldc_r = new OpCode[]
-        {
+        public static OpCode[] OpCode_Ldc_r =
+        [
             OpCodes.Ldc_R4,
             OpCodes.Ldc_R8,
-        };
+        ];
 
         /// <summary>Collection of member opcodes.</summary>
-        public static OpCode[] OpCode_Member = new OpCode[]
-        {
+        public static OpCode[] OpCode_Member =
+        [
             OpCodes.Call,
             OpCodes.Callvirt,
             OpCodes.Ldsfld,
             OpCodes.Ldfld,
-        };
+        ];
 
         /// <summary>
         /// Increment index by 1.
@@ -1537,7 +1537,7 @@ namespace Shared
         {
             if (label < 0)
                 throw new IndexOutOfRangeException();
-            this.Label = (Label)typeof(Label).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0].Invoke(new object[] { label });
+            this.Label = (Label)typeof(Label).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0].Invoke([label]);
             this.Name = name ?? throw new ArgumentNullException();
         }
 

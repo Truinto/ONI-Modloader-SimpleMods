@@ -7,8 +7,8 @@ using HarmonyLib;
 
 namespace CustomizeElements
 {
-    [HarmonyPatch(typeof(ElementLoader), "FinaliseElementsTable")]
-    public class ElementLoader_FinaliseElementsTable
+    [HarmonyPatch(typeof(ElementLoader), nameof(ElementLoader.FinaliseElementsTable))]
+    public static class ElementLoader_FinaliseElementsTable
     {
         public static void Prefix()
         {
@@ -161,6 +161,98 @@ namespace CustomizeElements
                     }
                 }
             }
+
+            Validate();
+        }
+
+        public static void Validate()
+        {
+            Log("------ Start Validating Elements ------");
+            foreach (Element element in ElementLoader.elements)
+            {
+                string text = $"{element.tag.ProperNameStripLink()} ({element.state})";
+                if (element.IsLiquid && element.sublimateId != 0)
+                {
+                    Assert(element.sublimateRate == 0f, text + ": Liquids don't use sublimateRate, use offGasPercentage instead.");
+                    Assert(element.offGasPercentage > 0f, text + ": Missing offGasPercentage");
+                }
+                if (element.IsSolid && element.sublimateId != 0)
+                {
+                    Assert(element.offGasPercentage == 0f, text + ": Solids don't use offGasPercentage, use sublimateRate instead.");
+                    Assert(element.sublimateRate > 0f, text + ": Missing sublimationRate");
+                    Assert(element.sublimateRate * element.sublimateEfficiency > 0.001f, text + ": Sublimation rate and efficiency will result in gas that will be obliterated because its less than 1g. Increase these values and use sublimateProbability if you want a low amount of sublimation");
+                }
+                if (element.highTempTransition != null && element.highTempTransition.lowTempTransition == element)
+                {
+                    Assert(element.highTemp >= element.highTempTransition.lowTemp, text + ": highTemp is higher than transition element's (" + element.highTempTransition.tag.ProperNameStripLink() + ") lowTemp");
+                }
+                Assert(element.defaultValues.mass <= element.maxMass, text + ": Default mass should be less than max mass");
+                //if (false)
+                {
+                    if (element.IsSolid && element.highTempTransition != null && element.highTempTransition.IsLiquid && element.defaultValues.mass > element.highTempTransition.maxMass)
+                    {
+                        Log($"{text} defaultMass {element.defaultValues.mass} > {element.highTempTransition.tag.ProperNameStripLink()}: maxMass {element.highTempTransition.maxMass}");
+                    }
+                    if (element.defaultValues.mass < element.maxMass && element.IsLiquid)
+                    {
+                        Log($"{element.tag.ProperNameStripLink()} has defaultMass: {element.defaultValues.mass} and maxMass {element.maxMass}");
+                    }
+                }
+            }
+            Log("------ End Validating Elements ------");
+
+            static void Log(string message)
+            {
+                Helpers.Print(message);
+            }
+
+            static void Assert(bool condition, string message)
+            {
+                if (condition)
+                    Helpers.Print(message);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Assets), nameof(Assets.AddPrefab))]
+    public static class Assets_AddPrefab
+    {
+        public static void Prefix(KPrefabID prefab)
+        {
+            var go = prefab.gameObject;
+            if (go?.GetComponent<ElementChunk>() == null)
+                return;
+            var setting = CustomizeElementsState.StateManager.State.Elements.FirstOrDefault(f => f.Id == prefab.PrefabTag);
+            if (setting == null)
+                return;
+
+            var sublimate = go.GetComponent<Sublimates>();
+            if (sublimate == null)
+            {
+                if (string.IsNullOrEmpty(setting.sublimateId))
+                    return;
+
+                // create new if missing (with placeholders)
+                sublimate = go.AddComponent<Sublimates>();
+                sublimate.info = new Sublimates.Info(0.00002f, 0.05f, 1.8f, 0.5f, SimHashes.Vacuum);
+            }
+            else if (setting.sublimateId == "" || setting.sublimateRate == 0)
+            {
+                // remove if set to nil
+                go.RemoveComponent<Sublimates>();
+                return;
+            }
+
+            // overwrite values
+            if (setting.sublimateFX != null && Enum.TryParse<SpawnFXHashes>(setting.sublimateFX, out var sfx))
+                sublimate.spawnFXHash = sfx;
+            var info = sublimate.info;
+            info.sublimatedElement = setting.sublimateId.ToSimHash(info.sublimatedElement);
+            info.sublimationRate = setting.sublimateRate ?? info.sublimationRate;
+            info.minSublimationAmount = setting.sublimate_min ?? info.minSublimationAmount;
+            info.maxDestinationMass = setting.sublimate_overpressure ?? info.maxDestinationMass;
+            info.massPower = setting.sublimate_pwr ?? info.massPower;
+            sublimate.info = info;
         }
     }
 }

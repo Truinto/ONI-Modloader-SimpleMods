@@ -32,15 +32,25 @@ namespace CustomizePlants
     #endregion
 
     #region SaltPlant function extentions
-    // attaches replant monitor that reduces the element converter/consumer on wild plants
-    [HarmonyPatch(typeof(SaltPlant), "OnSpawn")]
+    [HarmonyPatch]
     public static class SaltPlant_OnSpawn
     {
-        public static void Postfix(SaltPlant __instance)
+        // attaches replant monitor that reduces the element converter/consumer on wild plants
+        [HarmonyPatch(typeof(SaltPlant), "OnSpawn")]
+        [HarmonyPostfix]
+        public static void Postfix_OnSpawn(SaltPlant __instance)
         {
             __instance.Subscribe((int)GameHashes.PlanterStorage, OnReplanted);
-        }
 
+            var wilt = __instance.GetComponent<WiltCondition>();
+            if (wilt != null)
+            {
+                if (wilt.IsWilting())
+                    Prefix_OnWilt(__instance);
+                else
+                    Prefix_OnWiltRecover(__instance);
+            }
+        }
         public static void OnReplanted(object data = null)
         {
             GameObject go = (data as Storage)?.gameObject;
@@ -59,13 +69,12 @@ namespace CustomizePlants
                 }
             }
         }
-    }
 
-    // disables converter/consumer when plant is wilt
-    [HarmonyPatch(typeof(SaltPlant), "OnWilt")]
-    public static class SaltPlant_OnWilt
-    {
-        public static bool Prefix(SaltPlant __instance)
+
+        // disables converter/consumer when plant is wilt
+        [HarmonyPatch(typeof(SaltPlant), nameof(SaltPlant.OnWilt))]
+        [HarmonyPrefix]
+        public static bool Prefix_OnWilt(SaltPlant __instance)
         {
             __instance.gameObject.GetComponent<ElementConsumer>()?.EnableConsumption(false);
             ElementConverter converter = __instance.gameObject.GetComponent<ElementConverter>();
@@ -75,13 +84,12 @@ namespace CustomizePlants
             }
             return false;
         }
-    }
 
-    // enables converter/consumer when plant is no longer wilt
-    [HarmonyPatch(typeof(SaltPlant), "OnWiltRecover")]
-    public static class SaltPlant_OnWiltRecover
-    {
-        public static bool Prefix(SaltPlant __instance)
+
+        // enables converter/consumer when plant is no longer wilt
+        [HarmonyPatch(typeof(SaltPlant), nameof(SaltPlant.OnWiltRecover))]
+        [HarmonyPrefix]
+        public static bool Prefix_OnWiltRecover(SaltPlant __instance)
         {
             __instance.gameObject.GetComponent<ElementConsumer>()?.EnableConsumption(true);
             ElementConverter converter = __instance.gameObject.GetComponent<ElementConverter>();

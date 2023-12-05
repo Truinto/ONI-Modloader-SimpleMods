@@ -289,8 +289,8 @@ namespace CustomizeBuildings
 
         [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsoluteOutput_ToolTip", "Miscellaneous")]
         public bool AirConditionerAbsoluteOutput { get; set; } = true;
-        [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "Miscellaneous")]
-        public float AirConditionerAbsolutePowerFactor { get; set; } = 0.6f;
+        [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "Miscellaneous", "F4")]
+        public float AirConditionerAbsolutePowerFactor { get; set; } = 0.0001f;
         [Option("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "Miscellaneous")]
         public bool SpaceHeaterTargetTemperature { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_Title", "CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_ToolTip", "Miscellaneous")]
@@ -855,7 +855,7 @@ namespace CustomizeBuildings
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AirConditionerAbsolutePowerFactor", "AirConditionerAbsolutePowerFactor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "Air Conditioner Absolute Power Factor");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "% of MaxDPU the Air Conditioner takes full power. Default: 0.1");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "Reduction of Air Conditioner power consumption. 0 is off. Default: 0");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceHeaterTargetTemperature", "SpaceHeaterTargetTemperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "Space Heater Target Temperature");

@@ -100,6 +100,9 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 dotnet_style_allow_multiple_blank_lines_experimental = true
 dotnet_style_allow_statement_immediately_after_block_experimental = true
 
+# IDE0305: Initialisierung der Sammlung vereinfachen
+dotnet_style_prefer_collection_expression = true
+
 #### C#-Codierungskonventionen ####
 
 # Var-Einstellungen

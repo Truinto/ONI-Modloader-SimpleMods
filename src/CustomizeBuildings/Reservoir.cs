@@ -29,7 +29,8 @@ namespace CustomizeBuildings
         {
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = Math.Min((float)CustomizeBuildingsState.StateManager.State.LiquidReservoirKG, (float)99000f);
-            storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
+            if (CustomizeBuildingsState.StateManager.State.SealInsulateStorages)
+                storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.capacityKG = storage.capacityKg;
 
@@ -71,7 +72,8 @@ namespace CustomizeBuildings
         {
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = Math.Min((float)CustomizeBuildingsState.StateManager.State.GasReservoirKG, (float)99000f);
-            storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
+            if (CustomizeBuildingsState.StateManager.State.SealInsulateStorages)
+                storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.capacityKG = storage.capacityKg;
 

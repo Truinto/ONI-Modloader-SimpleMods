@@ -35,13 +35,13 @@ namespace CustomizeElements
         public string highTempTransitionTarget;
         public string highTempTransitionOreID;
         public float? highTempTransitionOreMassConversion;
-        public string sublimateId;
-        public string convertId;
+        public string sublimateId; // reused
+        public string convertId; // no use
         public string sublimateFX;
-        public float? sublimateRate;
-        public float? sublimateEfficiency;
-        public float? sublimateProbability;
-        public float? offGasPercentage;
+        public float? sublimateRate; // reused
+        public float? sublimateEfficiency; // no use
+        public float? sublimateProbability; // no use
+        public float? offGasPercentage; // no use
         public float? lightAbsorptionFactor;
         public float? radiationAbsorptionFactor;
         public float? radiationPer1000Mass;
@@ -51,6 +51,10 @@ namespace CustomizeElements
         public List<string> oreTags;
         public int? buildMenuSort;
         public List<AttributeContainer> attributeModifiers;
+
+        public float? sublimate_min; // min amount to transform
+        public float? sublimate_overpressure; // max pressure to sublimate in
+        public float? sublimate_pwr; // exponent in formular
 
         public ElementContainer()
         { }
@@ -66,21 +70,5 @@ namespace CustomizeElements
             this.Id = Id;
             this.attributeModifiers = attributes == null || attributes.Length == 0 ? null : attributes.ToList();
         }
-    }
-
-    public class OreContainer
-    {
-        public bool? DecayStorage;
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SpawnFXHashes FxHash;
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SimHashes SublimatedElement;
-        public float? SublimationRate;
-        public float? MinSublimationAmount;
-        public float? MaxDestinationMass;
-        public float? MassPower;
-        public byte? DiseaseIdx;
-        public int? DiseaseCount;
     }
 }

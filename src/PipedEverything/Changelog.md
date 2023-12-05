@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.9.0]
+- removed faulty Desalinator from config
+- fixed reservoirs always insulating #53
+
 ## [1.0.8.0] U50-581979-S
 - update
 

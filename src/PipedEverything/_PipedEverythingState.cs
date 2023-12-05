@@ -8,7 +8,7 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 3;
+        public int version { get; set; } = 4;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -41,7 +41,7 @@ namespace PipedEverything
 
             new PipeConfig(MilkFatSeparatorConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
 
-            new PipeConfig(DesalinatorConfig.ID, false, x: 0, y: 0, SimHashes.Salt),
+            //new PipeConfig(DesalinatorConfig.ID, false, x: 0, y: 0, SimHashes.Salt),
 
             new PipeConfig(AlgaeDistilleryConfig.ID, false, x: 1, y: 0, SimHashes.Algae),
 
@@ -119,19 +119,9 @@ namespace PipedEverything
 
         public static bool OnUpdate(PipedEverythingState state)
         {
-            if (state.version < 2)
+            if (state.version < 4)
             {
-                state.Configs.AddRange(new PipeConfig[] {
-                    // Advanced Generator+
-                    new PipeConfig("RefinedCarbonGenerator", true, x: 0, y: 0, SimHashes.RefinedCarbon),
-                    new PipeConfig("RefinedCarbonGenerator", false, x: 1, y: 2, SimHashes.CarbonDioxide),
-
-                    new PipeConfig("NaphthaGenerator", false, x: 0, y: 3, SimHashes.CarbonDioxide) { StorageIndex = 1 },
-
-                    new PipeConfig("EcoFriendlyMethaneGenerator", true, x: 0, y: 0, SimHashes.Sand),
-                    new PipeConfig("EcoFriendlyMethaneGenerator", false, x: 2, y: 2, SimHashes.CarbonDioxide),
-                    new PipeConfig("EcoFriendlyMethaneGenerator", false, x: 1, y: 1, SimHashes.Water) { StorageIndex = 1 },
-                });
+                state.Configs.RemoveAll(a => a.Id == DesalinatorConfig.ID);
             }
 
             return true;
