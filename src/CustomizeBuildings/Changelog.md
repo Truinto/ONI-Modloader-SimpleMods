@@ -1,7 +1,8 @@
 # Changelog
 
-## [1.0.85.0] 
-
+## [1.0.85.0] U50-583750-S
+- added AirConditionerHeatEfficiency, which controls how much heat is transfered
+- disabled SkillStation patches until fixed
 
 ## [1.0.84.0] U49-575720-S
 - added settings for Valve Temperature Filter

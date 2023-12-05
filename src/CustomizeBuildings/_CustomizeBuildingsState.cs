@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 55;
+        public int version { get; set; } = 56;
 
         #region $Reset Button
         [JsonIgnore]
@@ -29,7 +29,7 @@ namespace CustomizeBuildings
 
             StateManager.State.BatterySmartKJ = 20000f;
             StateManager.State.BatterySmartNoRunOff = false;
-            StateManager.State.BatteryLargeKJ = 40000f; 
+            StateManager.State.BatteryLargeKJ = 40000f;
             StateManager.State.SealInsulateStorages = false;
             StateManager.State.LockerKG = 20000f;
             StateManager.State.LockerSmartKG = 20000f;
@@ -70,6 +70,8 @@ namespace CustomizeBuildings
             StateManager.State.ElectrolizerMaxPressure = 1.8f;
             StateManager.State.AirfilterDropsCanisters = false;
             StateManager.State.AirConditionerAbsoluteOutput = false;
+            StateManager.State.AirConditionerAbsolutePowerFactor = 0f;
+            StateManager.State.AirConditionerHeatEfficiency = 1f;
             StateManager.State.SpaceHeaterTargetTemperature = false;
             StateManager.State.AlgaeTerrariumPatch = false;
             StateManager.State.DoorSelfSealing = false;
@@ -291,6 +293,10 @@ namespace CustomizeBuildings
         public bool AirConditionerAbsoluteOutput { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "Miscellaneous", "F4")]
         public float AirConditionerAbsolutePowerFactor { get; set; } = 0.0001f;
+        [Option("CustomizeBuildings.LOCSTRINGS.AirConditionerHeatEfficiency_Title", "CustomizeBuildings.LOCSTRINGS.AirConditionerHeatEfficiency_ToolTip", "Miscellaneous", "P0")]
+        [Limit(0, 1)]
+        public float AirConditionerHeatEfficiency { get; set; } = 1f;
+
         [Option("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_ToolTip", "Miscellaneous")]
         public bool SpaceHeaterTargetTemperature { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_Title", "CustomizeBuildings.LOCSTRINGS.AlgaeTerrariumPatch_ToolTip", "Miscellaneous")]
@@ -321,7 +327,7 @@ namespace CustomizeBuildings
 
         #region Space Scanner
         [Option("CustomizeBuildings.LOCSTRINGS.ScannerQualityMultiplier_Title", "CustomizeBuildings.LOCSTRINGS.ScannerQualityMultiplier_ToolTip", "Space Scanner", "F2")]
-        [Limit(0d, 10d)]
+        [Limit(0, 10)]
         public float ScannerQualityMultiplier { get; set; } = 1.00f;
 
         public bool LadderCometInvincibility { get; set; } = true;
@@ -513,7 +519,7 @@ namespace CustomizeBuildings
 
         #region Skill Station
         [Option("CustomizeBuildings.LOCSTRINGS.SkillStationEnabled_Title", "CustomizeBuildings.LOCSTRINGS.SkillStationEnabled_ToolTip", "Skill Station")]
-        public bool SkillStationEnabled { get; set; } = true;
+        public bool SkillStationEnabled { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.SkillStationCostTime_Title", "CustomizeBuildings.LOCSTRINGS.SkillStationCostTime_ToolTip", "Skill Station", "F0")]
         public float SkillStationCostTime { get; set; } = 20f;
         [Option("CustomizeBuildings.LOCSTRINGS.SkillStationCostReset_Title", "CustomizeBuildings.LOCSTRINGS.SkillStationCostReset_ToolTip", "Skill Station", "F0")]
@@ -728,6 +734,8 @@ namespace CustomizeBuildings
                 state.DrillConeKG = 1000f;
             if (state.version < 52 && state.SpaceBattery < 100000f)
                 state.SpaceBattery = 100000f;
+            if (state.version < 56)
+                state.SkillStationEnabled = false;
 
             return true;
         }
@@ -757,7 +765,7 @@ namespace CustomizeBuildings
                 path += "_" + Helpers.ActiveLocale;
             return Config.PathHelper.CreatePath(path);
         }
-        
+
         #endregion
     }
 
@@ -856,6 +864,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AirConditionerAbsolutePowerFactor", "AirConditionerAbsolutePowerFactor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_Title", "Air Conditioner Absolute Power Factor");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerAbsolutePowerFactor_ToolTip", "Reduction of Air Conditioner power consumption. 0 is off. Default: 0");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AirConditionerHeatEfficiency", "AirConditionerHeatEfficiency");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerHeatEfficiency_Title", "Air Conditioner Heat Efficiency");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.AirConditionerHeatEfficiency_ToolTip", "% how much heat is transfered from the coolant to the Air Conditioner. 100% = heat is perserved; 0% = no heat is emitted");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceHeaterTargetTemperature", "SpaceHeaterTargetTemperature");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceHeaterTargetTemperature_Title", "Space Heater Target Temperature");
@@ -1635,7 +1647,7 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightModules_ToolTip", "");
             #endregion
         }
-        
+
         public static void SkillStationStrings()
         {
             Helpers.StringsTag("CustomizeBuildings.TAG.Narolepsy", "Narcolepsy");

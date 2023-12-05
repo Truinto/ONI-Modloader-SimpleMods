@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 using KSerialization;
 using Common;
+using Shared;
 
 namespace CustomizeBuildings
 {
@@ -55,7 +56,8 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(AirConditioner), "UpdateState")]
+    [HarmonyPatch(typeof(AirConditioner), nameof(AirConditioner.UpdateState))]
+    [HarmonyPriority(Priority.Low)]
     public class AirConditioner_Patch
     {
         public static bool Prepare()
@@ -65,8 +67,8 @@ namespace CustomizeBuildings
 
         public static Func<int, object, bool> UpdateStateCbDelegate = (Func<int, object, bool>)AccessTools.Field(typeof(AirConditioner), "UpdateStateCbDelegate").GetValue(null);
 
-        [HarmonyPriority(Priority.Low)]
-        public static bool Prefix(float dt, AirConditioner __instance, ref float ___envTemp, ref int ___cellCount, ref float ___lowTempLag, ref int ___cooledAirOutputCell,
+        // old patch
+        public static bool Prefix_OFFLINE(float dt, AirConditioner __instance, ref float ___envTemp, ref int ___cellCount, ref float ___lowTempLag, ref int ___cooledAirOutputCell,
             ref float ___lastSampleTime, ref HandleVector<int>.Handle ___structureTemperature)
         {
             var consumer = __instance.GetComponent<ConduitConsumer>();
@@ -83,7 +85,7 @@ namespace CustomizeBuildings
                 occupyArea.TestArea(Grid.PosToCell(__instance.gameObject), __instance, UpdateStateCbDelegate);
                 ___envTemp /= (float)___cellCount;
             }
-            Access.lastEnvTemp(__instance, ___envTemp);
+            __instance.lastEnvTemp = ___envTemp;
             List<GameObject> items = storage.items;
             for (int i = 0; i < items.Count; i++)
             {
@@ -91,7 +93,7 @@ namespace CustomizeBuildings
                 if (element.Mass > 0f && (__instance.isLiquidConditioner && element.Element.IsLiquid || !__instance.isLiquidConditioner && element.Element.IsGas))
                 {
                     isSatisfied = true;
-                    Access.lastGasTemp(__instance, element.Temperature);
+                    __instance.lastGasTemp = element.Temperature;
                     float temperatureNew = element.Temperature + __instance.temperatureDelta;
                     if (slider != null)
                     {
@@ -149,9 +151,126 @@ namespace CustomizeBuildings
                 ___lastSampleTime = Time.time;
             }
             operational.SetActive(isSatisfied, false);
-            Access.UpdateStatus(__instance);
+            __instance.UpdateStatus();
 
             return false;
+        }
+
+        // copy of original
+        private static void UpdateState(float dt, AirConditioner __instance)
+        {
+            bool isSatisfied = __instance.consumer.IsSatisfied;
+            __instance.envTemp = 0f;
+            __instance.cellCount = 0;
+            if (__instance.occupyArea != null && __instance.gameObject != null)
+            {
+                __instance.occupyArea.TestArea(Grid.PosToCell(__instance.gameObject), __instance, AirConditioner.UpdateStateCbDelegate);
+                __instance.envTemp /= __instance.cellCount;
+            }
+            __instance.lastEnvTemp = __instance.envTemp;
+            List<GameObject> items = __instance.storage.items;
+            for (int i = 0; i < items.Count; i++)
+            {
+                PrimaryElement element = items[i].GetComponent<PrimaryElement>();
+                if (element.Mass > 0f && (__instance.isLiquidConditioner && element.Element.IsLiquid || !__instance.isLiquidConditioner && element.Element.IsGas))
+                {
+                    isSatisfied = true;
+                    __instance.lastGasTemp = element.Temperature;
+                    float temperatureNew = element.Temperature + __instance.temperatureDelta;
+                    if (temperatureNew < 1f)
+                    {
+                        temperatureNew = 1f;
+                        __instance.lowTempLag = Mathf.Min(__instance.lowTempLag + dt / 5f, 1f);
+                    }
+                    else
+                    {
+                        __instance.lowTempLag = Mathf.Min(__instance.lowTempLag - dt / 5f, 0f);
+                    }
+                    float mass_output = (__instance.isLiquidConditioner ? Game.Instance.liquidConduitFlow : Game.Instance.gasConduitFlow).AddElement(__instance.cooledAirOutputCell, element.ElementID, element.Mass, temperatureNew, element.DiseaseIdx, element.DiseaseCount);
+                    element.KeepZeroMassObject = true;
+                    float diseasePercent = mass_output / element.Mass;
+                    int diseaseCount = (int)(element.DiseaseCount * diseasePercent);
+                    element.Mass -= mass_output;
+                    element.ModifyDiseaseCount(-diseaseCount, "AirConditioner.UpdateState");
+                    float DPU_removed = (temperatureNew - element.Temperature) * element.Element.specificHeatCapacity * mass_output;
+                    float display_dt = (__instance.lastSampleTime > 0f) ? (Time.time - __instance.lastSampleTime) : 1f;
+                    __instance.lastSampleTime = Time.time;
+                    GameComps.StructureTemperatures.ProduceEnergy(__instance.structureTemperature, 0f - DPU_removed, STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, display_dt);
+                    break;
+                }
+            }
+
+            if (Time.time - __instance.lastSampleTime > 2f)
+            {
+                GameComps.StructureTemperatures.ProduceEnergy(__instance.structureTemperature, 0f, STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, Time.time - __instance.lastSampleTime);
+                __instance.lastSampleTime = Time.time;
+            }
+            __instance.operational.SetActive(isSatisfied);
+            __instance.UpdateStatus();
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(typeof(ConduitFlow), nameof(ConduitFlow.AddElement));
+            data.Offset(-5).NameLocal("num_temperatureNew");
+            data.Offset(5);
+            data.ReplaceCall(patchConduit);
+
+            return data;
+
+            static float patchConduit(ConduitFlow instance, int cell_idx, SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, [LocalParameter("num_temperatureNew")] ref float temperatureNew, [LocalParameter(indexByType: 0)] PrimaryElement primaryElement, AirConditioner __instance)
+            {
+                // temperatureNew = temperature; mass_max = mass;
+
+                var slider = __instance.GetComponent<AirConditionerSliders>();
+                slider.CurrentTemperature = primaryElement.Temperature;
+                if (slider.SetTemperature >= 1f)
+                    temperatureNew = slider.SetTemperature; //# target temperature
+
+                float temperatureCooled = temperatureNew - primaryElement.Temperature;
+                if (temperatureCooled != 0f && slider.SetTemperature >= 1f)
+                {
+                    float mass_DPU = slider.SetDPU / (Math.Abs(temperatureCooled) * primaryElement.Element.specificHeatCapacity);
+                    mass = Math.Max(0f, Math.Min(primaryElement.Mass, mass_DPU));
+                }
+
+                float mass_output = instance.AddElement(cell_idx, element, mass, temperatureNew, disease_idx, disease_count);
+
+                float DPU_removed = temperatureCooled * primaryElement.Element.specificHeatCapacity * mass_output;
+                slider.CurrentDPU = DPU_removed;
+
+                return mass_output;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(AirConditioner), nameof(AirConditioner.UpdateState))]
+    public static class AirConditioner_Patch2
+    {
+        public static float factor = CustomizeBuildingsState.StateManager.State.AirConditionerHeatEfficiency;
+
+        public static bool Prepare()
+        {
+            factor = CustomizeBuildingsState.StateManager.State.AirConditionerHeatEfficiency;
+            return factor != 1f || CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(typeof(AirConditioner), nameof(AirConditioner.structureTemperature));
+            data++;
+            data.InsertAfter(patch);
+
+            return data;
+
+            static float patch(float __stack)
+            {
+                return Math.Min(-4f, __stack) * factor;
+            }
         }
     }
 
@@ -167,7 +286,7 @@ namespace CustomizeBuildings
             base.OnSpawn();
             energyConsumer = this.GetComponent<EnergyConsumer>();
             if (CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor <= 0f)
-                CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor = 0.001f;
+                CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor = 0.0001f;
             factorDPU = energyConsumer.WattsNeededWhenActive / (MaxDPU * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
         }
         #endregion
