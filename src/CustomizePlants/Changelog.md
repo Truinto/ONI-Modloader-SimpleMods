@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.42.0] 
+## [1.0.42.0]  U50-587362-S
 - small patch to increase compatiblity with Fast Track
 
 ## [1.0.41.0] U48-568201-S
