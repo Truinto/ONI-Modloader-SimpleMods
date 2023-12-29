@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared
+namespace Shared.Paths
 {
     /// <summary>
     /// Tool to handle path operations.
     /// </summary>
-    public class PathTool
+    public class Path
     {
         private static void Sandbox()
         {
@@ -22,20 +22,20 @@ namespace Shared
             File.Exists("");
             File.CreateText("");
 
-            Path.ChangeExtension("", "");
-            Path.Combine("", "");
-            Path.GetDirectoryName(""); // warning, this is inconsistent
-            Path.GetExtension("");
-            Path.GetFileName("");
-            Path.GetFileNameWithoutExtension("");
-            Path.GetFullPath("");
-            Path.GetInvalidFileNameChars();
-            Path.GetPathRoot("");
-            Path.GetRandomFileName();
-            Path.GetTempFileName();
-            Path.GetTempPath();
-            Path.HasExtension("");
-            Path.IsPathRooted("");
+            System.IO.Path.ChangeExtension("", "");
+            System.IO.Path.Combine("", "");
+            System.IO.Path.GetDirectoryName(""); // warning, this is inconsistent
+            System.IO.Path.GetExtension("");
+            System.IO.Path.GetFileName("");
+            System.IO.Path.GetFileNameWithoutExtension("");
+            System.IO.Path.GetFullPath("");
+            System.IO.Path.GetInvalidFileNameChars();
+            System.IO.Path.GetPathRoot("");
+            System.IO.Path.GetRandomFileName();
+            System.IO.Path.GetTempFileName();
+            System.IO.Path.GetTempPath();
+            System.IO.Path.HasExtension("");
+            System.IO.Path.IsPathRooted("");
 
             var di = new DirectoryInfo("");
             _ = di.Parent;

@@ -1,8 +1,9 @@
 # Changelog
 
-## [1.0.9.0]
+## [1.0.9.0] U50-587362-S
 - removed faulty Desalinator from config
 - fixed reservoirs always insulating #53
+- removed duplicate port on polymer press
 
 ## [1.0.8.0] U50-581979-S
 - update

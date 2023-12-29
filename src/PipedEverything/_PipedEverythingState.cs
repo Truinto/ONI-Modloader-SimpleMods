@@ -1,6 +1,7 @@
 //#define LOCALE
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 4;
+        public int version { get; set; } = 5;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -36,7 +37,7 @@ namespace PipedEverything
             new PipeConfig(EthanolDistilleryConfig.ID, false, x: 0, y: 0, SimHashes.ToxicSand) { Color = Color.gray },
             new PipeConfig(EthanolDistilleryConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
 
-            new PipeConfig(PolymerizerConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
+            //new PipeConfig(PolymerizerConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
             new PipeConfig(PolymerizerConfig.ID, false, x: 1, y: 0, SimHashes.Steam),
 
             new PipeConfig(MilkFatSeparatorConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
@@ -119,9 +120,9 @@ namespace PipedEverything
 
         public static bool OnUpdate(PipedEverythingState state)
         {
-            if (state.version < 4)
+            if (state.version < 5)
             {
-                state.Configs.RemoveAll(a => a.Id == DesalinatorConfig.ID);
+                state.Configs.RemoveAll(a => a.Id == PolymerizerConfig.ID && a.Filter.FirstOrDefault() == SimHashes.CarbonDioxide.ToString());
             }
 
             return true;
