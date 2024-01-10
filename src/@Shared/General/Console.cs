@@ -12,8 +12,8 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Shared.General;
-using Shared.Strings;
+using Shared.Generals;
+using Shared.StringsExt;
 
 namespace Shared.Consoles
 {

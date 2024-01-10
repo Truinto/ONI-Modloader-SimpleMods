@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.86.0] U50-587362-S
+- fixed crash in SkillStation
+
 ## [1.0.85.0] U50-583750-S
 - added AirConditionerHeatEfficiency, which controls how much heat is transfered
 - disabled SkillStation patches until fixed

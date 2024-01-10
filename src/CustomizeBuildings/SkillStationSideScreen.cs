@@ -71,30 +71,35 @@ namespace CustomizeBuildings
         public static HashSet<Tag> JoyTraits;
         public static HashSet<Tag> Aptitudes;
         public static HashSet<Tag> Attributes;
-        //public static FieldInfo _Attributes_levels;
 
         public static void Init()
         {
-#if LOCALE
-            _ProperNames = (Dictionary<Tag, string>)AccessTools.Field(typeof(TagManager), "ProperNames").GetValue(null);
-#endif
             //_Attributes_levels = AccessTools.Field(typeof(AttributeLevels), "levels");
-            GoodTraits = new HashSet<Tag>(DUPLICANTSTATS.GOODTRAITS.Select(x => GetTag(x.id)));
             BadTraits = new HashSet<Tag>(DUPLICANTSTATS.BADTRAITS.Select(x => GetTag(x.id)));
+            GoodTraits = new HashSet<Tag>(DUPLICANTSTATS.GOODTRAITS.Select(x => GetTag(x.id)));
             GeneTraits = new HashSet<Tag>(DUPLICANTSTATS.GENESHUFFLERTRAITS.Select(x => GetTag(x.id)));
             CongenitalTraits = new HashSet<Tag>(DUPLICANTSTATS.CONGENITALTRAITS.Select(x => GetTag(x.id)));
             StressTraits = new HashSet<Tag>(DUPLICANTSTATS.STRESSTRAITS.Select(x => GetTag(x.id)));
             JoyTraits = new HashSet<Tag>(DUPLICANTSTATS.JOYTRAITS.Select(x => GetTag(x.id)));
             Attributes = new HashSet<Tag>(DUPLICANTSTATS.ALL_ATTRIBUTES.Select(x => GetTag("Attribute " + x)));
             Aptitudes = new HashSet<Tag>(Db.Get().SkillGroups.resources.Select(x => GetTag(x.Id)));
+
+            int count = 0;
+            count += BadTraits.RemoveWhere(w => GoodTraits.Contains(w) || GeneTraits.Contains(w) || CongenitalTraits.Contains(w) || StressTraits.Contains(w) || JoyTraits.Contains(w) || Attributes.Contains(w) || Aptitudes.Contains(w));
+            count += GoodTraits.RemoveWhere(w => GeneTraits.Contains(w) || CongenitalTraits.Contains(w) || StressTraits.Contains(w) || JoyTraits.Contains(w) || Attributes.Contains(w) || Aptitudes.Contains(w));
+            count += GeneTraits.RemoveWhere(w => CongenitalTraits.Contains(w) || StressTraits.Contains(w) || JoyTraits.Contains(w) || Attributes.Contains(w) || Aptitudes.Contains(w));
+            count += CongenitalTraits.RemoveWhere(w => StressTraits.Contains(w) || JoyTraits.Contains(w) || Attributes.Contains(w) || Aptitudes.Contains(w));
+            count += StressTraits.RemoveWhere(w => JoyTraits.Contains(w) || Attributes.Contains(w) || Aptitudes.Contains(w));
+            count += JoyTraits.RemoveWhere(w => Attributes.Contains(w) || Aptitudes.Contains(w));
+            count += Attributes.RemoveWhere(w => Aptitudes.Contains(w));
+            Helpers.Print($"Skillstation cleaned {count} duplicates."); //should be zero
         }
 
 #if LOCALE
-        private static Dictionary<Tag, string> _ProperNames;
         private static Tag GetTag(string id)
         {
             Tag result = (Tag)id;
-            if (!_ProperNames.ContainsKey(result))
+            if (!TagManager.ProperNames.ContainsKey(result))
             {
                 Helpers.StringsTag("CustomizeBuildings.TAG." + id, id);
             }
@@ -170,7 +175,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(ResetSkillsStation), "OnCompleteWork")]
+    [HarmonyPatch(typeof(ResetSkillsStation), nameof(ResetSkillsStation.OnCompleteWork))]
     public class SkillStation_TaskComplete_Patch
     {
         public static bool Prepare()
@@ -413,7 +418,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(ResetSkillsStation), "OnAssign")]
+    [HarmonyPatch(typeof(ResetSkillsStation), nameof(ResetSkillsStation.OnAssign))]
     public class SkillStation_RefreshUI_Patch
     {
         public static bool Prepare()
@@ -434,6 +439,42 @@ namespace CustomizeBuildings
             {
                 Helpers.PrintDebug("SkillStation OnAssign wups");
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(SingleItemSelectionSideScreenBase), nameof(SingleItemSelectionSideScreenBase.RecycleItemRow))]
+    public static class SkillStation_FixCrash1
+    {
+        public static bool Prepare()
+        {
+            return SkillStationCosts.IsEnabled;
+        }
+
+        public static bool Prefix(SingleItemSelectionRow row, SingleItemSelectionSideScreenBase __instance)
+        {
+            // the original method recycles the item and throws if an item has duplicate tag; thus throwing if two items have the same tag
+            // this method deletes the item; I believe doing otherwise will end in a memory leak (are unity objects garbage collected?)
+
+            try
+            {
+                if (__instance.CurrentSelectedItem == row)
+                    __instance.SetSelectedItem((SingleItemSelectionRow)null);
+                row.Clicked = null;
+                row.SetSelected(selected: false);
+                row.transform.SetParent(__instance.original_ItemRow.transform.parent.parent);
+                row.gameObject.SetActive(value: false);
+
+                if (__instance.pooledRows.ContainsKey(row.tag))
+                    UnityEngine.Object.Destroy(row);
+                else
+                    __instance.pooledRows[row.tag] = row;
+            }
+            catch (Exception ex)
+            {
+                Helpers.Print(ex.ToString());
+            }
+
+            return false;
         }
     }
 }
