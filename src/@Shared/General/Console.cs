@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Shared.Generals;
-using Shared.StringsExt;
+using Shared.Strings;
 
 namespace Shared.Consoles
 {
