@@ -47,6 +47,8 @@ namespace PipedEverything
                     var element = filter.ToElement();
                     if (element == null)
                     {
+                        if (filter is "Cobaltite" or "Cobalt")
+                            continue;
                         Helpers.PrintDialog($"Unable to resolve: {filter} in {config.Id}");
                         continue;
                     }

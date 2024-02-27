@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Shared.StringsExt
+namespace Shared.Strings
 {
-    public static class Strings
+    public static class String
     {
         #region Args
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace Shared
         public CommandTool(string filePath, string args, Action<string> onStandard = null, Action<string> onError = null, Action<object, ConsoleKeyInfo> onKeyPress = null) : this()
         {
             this.FilePath = filePath;
-            this.Args = args;
+            this.Args = Regex.Replace(args, @"[\\^]\n", "");
             this.OnStandard = onStandard;
             this.OnError = onError;
             this.OnKeyPress = onKeyPress;

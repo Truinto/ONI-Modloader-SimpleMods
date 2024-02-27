@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.10.0] U50-587362-S
+- supress warning messages when playing without DLC
+
 ## [1.0.9.0] U50-587362-S
 - removed faulty Desalinator from config
 - fixed reservoirs always insulating #53
