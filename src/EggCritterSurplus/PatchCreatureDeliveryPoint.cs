@@ -16,15 +16,15 @@ namespace EggCritterSurplus
         }
     }
 
-    [HarmonyPatch(typeof(CreatureDeliveryPoint), "IUserControlledCapacity.MaxCapacity", MethodType.Getter)]
-    public class PatchCritterPointMax
-    {
-        public static bool Prefix(ref float __result)
-        {
-            __result = 100f;
-            return false;
-        }
-    }
+    //[HarmonyPatch(typeof(CreatureDeliveryPoint), "IUserControlledCapacity.MaxCapacity", MethodType.Getter)]
+    //public class PatchCritterPointMax
+    //{
+    //    public static bool Prefix(ref float __result)
+    //    {
+    //        __result = 100f;
+    //        return false;
+    //    }
+    //}
 
     [HarmonyPatch(typeof(CreatureDeliveryPointConfig), nameof(CreatureDeliveryPointConfig.DoPostConfigureComplete))]
     [HarmonyPriority(Priority.VeryLow)]
