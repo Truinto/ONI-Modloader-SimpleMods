@@ -136,7 +136,7 @@ namespace EggCritterSurplus
             try
             {
                 CavityInfo room = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(this.gameObject));
-                if (room == null || room.numCells > 200) return;
+                if (room == null /*|| room.numCells > 200*/) return;
                 //this.Trigger((int)GameHashes.UpdateRoom, room.room);
                 //Game.Instance.roomProber.UpdateRoom(room);
 
