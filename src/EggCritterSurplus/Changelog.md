@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.15.0] U51-596100-S
+- removed room limit
+
 ## [1.0.14.0] U51-596100-S
 - updated
 
