@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.11.0] U51-600112-S
+- added option to disable atmosphere checks (for oil refinery, oxygen generators)
+
 ## [1.0.10.0] U50-587362-S
 - supress warning messages when playing without DLC
 

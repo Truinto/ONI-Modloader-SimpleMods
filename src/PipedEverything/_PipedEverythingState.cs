@@ -9,7 +9,7 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 5;
+        public int version { get; set; } = 6;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -27,7 +27,7 @@ namespace PipedEverything
             new PipeConfig(MethaneGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.DirtyWater),
 
             // Refinement
-            new PipeConfig(OilRefineryConfig.ID, false, x: -1, y: 3, SimHashes.Methane),
+            new PipeConfig(OilRefineryConfig.ID, false, x: -1, y: 3, SimHashes.Methane).RemoveAtmosphereCheck(),
 
             new PipeConfig(FertilizerMakerConfig.ID, true, x: 0, y: 0, SimHashes.Dirt, SimHashes.Phosphorite),
             new PipeConfig(FertilizerMakerConfig.ID, false, x: 2, y: 1, SimHashes.Fertilizer),
@@ -54,13 +54,13 @@ namespace PipedEverything
             new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater) { StorageIndex = 1 },
             new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
 
-            new PipeConfig(ElectrolyzerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen),
+            new PipeConfig(ElectrolyzerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
             new PipeConfig(ElectrolyzerConfig.ID, false, x: 0, y: 1, SimHashes.Hydrogen),
 
-            new PipeConfig(RustDeoxidizerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen),
+            new PipeConfig(RustDeoxidizerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
             new PipeConfig(RustDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.ChlorineGas),
 
-            new PipeConfig(MineralDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
+            new PipeConfig(MineralDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
 
             new PipeConfig(SublimationStationConfig.ID, false, x: 0, y: 0, SimHashes.ContaminatedOxygen),
 
@@ -123,6 +123,18 @@ namespace PipedEverything
             if (state.version < 5)
             {
                 state.Configs.RemoveAll(a => a.Id == PolymerizerConfig.ID && a.Filter.FirstOrDefault() == SimHashes.CarbonDioxide.ToString());
+            }
+
+            if (state.version < 6)
+            {
+                foreach (var config in state.Configs)
+                {
+                    if (config.Id is OilRefineryConfig.ID 
+                        or MineralDeoxidizerConfig.ID 
+                        or ElectrolyzerConfig.ID 
+                        or RustDeoxidizerConfig.ID)
+                        config.RemoveAtmosphereCheck();
+                }
             }
 
             return true;
