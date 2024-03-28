@@ -20,6 +20,7 @@ namespace PipedEverything
         public Color32? Color;
         public int? StorageIndex;
         public float? StorageCapacity;
+        public bool? RemoveMaxAtmosphere;
 
         public PipeConfig() { }
 
@@ -29,7 +30,7 @@ namespace PipedEverything
             this.Input = input;
             this.OffsetX = x;
             this.OffsetY = y;
-            this.Filter = filter == 0 ? Array.Empty<string>() : new string[] { filter.ToString() };
+            this.Filter = filter == 0 ? [] : [filter.ToString()];
         }
 
         public PipeConfig(string id, bool input, int x, int y, string filter)
@@ -38,7 +39,7 @@ namespace PipedEverything
             this.Input = input;
             this.OffsetX = x;
             this.OffsetY = y;
-            this.Filter = new string[] { filter.ToString() };
+            this.Filter = [filter.ToString()];
         }
 
         public PipeConfig(string id, bool input, int x, int y, params SimHashes[] filter)
@@ -57,6 +58,12 @@ namespace PipedEverything
             this.OffsetX = x;
             this.OffsetY = y;
             this.Filter = filter.Select(s => s.id.ToString()).ToArray();
+        }
+
+        public PipeConfig RemoveAtmosphereCheck()
+        {
+            this.RemoveMaxAtmosphere = true;
+            return this;
         }
     }
 }

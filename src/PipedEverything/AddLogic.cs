@@ -112,6 +112,22 @@ namespace PipedEverything
                         def.BuildingComplete.AddComponent<ConduitDispenserOptionalSolid>().AssignPort(portInfo);
                 }
 
+                if (config.RemoveMaxAtmosphere == true)
+                {
+                    var electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
+                    if (electrolyzer != null)
+                        electrolyzer.maxMass = float.PositiveInfinity;
+                    var rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
+                    if (rustDeoxidizer != null)
+                        rustDeoxidizer.maxMass = float.PositiveInfinity;
+                    var oilRefinery = def.BuildingComplete.GetComponent<OilRefinery>();
+                    if (oilRefinery != null)
+                    {
+                        oilRefinery.overpressureMass = float.PositiveInfinity;
+                        oilRefinery.overpressureWarningMass = float.PositiveInfinity;
+                    }
+                }
+
                 Helpers.PrintDebug($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");
             }
         }
