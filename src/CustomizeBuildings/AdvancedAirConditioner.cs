@@ -287,13 +287,13 @@ namespace CustomizeBuildings
             energyConsumer = this.GetComponent<EnergyConsumer>();
             if (CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor <= 0f)
                 CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor = 0.0001f;
-            factorDPU = energyConsumer.WattsNeededWhenActive / (MaxDPU * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
+            factorDPU = energyConsumer.WattsNeededWhenActive / (10000f * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
         }
         #endregion
 
         #region IUserControlledCapacity
         public float CurrentDPU;
-        public const float MaxDPU = 10000f;
+        public const float MaxDPU = 100000f;
         [Serialize] public float SetDPU = 100f;
 
         LocString IUserControlledCapacity.CapacityUnits => "kDPU";
@@ -387,7 +387,7 @@ namespace CustomizeBuildings
         #endregion
     }
 
-    public class X : IBuildingCompleteMod
+    public class SpaceHeaterSliderMod : IBuildingCompleteMod
     {
         public bool Enabled(string id)
         {
@@ -397,7 +397,8 @@ namespace CustomizeBuildings
 
         public void Edit(BuildingDef def)
         {
-            def.BuildingComplete.AddOrGet<SpaceHeaterSlider>();
+            def.BuildingComplete.AddOrGet<SpaceHeaterSlider>().SetTemperature 
+                = def.PrefabID is "GasRefrigerationUnit" or "LiquidRefrigerationUnit" ? 16f : 273.15f + 80f;
         }
 
         public void Undo(BuildingDef def)
