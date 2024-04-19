@@ -24,7 +24,7 @@ namespace CustomizeBuildings
         public bool ActivateAboveThreshold { get => this.Switch; set => this.Switch = value; }
         public float CurrentValue { get; set; }
         public virtual float RangeMin => 0f;
-        public virtual float RangeMax => 1273.15f;
+        public virtual float RangeMax => 2273.15f;
         public LocString Title => STRINGS.UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE;
         public LocString ThresholdValueName => STRINGS.UI.NEWBUILDCATEGORIES.TEMPERATURE.NAME;
         public string AboveToolTip => STRINGS.UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.ABOVE_BUTTON;

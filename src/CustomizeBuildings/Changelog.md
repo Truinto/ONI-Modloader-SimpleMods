@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.87.0] U51-600112-S
+- upped thermo slider limit to 2000°C
+- added thermo sliders for minimum temperature to Thermo Conditioner and Aquacooler (HVAC Expansion)
+
 ## [1.0.86.0] U50-587362-S
 - fixed crash in SkillStation
 

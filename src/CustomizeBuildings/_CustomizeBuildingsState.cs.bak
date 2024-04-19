@@ -33,7 +33,7 @@ namespace CustomizeBuildings
             StateManager.State.SealInsulateStorages = false;
             StateManager.State.LockerKG = 20000f;
             StateManager.State.LockerSmartKG = 20000f;
-            StateManager.State.GasReservoirKG = 150f;
+            StateManager.State.GasReservoirKG = 1000f;
             StateManager.State.LiquidReservoirKG = 5000f;
             StateManager.State.RationBoxKG = 150f;
             StateManager.State.FridgeKG = 100f;

@@ -2,17 +2,19 @@
 using Common;
 using static LogicPorts;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PipedEverything
 {
     [SkipSaveFileSerialization]
     public class PortDisplay2 : KMonoBehaviour
     {
+        private static List<(Sprite sprite, Color color, Color background, Color border)> sprites_in = new();
+        private static List<(Sprite sprite, Color color, Color background, Color border)> sprites_out = new();
+
         private GameObject portObject;
 
         private int lastUtilityCell = -1;
-
-        private Color lastColor = Color.black;
 
         [SerializeField]
         public ConduitType type;
@@ -51,11 +53,114 @@ namespace PipedEverything
             this.offset = port.offset;
             this.input = port.input;
             this.color = port.color;
-            this.sprite = GetSprite();
+            this.sprite = GetSprite(port);
             this.filter = port.filter;
             this.tags = port.filter.Select(s => s.ToTag()).ToArray();
             this.storageIndex = port.StorageIndex;
             this.storageCapacity = port.StorageCapacity;
+        }
+
+        private Sprite GetSprite(PortDisplayInfo port)
+        {
+            // if there is no color mixing, we can just use the old method
+            var sprite_base = this.input ? BuildingCellVisualizerResources.Instance().liquidInputIcon : BuildingCellVisualizerResources.Instance().liquidOutputIcon;
+            if (port.background == Color.black && port.color == port.border)
+                return sprite_base;
+
+            // otherwise we do not use tint and instead pre-render the sprite in the colors we need
+            this.color = Color.white;
+
+            var sprites = this.input ? sprites_in : sprites_out;
+            var sprite_colored = sprites.Find(f => f.color == port.color && f.background == port.background && f.border == port.border).sprite;
+            if (sprite_colored == null)
+            {
+                sprite_colored = CreateSpriteColor(sprite_base, port.color, port.background, port.border);
+                sprites.Add((sprite_colored, port.color, port.background, port.border));
+            }
+
+            return sprite_colored;
+        }
+
+        private Sprite CreateSpriteColor(Sprite sprite_base, Color color, Color background, Color border)
+        {
+            Texture2D source_texture = MakeTextureReadable(sprite_base.texture);
+
+            /*var path = @"D:\Users\Fumihiko\Desktop\spritemap.png";
+            if (!System.IO.File.Exists(path))
+            {
+                var bmp = new System.Drawing.Bitmap(texture.width, texture.height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                for (int i = 0; i < texture.width; i++)
+                {
+                    for (int j = 0; j < texture.height; j++)
+                    {
+                        var p1 = texture.GetPixel(i, j);
+
+                        //Helpers.PrintDebug($"pixel {i},{j}: {p1.a} - {p1.r} - {p1.g} - {p1.b}");
+
+                        var p2 = System.Drawing.Color.FromArgb(
+                            (int)255,
+                            (int)(p1.r * 255),
+                            (int)(p1.g * 255),
+                            (int)(p1.b * 255)
+                        );
+                        bmp.SetPixel(i, j, p2);
+                    }
+                }
+                bmp.Save(path);
+            }*/
+
+            int x = (int)sprite_base.textureRect.x;
+            int y = (int)sprite_base.textureRect.y;
+            int w = (int)sprite_base.textureRect.width;
+            int h = (int)sprite_base.textureRect.height;
+            int ml = 20;
+            int mh = w - 20;
+            var target_texture = new Texture2D(w, h);
+            target_texture.filterMode = FilterMode.Point;
+            target_texture.wrapMode = TextureWrapMode.Clamp;
+
+            //Helpers.PrintDebug($"x={x} y={y} w={w} h={h}");
+            //Helpers.PrintDebug($"tx={sprite_base.textureRect.x} ty={sprite_base.textureRect.y} tw={sprite_base.textureRect.width} th={sprite_base.textureRect.height}");
+            //Helpers.PrintDebug($"ox={sprite_base.textureRectOffset.x} oy={sprite_base.textureRectOffset.y}");
+
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    var p = source_texture.GetPixel(i + x, j + y);
+
+                    if (p.r < 0.5f)     // if color is 50% dark, invert it and tint with background                    
+                        target_texture.SetPixel(i, j, p.Invert() * background);                    
+                    else if (i < ml || i > mh || j < ml || j > mh)
+                        target_texture.SetPixel(i, j, p * border);     // if in border, tint with border
+                    else
+                        target_texture.SetPixel(i, j, p * color);      // otherwise, tint with color
+                }
+            }
+
+            target_texture.Apply();
+            return Sprite.Create(target_texture, new(0, 0, w, h), new(0.5f, 0.5f));
+        }
+
+        private static Texture2D MakeTextureReadable(Texture2D source)
+        {
+            //https://stackoverflow.com/questions/44733841/how-to-make-texture2d-readable-via-script
+            RenderTexture render = RenderTexture.GetTemporary(
+                        source.width,
+                        source.height,
+                        0,
+                        RenderTextureFormat.Default,
+                        RenderTextureReadWrite.Linear);
+
+            Graphics.Blit(source, render);
+            var previous = RenderTexture.active;
+            RenderTexture.active = render;
+            var readable_texture = new Texture2D(source.width, source.height);
+            readable_texture.ReadPixels(new Rect(0, 0, render.width, render.height), 0, 0);
+            //readableText.Apply();
+            RenderTexture.active = previous;
+            RenderTexture.ReleaseTemporary(render);
+            return readable_texture;
         }
 
         public void Draw(GameObject obj, BuildingCellVisualizer visualizer, bool force)
@@ -63,41 +168,11 @@ namespace PipedEverything
             int utilityCell = visualizer.building.GetCellWithOffset(this.offset);
 
             // redraw if anything changed
-            if (force || utilityCell != this.lastUtilityCell || this.color != this.lastColor)
+            if (force || utilityCell != this.lastUtilityCell)
             {
-                this.lastColor = color;
                 this.lastUtilityCell = utilityCell;
                 visualizer.DrawUtilityIcon(utilityCell, this.sprite, ref portObject, color, Color.white);
             }
-        }
-
-        private Sprite GetSprite()
-        {
-            var resources = BuildingCellVisualizerResources.Instance();
-            if (input)
-            {
-                if (this.type == ConduitType.Gas)
-                {
-                    return resources.gasInputIcon;
-                }
-                else if (this.type == ConduitType.Liquid || this.type == ConduitType.Solid)
-                {
-                    return resources.liquidInputIcon;
-                }
-            }
-            else
-            {
-                if (this.type == ConduitType.Gas)
-                {
-                    return resources.gasOutputIcon;
-                }
-                else if (this.type == ConduitType.Liquid || this.type == ConduitType.Solid)
-                {
-                    return resources.liquidOutputIcon;
-                }
-            }
-
-            return null;
         }
 
         public void DisableIcons()
