@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.89.0] U51-600112-S
+- changed MaxDPU tenfold to 100000f
+
+## [1.0.88.0] U51-600112-S
+- changed thermo cooler default limit to 16K (instead of 353.15K)
+
 ## [1.0.87.0] U51-600112-S
 - upped thermo slider limit to 2000°C
 - added thermo sliders for minimum temperature to Thermo Conditioner and Aquacooler (HVAC Expansion)

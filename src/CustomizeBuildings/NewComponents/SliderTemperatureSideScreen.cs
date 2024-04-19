@@ -11,7 +11,6 @@ using HarmonyLib;
 
 namespace CustomizeBuildings
 {
-    //[SkipSaveFileSerialization]
     [SerializationConfig(MemberSerialization.OptIn)]
     public class SliderTemperatureSideScreen : KMonoBehaviour, IThresholdSwitch
     {
