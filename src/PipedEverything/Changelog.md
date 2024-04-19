@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.12.0] U51-600112-S
+- added ColorBackground and ColorBorder to have mixed colored icons  #61
+- added more ports #62
+
 ## [1.0.11.0] U51-600112-S
 - added option to disable atmosphere checks (for oil refinery, oxygen generators)
 

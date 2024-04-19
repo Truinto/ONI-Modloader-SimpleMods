@@ -184,6 +184,13 @@ namespace Common
         #endregion
 
         #region Utility
+        public static Color Invert(this Color color)
+        {
+            var color2 = Color.white - color;
+            color2.a = color.a;
+            return color2;
+        }
+
         public static bool IsModActive(string title, bool exact = false)
         {
             if (exact)

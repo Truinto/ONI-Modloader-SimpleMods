@@ -18,6 +18,8 @@ namespace PipedEverything
         public string[] Filter;
 
         public Color32? Color;
+        public Color32? ColorBackground;
+        public Color32? ColorBorder;
         public int? StorageIndex;
         public float? StorageCapacity;
         public bool? RemoveMaxAtmosphere;

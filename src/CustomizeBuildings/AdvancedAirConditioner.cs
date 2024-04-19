@@ -387,45 +387,42 @@ namespace CustomizeBuildings
         #endregion
     }
 
-
-    [HarmonyPatch(typeof(SpaceHeaterConfig), "ConfigureBuildingTemplate")]
-    public class SpaceHeater_Patch
+    public class X : IBuildingCompleteMod
     {
-        public static bool Prepare()
+        public bool Enabled(string id)
         {
-            return CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
+            return id is SpaceHeaterConfig.ID or LiquidHeaterConfig.ID or "GasRefrigerationUnit" or "LiquidRefrigerationUnit"
+                && CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
         }
 
-        public static void Postfix(GameObject go) => go.AddOrGet<SpaceHeaterSlider>();
-    }
-
-    [HarmonyPatch(typeof(LiquidHeaterConfig), "ConfigureBuildingTemplate")]
-    public class SpaceHeater_Patch2
-    {
-        public static bool Prepare()
+        public void Edit(BuildingDef def)
         {
-            return CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
+            def.BuildingComplete.AddOrGet<SpaceHeaterSlider>();
         }
 
-        public static void Postfix(GameObject go) => go.AddOrGet<SpaceHeaterSlider>();
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [SerializationConfig(MemberSerialization.OptIn)]
     public class SpaceHeaterSlider : SliderTemperatureSideScreen, ISim1000ms
     {
         [MyCmpGet] private SpaceHeater spaceHeater;
+        [MyCmpGet] private MinimumOperatingTemperature minTemp;
 
         public override void Update()
         {
-            if (this.spaceHeater != null)
-            {
-                spaceHeater.targetTemperature = this.SetTemperature;
-            }
+            if (spaceHeater != null)
+                spaceHeater.targetTemperature = SetTemperature;
+            if (minTemp != null)
+                minTemp.minimumTemperature = SetTemperature;
         }
 
         public void Sim1000ms(float dt)
         {
-            this.CurrentValue = Grid.Temperature[Grid.PosToCell(this)];
+            CurrentValue = Grid.Temperature[Grid.PosToCell(this)];
         }
     }
 
