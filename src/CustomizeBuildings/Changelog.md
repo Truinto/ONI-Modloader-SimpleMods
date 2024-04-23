@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.90.0] U51-600112-S
+- fix attempt on air conditioner
+
 ## [1.0.89.0] U51-600112-S
 - changed MaxDPU tenfold to 100000f
 

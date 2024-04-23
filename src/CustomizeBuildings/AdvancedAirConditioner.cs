@@ -26,33 +26,26 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(LiquidConditionerConfig), "ConfigureBuildingTemplate")]
-    public class LiquidConditionerConfig_Patch
+    public class AdvancedConditionerMod : IBuildingCompleteMod
     {
-        public static bool Prepare()
+        public bool Enabled(string id)
         {
-            return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+            return id is AirConditionerConfig.ID or LiquidConditionerConfig.ID
+                && CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
         }
 
-        public static void Postfix(GameObject go)
+        public void Edit(BuildingDef def)
         {
-            go.AddOrGet<AirConditionerSliders>();
-            go.AddOrGet<Storage>().capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * 2f;
-        }
-    }
-
-    [HarmonyPatch(typeof(AirConditionerConfig), "ConfigureBuildingTemplate")]
-    public class AirConditionerConfig_Patch
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+            def.BuildingComplete.AddOrGet<AirConditionerSliders>();
+            def.BuildingComplete.AddOrGet<Storage>().capacityKg = 2f *
+                (def.PrefabID is AirConditionerConfig.ID ?
+                CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure :
+                CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure);
         }
 
-        public static void Postfix(GameObject go)
+        public void Undo(BuildingDef def)
         {
-            go.AddOrGet<AirConditionerSliders>();
-            go.AddOrGet<Storage>().capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * 2f;
+            throw new NotImplementedException();
         }
     }
 
@@ -224,7 +217,7 @@ namespace CustomizeBuildings
             {
                 // temperatureNew = temperature; mass_max = mass;
 
-                var slider = __instance.GetComponent<AirConditionerSliders>();
+                var slider = __instance.FindOrAddComponent<AirConditionerSliders>();
                 slider.CurrentTemperature = primaryElement.Temperature;
                 if (slider.SetTemperature >= 1f)
                     temperatureNew = slider.SetTemperature; //# target temperature
@@ -279,7 +272,7 @@ namespace CustomizeBuildings
     {
         #region OnSpawn
         private EnergyConsumer energyConsumer;
-        private float factorDPU;
+        private float factorDPU = 1f;
 
         public override void OnSpawn()
         {
@@ -344,7 +337,8 @@ namespace CustomizeBuildings
             //else if (handle != Guid.Empty)
             //    handle = selectable.RemoveStatusItem(handle);
 
-            energyConsumer.BaseWattageRating = Math.Min(energyConsumer.WattsNeededWhenActive, 100f + (Math.Abs(CurrentDPU) * factorDPU));
+            if (energyConsumer != null)
+                energyConsumer.BaseWattageRating = Math.Min(energyConsumer.WattsNeededWhenActive, 100f + (Math.Abs(CurrentDPU) * factorDPU));
             //Helpers.Print($" dt={dt}, CurrentDPU={CurrentDPU}, factorDPU={factorDPU}, Rating={energyConsumer.BaseWattageRating}");
         }
 
@@ -397,7 +391,7 @@ namespace CustomizeBuildings
 
         public void Edit(BuildingDef def)
         {
-            def.BuildingComplete.AddOrGet<SpaceHeaterSlider>().SetTemperature 
+            def.BuildingComplete.AddOrGet<SpaceHeaterSlider>().SetTemperature
                 = def.PrefabID is "GasRefrigerationUnit" or "LiquidRefrigerationUnit" ? 16f : 273.15f + 80f;
         }
 
