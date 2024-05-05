@@ -21,6 +21,7 @@ namespace CustomizeBuildings
         public static void Prefix(GameObject go)
         {
             go.AddOrGet<ValveBaseTemperature>();
+            go.AddOrGet<SliderTemperatureSideScreen>().TextLogic = ValveBaseTemperature.TextLogic;
         }
     }
 
@@ -35,13 +36,14 @@ namespace CustomizeBuildings
         public static void Prefix(GameObject go)
         {
             go.AddOrGet<ValveBaseTemperature>();
+            go.AddOrGet<SliderTemperatureSideScreen>().TextLogic = ValveBaseTemperature.TextLogic;
         }
     }
 
     [SerializationConfig(MemberSerialization.OptIn)]
     public class ValveBaseTemperature : ValveBase
     {
-        private static LocString textLogic = Helpers.StringsAddShort("Let material through if:", "ValveTemperatureLogic");
+        public static LocString TextLogic; // = Helpers.StringsAddShort("Let material through if:", "ValveTemperatureLogic");
         [MyCmpAdd] private SliderTemperatureSideScreen temperatureSlider;
 
         public override void OnSpawn()
@@ -52,7 +54,6 @@ namespace CustomizeBuildings
             Conduit.GetFlowManager(this.conduitType).AddConduitUpdater(ConduitUpdate2);
             UpdateAnim();
             OnCmpEnable();
-            temperatureSlider.TextLogic = textLogic;
         }
 
         public override void OnCleanUp()

@@ -548,26 +548,29 @@ namespace Common
 
         public static LocString StringsAddShort(string text, string key_short)
         {
+            key_short = $"{Helpers.ModName}.LOCSTRINGS.{key_short}";
 #if LOCALE
             StringsDic[key_short] = text;
 #endif
             Strings.Add(key_short, text);
-            return new LocString(text, $"{Helpers.ModName}.LOCSTRINGS.{key_short}");
+            return new LocString(text, key_short);
         }
 
         [System.Diagnostics.Conditional("LOCALE")]
         public static void StringsAddProperty(string key, string text)
         {
-            StringsAdd(key, text);
+            // note: removed property translation!
+            //StringsAdd(key, text);
         }
 
         [System.Diagnostics.Conditional("LOCALE")]
         public static void StringsAddClass(Type @class)
         {
-            foreach (var field in @class.GetFields())
-            {
-                StringsAdd($"{ModName}.PROPERTY.{field.Name}", field.Name);
-            }
+            // note: removed property translation!
+            //foreach (var field in @class.GetFields())
+            //{
+            //    StringsAdd($"{ModName}.PROPERTY.{field.Name}", field.Name);
+            //}
         }
 
         /// Adds string to TagManager.
