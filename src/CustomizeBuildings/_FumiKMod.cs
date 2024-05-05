@@ -23,6 +23,7 @@ namespace CustomizeBuildings
 
             // predefine strings
             CustomStrings.LoadStrings();
+            CustomStrings.LoadSideScreenStrings();
             CustomStrings.SkillStationStrings();
             Helpers.StringsAddClass(typeof(BuildingStruct));
             Helpers.StringsAddClass(typeof(BuildingAdv));

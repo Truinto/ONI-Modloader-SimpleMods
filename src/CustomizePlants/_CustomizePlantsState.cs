@@ -203,8 +203,8 @@ namespace CustomizePlants
         public static string GetStaticConfigPath()
         {
             string path = FumiKMod.ModName;
-            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
-                path += "_" + Helpers.ActiveLocale;
+            //if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+            //    path += "_" + Helpers.ActiveLocale;
             return Config.PathHelper.CreatePath(path);
         }
         #endregion

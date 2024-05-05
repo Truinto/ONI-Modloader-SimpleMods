@@ -761,8 +761,8 @@ namespace CustomizeBuildings
         public static string GetStaticConfigPath()
         {
             string path = FumiKMod.ModName;
-            if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
-                path += "_" + Helpers.ActiveLocale;
+            //if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
+            //    path += "_" + Helpers.ActiveLocale;
             return Config.PathHelper.CreatePath(path);
         }
 
@@ -1646,6 +1646,13 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightModules_Title", "Rocket Height: Modules");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TuningRocketHeightModules_ToolTip", "");
             #endregion
+        }
+
+        public static void LoadSideScreenStrings()
+        {
+            ValveBaseTemperature.TextLogic = Helpers.StringsAddShort("Let material through if:", "ValveTemperatureLogic");
+            SpaceHeaterSliderMod.TextLogic = Helpers.StringsAddShort("Operates until temperature reached:\n(Above/below does nothing)", "SpaceHeaterSliderLogic");
+            AdvancedConditionerMod.TextLogic = Helpers.StringsAddShort("Output exactly this temperature:\n(MIN temperature does -14°C instead)", "AdvancedConditionerModLogic");
         }
 
         public static void SkillStationStrings()

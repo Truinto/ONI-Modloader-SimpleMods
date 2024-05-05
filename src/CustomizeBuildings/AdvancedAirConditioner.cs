@@ -28,6 +28,8 @@ namespace CustomizeBuildings
 
     public class AdvancedConditionerMod : IBuildingCompleteMod
     {
+        public static LocString TextLogic; // = Helpers.StringsAddShort("Output exactly this temperature:", "AdvancedConditionerModLogic");
+
         public bool Enabled(string id)
         {
             return id is AirConditionerConfig.ID or LiquidConditionerConfig.ID
@@ -36,7 +38,7 @@ namespace CustomizeBuildings
 
         public void Edit(BuildingDef def)
         {
-            def.BuildingComplete.AddOrGet<AirConditionerSliders>();
+            def.BuildingComplete.AddOrGet<AirConditionerSliders>().TextLogic = TextLogic;
             def.BuildingComplete.AddOrGet<Storage>().capacityKg = 2f *
                 (def.PrefabID is AirConditionerConfig.ID ?
                 CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure :
@@ -217,24 +219,31 @@ namespace CustomizeBuildings
             {
                 // temperatureNew = temperature; mass_max = mass;
 
-                var slider = __instance.FindOrAddComponent<AirConditionerSliders>();
-                slider.CurrentTemperature = primaryElement.Temperature;
-                if (slider.SetTemperature >= 1f)
-                    temperatureNew = slider.SetTemperature; //# target temperature
-
-                float temperatureCooled = temperatureNew - primaryElement.Temperature;
-                if (temperatureCooled != 0f && slider.SetTemperature >= 1f)
+                var slider = __instance.GetComponent<AirConditionerSliders>();
+                if (slider == null) // if there are mods (HVAC) that re-use AirConditioner without the slider: do operation as normal
                 {
-                    float mass_DPU = slider.SetDPU / (Math.Abs(temperatureCooled) * primaryElement.Element.specificHeatCapacity);
-                    mass = Math.Max(0f, Math.Min(primaryElement.Mass, mass_DPU));
+                    return instance.AddElement(cell_idx, element, mass, temperature, disease_idx, disease_count);
                 }
+                else
+                {
+                    slider.CurrentTemperature = primaryElement.Temperature;
+                    if (slider.SetTemperature >= 1f)
+                        temperatureNew = slider.SetTemperature; //# target temperature
 
-                float mass_output = instance.AddElement(cell_idx, element, mass, temperatureNew, disease_idx, disease_count);
+                    float temperatureCooled = temperatureNew - primaryElement.Temperature;
+                    if (temperatureCooled != 0f && slider.SetTemperature >= 1f)
+                    {
+                        float mass_DPU = slider.SetDPU / (Math.Abs(temperatureCooled) * primaryElement.Element.specificHeatCapacity);
+                        mass = Math.Max(0f, Math.Min(primaryElement.Mass, mass_DPU));
+                    }
 
-                float DPU_removed = temperatureCooled * primaryElement.Element.specificHeatCapacity * mass_output;
-                slider.CurrentDPU = DPU_removed;
+                    float mass_output = instance.AddElement(cell_idx, element, mass, temperatureNew, disease_idx, disease_count);
 
-                return mass_output;
+                    float DPU_removed = temperatureCooled * primaryElement.Element.specificHeatCapacity * mass_output;
+                    slider.CurrentDPU = DPU_removed;
+
+                    return mass_output;
+                }
             }
         }
     }
@@ -260,9 +269,11 @@ namespace CustomizeBuildings
 
             return data;
 
-            static float patch(float __stack)
+            static float patch(float __stack, AirConditioner __instance)
             {
-                return Math.Min(-4f, __stack) * factor;
+                if (__instance.temperatureDelta > 0f) // HVAC patch
+                    return __stack;
+                return Math.Min(-4f, __stack) * factor; // -4 is negated in code; this ensures the building emits at least 4 units of heat
             }
         }
     }
@@ -270,6 +281,8 @@ namespace CustomizeBuildings
     [SerializationConfig(MemberSerialization.OptIn)]
     public class AirConditionerSliders : KMonoBehaviour, IUserControlledCapacity, IThresholdSwitch, ISim200ms    //IActivationRangeTarget
     {
+        public LocString TextLogic;
+
         #region OnSpawn
         private EnergyConsumer energyConsumer;
         private float factorDPU = 1f;
@@ -383,6 +396,8 @@ namespace CustomizeBuildings
 
     public class SpaceHeaterSliderMod : IBuildingCompleteMod
     {
+        public static LocString TextLogic; // = Helpers.StringsAddShort("Operates until temperature reached:", "SpaceHeaterSliderLogic");
+
         public bool Enabled(string id)
         {
             return id is SpaceHeaterConfig.ID or LiquidHeaterConfig.ID or "GasRefrigerationUnit" or "LiquidRefrigerationUnit"
@@ -391,8 +406,9 @@ namespace CustomizeBuildings
 
         public void Edit(BuildingDef def)
         {
-            def.BuildingComplete.AddOrGet<SpaceHeaterSlider>().SetTemperature
-                = def.PrefabID is "GasRefrigerationUnit" or "LiquidRefrigerationUnit" ? 16f : 273.15f + 80f;
+            var slider = def.BuildingComplete.AddOrGet<SpaceHeaterSlider>();
+            slider.TextLogic = TextLogic;
+            slider.SetTemperature = def.PrefabID is "GasRefrigerationUnit" or "LiquidRefrigerationUnit" ? 16f : 273.15f + 80f;
         }
 
         public void Undo(BuildingDef def)
