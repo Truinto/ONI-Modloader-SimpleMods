@@ -31,16 +31,19 @@ namespace PipedEverything
                     if (filter == "Solid")
                     {
                         conduitType = ConduitType.Solid;
+                        filters.Add(SimHashes.Void);
                         continue;
                     }
                     if (filter == "Liquid")
                     {
                         conduitType = ConduitType.Liquid;
+                        filters.Add(SimHashes.Void);
                         continue;
                     }
                     if (filter == "Gas")
                     {
                         conduitType = ConduitType.Gas;
+                        filters.Add(SimHashes.Void);
                         continue;
                     }
 

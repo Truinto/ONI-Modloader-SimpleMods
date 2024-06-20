@@ -130,7 +130,7 @@ namespace PipedEverything
             foreach (var item in list)
             {
                 var element2 = item.GetComponent<PrimaryElement>();
-                if (this.elementFilter.Length == 0 && element2.Element.IsSolid || this.elementFilter.Contains(element2.ElementID))
+                if (this.elementFilter.Contains(element2.ElementID) || (this.elementFilter.Contains(SimHashes.Void) && element2.Element.IsSolid))
                     list3.Add(item);
             }
 

@@ -55,7 +55,7 @@ namespace PipedEverything
             this.color = port.color;
             this.sprite = GetSprite(port);
             this.filter = port.filter;
-            this.tags = port.filter.Select(s => s.ToTag()).ToArray();
+            this.tags = port.filter.Where(w => w != SimHashes.Void).Select(s => s.ToTag()).ToArray();
             this.storageIndex = port.StorageIndex;
             this.storageCapacity = port.StorageCapacity;
         }
@@ -206,7 +206,7 @@ namespace PipedEverything
 
         public float GetCapacity(SimHashes element)
         {
-            if (!filter.Contains(element))
+            if (!filter.Contains(element) && !filter.Contains(SimHashes.Void))
                 return 0f;
 
             float capacityElement = this.storageCapacity;
@@ -234,7 +234,7 @@ namespace PipedEverything
                     continue;
 
                 var element2 = item.GetComponent<PrimaryElement>();
-                if ((this.filter.Length == 0 && element2.Element.GetConduitType() == this.type || this.filter.Contains(element2.ElementID)) && element2.Mass > capacityElement)
+                if ((this.filter.Contains(SimHashes.Void) && element2.Element.GetConduitType() == this.type || this.filter.Contains(element2.ElementID)) && element2.Mass > capacityElement)
                     return true;
             }
             return false;

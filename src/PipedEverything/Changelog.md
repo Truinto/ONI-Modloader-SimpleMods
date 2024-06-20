@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.13.0] U51-600112-S
+- fixed element specific storage for catch-alls ('Solid', 'Liquid', and 'Gas')
+
 ## [1.0.12.0] U51-600112-S
 - added ColorBackground and ColorBorder to have mixed colored icons  #61
 - added more ports #62
