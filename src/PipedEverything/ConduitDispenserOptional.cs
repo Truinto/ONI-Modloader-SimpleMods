@@ -191,7 +191,7 @@ namespace PipedEverything
         {
             for (int i = 0; i != this.elementFilter.Length; i++)
             {
-                if (this.elementFilter[i] == element)
+                if (this.elementFilter[i] == element || this.elementFilter[i] == SimHashes.Void)
                 {
                     return true;
                 }

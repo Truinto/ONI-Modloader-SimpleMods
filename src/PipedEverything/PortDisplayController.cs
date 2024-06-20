@@ -112,7 +112,7 @@ namespace PipedEverything
             var hash = element.id;
             foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
             {
-                if (port.input && (port.filter.Length == 0 && element.GetConduitType() == port.type || port.filter.Contains(hash)))
+                if (port.input && (port.filter.Contains(SimHashes.Void) && element.GetConduitType() == port.type || port.filter.Contains(hash)))
                     return port.IsConnected();
             }
             return false;
@@ -125,7 +125,7 @@ namespace PipedEverything
             var hash = element.id;
             foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
             {
-                if (!port.input && (port.filter.Length == 0 && element.GetConduitType() == port.type || port.filter.Contains(hash)))
+                if (!port.input && (port.filter.Contains(SimHashes.Void) && element.GetConduitType() == port.type || port.filter.Contains(hash)))
                     return port.IsConnected();
             }
             return false;
@@ -153,7 +153,7 @@ namespace PipedEverything
         {
             foreach (var port in conduitType == ConduitType.Gas ? gasOverlay : conduitType == ConduitType.Liquid ? liquidOverlay : solidOverlay)
             {
-                if (port.input == input && port.filter.Contains(hash))
+                if (port.input == input && (port.filter.Contains(SimHashes.Void) || port.filter.Contains(hash)))
                     return port;
             }
             return null;

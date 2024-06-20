@@ -14,8 +14,6 @@ namespace PipedEverything
     [SkipSaveFileSerialization]
     public class ConduitConsumerOptional : KMonoBehaviour, IConduitConsumer
     {
-        private float[] capacities = Array.Empty<float>();
-
         [SerializeField]
         public CellOffset conduitOffset;
 
@@ -113,56 +111,6 @@ namespace PipedEverything
                     result = this.GetConduitManager().GetContents(this.utilityCell).mass > 0f;
                 }
                 return result;
-            }
-        }
-
-        public float stored_mass
-        {
-            get
-            {
-                if (this.Storage == null)
-                    return 0f;
-
-                float mass = 0f;
-                for (int i = 0; i < this.Storage.items.Count; i++)
-                {
-                    var gameObject = this.Storage.items[i];
-                    if (gameObject == null)
-                        continue;
-
-                    var element = gameObject.GetComponent<PrimaryElement>();
-                    if (this.elementFilter.Contains(element.ElementID))
-                        mass += element.Mass;
-                }
-
-                return mass;
-            }
-        }
-
-        public float space_remaining_kg
-        {
-            get
-            {
-                if (this.Storage == null)
-                    return this.capacityKG;
-
-                this.capacities.Fill(this.capacityKG);
-                float capacityStorage = this.Storage.capacityKg;
-                for (int i = 0; i < this.Storage.items.Count; i++)
-                {
-                    var gameObject = this.Storage.items[i];
-                    if (gameObject == null)
-                        continue;
-
-                    var element = gameObject.GetComponent<PrimaryElement>();
-                    capacityStorage -= element.Mass;
-                    int index = Array.IndexOf(this.elementFilter, element.ElementID);
-                    if (index < 0)
-                        continue;
-                    this.capacities[index] -= element.Mass;
-                }
-
-                return Mathf.Min(this.capacities.Min(), capacityStorage);
             }
         }
 
@@ -334,8 +282,8 @@ namespace PipedEverything
             if (num <= 0f)
                 return;
 
-            bool isAllowedElement = this.elementFilter.Contains(element.id);
-            if (this.elementFilter.Length > 0 && !isAllowedElement)
+            bool isAllowedElement = this.elementFilter.Contains(element.id) || this.elementFilter.Contains(SimHashes.Void);
+            if (!isAllowedElement)
             {
                 base.Trigger(-794517298, new BuildingHP.DamageSourceInfo
                 {
@@ -346,7 +294,7 @@ namespace PipedEverything
             }
 
             this.consumedLastTick = true;
-            if (isAllowedElement || this.wrongElementResult == ConduitConsumer.WrongElementResult.Store || contents.element == SimHashes.Vacuum || this.elementFilter.Length == 0)
+            if (isAllowedElement || this.wrongElementResult == ConduitConsumer.WrongElementResult.Store || contents.element == SimHashes.Vacuum)
             {
                 int disease_count = (int)((float)contents.diseaseCount * (num / contents.mass));
                 Element element2 = ElementLoader.FindElementByHash(contents.element);
@@ -384,10 +332,7 @@ namespace PipedEverything
 
         private float CapacityForElement(SimHashes element)
         {
-            if (elementFilter.Length == 0)
-                return this.Storage.RemainingCapacity();
-
-            if (!elementFilter.Contains(element))
+            if (!elementFilter.Contains(element) && !elementFilter.Contains(SimHashes.Void))
                 return 0f;
 
             float capacityElement = this.capacityKG;
@@ -412,8 +357,6 @@ namespace PipedEverything
             this.conduitOffset = port.offset;
             this.elementFilter = port.filter;
             this.storageIndex = port.StorageIndex;
-
-            this.capacities = new float[this.elementFilter.Length];
             this.capacityKG = port.StorageCapacity;
         }
     }
