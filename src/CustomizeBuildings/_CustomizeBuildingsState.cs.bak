@@ -108,7 +108,6 @@ namespace CustomizeBuildings
             StateManager.State.ConveyorLoaderHasSlider = false;
             StateManager.State.ConveyorReceptacleHasSlider = false;
             StateManager.State.ConveyorLoaderAcceptLiquidsGas = false;
-            StateManager.State.ConductivePanelPressure = 10f;
             StateManager.State.ValveEnableTemperatureFilter = false;
             StateManager.State.AutoSweeperCapacity = 1000f;
             StateManager.State.AutoSweeperRange = 4;
@@ -391,9 +390,6 @@ namespace CustomizeBuildings
 
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "Pipes")]
         public bool ConveyorLoaderAcceptLiquidsGas { get; set; } = false;
-
-        [Option("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Pipes", "F0")]
-        public float ConductivePanelPressure { get; set; } = 10f;
 
         [Option("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_Title", "CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_ToolTip", "Pipes", null)]
         public bool ValveEnableTemperatureFilter { get; set; } = false;
