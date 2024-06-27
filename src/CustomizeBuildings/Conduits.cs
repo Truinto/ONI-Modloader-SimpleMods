@@ -29,31 +29,6 @@ namespace CustomizeBuildings
         }
     }
 
-    public class ConductionPanel_Patch : IBuildingCompleteMod
-    {
-        public bool Enabled(string id)
-        {
-            return id == ContactConductivePipeBridgeConfig.ID && CustomizeBuildingsState.StateManager.State.ConductivePanelPressure != 10f;
-        }
-
-        public void Edit(BuildingDef def)
-        {
-            var storage = def.BuildingComplete.GetComponent<Storage>();
-            storage.capacityKg = CustomizeBuildingsState.StateManager.State.ConductivePanelPressure;
-
-            var conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
-            conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.ConductivePanelPressure;
-
-            var conductiveDef = def.BuildingComplete.GetDef<ContactConductivePipeBridge.Def>();
-            conductiveDef.pumpKGRate = CustomizeBuildingsState.StateManager.State.ConductivePanelPressure;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     [HarmonyPatch(typeof(ConduitFlow), nameof(ConduitFlow.AddElement))]
     public class ConduitFlow_AddElement
     {
@@ -176,6 +151,33 @@ namespace CustomizeBuildings
             conduitConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = conduitConsumer.consumptionRate * 2f;
+        }
+    }
+
+    public class ConductivePanelMod : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id is ContactConductivePipeBridgeConfig.ID
+                && (CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f 
+                    || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f);
+        }
+        
+        public void Edit(BuildingDef def)
+        {
+            var pipeDef = def.BuildingComplete.GetDef<ContactConductivePipeBridge.Def>();
+            pipeDef.pumpKGRate = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+
+            //var storage = def.BuildingComplete.GetComponent<Storage>();
+            //storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+
+            var conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
+            conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
         }
     }
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.92.0] U51-600112-S
+- removed ConductivePanelPressure setting
+- changed PipeLiquidMaxPressure to include Conductive Panel
+
 ## [1.0.91.0] U51-600112-S
 - removed property translation #63 (sorry to reset some people's settings)
 - fixed HVAC compatibility
