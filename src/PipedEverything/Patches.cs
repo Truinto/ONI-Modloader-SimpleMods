@@ -183,18 +183,19 @@ namespace PipedEverything
         /// <summary>
         /// Draw conduit port icons.
         /// </summary>
-        [HarmonyPatch(typeof(BuildingCellVisualizer), nameof(BuildingCellVisualizer.DrawIcons))]
+        [HarmonyPatch(typeof(EntityCellVisualizer), nameof(EntityCellVisualizer.DrawIcons))]
         [HarmonyPrefix]
-        public static bool DrawPorts_Prefix(BuildingCellVisualizer __instance, HashedString mode)
+        public static void DrawPorts_Prefix(EntityCellVisualizer __instance, HashedString mode)
         {
-            if (DrawBuildings.Contains(__instance.building.Def.PrefabID))
+            if (__instance is BuildingCellVisualizer buildingCellVisualizer)
             {
-                var go = __instance.building.gameObject;
-                var controller = go.GetComponent<PortDisplayController>();
-                if (controller != null)
-                    return controller.Draw(__instance, mode, go);
+                if (DrawBuildings.Contains(buildingCellVisualizer.building.Def.PrefabID))
+                {
+                    var go = buildingCellVisualizer.building.gameObject;
+                    var controller = go.GetComponent<PortDisplayController>();
+                    controller?.Draw(buildingCellVisualizer, mode, go);
+                }
             }
-            return true;
         }
 
         /// <summary>
