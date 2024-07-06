@@ -171,7 +171,7 @@ namespace PipedEverything
             if (force || utilityCell != this.lastUtilityCell)
             {
                 this.lastUtilityCell = utilityCell;
-                visualizer.DrawUtilityIcon(utilityCell, this.sprite, ref portObject, color, Color.white);
+                visualizer.DrawUtilityIcon(utilityCell, this.sprite, ref portObject, color/*Color.white*/);
             }
         }
 
