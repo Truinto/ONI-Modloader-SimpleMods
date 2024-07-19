@@ -162,8 +162,8 @@ namespace SharedStorage
     {
         public static List<EquilibriumStorage> AllStorages = new();
         public static Dictionary<int, HashSet<Tag>> AllFilters = new();
-        public static Tag[] FoodTags = new Tag[] { GameTags.Edible, GameTags.CookingIngredient, GameTags.Seed }; //EdiblesManager.s_allFoodTypes.Select(s => s.Id.ToTag()).ToArray(); 
-        public static Tag[] ClothsTags = new Tag[] { GameTags.Suit, GameTags.AtmoSuit, GameTags.JetSuit, GameTags.LeadSuit, GameTags.Clothes, GameTags.WarmVest, GameTags.CoolVest, GameTags.FunkyVest };
+        public static Tag[] FoodTags = [GameTags.Edible, GameTags.CookingIngredient, GameTags.Seed]; //EdiblesManager.s_allFoodTypes.Select(s => s.Id.ToTag()).ToArray(); 
+        public static Tag[] ClothsTags = [GameTags.Suit, GameTags.AtmoSuit, GameTags.JetSuit, GameTags.LeadSuit, GameTags.Clothes, GameTags.WarmVest, GameTags.FunkyVest];
 
         public static bool Enabled = SharedStorageState.StateManager.State.Enabled;
         public static bool AllowCrossWorld = SharedStorageState.StateManager.State.AllowCrossWorld;
