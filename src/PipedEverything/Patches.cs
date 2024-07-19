@@ -15,8 +15,6 @@ using UnityEngine;
 
 namespace PipedEverything
 {
-    // TODO new ports:
-
     [HarmonyPatch]
     public static class Patches
     {
@@ -91,7 +89,7 @@ namespace PipedEverything
             void patch(ComplexFabricator __instance, [LocalParameter(IndexByType = 0)] HashSet<Tag> keepTags)
             {
                 var controller = __instance.GetComponent<PortDisplayController>();
-                if (controller == null) 
+                if (controller == null)
                     return;
 
                 foreach (var port in controller.outputPorts)
@@ -234,6 +232,20 @@ namespace PipedEverything
                 __result = __instance.IsValidConduitConnection(source_go, portDisplay.type, utility_cell, ref fail_reason);
                 if (!__result)
                     return;
+            }
+        }
+
+        /// <summary>
+        /// Fix crash when a zero mass object is added to a zero mass storage. #66
+        /// </summary>
+        [HarmonyPatch(typeof(GameUtil), nameof(GameUtil.GetFinalTemperature))]
+        [HarmonyPrefix]
+        public static void Fix_FinalTemperature(ref float m1, ref float m2)
+        {
+            if (m1 <= 0f && m2 <= 0f)
+            {
+                m1 = 1f;
+                m2 = 1f;
             }
         }
     }

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.14.1] U52-622509-SC (release)
+- fixed crash for zero mass objects
+
 ## [1.0.14.0] U52-619020-SC (preview)
 - preview branch
 
