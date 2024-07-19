@@ -43,7 +43,7 @@ namespace CarePackageMod
         }
     }
 
-    [HarmonyPatch(typeof(ModsScreen), "OnActivate")]
+    [HarmonyPatch(typeof(ModsScreen), nameof(ModsScreen.OnActivate))]
     public class OptionChanged
     {
         public static void Postfix(KButton ___closeButton)
@@ -56,8 +56,6 @@ namespace CarePackageMod
         {
             CarePackageState.StateManager.TryReloadConfiguratorState();
             Reshuffle4.Prepare();
-            InitializeContainers.Total = CarePackageState.StateManager.State.rosterDupes + CarePackageState.StateManager.State.rosterPackages;
-            InitializeContainers.CarePackages = CarePackageState.StateManager.State.rosterPackages;
             CarePackageMod.carePackages = null;
         }
     }

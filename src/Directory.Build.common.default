@@ -12,6 +12,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<DebugType>embedded</DebugType>
+		<ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>false</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
 	</PropertyGroup>
 
 	<!-- Compile Constants -->
@@ -58,7 +59,7 @@
 		<Reference Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
 		<Reference Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
     
-		<Reference Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod.dll" />
+		<Reference Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod-net472.dll" />
 		<Reference Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
@@ -91,7 +92,7 @@
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<_MergeItems Include="$(TargetDir)$(TargetName).dll" />
-			<_MergeItems Include="$(SolutionDir)@Shared\UnityMod.dll" />
+			<_MergeItems Include="$(SolutionDir)@Shared\UnityMod-net472.dll" />
 			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
 			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
 			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="$(DefineConstants.Contains('MERGE'))" />

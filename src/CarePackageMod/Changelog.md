@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.18.0] U52-622509-SC (release)
+- updated for frosty dlc
+
 ## [1.0.17.0] U48-568201-S
 - compatibility patch
 

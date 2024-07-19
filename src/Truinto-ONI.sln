@@ -61,6 +61,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipedEverything", "PipedEve
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedStorage", "SharedStorage\SharedStorage.csproj", "{D87113BB-CFFD-4518-950B-5475A4DA06AA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using Common;
 using HarmonyLib;
+using Shared;
 
 namespace CarePackageMod
 {
@@ -18,7 +20,7 @@ namespace CarePackageMod
         }
     }
 
-    [HarmonyPatch(typeof(CharacterContainer), "GenerateCharacter")]
+    [HarmonyPatch(typeof(CharacterContainer), nameof(CharacterContainer.GenerateCharacter))]
     public class Reshuffle2
     {
         public static void Prefix(ref bool is_starter)
@@ -28,7 +30,7 @@ namespace CarePackageMod
         }
     }
 
-    [HarmonyPatch(typeof(MinionStartingStats), "GenerateTraits")]
+    [HarmonyPatch(typeof(MinionStartingStats), nameof(MinionStartingStats.GenerateTraits))]
     public class Reshuffle3
     {
         public static void Postfix(ref int __result)
@@ -37,7 +39,7 @@ namespace CarePackageMod
         }
     }
 
-    [HarmonyPatch(typeof(MinionStartingStats), "GenerateAptitudes")]
+    [HarmonyPatch(typeof(MinionStartingStats), nameof(MinionStartingStats.GenerateAptitudes))]
     public class Reshuffle4
     {
         public static bool Prepare()
@@ -51,32 +53,19 @@ namespace CarePackageMod
         public static int MinInterests = 1;
         public static int MaxInterests = 4;
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator, MethodBase original)
         {
-            var lines = instr.ToList();
-            bool flag1 = true;
-            for (int i = 0; i < lines.Count - 2; i++)
+            var tool = new TranspilerTool(code, generator, original);
+
+            tool.Seek(typeof(UnityEngine.Random), nameof(UnityEngine.Random.Range), [typeof(int), typeof(int)]);
+            tool.ReplaceCall(patch);
+
+            return tool;
+
+            int patch(int minInclusive, int maxExclusive)
             {
-                if (lines[i].opcode == OpCodes.Ldc_I4_1
-                    && lines[i + 1].opcode == OpCodes.Ldc_I4_4
-                    && lines[i + 2].opcode == OpCodes.Call)
-                {
-                    lines[i].opcode = OpCodes.Ldsfld;
-                    lines[i].operand = typeof(Reshuffle4).GetField(nameof(Reshuffle4.MinInterests));
-                    i++;
-                    lines[i].opcode = OpCodes.Ldsfld;
-                    lines[i].operand = typeof(Reshuffle4).GetField(nameof(Reshuffle4.MaxInterests));
-
-                    Helpers.Print($"Patched GenerateAptitudes Ldc_I4_1 with {lines[i].operand}");
-                    flag1 = false;
-                    break;
-                }
+                return UnityEngine.Random.Range(MinInterests, MaxInterests);
             }
-
-            if (flag1)
-                Helpers.Print("Error patch GenerateAptitudes failed");
-
-            return lines;
         }
     }
 
@@ -88,15 +77,9 @@ namespace CarePackageMod
             return CarePackageState.StateManager.State.allowReshuffle;
         }
 
-        public static void Prefix(CharacterSelectionController __instance, List<ITelepadDeliverable> ___selectedDeliverables, ref bool ___allowsReplacing)
+        public static void Prefix(CharacterSelectionController __instance)
         {
             __instance.RemoveLast();
-
-            //var copy = new List<ITelepadDeliverable>(___selectedDeliverables);
-            //foreach (var sub in copy)
-            //    __instance.RemoveDeliverable(sub);
-
-            //___selectedDeliverables.Clear();
         }
     }
 }
