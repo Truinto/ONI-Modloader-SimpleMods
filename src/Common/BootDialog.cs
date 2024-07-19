@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace Config
 {
-    [HarmonyPatch(typeof(KMod.Manager), "Report")]
+    [HarmonyPatch(typeof(KMod.Manager), nameof(KMod.Manager.Report))]
     public class PostBootDialog
     {
         public static List<string> ErrorList = new();
