@@ -18,7 +18,7 @@ namespace PipedEverything
         public CellOffset conduitOffset;
 
         [SerializeField]
-        public SimHashes[] elementFilter;
+        public Tag[] tagFilter = [];
 
         [SerializeField]
         public bool alwaysDispense = true;
@@ -129,8 +129,7 @@ namespace PipedEverything
             var list3 = new List<GameObject>(list.Count);
             foreach (var item in list)
             {
-                var element2 = item.GetComponent<PrimaryElement>();
-                if (this.elementFilter.Contains(element2.ElementID) || (this.elementFilter.Contains(SimHashes.Void) && element2.Element.IsSolid))
+                if ((tagFilter.Length == 0 && item.GetComponent<PrimaryElement>().Element.IsSolid) || item.HasAnyTags(tagFilter))
                     list3.Add(item);
             }
 
@@ -156,7 +155,7 @@ namespace PipedEverything
         public void AssignPort(PortDisplayInfo port)
         {
             this.conduitOffset = port.offset;
-            this.elementFilter = port.filter;
+            this.tagFilter = port.filterTags;
             this.storageIndex = port.StorageIndex;
         }
     }

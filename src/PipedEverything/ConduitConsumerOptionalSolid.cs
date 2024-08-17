@@ -17,7 +17,7 @@ namespace PipedEverything
         public CellOffset conduitOffset;
 
         [SerializeField]
-        public SimHashes[] elementFilter = Array.Empty<SimHashes>();
+        public Tag[] tagFilter = [];
 
         [SerializeField]
         public float capacityKG = float.PositiveInfinity;
@@ -50,18 +50,7 @@ namespace PipedEverything
 
         public bool IsConsuming => this.consuming;
 
-        public bool IsConnected
-        {
-            get
-            {
-                GameObject gameObject = Grid.Objects[this.utilityCell, 20];
-                if (gameObject != null)
-                {
-                    return gameObject.GetComponent<BuildingComplete>() != null;
-                }
-                return false;
-            }
-        }
+        public bool IsConnected => Grid.Objects[this.utilityCell, 20]?.GetComponent<BuildingComplete>() != null;
 
         private SolidConduitFlow GetConduitFlow()
         {
@@ -71,11 +60,11 @@ namespace PipedEverything
         public override void OnSpawn()
         {
             base.OnSpawn();
-            this.utilityCell = this.GetInputCell();
+            this.utilityCell = GetInputCell();
             ScenePartitionerLayer layer = GameScenePartitioner.Instance.objectLayers[20];
             this.partitionerEntry = GameScenePartitioner.Instance.Add("SolidConduitConsumer.OnSpawn", base.gameObject, this.utilityCell, layer, OnConduitConnectionChanged);
-            this.GetConduitFlow().AddConduitUpdater(ConduitUpdate);
-            this.OnConduitConnectionChanged(null);
+            GetConduitFlow().AddConduitUpdater(ConduitUpdate);
+            OnConduitConnectionChanged(null);
 
             this.networkItem = new FlowUtilityNetwork.NetworkItem(ConduitType.Solid, Endpoint.Sink, this.utilityCell, base.gameObject);
             Game.Instance.solidConduitSystem.AddToNetworks(this.utilityCell, this.networkItem, true);
@@ -83,7 +72,7 @@ namespace PipedEverything
 
         public override void OnCleanUp()
         {
-            this.GetConduitFlow().RemoveConduitUpdater(ConduitUpdate);
+            GetConduitFlow().RemoveConduitUpdater(ConduitUpdate);
             GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
             base.OnCleanUp();
 
@@ -93,7 +82,7 @@ namespace PipedEverything
         private void OnConduitConnectionChanged(object data)
         {
             this.consuming = this.consuming && this.IsConnected;
-            base.Trigger(-2094018600, this.IsConnected);
+            base.Trigger((int)GameHashes.ConduitConnectionChanged, this.IsConnected);
         }
 
         private void ConduitUpdate(float dt)
@@ -106,7 +95,7 @@ namespace PipedEverything
                 if (contents.pickupableHandle.IsValid() && (this.alwaysConsume || this.operational.IsOperational))
                 {
                     var pickupable = conduitFlow.GetPickupable(contents.pickupableHandle);
-                    float remainingSpace = CapacityForElement(pickupable.PrimaryElement.ElementID);
+                    float remainingSpace = CapacityForElement(pickupable);
                     if (remainingSpace > 0f)
                     {
                         if (pickupable.PrimaryElement.Mass <= remainingSpace || pickupable.PrimaryElement.Mass > Mathf.Min(this.Storage.capacityKg, this.capacityKG))
@@ -129,9 +118,14 @@ namespace PipedEverything
             this.consuming = flag;
         }
 
-        private float CapacityForElement(SimHashes element)
+        private float CapacityForElement(Pickupable element)
         {
-            if (!elementFilter.Contains(element) && !elementFilter.Contains(SimHashes.Void))
+            Tag tag;
+            if (tagFilter.Length == 0)
+                tag = element.PrimaryElement.ElementID.ToTag();
+            else
+                tag = GetMatch(element.GetComponent<KPrefabID>());
+            if (!tag.IsValid)
                 return 0f;
 
             float capacityElement = this.capacityKG;
@@ -143,18 +137,32 @@ namespace PipedEverything
 
                 var element2 = item.GetComponent<PrimaryElement>();
                 capacityStorage -= element2.Mass;
-                if (element == element2.ElementID)
+                if (item.HasTag(tag))
                     capacityElement -= element2.Mass;
             }
 
             return Mathf.Min(capacityElement, capacityStorage);
         }
 
+        private Tag GetMatch(KPrefabID prefabID)
+        {
+            foreach (var tag in tagFilter)
+            {
+                if (tag.IsTag(prefabID.PrefabTag))
+                    return tag;
+                foreach (var ptag in prefabID.Tags)
+                    if (tag.IsTag(ptag))
+                        return tag;
+            }
+            return default;
+        }
+
         private int GetConnectedNetworkID()
         {
-            GameObject gameObject = Grid.Objects[this.utilityCell, 20];
-            SolidConduit solidConduit = ((gameObject != null) ? gameObject.GetComponent<SolidConduit>() : null);
-            return ((solidConduit != null) ? solidConduit.GetNetwork() : null)?.id ?? (-1);
+            return Grid.Objects[this.utilityCell, 20]
+                ?.GetComponent<SolidConduit>()
+                ?.GetNetwork()
+                ?.id ?? -1;
         }
 
         private int GetInputCell()
@@ -165,7 +173,7 @@ namespace PipedEverything
         public void AssignPort(PortDisplayInfo port)
         {
             this.conduitOffset = port.offset;
-            this.elementFilter = port.filter;
+            this.tagFilter = port.filterTags;
             this.storageIndex = port.StorageIndex;
             this.capacityKG = port.StorageCapacity;
         }

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.15.0] U52-626616-SC (release)
+- added support for all Tags (no longer restricted to elements)
+- updated timber to new WoodLog id
+- added Ice Kettle, Campfire, Espresso Machine, and SodaFountain config
+- fixed storage index for Gas Range
+
 ## [1.0.14.1] U52-622509-SC (release)
 - fixed crash for zero mass objects
 

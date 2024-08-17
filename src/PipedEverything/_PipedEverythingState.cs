@@ -9,7 +9,7 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 6;
+        public int version { get; set; } = 7;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -17,7 +17,7 @@ namespace PipedEverything
             new PipeConfig(GeneratorConfig.ID, true, x: 0, y: 0, SimHashes.Carbon),
             new PipeConfig(GeneratorConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide),
 
-            new PipeConfig(WoodGasGeneratorConfig.ID, true, x: 0, y: 0, SimHashes.Creature), // ?
+            new PipeConfig(WoodGasGeneratorConfig.ID, true, x: 0, y: 0, SimHashes.WoodLog),
             new PipeConfig(WoodGasGeneratorConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
 
             new PipeConfig(PetroleumGeneratorConfig.ID, false, x: 0, y: 3, SimHashes.CarbonDioxide),
@@ -33,14 +33,16 @@ namespace PipedEverything
             new PipeConfig(FertilizerMakerConfig.ID, false, x: 2, y: 1, SimHashes.Fertilizer),
             new PipeConfig(FertilizerMakerConfig.ID, false, x: 2, y: 2, SimHashes.Methane),
 
-            new PipeConfig(EthanolDistilleryConfig.ID, true, x: 2, y: 0, SimHashes.Creature), // ?
+            new PipeConfig(EthanolDistilleryConfig.ID, true, x: 2, y: 0, SimHashes.WoodLog),
             new PipeConfig(EthanolDistilleryConfig.ID, false, x: 0, y: 0, SimHashes.ToxicSand) { Color = Color.gray },
             new PipeConfig(EthanolDistilleryConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
 
             //new PipeConfig(PolymerizerConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
             new PipeConfig(PolymerizerConfig.ID, false, x: 1, y: 0, SimHashes.Steam),
 
-            new PipeConfig(MilkFatSeparatorConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
+            new PipeConfig(MilkFatSeparatorConfig.ID, false, x: 1, y: 3, SimHashes.CarbonDioxide),
+            //new PipeConfig(MilkFatSeparatorConfig.ID, false, x: 3, y: 2, SimHashes.MilkFat) { Color = new(242,118,215,255) },
+            //new PipeConfig(MilkFatSeparatorConfig.ID, false, x: 3, y: 3, SimHashes.Brine) { Color = Color.cyan },
 
             //new PipeConfig(DesalinatorConfig.ID, false, x: 0, y: 0, SimHashes.Salt),
 
@@ -72,7 +74,7 @@ namespace PipedEverything
             new PipeConfig(AdvancedResearchCenterConfig.ID, true, x: 0, y: 0, SimHashes.Water),
 
             // ComplexFabricator            
-            new PipeConfig(GourmetCookingStationConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide),
+            new PipeConfig(GourmetCookingStationConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide) { StorageIndex = 0 },
 
             new PipeConfig(MicrobeMusherConfig.ID, true, x: 1, y: 0, SimHashes.Water),
 
@@ -93,6 +95,13 @@ namespace PipedEverything
             new PipeConfig(OilWellCapConfig.ID, false, x: 2, y: 1, SimHashes.CrudeOil),
             new PipeConfig(OilWellCapConfig.ID, false, x: 1, y: 1, SimHashes.Methane),
 
+            new PipeConfig(IceKettleConfig.ID, true, x: 0, y: 0, SimHashes.WoodLog) { StorageIndex = 0 },
+            new PipeConfig(IceKettleConfig.ID, true, x: 0, y: 1, SimHashes.Ice) { StorageIndex = 1 },
+            new PipeConfig(IceKettleConfig.ID, false, x: 1, y: 0, SimHashes.Water) { StorageIndex = 2 },
+
+            new PipeConfig(CampfireConfig.ID, true, x: 0, y: 0, SimHashes.WoodLog),
+            new PipeConfig(CampfireConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
+
             new PipeConfig(AirFilterConfig.ID, false, x: 0, y: 0, SimHashes.Clay),
             new PipeConfig(DecontaminationShowerConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater),
             new PipeConfig(WallToiletConfig.ID, false, x: 0, y: 1, SimHashes.DirtyWater),
@@ -102,6 +111,8 @@ namespace PipedEverything
             new PipeConfig(SweepBotStationConfig.ID, false, x: 0, y: 0, "Solid") { StorageIndex = 1 },
             new PipeConfig(SweepBotStationConfig.ID, false, x: 0, y: 0, "Liquid") { StorageIndex = 1 },
             new PipeConfig(RefrigeratorConfig.ID, true, x: 0, y: 0, "Solid") { StorageCapacity = float.PositiveInfinity },
+            new PipeConfig(EspressoMachineConfig.ID, true, x: 0, y: 0, SpiceNutConfig.ID),
+            new PipeConfig(SodaFountainConfig.ID, true, x: 0, y: 1, SimHashes.CarbonDioxide),
 
             // Advanced Generator+
             new PipeConfig("RefinedCarbonGenerator", true, x: 0, y: 0, SimHashes.RefinedCarbon),
@@ -142,11 +153,30 @@ namespace PipedEverything
             {
                 foreach (var config in state.Configs)
                 {
-                    if (config.Id is OilRefineryConfig.ID 
-                        or MineralDeoxidizerConfig.ID 
-                        or ElectrolyzerConfig.ID 
+                    if (config.Id is OilRefineryConfig.ID
+                        or MineralDeoxidizerConfig.ID
+                        or ElectrolyzerConfig.ID
                         or RustDeoxidizerConfig.ID)
                         config.RemoveAtmosphereCheck();
+                }
+            }
+
+            if (state.version < 7)
+            {
+                foreach (var config in state.Configs)
+                {
+                    for (int i = 0; i < config.Filter.Length; i++)
+                        if (config.Filter[i] == "Creature")
+                            config.Filter[i] = SimHashes.WoodLog.ToString();
+                    if (config.Id == GourmetCookingStationConfig.ID && config.Filter.Contains(SimHashes.CarbonDioxide.ToString()))
+                        config.StorageIndex = 0;
+                }
+
+                if (!state.Configs.Any(a => a.Id == IceKettleConfig.ID))
+                {
+                    state.Configs.Add(new PipeConfig(IceKettleConfig.ID, true, x: 0, y: 0, SimHashes.WoodLog) { StorageIndex = 0 });
+                    state.Configs.Add(new PipeConfig(IceKettleConfig.ID, true, x: 0, y: 1, SimHashes.Ice) { StorageIndex = 1 });
+                    state.Configs.Add(new PipeConfig(IceKettleConfig.ID, false, x: 1, y: 0, SimHashes.Water) { StorageIndex = 2 });
                 }
             }
 
@@ -182,12 +212,6 @@ namespace PipedEverything
         #endregion
 
         #region _api
-
-        [Obsolete]
-        private static void AddConfig(string id, bool input, int x, int y, string[] filter, Color32? color, int? storageIndex, int? storageCapacity)
-        {
-            StateManager.State.Configs.Add(new PipeConfig() { Id = id, Input = input, OffsetX = x, OffsetY = y, Filter = filter, Color = color, StorageIndex = storageIndex, StorageCapacity = storageCapacity });
-        }
 
         public static void AddConfig(string id, bool input, int x, int y, string[] filter, Color32? color = null, int? storageIndex = null, float? storageCapacity = null)
         {

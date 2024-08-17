@@ -26,22 +26,13 @@ namespace PipedEverything
 
         public PipeConfig() { }
 
-        public PipeConfig(string id, bool input, int x, int y, SimHashes filter)
+        public PipeConfig(string id, bool input, int x, int y, params string[] filter)
         {
             this.Id = id;
             this.Input = input;
             this.OffsetX = x;
             this.OffsetY = y;
-            this.Filter = filter == 0 ? [] : [filter.ToString()];
-        }
-
-        public PipeConfig(string id, bool input, int x, int y, string filter)
-        {
-            this.Id = id;
-            this.Input = input;
-            this.OffsetX = x;
-            this.OffsetY = y;
-            this.Filter = [filter.ToString()];
+            this.Filter = filter;
         }
 
         public PipeConfig(string id, bool input, int x, int y, params SimHashes[] filter)
@@ -51,15 +42,6 @@ namespace PipedEverything
             this.OffsetX = x;
             this.OffsetY = y;
             this.Filter = filter.Select(s => s.ToString()).ToArray();
-        }
-
-        public PipeConfig(string id, bool input, int x, int y, IEnumerable<Element> filter)
-        {
-            this.Id = id;
-            this.Input = input;
-            this.OffsetX = x;
-            this.OffsetY = y;
-            this.Filter = filter.Select(s => s.id.ToString()).ToArray();
         }
 
         public PipeConfig RemoveAtmosphereCheck()

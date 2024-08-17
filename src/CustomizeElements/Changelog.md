@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.4.0]
+## [1.0.4.0] U52-623711-SC (release)
 - added support of sublimate settings
 
 ## [1.0.3.0] U45-545357-S

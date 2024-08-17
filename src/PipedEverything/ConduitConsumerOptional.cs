@@ -355,7 +355,7 @@ namespace PipedEverything
         {
             this.conduitType = port.type;
             this.conduitOffset = port.offset;
-            this.elementFilter = port.filter;
+            this.elementFilter = port.filters;
             this.storageIndex = port.StorageIndex;
             this.capacityKG = port.StorageCapacity;
         }

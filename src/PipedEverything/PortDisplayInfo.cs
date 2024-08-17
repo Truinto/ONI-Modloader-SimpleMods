@@ -11,13 +11,15 @@ namespace PipedEverything
         public readonly Color color;
         public readonly Color background;
         public readonly Color border;
-        public readonly SimHashes[] filter;
+        public readonly SimHashes[] filters;
+        public readonly Tag[] filterTags;
         public readonly int StorageIndex;
         public readonly float StorageCapacity;
 
-        public PortDisplayInfo(SimHashes[] filter, ConduitType type, CellOffset offset, bool input, Color32? color, Color32? background, Color32? border, int? storageIndex, float? storageCapacity)
+        public PortDisplayInfo(SimHashes[] filters, Tag[] filterTags, ConduitType type, CellOffset offset, bool input, Color32? color, Color32? background, Color32? border, int? storageIndex, float? storageCapacity)
         {
-            this.filter = filter;
+            this.filters = filters;
+            this.filterTags = filterTags;
             this.type = type;
             this.offset = offset;
             this.input = input;
