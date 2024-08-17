@@ -54,8 +54,8 @@ namespace PipedEverything
             this.input = port.input;
             this.color = port.color;
             this.sprite = GetSprite(port);
-            this.filter = port.filter;
-            this.tags = port.filter.Where(w => w != SimHashes.Void).Select(s => s.ToTag()).ToArray();
+            this.filter = port.filters;
+            this.tags = port.filterTags;
             this.storageIndex = port.StorageIndex;
             this.storageCapacity = port.StorageCapacity;
         }

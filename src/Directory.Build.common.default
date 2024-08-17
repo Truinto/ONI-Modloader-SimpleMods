@@ -58,7 +58,7 @@
 		<Reference Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
 		<Reference Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
 		<Reference Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
-    
+
 		<Reference Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod-net472.dll" />
 		<Reference Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
@@ -68,7 +68,7 @@
 	<!-- Other Files -->
 	<ItemGroup>
 		<GlobalAnalyzerConfigFiles Include="$(SolutionDir)\@Shared\.globalconfiguration" Link=".globalconfiguration" />
-		
+
 		<None Remove="$(ProjectDir)_MERGE" />
 		<None Update="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
@@ -99,7 +99,7 @@
 
 			<_CopyItems Include="$(TargetDir)\*" />
 		</ItemGroup>
-		
+
 		<Message Text="Merging PLibOptions..." Importance="High" />
 		<ILRepack Union="true" LibraryPath="$(GameManaged)" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" />
 		<!--<ILMerge Condition="$(DefineConstants.Contains('MERGE'))" ToolPath="packages\ilmerge.2.13.0307" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" SearchDirectories="$(GameManaged)" />-->

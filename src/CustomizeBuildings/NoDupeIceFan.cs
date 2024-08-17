@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Linq;
 using System;
+using Common;
 
 namespace CustomizeBuildings
 {
@@ -271,7 +272,7 @@ namespace CustomizeBuildings
 
             ElementDropper elementDropper = go.AddOrGet<ElementDropper>();
             elementDropper.emitMass = 10f;
-            elementDropper.emitTag = new Tag("Water");
+            elementDropper.emitTag = SimHashes.Water.ToTag();
             elementDropper.emitOffset = new Vector3(0.0f, 1f, 0.0f);
             return false;
         }

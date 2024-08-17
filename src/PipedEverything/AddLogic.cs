@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Common;
 using static Storage;
-using Shared;
-using Shared.Collections;
+using Shared.CollectionNS;
 
 namespace PipedEverything
 {
@@ -24,6 +23,7 @@ namespace PipedEverything
                 var offset = new CellOffset(config.OffsetX, config.OffsetY);
                 var color = config.Color;
                 var filters = new List<SimHashes>();
+                var filterTags = new List<Tag>();
                 bool isToxic = false;
                 Helpers.PrintDebug($"AddLogic adding {config.Id} {offset}");
                 foreach (var filter in config.Filter)
@@ -47,13 +47,25 @@ namespace PipedEverything
                         continue;
                     }
 
+                    filterTags.Add(filter.ToTagSafe());
+
                     var element = filter.ToElement();
-                    if (element == null)
+                    if (element == null || element.id == SimHashes.Void)
                     {
-                        if (filter is "Cobaltite" or "Cobalt")
+                        foreach (var v in filter.GetElements())
+                        {
+                            filters.Add(v.id);
+                            element = v;
+                        }
+                        if (element == null || element.id == SimHashes.Void)
+                        {
+                            if (conduitType == ConduitType.None)
+                                conduitType = ConduitType.Solid;
+                            if (conduitType == ConduitType.Solid)
+                                continue;
+                            Helpers.PrintDialog($"Unable to resolve: {filter} in {config.Id}");
                             continue;
-                        Helpers.PrintDialog($"Unable to resolve: {filter} in {config.Id}");
-                        continue;
+                        }
                     }
 
                     if (conduitType == ConduitType.None)
@@ -86,7 +98,7 @@ namespace PipedEverything
                     config.StorageIndex ??= def.BuildingComplete.GetComponents<Storage>().FindIndex(f => ReferenceEquals(f, config.Input ? complexFabricator.inStorage : complexFabricator.outStorage));
                 }
 
-                var portInfo = new PortDisplayInfo(filters.ToArray(), conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
+                var portInfo = new PortDisplayInfo(filters.ToArray(), filterTags.ToArray(), conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
                 def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
                 def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
                 def.BuildingPreview.AddOrGet<PortDisplayController>().AssignPort(def.BuildingPreview, portInfo);
@@ -95,7 +107,7 @@ namespace PipedEverything
                 def.BuildingComplete.AddOrGet<Storage>();
                 var storage = def.BuildingComplete.GetComponents<Storage>()[portInfo.StorageIndex];
                 if (portInfo.StorageCapacity < float.MaxValue)
-                    storage.capacityKg += portInfo.StorageCapacity * portInfo.filter.Length;
+                    storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
                 if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
                     storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
 

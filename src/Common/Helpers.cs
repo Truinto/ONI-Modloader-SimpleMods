@@ -104,21 +104,32 @@ namespace Common
 
         public static Tag ToTag(this SimHashes hash)
         {
-            return new Tag(hash.ToString());
+            if (ElementLoader.FindElementByHash(hash)?.tag is Tag tag)
+                return tag;
+
+            tag = TagManager.Create(hash.ToString());
+            tag.hash = (int)hash;
+            return tag;
         }
 
-        private static Tag ToTagSafe(this string id)
+        public static Tag ToTagSafe(this string tag_string, string proper_name = null)
         {
             // todo extract list of valid tags and add sanity check
             // may also check Assets.TryGetPrefab for new entries, but that doesn't work early during bootup
             // should probably export valid tags into game folder
-            throw new NotImplementedException();
+
+            Tag tag = proper_name is null or "" ? TagManager.Create(tag_string) : TagManager.Create(tag_string, proper_name);
+            tag.hash = Hash.SDBMLower(tag_string);
+            return tag;
         }
+
+        /// <summary>Default return value, if ToElement() fails to find any match.</summary>
+        public static Element Void = new() { id = SimHashes.Void };
 
         public static Element ToElement(this string str)
         {
             if (str == null)
-                return null;
+                return Void;
 
             ElementLoader.elementTable.TryGetValue(Hash.SDBMLower(str), out var element);
             if (element != null)
@@ -128,25 +139,55 @@ namespace Common
             if (element != null)
                 return element;
 
-            return null;
+            return Void;
         }
 
         public static Element ToElement(this Tag tag)
         {
             if (ElementLoader.elementTable == null)
-                return null;
+                return Void;
 
-            ElementLoader.elementTable.TryGetValue(tag.GetHash(), out Element element);
-            return element;
+            int id = tag.hash;
+            if (id is 0)
+                id = Hash.SDBMLower(tag.name);
+
+            ElementLoader.elementTable.TryGetValue(id, out Element element);
+            return element ?? Void;
         }
 
         public static Element ToElement(this SimHashes hash)
         {
             if (ElementLoader.elementTable == null)
-                return null;
+                return Void;
 
             ElementLoader.elementTable.TryGetValue((int)hash, out Element element);
-            return element;
+            return element ?? Void;
+        }
+
+        /// <summary>Returns all Element which match a given Tag.</summary>
+        public static IEnumerable<Element> GetElements(this Tag tag)
+        {
+            foreach (var element in ElementLoader.elements)
+            {
+                if (element.tag == tag || element.oreTags.Any(a => a.IsTag(tag)))
+                    yield return element;
+            }
+        }
+
+        /// <inheritdoc cref="GetElements(Tag)"/>
+        public static IEnumerable<Element> GetElements(this string tag)
+        {
+            return GetElements(tag.ToTagSafe());
+        }
+
+        /// <summary><see cref="TagManager.Create(string)"/> does not set the hash field, which is used for comparison. This will fix it.</summary>
+        public static bool IsTag(this Tag tag1, Tag tag2)
+        {
+            if (tag1.hash is 0)
+                tag1.hash = Hash.SDBMLower(tag1.name);
+            if (tag2.hash is 0)
+                tag2.hash = Hash.SDBMLower(tag2.name);
+            return tag1.hash == tag2.hash;
         }
 
         public static string ToDiseaseId(this byte diseaseIdx)
@@ -154,7 +195,7 @@ namespace Common
             if (diseaseIdx < Db.Get().Diseases.Count)
                 return Db.Get().Diseases[diseaseIdx].Id;
             else
-                return null;
+                return "";
         }
 
         public static byte ToDiseaseIdx(this string diseaseId)
@@ -886,7 +927,7 @@ namespace Common
         {
             return new FertilityMonitor.BreedingChance()
             {
-                egg = tag.ToTag(),
+                egg = tag.ToTagSafe(),
                 weight = weight
             };
         }
