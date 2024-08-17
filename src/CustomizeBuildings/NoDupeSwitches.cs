@@ -12,7 +12,7 @@ namespace CustomizeBuildings
         private static bool Prefix(Switch __instance)
         {
             if (!CustomizeBuildingsState.StateManager.State.NoDupeSwitches) return true;
-            
+
             AccessTools.Method(typeof(Switch), "Toggle").Invoke(__instance, null);
             return false;
         }
@@ -36,18 +36,20 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(Toggleable), "QueueToggle")]
+    [HarmonyPatch(typeof(Toggleable), nameof(Toggleable.QueueToggle))]
     internal class Toggleable_QueueToggle
     {
 
-        private static bool Prefix(ref int targetIdx, List<KeyValuePair<IToggleHandler, Chore>> ___targets)
+        private static bool Prefix(int targetIdx, Toggleable __instance)
         {
             if (!CustomizeBuildingsState.StateManager.State.NoDupeToogleBuildings) return true;
+            if (__instance.targets[targetIdx].Value != null) return true;
 
-            if (___targets[targetIdx].Value != null) return true;
-
-            ___targets[targetIdx].Key.HandleToggle();
-
+            try
+            {
+                __instance.targets[targetIdx].Key.HandleToggle();
+            }
+            catch (System.Exception) { }
             return false;
         }
     }
@@ -67,7 +69,7 @@ namespace CustomizeBuildings
 
             if (___requestedState == nextState || ___controlState == nextState) return true;
 
-            ___requestedState =  nextState;
+            ___requestedState = nextState;
             ___controlState = nextState;
             AccessTools.Method(typeof(Door), "RefreshControlState").Invoke(__instance, null);
             AccessTools.Method(typeof(Door), "OnOperationalChanged").Invoke(__instance, new object[] { null });
