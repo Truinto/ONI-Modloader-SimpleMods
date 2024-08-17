@@ -102,6 +102,9 @@ namespace PipedEverything
             new PipeConfig(CampfireConfig.ID, true, x: 0, y: 0, SimHashes.WoodLog),
             new PipeConfig(CampfireConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
 
+            new PipeConfig(IceMachineConfig.ID, true, x: 0, y: 0, SimHashes.Water) { StorageIndex = 0 },
+            new PipeConfig(IceMachineConfig.ID, false, x: 1, y: 0, SimHashes.Ice, SimHashes.Snow) { StorageIndex = 1 },
+
             new PipeConfig(AirFilterConfig.ID, false, x: 0, y: 0, SimHashes.Clay),
             new PipeConfig(DecontaminationShowerConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater),
             new PipeConfig(WallToiletConfig.ID, false, x: 0, y: 1, SimHashes.DirtyWater),

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.16.0] U52-626616-SC (release)
+- added Ice Maker
+
 ## [1.0.15.0] U52-626616-SC (release)
 - added support for all Tags (no longer restricted to elements)
 - updated timber to new WoodLog id
