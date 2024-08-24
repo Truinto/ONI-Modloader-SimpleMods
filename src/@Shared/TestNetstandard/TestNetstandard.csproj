@@ -1,32 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
-		<LangVersion>latest</LangVersion>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
-		<Authors>Truinto</Authors>
-		<Title>$(MSBuildProjectName)</Title>
-		<RepositoryUrl>https://github.com/Truinto/</RepositoryUrl>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Version>1.0.0</Version>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
 		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
-		<PackageReference Include="coverlet.collector" Version="3.1.2" />
-	</ItemGroup>
-
-	<!-- Library Path -->
-	<PropertyGroup>
-	</PropertyGroup>
-
-	<!-- Project References -->
-	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="*" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="*" />
+		<PackageReference Include="MSTest.TestAdapter" Version="*" />
+		<PackageReference Include="MSTest.TestFramework" Version="*" />
 	</ItemGroup>
 
 	<ItemGroup>

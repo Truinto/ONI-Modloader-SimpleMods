@@ -65,7 +65,7 @@ namespace Shared.ConsoleNS
 
         public static bool ReadArgs(this string[] args, ref List<string> value, params string[] identifier)
         {
-            value ??= new();
+            value ??= [];
             if (args == null || identifier == null)
                 return false;
 
@@ -315,7 +315,7 @@ namespace Shared.ConsoleNS
             int startL = System.Console.CursorLeft;
             int startT = System.Console.CursorTop;
             string buffer;
-            _dirs ??= new();
+            _dirs ??= [];
 
             //System.Console.WriteLine(Directory.GetCurrentDirectory());
             //System.Console.CursorSize = 25;
@@ -534,7 +534,7 @@ namespace Shared.ConsoleNS
         /// <returns>List of found coordinates</returns>
         public static List<COORD> IndexOfInConsole(string text)
         {
-            return IndexOfInConsole(new[] { text });
+            return IndexOfInConsole([text]);
         }
 
         /// <summary>
@@ -614,9 +614,6 @@ namespace Shared.ConsoleNS
             try
             {
                 var sb = GetSb();
-                int num;
-                char ch;
-
                 while (x < System.Console.BufferWidth
                     && y < System.Console.BufferHeight
                     && length != 0)
@@ -626,7 +623,7 @@ namespace Shared.ConsoleNS
                         break;
 
                     // read char
-                    ReadConsoleOutputCharacterW(ptr, out ch, sizeof(char), new COORD(x, y), out num);
+                    ReadConsoleOutputCharacterW(ptr, out char ch, sizeof(char), new COORD(x, y), out int num);
 #if DEBUG
                     Debug.WriteLine($"{x},{y}\tch={ch}\tint={(int)ch}\tlength={num}");
 #endif
@@ -668,27 +665,21 @@ namespace Shared.ConsoleNS
             public SMALL_RECT srWindow;
             public COORD dwMaximumWindowSize;
 
-            public override string ToString()
+            public override readonly string ToString()
             {
-                return $"size=[{dwSize}] cursor=[{dwCursorPosition}] attribute=[{wAttributes}] window=[{srWindow}] max=[{dwMaximumWindowSize}]";
+                return $"size=[{this.dwSize}] cursor=[{this.dwCursorPosition}] attribute=[{this.wAttributes}] window=[{this.srWindow}] max=[{this.dwMaximumWindowSize}]";
             }
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public readonly struct COORD
+        public readonly struct COORD(int x, int y)
         {
-            public readonly short X;
-            public readonly short Y;
-
-            public COORD(int x, int y)
-            {
-                X = (short)x;
-                Y = (short)y;
-            }
+            public readonly short X = (short)x;
+            public readonly short Y = (short)y;
 
             public readonly override string ToString()
             {
-                return $"x={X},y={Y}";
+                return $"x={this.X},y={this.Y}";
             }
 
             public static implicit operator uint(COORD coord)
@@ -712,9 +703,9 @@ namespace Shared.ConsoleNS
             public short Right;
             public short Bottom;
 
-            public override string ToString()
+            public override readonly string ToString()
             {
-                return $"x1={Left},y1={Top},x2={Right},y2={Bottom}";
+                return $"x1={this.Left},y1={this.Top},x2={this.Right},y2={this.Bottom}";
             }
         }
 

@@ -10,7 +10,6 @@
 		<RepositoryUrl>https://github.com/Truinto/</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 

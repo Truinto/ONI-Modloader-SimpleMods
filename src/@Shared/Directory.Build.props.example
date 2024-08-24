@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<Nullable>annotations</Nullable>
+
 		<Company>Truinto</Company>
 		<Authors>Truinto</Authors>
 		<Copyright>Copyright © Truinto 2024</Copyright>
-		<DoILRepack>false</DoILRepack>
+		<Title>$(MSBuildProjectName)</Title>
+		<RepositoryUrl>https://github.com/Truinto/</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
 		<ILRepackTargetsFile>$(SolutionDir)ILRepack.targets</ILRepackTargetsFile>
+		<DoILRepack>false</DoILRepack>
+
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
-		<LangVersion>latest</LangVersion>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>embedded</DebugType>
+		<!-- <GenerateDocumentationFile>True</GenerateDocumentationFile> -->
+		<!-- <Optimize>False</Optimize> -->
 	</PropertyGroup>
 
 	<ItemDefinitionGroup>
