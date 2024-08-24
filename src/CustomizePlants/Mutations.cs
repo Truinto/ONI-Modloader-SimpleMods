@@ -115,54 +115,54 @@ namespace CustomizePlants
             #region BonusCrop
             if (setting.bonusCropID != null)
             {
-                Access.bonusCropID(mutation) = (Tag)setting.bonusCropID;
+                mutation.bonusCropID = setting.bonusCropID.ToTag();
             }
             if (setting.bonusCropAmount != null)
             {
-                Access.bonusCropAmount(mutation) = setting.bonusCropAmount.Value;
+                mutation.bonusCropAmount = setting.bonusCropAmount.Value;
             }
             #endregion
             
             #region DiseaseDropper
             if (setting.droppedDiseaseID != null)
-                Access.droppedDiseaseID(mutation) = setting.droppedDiseaseID.Value;
+                mutation.droppedDiseaseID = setting.droppedDiseaseID.Value;
             if (setting.droppedDiseaseOnGrowAmount != null)
-                Access.droppedDiseaseOnGrowAmount(mutation) = setting.droppedDiseaseOnGrowAmount.Value;
+                mutation.droppedDiseaseOnGrowAmount = setting.droppedDiseaseOnGrowAmount.Value;
             if (setting.droppedDiseaseContinuousAmount != null)
-                Access.droppedDiseaseContinuousAmount(mutation) = setting.droppedDiseaseContinuousAmount.Value;
+                mutation.droppedDiseaseContinuousAmount = setting.droppedDiseaseContinuousAmount.Value;
             #endregion
             #region AddDiseaseToHarvest
             if (setting.harvestDiseaseID != null)
-                Access.harvestDiseaseID(mutation) = setting.harvestDiseaseID.Value;
+                mutation.harvestDiseaseID = setting.harvestDiseaseID.Value;
             if (setting.harvestDiseaseAmount != null)
-                Access.harvestDiseaseAmount(mutation) = setting.harvestDiseaseAmount.Value;
+                mutation.harvestDiseaseAmount = setting.harvestDiseaseAmount.Value;
             #endregion
             #region ForcePrefersDarkness
             if (setting.forcePrefersDarkness != null)
-                Access.forcePrefersDarkness(mutation) = setting.forcePrefersDarkness.Value;
+                mutation.forcePrefersDarkness = setting.forcePrefersDarkness.Value;
             #endregion
             #region ForceSelfHarvestOnGrown
             if (setting.forceSelfHarvestOnGrown != null)
-                Access.forceSelfHarvestOnGrown(mutation) = setting.forceSelfHarvestOnGrown.Value;
+                mutation.forceSelfHarvestOnGrown = setting.forceSelfHarvestOnGrown.Value;
             #endregion
             #region EnsureIrrigated
             if (setting.ensureIrrigationInfo != null)
-                Access.ensureIrrigationInfo(mutation) = setting.ensureIrrigationInfo.Value;
+                mutation.ensureIrrigationInfo = setting.ensureIrrigationInfo.Value;
             #endregion
             #region VisualTint
             if (setting.plantTint != null)
-                Access.plantTint(mutation) = setting.plantTint.Value;
+                mutation.plantTint = setting.plantTint.Value;
             #endregion
             #region VisualSymbolTint
             if (setting.symbolTintTargets != null)
-                Access.symbolTintTargets(mutation) = setting.symbolTintTargets;
+                mutation.symbolTintTargets = setting.symbolTintTargets;
             if (setting.symbolTints != null)
-                Access.symbolTints(mutation) = setting.symbolTints;
+                mutation.symbolTints = setting.symbolTints;
             #endregion
             #region VisualSymbolOverride
             if (setting.symbolOverrideInfo != null)
             {
-                Access.symbolOverrideInfo(mutation)?.Clear();
+                mutation.symbolOverrideInfo?.Clear();
                 foreach (var info in setting.symbolOverrideInfo)
                 {
                     string[] infos = info.Split(';');
@@ -173,21 +173,21 @@ namespace CustomizePlants
             #endregion
             #region VisualSymbolScale
             if (setting.symbolScaleTargets != null)
-                Access.symbolScaleTargets(mutation) = setting.symbolScaleTargets;
+                mutation.symbolScaleTargets = setting.symbolScaleTargets;
             if (setting.symbolScales != null)
-                Access.symbolScales(mutation) = setting.symbolScales;
+                mutation.symbolScales = setting.symbolScales;
             #endregion
             #region VisualBGFX
             if (setting.bGFXAnim != null)
-                Access.bGFXAnim(mutation) = setting.bGFXAnim;
+                mutation.bGFXAnim = setting.bGFXAnim;
             #endregion
             #region VisualFGFX
             if (setting.fGFXAnim != null)
-                Access.fGFXAnim(mutation) = setting.fGFXAnim;
+                mutation.fGFXAnim = setting.fGFXAnim;
             #endregion
             #region AddSoundEvent
             if (setting.additionalSoundEvents != null)
-                Access.additionalSoundEvents(mutation) = setting.additionalSoundEvents;
+                mutation.additionalSoundEvents = setting.additionalSoundEvents;
             #endregion
         
         }
@@ -206,42 +206,42 @@ namespace CustomizePlants
                 data.attributes = mutation.SelfModifiers.Select(s => new AttributeContainer(s)).ToList();
 
                 #region private readouts
-                Tag bonusCrop = (Tag)Access.bonusCropID(mutation);
+                Tag bonusCrop = mutation.bonusCropID;
                 if (bonusCrop.IsValid)
                 {
                     data.bonusCropID = bonusCrop.ToString();
-                    data.bonusCropAmount = (float)Access.bonusCropAmount(mutation);
+                    data.bonusCropAmount = mutation.bonusCropAmount;
                 }
 
-                byte droppedDiseaseID = Access.droppedDiseaseID(mutation);
+                byte droppedDiseaseID = mutation.droppedDiseaseID;
                 if (droppedDiseaseID != byte.MaxValue)
                     data.droppedDiseaseID = droppedDiseaseID;
 
-                int droppedDiseaseOnGrowAmount = Access.droppedDiseaseOnGrowAmount(mutation);
+                int droppedDiseaseOnGrowAmount = mutation.droppedDiseaseOnGrowAmount;
                 if (droppedDiseaseOnGrowAmount != 0)
                     data.droppedDiseaseOnGrowAmount = droppedDiseaseOnGrowAmount;
 
-                int droppedDiseaseContinuousAmount = Access.droppedDiseaseContinuousAmount(mutation);
+                int droppedDiseaseContinuousAmount = mutation.droppedDiseaseContinuousAmount;
                 if (droppedDiseaseContinuousAmount != 0)
                     data.droppedDiseaseOnGrowAmount = droppedDiseaseContinuousAmount;
 
-                byte harvestDiseaseID = Access.harvestDiseaseID(mutation);
+                byte harvestDiseaseID = mutation.harvestDiseaseID;
                 if (harvestDiseaseID != byte.MaxValue)
                     data.harvestDiseaseID = harvestDiseaseID;
 
-                int harvestDiseaseAmount = Access.harvestDiseaseAmount(mutation);
+                int harvestDiseaseAmount = mutation.harvestDiseaseAmount;
                 if (harvestDiseaseAmount != 0)
                     data.harvestDiseaseAmount = harvestDiseaseAmount;
 
-                bool forcePrefersDarkness = Access.forcePrefersDarkness(mutation);
+                bool forcePrefersDarkness = mutation.forcePrefersDarkness;
                 if (forcePrefersDarkness != false)
                     data.forcePrefersDarkness = forcePrefersDarkness;
 
-                bool forceSelfHarvestOnGrown = Access.forceSelfHarvestOnGrown(mutation);
+                bool forceSelfHarvestOnGrown = mutation.forceSelfHarvestOnGrown;
                 if (forceSelfHarvestOnGrown != false)
                     data.forceSelfHarvestOnGrown = forceSelfHarvestOnGrown;
 
-                var ensureIrrigationInfo = Access.ensureIrrigationInfo(mutation);
+                var ensureIrrigationInfo = mutation.ensureIrrigationInfo;
                 if (ensureIrrigationInfo.tag.IsValid)
                     data.ensureIrrigationInfo = ensureIrrigationInfo;
 
@@ -249,7 +249,7 @@ namespace CustomizePlants
                 //if (plantTint != Color.white)
                 //    data.plantTint = plantTint;
 
-                List<string> symbolTintTargets = Access.symbolTintTargets(mutation);
+                List<string> symbolTintTargets = mutation.symbolTintTargets;
                 if (symbolTintTargets.Count > 0)
                     data.symbolTintTargets = symbolTintTargets;
 
@@ -257,27 +257,26 @@ namespace CustomizePlants
                 //if (symbolTints.Count > 0)
                 //    data.symbolTints = symbolTints;
 
-                IList symbolOverrideInfo = Access.symbolOverrideInfo(mutation);
+                var symbolOverrideInfo = mutation.symbolOverrideInfo;
                 if (symbolOverrideInfo != null && symbolOverrideInfo.Count > 0)
                 {
                     data.symbolOverrideInfo = new List<string>();
-                    foreach (var obj in symbolOverrideInfo)
-                        data.symbolOverrideInfo.Add($"{Access.targetSymbolName(obj)};{Access.sourceAnim(obj)};{Access.sourceSymbol(obj)}");
+                    foreach (var item in symbolOverrideInfo)
+                        data.symbolOverrideInfo.Add($"{item.targetSymbolName};{item.sourceAnim};{item.sourceSymbol}");
                 }
 
-                List<string> symbolScaleTargets = Access.symbolScaleTargets(mutation);
-
+                List<string> symbolScaleTargets = mutation.symbolScaleTargets;
                 if (symbolScaleTargets.Count > 0)
                     data.symbolScaleTargets = symbolScaleTargets;
 
-                List<float> symbolScales = Access.symbolScales(mutation);
+                List<float> symbolScales = mutation.symbolScales;
                 if (symbolScales.Count > 0)
                     data.symbolScales = symbolScales;
 
-                data.bGFXAnim = Access.bGFXAnim(mutation);
-                data.fGFXAnim = Access.fGFXAnim(mutation);
+                data.bGFXAnim = mutation.bGFXAnim;
+                data.fGFXAnim = mutation.fGFXAnim;
 
-                List<string> additionalSoundEvents = Access.additionalSoundEvents(mutation);
+                List<string> additionalSoundEvents = mutation.additionalSoundEvents;
                 if (additionalSoundEvents.Count > 0)
                     data.additionalSoundEvents = additionalSoundEvents;
                 #endregion

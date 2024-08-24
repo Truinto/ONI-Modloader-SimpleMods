@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.0.42.0]  U50-587362-S
+## [1.0.43.0] U52-626616-SC (release)
+- fix decor modifier
+
+## [1.0.42.0] U50-587362-S
 - small patch to increase compatiblity with Fast Track
 
 ## [1.0.41.0] U48-568201-S

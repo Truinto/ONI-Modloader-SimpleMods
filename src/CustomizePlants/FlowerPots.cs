@@ -16,7 +16,7 @@ namespace CustomizePlants
         public static void SetPlantablePlotAllTags(GameObject go)
         {
             PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
-            Access.possibleDepositTagsList(plantablePlot).Clear();
+            plantablePlot.possibleDepositTagsList.Clear();
             plantablePlot.AddDepositTag(GameTags.CropSeed);
             plantablePlot.AddDepositTag(GameTags.WaterSeed);
             plantablePlot.AddDepositTag(GameTags.DecorSeed);
@@ -36,8 +36,8 @@ namespace CustomizePlants
         public static void EnableCheats(GameObject go)
         {
             PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
-            Access.accepts_irrigation(plantablePlot) = false;
-            Access.accepts_fertilizer(plantablePlot) = false;
+            plantablePlot.accepts_irrigation = false;
+            plantablePlot.accepts_fertilizer = false;
         }
     }
 
