@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Shared.CollectionNS
 {
+    /// <summary>
+    /// Extension class for collection operations.
+    /// </summary>
     public static class CollectionTool
     {
+        /// <summary>
+        /// Gets the first element that is of type <typeparamref name="T"/>.
+        /// </summary>
         public static T Get<T>(this IEnumerable enumerable)
         {
             if (enumerable == null)
@@ -20,6 +23,9 @@ namespace Shared.CollectionNS
             return default;
         }
 
+        /// <summary>
+        /// Gets all elements that are of type <typeparamref name="T"/>.
+        /// </summary>
         public static IEnumerable<T> GetAll<T>(this IEnumerable enumerable)
         {
             if (enumerable == null)
@@ -411,7 +417,7 @@ namespace Shared.CollectionNS
 
         #endregion
 
-        private static readonly List<object> _list = new();
+        private static readonly List<object> _list = [];
 
         /// <summary>
         /// Gets a static list object. Do not save reference.
@@ -419,11 +425,8 @@ namespace Shared.CollectionNS
         /// </summary>
         public static List<object> GetList()
         {
-            if (_list.Count != 0)
-            {
-                Debug.WriteLine("Warning: List wasn't flushed!");
-                _list.Clear();
-            }
+            System.Threading.Monitor.Enter(_list);
+            _list.Clear();
             return _list;
         }
 
@@ -435,6 +438,7 @@ namespace Shared.CollectionNS
             var result = new T[_list.Count];
             _list.CopyTo(result);
             _list.Clear();
+            System.Threading.Monitor.Exit(_list);
             return result;
         }
     }

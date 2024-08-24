@@ -1,19 +1,38 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shared;
-using Shared.Paths;
+using Shared.PathsNS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace TestNetstandard
+namespace UnitTest
 {
     [TestClass]
-    public class PathTests
+    public class UnitTest_Paths
     {
         [TestMethod]
-        public void Tests()
+        public void Test_Paths_AreEqual()
+        {
+            Assert.IsTrue(Paths.AreEqual("", ""));
+            Assert.IsTrue(Paths.AreEqual("C:/Temp", "C:/Temp"));
+
+            Assert.IsTrue(Paths.AreEqual("C:/Temp", "C:/Temp/"));
+            Assert.IsTrue(Paths.AreEqual("C:/Temp/", "C:/Temp"));
+
+            Assert.IsFalse(Paths.AreEqual("C:/Temp", "C:/Tem"));
+            Assert.IsFalse(Paths.AreEqual("C:/Tem", "C:/Temp"));
+
+            Assert.IsFalse(Paths.AreEqual("C:/Temp", "C:/Tem/"));
+            Assert.IsFalse(Paths.AreEqual("C:/Tem/", "C:/Temp"));
+
+            Assert.IsFalse(Paths.AreEqual("C:/Temps", "C:/Temp/"));
+            Assert.IsFalse(Paths.AreEqual("C:/Temp/", "C:/Temps"));
+        }
+
+        [TestMethod]
+        public void Test_PathInfo()
         {
             (string path, string root, string directory, string fileNameNoExtension, string extension)[] test_strings = [
                 (@"", "", "", "", ""),

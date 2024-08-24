@@ -1,4 +1,3 @@
-
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -19,7 +18,7 @@ namespace Shared
         {
             return this.Int switch
             {
-                0 => "",
+                none => "",
                 und => "und",
                 abk => "abk",
                 aar => "aar",
@@ -204,7 +203,7 @@ namespace Shared
                 yor => "yor",
                 zha => "zha",
                 zul => "zul",
-                ALL => "ALL",
+                any => "any",
                 _ => "",
             };
         }
@@ -213,7 +212,7 @@ namespace Shared
         {
             return name switch
             {
-                "" => new(0),
+                "" => new(none),
                 "und" => new(und),
 
                 "abk" => new(abk),
@@ -967,8 +966,8 @@ namespace Shared
                 "zu" => new(zu),
                 "Zulu" => new(Zulu),
 
-                "ALL" => new(ALL),
-                _ => new(0),
+                "any" => new(any),
+                _ => new(none),
             };
         }
 
@@ -985,7 +984,8 @@ namespace Shared
 
         #region constants
 
-        public const int ALL = 1000;
+        public const int none = 0;
+        public const int any = 1000;
         public const int und = 1;
 
         public const int abk = 2;
@@ -1791,7 +1791,7 @@ namespace Shared
             if (obj is int number)
                 return this.Int == number;
             if (obj is string name)
-                return this == LanguageCodes.Parse(name);
+                return this == Parse(name);
             return false;
         }
 

@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-#pragma warning disable SYSLIB1045 // ignore GeneratedRegexAttribute
+#pragma warning disable SYSLIB1045 // GeneratedRegexAttribute
+#pragma warning disable IDE0056 // Indexoperator
 
 namespace Shared.StringsNS
 {
+    /// <summary>
+    /// Extension class for string operations.
+    /// </summary>
     public static class Strings
     {
         #region Args
@@ -20,14 +23,14 @@ namespace Shared.StringsNS
         private static Regex _Rx_ShellEscape;
 
         /// <summary>
-        /// Joins an array of arguments into a single string, which can be used for commands. Puts arguments in quotes, if necessary. Escapes quotes with triple-quotes.
+        /// Joins an array of arguments into a single string, which can be used for commands. Puts arguments in quotes, if necessary.
         /// </summary>
         public static string JoinArgs(this IEnumerable<string> args)
         {
             if (args is null)
                 return "";
 
-            var sb = new StringBuilder();
+            var sb = GetSb();
 
             foreach (string arg in args)
             {
@@ -40,7 +43,16 @@ namespace Shared.StringsNS
                 if (Rx_ShellEscape.IsMatch(arg) || arg is "")
                 {
                     sb.Append('\"');
-                    sb.Append(arg.Replace("\"", "\"\""));
+                    foreach (char c in arg)
+                    {
+                        if (c is '\"')
+                        {
+                            sb.Append('\"');
+                            sb.Append('\"');
+                        }
+                        else
+                            sb.Append(c);
+                    }
                     sb.Append('\"');
                 }
                 else
@@ -49,11 +61,11 @@ namespace Shared.StringsNS
                 }
             }
 
-            return sb.ToString();
+            return FlushSb();
         }
 
         /// <summary>
-        /// Splits arguments into an array. Handles quotes and triple-quotes.
+        /// Splits arguments into an array. Handles quotes.
         /// </summary>
         public static List<string> SplitArgs(this string args)
         {
@@ -169,24 +181,21 @@ namespace Shared.StringsNS
         {
             if (paths == null)
                 return "";
-            try
-            {
-                var sb = GetSb();
-                bool first = true;
-                foreach (string path in paths)
-                {
-                    string full = FilterPath(path);
-                    if (full.IsEmpty())
-                        continue;
 
-                    if (!first)
-                        sb.Append(System.IO.Path.PathSeparator);
-                    else
-                        first = false;
-                    sb.Append(full);
-                }
+            var sb = GetSb();
+            bool first = true;
+            foreach (string path in paths)
+            {
+                string full = FilterPath(path);
+                if (full.IsEmpty())
+                    continue;
+
+                if (!first)
+                    sb.Append(System.IO.Path.PathSeparator);
+                else
+                    first = false;
+                sb.Append(full);
             }
-            catch (Exception) { }
             return FlushSb();
         }
 
@@ -245,16 +254,13 @@ namespace Shared.StringsNS
         {
             if (filename == null)
                 return null;
-            try
+
+            var sb = GetSb();
+            foreach (char c in filename.Trim())
             {
-                var sb = GetSb();
-                foreach (char c in filename.Trim())
-                {
-                    if (!InvalidFileNameChars.Contains(c))
-                        sb.Append(c);
-                }
+                if (!InvalidFileNameChars.Contains(c))
+                    sb.Append(c);
             }
-            catch (Exception) { }
             return FlushSb();
         }
 
@@ -282,7 +288,7 @@ namespace Shared.StringsNS
                     case '\t': sb.Append(@"\t"); break;
                     case '\v': sb.Append(@"\v"); break;
                     default:
-                        if (c >= 0x20 && c <= 0x7e)
+                        if (c is >= (char)0x20 and <= (char)0x7e)
                         {
                             sb.Append(c);
                         }
@@ -338,27 +344,27 @@ namespace Shared.StringsNS
 
         public static bool IsNumber(this char c)
         {
-            return c >= 48 && c <= 57;
+            return c is >= (char)48 and <= (char)57;
         }
 
         public static bool IsUppercase(this char c)
         {
-            return c >= 65 && c <= 90;
+            return c is >= (char)65 and <= (char)90;
         }
 
         public static bool IsLowercase(this char c)
         {
-            return c >= 97 && c <= 122;
+            return c is >= (char)97 and <= (char)122;
         }
 
         public static bool IsLetter(this char c)
         {
-            return c >= 65 && c <= 90 || c >= 97 && c <= 122;
+            return c is >= (char)65 and <= (char)90 or >= (char)97 and <= (char)122;
         }
 
         public static bool IsAlphanumeric(this char c)
         {
-            return c >= 48 && c <= 57 || c >= 65 && c <= 90 || c >= 97 && c <= 122;
+            return c is >= (char)48 and <= (char)57 or >= (char)65 and <= (char)90 or >= (char)97 and <= (char)122;
         }
 
         public static bool IsNotSpaced(this StringBuilder sb)
@@ -404,24 +410,21 @@ namespace Shared.StringsNS
             var matches = rx.Matches(input);
             if (matches.Count <= 0)
                 return input;
-            try
-            {
-                var sb = GetSb();
-                int index = 0;
-                for (int i = 0; i < matches.Count; i++)
-                {
-                    var match = matches[i];
-                    sb.Append(input, index, match.Index - index); // append non-matches
-                    index = match.Index + match.Length;
-                    sb.Append(evaluator(match, i, matches.Count)); // append match replacement
-                }
 
-                if (index < input.Length)
-                {
-                    sb.Append(input, index, input.Length - index);
-                }
+            var sb = GetSb();
+            int index = 0;
+            for (int i = 0; i < matches.Count; i++)
+            {
+                var match = matches[i];
+                sb.Append(input, index, match.Index - index); // append non-matches
+                index = match.Index + match.Length;
+                sb.Append(evaluator(match, i, matches.Count)); // append match replacement
             }
-            catch (Exception) { }
+
+            if (index < input.Length)
+            {
+                sb.Append(input, index, input.Length - index);
+            }
             return FlushSb();
         }
 
@@ -431,7 +434,7 @@ namespace Shared.StringsNS
         private static StringBuilder GetSb()
         {
             System.Threading.Monitor.Enter(_sb);
-            //_sb.Clear();
+            _sb.Clear();
             return _sb;
         }
         private static string FlushSb()

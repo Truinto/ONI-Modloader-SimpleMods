@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+
+#pragma warning disable SYSLIB1045 // GeneratedRegexAttribute
 
 namespace Shared.PathsNS
 {
@@ -89,7 +89,7 @@ namespace Shared.PathsNS
         public string PathAbsolute(string workingDirectory = null)
         {
             if (this.IsAbsolute && !string.IsNullOrEmpty(workingDirectory))
-                Trace.WriteLine($"[Warning] {typeof(PathInfo).FullName}.PathAbsolute trying to set working directory on an absolute path '{FullName}'");
+                Trace.WriteLine($"[Warning] {typeof(PathInfo).FullName}.PathAbsolute trying to set working directory on an absolute path '{this.FullName}'");
 
             if (this.IsAbsolute)
                 return this.FullName;
@@ -149,8 +149,59 @@ namespace Shared.PathsNS
     /// <summary>
     /// Collection of special folders.
     /// </summary>
-    public static class PathHelper
+    public static class Paths
     {
+        /// <summary>
+        /// Splits a path into dir, file, and ext.
+        /// </summary>
+        /// <remarks>
+        /// @"(?&lt;dir&gt;.*)(?&lt;file&gt;[^\\\/]*)(?&lt;ext&gt;\.[^\\\/]+?)?$"
+        /// </remarks>
+        public static Regex Rx_Path => _Rx_Path;
+        private static readonly Regex _Rx_Path = new(@"^(?<dir>.*)(?<file>[^\\\/]*)(?<ext>\.[^\\\/]+?)?$", RegexOptions.Compiled | RegexOptions.RightToLeft);
+
+        /// <summary>True if paths are equal. Resolves relative paths. Ignores closing path separator.</summary>
+        public static bool AreEqual(this FileInfo path1, FileInfo path2)
+        {
+            return AreEqual(path1.FullName, path2.FullName);
+        }
+
+        /// <summary>True if paths are equal. Resolves relative paths. Ignores closing path separator.</summary>
+        public static bool AreEqual(string path1, string path2)
+        {
+            if (path1 is null or "")
+                return path1 == path2;
+
+            path1 = Path.GetFullPath(path1);
+            path2 = Path.GetFullPath(path2);
+
+            int length1 = path1.Length;
+            int length2 = path2.Length;
+
+            int length;
+            if (length1 == length2)
+                length = length1;
+            else if (length1 - 1 == length2 && path1[length2] is '/' or '\\')
+                length = length2;
+            else if (length1 == length2 - 1 && path2[length1] is '/' or '\\')
+                length = length1;
+            else
+                return false;
+
+            return string.Compare(
+                path1, 0,
+                path2, 0,
+                length,
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal
+                ) == 0;
+        }
+
+        /// <summary>Folder path of the currently running executable. Same as <seealso cref="AppContext.BaseDirectory"/>.</summary>
+        public static string AssemblyDirectory => AppContext.BaseDirectory;
+
+        /// <summary>Folder path of the working directory. Same as <seealso cref="Environment.CurrentDirectory"/>.</summary>
+        public static string WorkingDirectory => Environment.CurrentDirectory;
+
         /// <summary>%username%</summary>
         public static string Username => Environment.UserName;
 

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace Shared.JsonNS
 {
     /// <summary>
-    /// 
+    /// Serialization with System.Text.Json.
     /// </summary>
     /// <remarks>
     /// [JsonInclude] [JsonIgnore]
@@ -27,9 +27,8 @@ namespace Shared.JsonNS
         };
 
         /// <summary>
-        /// Serialization settings.
+        /// Serialization settings with $ref.
         /// </summary>
-        [JsonIgnore]
         public static JsonSerializerOptions JsonOptionsRef = new()
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles,

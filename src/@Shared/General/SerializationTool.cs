@@ -155,7 +155,7 @@ namespace Shared.SerializeNS
                 return File.ReadAllBytes(path);
             }
             catch (Exception e) { Logger.PrintException(e); }
-            return new byte[0];
+            return [];
         }
 
         public static void TryDelete(string path)
