@@ -16,7 +16,7 @@ namespace CustomizePlants
     #region Decor plant animation fix
     // the original method attaches a number equal to it's growth statium, however decor plant only have 1 state
     // to make StandardCropPlant compatible with decor plants anims this will skip this attachment
-    [HarmonyPatch(typeof(StandardCropPlant.States), "GetWiltAnim")]
+    [HarmonyPatch(typeof(StandardCropPlant.States), nameof(StandardCropPlant.States.GetWiltAnim))]
     public static class StandardCropPlant_AnimsPatch
     {
         public static bool Prefix(StandardCropPlant.StatesInstance smi, ref string __result)
@@ -36,7 +36,7 @@ namespace CustomizePlants
     public static class SaltPlant_OnSpawn
     {
         // attaches replant monitor that reduces the element converter/consumer on wild plants
-        [HarmonyPatch(typeof(SaltPlant), "OnSpawn")]
+        [HarmonyPatch(typeof(SaltPlant), nameof(SaltPlant.OnSpawn))]
         [HarmonyPostfix]
         public static void Postfix_OnSpawn(SaltPlant __instance)
         {
@@ -106,7 +106,7 @@ namespace CustomizePlants
     #endregion
 
     #region Multi-Fruit
-    [HarmonyPatch(typeof(Crop), "SpawnConfiguredFruit")]
+    [HarmonyPatch(typeof(Crop), nameof(Crop.SpawnConfiguredFruit))]
     public static class Crop_SpawnConfiguredFruit
     {
         public static bool Prefix(Crop __instance)
@@ -148,7 +148,7 @@ namespace CustomizePlants
         }
     }
 
-    [HarmonyPatch(typeof(Crop), "InformationDescriptors")]
+    [HarmonyPatch(typeof(Crop), nameof(Crop.InformationDescriptors))]
     public static class Crop_InformationDescriptors
     {
         public static bool Prefix(Crop __instance, ref List<Descriptor> __result)
@@ -186,18 +186,8 @@ namespace CustomizePlants
     }
     #endregion
 
-    //[HarmonyPatch(typeof(Growing.StatesInstance), MethodType.Constructor, typeof(Growing))]
-    public class TEST
-    {
-        public static void Prefix(Growing master)
-        {
-            var x = AccessTools.Field(typeof(Growing), "maturity").GetValue(master) as AmountInstance;
-        }
-    }
-
     public static class PlantHelper
     {
-        public static PropertyInfo _AttributeModifierValue = AccessTools.Property(typeof(AttributeModifier), "Value");
         public static StandardCropPlant.AnimSet DecorAnim = new() { grow = "idle", grow_pst = "idle", harvest = "idle", idle_full = "idle", wilt_base = "wilt1" };   //wilt1, grow_seed
 
         public static void ProcessPlant(GameObject plant)
@@ -230,10 +220,11 @@ namespace CustomizePlants
             #region decor plant fixes; including seeds
             if (setting.fruitId != null)    //decor plant fixes
             {
-                PrickleGrass grass = plant.GetComponent<PrickleGrass>();
+                var grass = plant.GetComponent<PrickleGrass>();
                 if (grass != null || plant.PrefabID() == ColdBreatherConfig.ID || plant.PrefabID() == EvilFlowerConfig.ID)
                 {
-                    UnityEngine.Object.DestroyImmediate(grass); //what happens if this is null?
+                    if (grass != null)
+                        UnityEngine.Object.DestroyImmediate(grass);
                     plant.AddOrGet<StandardCropPlant>();
 
                     KPrefabID prefab = plant.GetComponent<KPrefabID>();
@@ -425,21 +416,15 @@ namespace CustomizePlants
             }
             #endregion
             #region decor
-            try
+            if (setting.decor_value != null || setting.decor_radius != null)
             {
-                if (setting.decor_value != null)
-                {
-                    plant.GetComponent<DecorProvider>().baseDecor = (float)setting.decor_value;
-                }
+                var decorprovider = plant.AddOrGet<DecorProvider>();
+                var decorvalues = new EffectorValues(setting.decor_value ?? (int)decorprovider.baseDecor, setting.decor_radius ?? (int)decorprovider.baseRadius);
+                decorprovider.SetValues(decorvalues);
 
-                if (setting.decor_radius != null)
-                {
-                    plant.GetComponent<DecorProvider>().baseRadius = (float)setting.decor_radius;
-                }
-            }
-            catch (Exception)
-            {
-                Debug.LogWarning("[CustomizePlants] For some weird reason " + plant.PrefabID() + " has no DecorProvider.");
+                var grass = plant.GetComponent<PrickleGrass>();
+                if (grass != null)
+                    grass.positive_decor_effect = decorvalues;
             }
             #endregion
             #region temperatures
@@ -724,7 +709,7 @@ namespace CustomizePlants
             if (attribute == null)
                 baseTrait.Add(new AttributeModifier(attributeId, value, null, isMultiplier, false, true));
             else
-                _AttributeModifierValue.SetValue(attribute, value, null);
+                attribute.Value = value;
         }
 
         public static void EnsureAmount(Modifiers modifiers, Trait baseTrait, Amount amount, float? maxValue = null, float? value = null, bool isMultiplier = false)
@@ -743,7 +728,7 @@ namespace CustomizePlants
                 if (attribute == null)
                     baseTrait.Add(new AttributeModifier(amount.Id, value.Value, null, isMultiplier, false, true));
                 else
-                    _AttributeModifierValue.SetValue(attribute, value.Value, null);
+                    attribute.Value = value.Value;
             }
 
             if (maxValue != null)
@@ -752,7 +737,7 @@ namespace CustomizePlants
                 if (maxAttribute == null)
                     baseTrait.Add(new AttributeModifier(amount.maxAttribute.Id, maxValue.Value, null, isMultiplier, false, true));
                 else
-                    _AttributeModifierValue.SetValue(maxAttribute, maxValue.Value, null);
+                    maxAttribute.Value = maxValue.Value;
             }
         }
 
