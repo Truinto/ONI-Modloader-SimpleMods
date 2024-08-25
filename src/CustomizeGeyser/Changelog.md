@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.26.0]
+- fixed DLC kanim not working
+
 ## [1.0.25.0] U48-568201-S
 - fixed an issue for non DLC players
 

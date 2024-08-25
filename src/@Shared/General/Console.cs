@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -448,56 +447,56 @@ namespace Shared.ConsoleNS
             return $"Error {errorId}: {error}";
         }
 
-        public static List<ManagementBaseObject> GetUSBDrives()
-        {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                throw new NotImplementedException();
+        //public static List<ManagementBaseObject> GetUSBDrives()
+        //{
+        //    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        //        throw new NotImplementedException();
 
-            var list = new List<ManagementBaseObject>();
+        //    var list = new List<ManagementBaseObject>();
 
-            try
-            {
-                foreach (var device in new ManagementObjectSearcher(@"SELECT * FROM Win32_DiskDrive WHERE InterfaceType LIKE 'USB%'").Get())
-                {
-                    //System.Console.WriteLine((string)device.GetPropertyValue("DeviceID"));
-                    //System.Console.WriteLine((string)device.GetPropertyValue("PNPDeviceID"));
+        //    try
+        //    {
+        //        foreach (var device in new ManagementObjectSearcher(@"SELECT * FROM Win32_DiskDrive WHERE InterfaceType LIKE 'USB%'").Get())
+        //        {
+        //            //System.Console.WriteLine((string)device.GetPropertyValue("DeviceID"));
+        //            //System.Console.WriteLine((string)device.GetPropertyValue("PNPDeviceID"));
 
-                    foreach (var partition in new ManagementObjectSearcher(
-                        "ASSOCIATORS OF {Win32_DiskDrive.DeviceID='" + device.Properties["DeviceID"].Value + "'} WHERE AssocClass = Win32_DiskDriveToDiskPartition").Get())
-                    {
-                        foreach (var disk in new ManagementObjectSearcher(
-                                    "ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + partition["DeviceID"] + "'} WHERE AssocClass = Win32_LogicalDiskToPartition").Get())
-                        {
-                            //if (!list.Contains(disk))
-                            list.Add(disk);
-                        }
-                    }
-                }
-            }
-            catch (Exception) { }
+        //            foreach (var partition in new ManagementObjectSearcher(
+        //                "ASSOCIATORS OF {Win32_DiskDrive.DeviceID='" + device.Properties["DeviceID"].Value + "'} WHERE AssocClass = Win32_DiskDriveToDiskPartition").Get())
+        //            {
+        //                foreach (var disk in new ManagementObjectSearcher(
+        //                            "ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + partition["DeviceID"] + "'} WHERE AssocClass = Win32_LogicalDiskToPartition").Get())
+        //                {
+        //                    //if (!list.Contains(disk))
+        //                    list.Add(disk);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception) { }
 
-            return list;
-        }
+        //    return list;
+        //}
 
-        public static ManagementBaseObject GetDriveByVolume(string letter, List<ManagementBaseObject> drives)
-        {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                throw new NotImplementedException();
+        //public static ManagementBaseObject GetDriveByVolume(string letter, List<ManagementBaseObject> drives)
+        //{
+        //    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        //        throw new NotImplementedException();
 
-            if (letter == null)
-                return null;
+        //    if (letter == null)
+        //        return null;
 
-            drives ??= GetUSBDrives();
-            if (drives == null)
-                return null;
+        //    drives ??= GetUSBDrives();
+        //    if (drives == null)
+        //        return null;
 
-            foreach (var drive in drives)
-            {
-                if (letter.StartsWithO((string)drive["Caption"]))
-                    return drive;
-            }
-            return null;
-        }
+        //    foreach (var drive in drives)
+        //    {
+        //        if (letter.StartsWithO((string)drive["Caption"]))
+        //            return drive;
+        //    }
+        //    return null;
+        //}
 
         #region jrnker © 2020 MIT / edited Truinto
         //source: https://github.com/jrnker/Proxmea.ConsoleHelper/
