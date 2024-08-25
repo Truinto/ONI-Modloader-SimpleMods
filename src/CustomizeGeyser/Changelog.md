@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.0.26.0]
+## [1.0.27.0] U52-626616-SC (release)
+- reupload
+
+## [1.0.26.0] U52-626616-SC (release)
 - fixed DLC kanim not working
 
 ## [1.0.25.0] U48-568201-S
