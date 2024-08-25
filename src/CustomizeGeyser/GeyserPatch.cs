@@ -55,7 +55,7 @@ namespace CustomizeGeyser
                 if (tagID.Key.IsValid)
                     modifier.id = tagID.Key.Name.Substring(7);
 
-                Helpers.Print("Processing " + modifier.id + " ...");
+                Helpers.Print($"Processing {modifier.id} ...");
 
                 #region Error checks
                 {
@@ -143,6 +143,8 @@ namespace CustomizeGeyser
                 }
 
                 #endregion
+
+                Helpers.Print($" anim={modifier.anim}");
 
                 int i = __result.FindIndex(x => x.geyserType.id == modifier.id);
 
