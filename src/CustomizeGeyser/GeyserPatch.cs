@@ -126,16 +126,22 @@ namespace CustomizeGeyser
                 #endregion
 
                 #region Fix DLC
-                if (modifier.anim == "geyser_molten_aluminum_kanim")
-                    modifier.anim = "geyser_molten_iron_kanim";
-                if (modifier.anim == "geyser_molten_tungsten_kanim")
-                    modifier.anim = "geyser_molten_iron_kanim";
-                if (modifier.anim == "geyser_molten_niobium_kanim")
-                    modifier.anim = "geyser_molten_iron_kanim";
-                if (modifier.anim == "geyser_molten_cobalt_kanim")
-                    modifier.anim = "geyser_molten_iron_kanim";
-                if (modifier.anim == "geyser_liquid_sulfur_kanim")
-                    modifier.anim = "geyser_liquid_water_slush_kanim";
+
+                //DlcManager.IsContentSubscribed(DlcManager.DLC2_ID);
+                if (!DlcManager.IsContentSubscribed(DlcManager.EXPANSION1_ID))
+                {
+                    if (modifier.anim == "geyser_molten_aluminum_kanim")
+                        modifier.anim = "geyser_molten_iron_kanim";
+                    if (modifier.anim == "geyser_molten_tungsten_kanim")
+                        modifier.anim = "geyser_molten_iron_kanim";
+                    if (modifier.anim == "geyser_molten_niobium_kanim")
+                        modifier.anim = "geyser_molten_iron_kanim";
+                    if (modifier.anim == "geyser_molten_cobalt_kanim")
+                        modifier.anim = "geyser_molten_iron_kanim";
+                    if (modifier.anim == "geyser_liquid_sulfur_kanim")
+                        modifier.anim = "geyser_liquid_water_slush_kanim";
+                }
+
                 #endregion
 
                 int i = __result.FindIndex(x => x.geyserType.id == modifier.id);

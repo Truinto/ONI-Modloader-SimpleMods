@@ -32,5 +32,6 @@
 		<GlobalAnalyzerConfigFiles Condition="!Exists('$(SolutionDir)\..\Shared\.globalconfiguration') And Exists('$(SolutionDir)\@Shared\.globalconfiguration')" Include="$(SolutionDir)\@Shared\.globalconfiguration" Link=".globalconfiguration" />
 	</ItemGroup>
 
+	<Import Condition="Exists('Directory.Build.props.default')" Project="Directory.Build.props.default" />
 	<Import Condition="Exists('Directory.Build.props.user')" Project="Directory.Build.props.user" />
 </Project>
