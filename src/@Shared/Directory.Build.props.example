@@ -18,8 +18,8 @@
 		<AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>embedded</DebugType>
-		<!-- <GenerateDocumentationFile>True</GenerateDocumentationFile> -->
-		<!-- <Optimize>False</Optimize> -->
+		<!-- <Optimize>false</Optimize> -->
+		<!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
 	</PropertyGroup>
 
 	<ItemDefinitionGroup>

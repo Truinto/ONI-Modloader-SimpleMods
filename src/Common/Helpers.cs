@@ -14,6 +14,7 @@ using Klei.AI;
 using System.Text.RegularExpressions;
 using System.Collections;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace Common
 {
@@ -298,7 +299,7 @@ namespace Common
 
         public static T[] AppendAndReplace<T>(ref T[] orig, params T[] objs)
         {
-            if (orig == null) orig = new T[0];
+            if (orig == null) orig = [];
 
             int i, j;
             T[] result = new T[orig.Length + objs.Length];
@@ -312,7 +313,7 @@ namespace Common
 
         public static T[] AddToArray<T>(this T[] array, params T[] objs)
         {
-            if (array == null) array = new T[0];
+            if (array == null) array = [];
 
             int i, j;
             T[] result = new T[array.Length + objs.Length];
@@ -804,6 +805,58 @@ namespace Common
         #endregion
 
         #region Components
+
+        public static GameObject GetGameObject(object obj)
+        {
+            if (obj is StateMachine.Instance smi)
+                obj = smi.GetMaster();
+
+            if (obj is Component comp)
+                obj = comp.gameObject;
+
+            return obj as GameObject;
+        }
+
+        /// <summary>Searches Assets for the Prefab (from which instances are cloned) and returns its Component <typeparamref name="T"/> or null, if no match.</summary>
+        public static T GetPrefabComponent<T>(object obj, [CallerMemberName] string memberName = "") where T : Component
+        {
+            var go = GetGameObject(obj);
+            if (go == null)
+                goto fail;
+
+            var prefabID = go.GetComponent<KPrefabID>();
+            if (prefabID == null)
+                goto fail;
+
+            var prefab = Assets.TryGetPrefab(prefabID.PrefabTag);
+            if (prefab == null)
+                goto fail;
+
+            return prefab.GetComponent<T>();
+
+        fail:
+            PrintDebug($"GetPrefabComponent failed to resolve '{obj?.GetType()}' called from '{memberName}'");
+            return null;
+        }
+
+        /// <inheritdoc cref="GetPrefabComponent{T}(object)"/>
+        public static T GetPrefabComponent<T>(this GameObject go, [CallerMemberName] string memberName = "") where T : Component
+        {
+            return GetPrefabComponent<T>((object)go, memberName);
+        }
+
+        /// <inheritdoc cref="GetPrefabComponent{T}(object)"/>
+        public static T GetPrefabComponent<T>(this StateMachine.Instance smi, [CallerMemberName] string memberName = "") where T : Component
+        {
+            return GetPrefabComponent<T>((object)smi, memberName);
+        }
+
+        /// <inheritdoc cref="GetPrefabComponent{T}(object)"/>
+        public static T GetPrefabComponent<T>(this Component comp, [CallerMemberName] string memberName = "") where T : Component
+        {
+            return GetPrefabComponent<T>((object)comp, memberName);
+        }
+
         public static void PrintAllPatches(Type type, string method)
         {
             try

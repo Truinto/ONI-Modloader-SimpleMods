@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using Common;
+using HarmonyLib;
+using Shared.CollectionNS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +9,20 @@ using UnityEngine;
 
 namespace CustomizePlants
 {
+    [HarmonyPatch]
     public class Fixes
     {
+        /// <summary>
+        /// Makes it so components with [MyCmpReq] do not crash the game, if that component is missing.
+        /// </summary>
+        public static void SuppressMyCmpReqException()
+        {
+            var mycmp = MyAttributes.s_attributeMgrs.Get<MyCmp>();
+            mycmp.m_methodInfosByAttribute[typeof(MyCmpReq)] = mycmp.m_methodInfosByAttribute[typeof(MyCmpGet)];
+        }
+
         [HarmonyPatch(typeof(FallingWater), nameof(FallingWater.AddParticle),
-            typeof(Vector2), typeof(byte), typeof(float), typeof(float), typeof(byte), typeof(int), typeof(bool), typeof(bool), typeof(bool), typeof(bool))]
+            typeof(Vector2), typeof(ushort), typeof(float), typeof(float), typeof(byte), typeof(int), typeof(bool), typeof(bool), typeof(bool), typeof(bool))]
         public static class Patch_ElementConsumerCrashWithGases
         {
             public static bool Prepare()
@@ -26,22 +38,7 @@ namespace CustomizePlants
             }
         }
 
-        [HarmonyPatch(typeof(SaltPlantConfig), nameof(SaltPlantConfig.OnSpawn))]
-        public static class Patch_SaltPlantConfigOnSpawn
-        {
-            public static bool Prepare()
-            {
-                return CustomizePlantsState.StateManager.State.ApplyBugFixes;
-            }
-
-            public static bool Prefix(GameObject inst)
-            {
-                inst.GetComponent<ElementConsumer>()?.EnableConsumption(true);
-                return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(ColdBreather), "OnReplanted")]
+        [HarmonyPatch(typeof(ColdBreather), nameof(ColdBreather.OnReplanted))]
         public static class Patch_ColdBreatherOnReplanted
         {
             public static float? _cache = CustomizePlantsState.StateManager.State.PlantSettings.FirstOrDefault(f => f.id == ColdBreatherConfig.ID)?.radiation;

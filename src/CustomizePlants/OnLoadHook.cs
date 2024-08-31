@@ -13,7 +13,7 @@ namespace CustomizePlants
 {
     public static class PLANTS
     {
-        public static readonly string[] NAMES = {
+        public static readonly string[] NAMES = [ // TODO: add new ones
             BasicSingleHarvestPlantConfig.ID,
             SeaLettuceConfig.ID,
             BasicFabricMaterialPlantConfig.ID,
@@ -42,9 +42,9 @@ namespace CustomizePlants
             CritterTrapPlantConfig.ID,
             CylindricaConfig.ID,
             FilterPlantConfig.ID,
-        };
+        ];
 
-        public static readonly Type[] CLASSES = {
+        public static readonly Type[] CLASSES = [
             typeof(BasicSingleHarvestPlantConfig),
             typeof(SeaLettuceConfig),
             typeof(BasicFabricMaterialPlantConfig),
@@ -73,12 +73,12 @@ namespace CustomizePlants
             typeof(CritterTrapPlantConfig),
             typeof(CylindricaConfig),
             typeof(FilterPlantConfig),
-        };
+        ];
 
-        public static readonly Type[] CLASSES_NOPREVIEW = {
+        public static readonly Type[] CLASSES_NOPREVIEW = [
             typeof(ForestTreeBranchConfig),
             typeof(SuperWormPlantConfig),
-        };
+        ];
     }
 
     [HarmonyPatch(typeof(Assets), nameof(Assets.AddPrefab))]
