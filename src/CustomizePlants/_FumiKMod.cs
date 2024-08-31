@@ -32,6 +32,7 @@ namespace CustomizePlants
 
             // call OnLoad methods
             OnLoadPatch.OnLoad();
+            Fixes.SuppressMyCmpReqException();
 
             // patch all harmony classes
             base.OnLoad(harmony);

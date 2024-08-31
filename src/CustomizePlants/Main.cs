@@ -53,36 +53,26 @@ namespace CustomizePlants
         }
         public static void OnReplanted(object data = null)
         {
-            GameObject go = (data as Storage)?.gameObject;
+            var go = Helpers.GetGameObject(data);
             if (go == null)
                 return;
 
-            ReceptacleMonitor replant = go.GetComponent<ReceptacleMonitor>();
-            if (replant != null)
-            {
-                ElementConsumer consumer = go.GetComponent<ElementConsumer>();
-                ElementConverter converter = go.GetComponent<ElementConverter>();
-                if (replant == null || !replant.Replanted)
-                {
-                    if (consumer != null) consumer.consumptionRate *= 0.25f;        // NOTE: this doesn't seem to be applied...
-                    if (converter != null) converter.SetWorkSpeedMultiplier(0.25f);
-                }
-            }
-        }
+            var prefab_consumer = go.GetPrefabComponent<ElementConsumer>();
+            if (prefab_consumer == null)
+                return;
 
-
-        // disables converter/consumer when plant is wilt
-        [HarmonyPatch(typeof(SaltPlant), nameof(SaltPlant.OnWilt))]
-        [HarmonyPrefix]
-        public static bool Prefix_OnWilt(SaltPlant __instance)
-        {
-            __instance.gameObject.GetComponent<ElementConsumer>()?.EnableConsumption(false);
-            ElementConverter converter = __instance.gameObject.GetComponent<ElementConverter>();
-            if (converter != null)
+            ElementConsumer consumer = go.GetComponent<ElementConsumer>();
+            ElementConverter converter = go.GetComponent<ElementConverter>();
+            if (go.GetComponent<ReceptacleMonitor>()?.Replanted ?? false)
             {
-                converter.SetWorkSpeedMultiplier(0f);
+                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate;
+                if (converter != null) converter.SetWorkSpeedMultiplier(1);
             }
-            return false;
+            else
+            {
+                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate * 0.25f;
+                if (converter != null) converter.SetWorkSpeedMultiplier(0.25f);
+            }
         }
 
 
@@ -92,14 +82,71 @@ namespace CustomizePlants
         public static bool Prefix_OnWiltRecover(SaltPlant __instance)
         {
             __instance.gameObject.GetComponent<ElementConsumer>()?.EnableConsumption(true);
-            ElementConverter converter = __instance.gameObject.GetComponent<ElementConverter>();
-            if (converter != null)
+            if (__instance.gameObject.GetComponent<ElementConverter>() is ElementConverter converter)
             {
                 if (__instance.GetComponent<ReceptacleMonitor>()?.Replanted ?? false)
                     converter.SetWorkSpeedMultiplier(1f);
                 else
                     converter.SetWorkSpeedMultiplier(0.25f);
             }
+            return false;
+        }
+
+
+        // disables converter/consumer when plant is wilt
+        [HarmonyPatch(typeof(SaltPlant), nameof(SaltPlant.OnWilt))]
+        [HarmonyPrefix]
+        public static bool Prefix_OnWilt(SaltPlant __instance)
+        {
+            __instance.gameObject.GetComponent<ElementConsumer>()?.EnableConsumption(false);
+            __instance.gameObject.GetComponent<ElementConverter>()?.SetWorkSpeedMultiplier(0f);
+            return false;
+        }
+    }
+    #endregion
+
+    #region BlueGrass fix
+    [HarmonyPatch]
+    public static class Patch_BlueGrass
+    {
+        [HarmonyPatch(typeof(BlueGrass), nameof(BlueGrass.SetConsumptionRate))]
+        [HarmonyPrefix]
+        public static bool Prefix1(BlueGrass __instance)
+        {
+            var prefab_consumer = __instance.GetPrefabComponent<ElementConsumer>();
+            if (prefab_consumer == null)
+                return false;
+
+            ElementConsumer consumer = __instance.GetComponent<ElementConsumer>();
+            ElementConverter converter = __instance.GetComponent<ElementConverter>();
+            if (__instance.GetComponent<ReceptacleMonitor>()?.Replanted ?? false)
+            {
+                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate;
+                if (converter != null) converter.SetWorkSpeedMultiplier(1);
+            }
+            else
+            {
+                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate * 0.25f;
+                if (converter != null) converter.SetWorkSpeedMultiplier(0.25f);
+            }
+            return false;
+        }
+
+        [HarmonyPatch("BlueGrass+States+<>c", "<InitializeStates>b__5_7")]
+        [HarmonyPrefix]
+        public static bool Prefix_OnWiltRecover(BlueGrass.StatesInstance smi)
+        {
+            smi.master.elementConsumer?.EnableConsumption(true);
+            smi.master.GetComponent<ElementConverter>()?.SetWorkSpeedMultiplier(1f);
+            return false;
+        }
+
+        [HarmonyPatch("BlueGrass+States+<>c", "<InitializeStates>b__5_8")]
+        [HarmonyPrefix]
+        public static bool Prefix_OnWilt(BlueGrass.StatesInstance smi)
+        {
+            smi.master.elementConsumer?.EnableConsumption(false);
+            smi.master.GetComponent<ElementConverter>()?.SetWorkSpeedMultiplier(0f);
             return false;
         }
     }
@@ -260,6 +307,12 @@ namespace CustomizePlants
                         mutantcompost.SpeciesID = mutantseed.SpeciesID;
                     }
                 }
+            }
+            #endregion
+            #region blueplant fix
+            if (plant.GetComponent<BlueGrass>() != null)
+            {
+                plant.GetComponent<ElementConsumer>().consumptionRate *= 4f;
             }
             #endregion
 
@@ -534,9 +587,9 @@ namespace CustomizePlants
             if (setting.input_element != null)
             {
                 ElementConsumer consumer = plant.AddOrGet<ElementConsumer>();
-                Element element = ElementLoader.FindElementByName(setting.input_element);
+                Element element = setting.input_element.ToElement();
 
-                if (element == null || element.IsSolid)                //invalid element
+                if (element == null || element.IsSolid || element.IsVacuum)                //invalid element
                 {
                     Debug.Log(ToDialog("input_element is bad element: " + setting.input_element));
                     UnityEngine.Object.DestroyImmediate(consumer);
@@ -558,7 +611,8 @@ namespace CustomizePlants
                     consumer.capacityKG = (float)setting.input_rate * 10;
 
                     plant.AddOrGet<Storage>().capacityKg = consumer.capacityKG;
-                    plant.AddOrGet<SaltPlant>();
+                    if (plant.GetComponent<BlueGrass>() == null) // only one of them
+                        plant.AddOrGet<SaltPlant>();
                 }
             }
             #endregion
@@ -567,9 +621,9 @@ namespace CustomizePlants
             {
                 ElementConsumer consumer = plant.GetComponent<ElementConsumer>();
                 ElementConverter converter = plant.AddOrGet<ElementConverter>();
-                Element element = ElementLoader.FindElementByName(setting.output_element);
+                Element element = setting.output_element.ToElement();
 
-                if (element == null)                //invalid element
+                if (element == null || element.IsVacuum)    //invalid element
                 {
                     Debug.Log(ToDialog("output_element is bad element: " + setting.output_element));
                     UnityEngine.Object.DestroyImmediate(converter);
@@ -584,16 +638,15 @@ namespace CustomizePlants
                     if (consumer != null)   //transform elements
                     {
                         consumer.storeOnConsume = true;
-                        converter.consumedElements = new ElementConverter.ConsumedElement[1] { new ElementConverter.ConsumedElement(consumer.elementToConsume.CreateTag(), consumer.consumptionRate) };
+                        converter.consumedElements = [new ElementConverter.ConsumedElement(consumer.elementToConsume.CreateTag(), consumer.consumptionRate)];
                         converter.OutputMultiplier = (float)setting.output_rate / consumer.consumptionRate;
-                        //Debug.Log("TAG is: " + consumer.elementToConsume.CreateTag().Name + " SimHash is: " + consumer.elementToConsume.ToString());
                     }
                     else    //create from nothing
                     {
-                        converter.consumedElements = new ElementConverter.ConsumedElement[0];
+                        converter.consumedElements = [];
                         converter.OutputMultiplier = 1f;
                     }
-                    converter.outputElements = new ElementConverter.OutputElement[1] { new ElementConverter.OutputElement((float)setting.output_rate, element.id, 0f, true, false, 0f, 1f) };
+                    converter.outputElements = [new((float)setting.output_rate, element.id, 0f, true, false, 0f, 1f)];
 
                     plant.AddOrGet<Storage>();
                     plant.AddOrGet<SaltPlant>();
@@ -663,7 +716,7 @@ namespace CustomizePlants
 
                 if (pressure.pressure_sensitive)
                 {
-                    setting.pressures = new float[] { pressure.pressureLethal_Low, pressure.pressureWarning_Low, pressure.pressureWarning_High, pressure.pressureLethal_High };
+                    setting.pressures = [pressure.pressureLethal_Low, pressure.pressureWarning_Low, pressure.pressureWarning_High, pressure.pressureLethal_High];
                 }
             }
             #endregion
@@ -671,7 +724,7 @@ namespace CustomizePlants
             var temperature = plant.GetComponent<TemperatureVulnerable>();
             if (temperature != null)
             {
-                setting.temperatures = new float[] { temperature.TemperatureLethalLow, temperature.TemperatureWarningLow, temperature.TemperatureWarningHigh, temperature.TemperatureLethalHigh };
+                setting.temperatures = [temperature.TemperatureLethalLow, temperature.TemperatureWarningLow, temperature.TemperatureWarningHigh, temperature.TemperatureLethalHigh];
             }
             #endregion
         }

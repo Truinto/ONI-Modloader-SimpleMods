@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.44.0] U52-626616-SC (release)
+- fix for Alveo Vera
+
 ## [1.0.43.0] U52-626616-SC (release)
 - fix decor modifier
 
