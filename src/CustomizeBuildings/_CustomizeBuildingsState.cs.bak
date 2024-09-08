@@ -781,6 +781,9 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_Title", "Scanner Best Network Size");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ScannerBestNetworkSize_ToolTip", "Amount of scanners needed for best warning time.");
 
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "Conductive Panel Pressure");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Liquid pressure.");
+
             #region 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.version", "version");
 
@@ -1032,10 +1035,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderAcceptLiquidsGas", "ConveyorLoaderAcceptLiquidsGas");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_Title", "Conveyor Loader Accepts Liquids Gases");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderAcceptLiquidsGas_ToolTip", "If true, add liquids and gases to the filter list.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConductivePanelPressure", "ConductivePanelPressure");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "Conductive Panel Pressure");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Liquid pressure.");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ValveEnableTemperatureFilter", "ValveEnableTemperatureFilter");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_Title", "Valve Enable Temperature Filter");

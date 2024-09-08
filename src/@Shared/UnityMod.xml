@@ -345,6 +345,34 @@
             </summary>
             <seealso cref="M:Shared.TranspilerTool.GetMemberInfo(System.Type,System.String,System.Type[],System.Type[])"/>
         </member>
+        <member name="M:Shared.TranspilerTool.SeekSetter(System.Type,System.String)">
+            <summary>
+            Moves index forward until calling a matching method or accessing a matching field. <br/>
+            Also resolves property getter, but their setter is ignored.
+            </summary>
+            <seealso cref="M:Shared.TranspilerTool.GetMemberInfo(System.Type,System.String,System.Type[],System.Type[])"/>
+        </member>
+        <member name="M:Shared.TranspilerTool.RewindSetter(System.Type,System.String)">
+            <summary>
+            Moves index backward until calling a matching method or accessing a matching field. <br/>
+            Also resolves property getter, but their setting is ignored.
+            </summary>
+            <seealso cref="M:Shared.TranspilerTool.GetMemberInfo(System.Type,System.String,System.Type[],System.Type[])"/>
+        </member>
+        <member name="M:Shared.TranspilerTool.Seek(System.Reflection.MemberInfo)">
+            <summary>
+            Moves index forward until calling a matching method or accessing a matching field. <br/>
+            Also resolves property getter, but their setter is ignored.
+            </summary>
+            <seealso cref="M:Shared.TranspilerTool.GetMemberInfo(System.Type,System.String,System.Type[],System.Type[])"/>
+        </member>
+        <member name="M:Shared.TranspilerTool.Rewind(System.Reflection.MemberInfo)">
+            <summary>
+            Moves index backward until calling a matching method or accessing a matching field. <br/>
+            Also resolves property getter, but their setting is ignored.
+            </summary>
+            <seealso cref="M:Shared.TranspilerTool.GetMemberInfo(System.Type,System.String,System.Type[],System.Type[])"/>
+        </member>
         <member name="M:Shared.TranspilerTool.Seek(System.Reflection.Emit.OpCode,System.Object)">
             <summary>
             Moves index forward until a specified OpCode is used. Can optionally compare the operand as well.
@@ -405,6 +433,11 @@
         </member>
         <member name="M:Shared.TranspilerTool.IsLoadConstant(System.Double)">
             <summary>Checks if current line loads a constant.</summary>
+        </member>
+        <member name="M:Shared.TranspilerTool.Set(System.Reflection.Emit.OpCode,System.Object)">
+            <summary>
+            Overwrites Current.
+            </summary>
         </member>
         <member name="M:Shared.TranspilerTool.InsertCall(System.Delegate,System.Boolean)">
             <summary>
@@ -890,6 +923,21 @@
             Prints to standard output.
             </summary>
         </member>
+        <member name="T:Shared.CollectionNS.CollectionTool">
+            <summary>
+            Extension class for collection operations.
+            </summary>
+        </member>
+        <member name="M:Shared.CollectionNS.CollectionTool.Get``1(System.Collections.IEnumerable)">
+            <summary>
+            Gets the first element that is of type <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:Shared.CollectionNS.CollectionTool.GetAll``1(System.Collections.IEnumerable)">
+            <summary>
+            Gets all elements that are of type <typeparamref name="T"/>.
+            </summary>
+        </member>
         <member name="M:Shared.CollectionNS.CollectionTool.IsTypeCompatible(System.Type,System.Type)">
             <summary>
             Checks if right type can be assigned to left type. <br/>
@@ -916,6 +964,11 @@
             Get element at index or default.
             </summary>
         </member>
+        <member name="M:Shared.CollectionNS.CollectionTool.Contains``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}},``0)">
+            <summary>
+            <inheritdoc cref="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0)"/>
+            </summary>
+        </member>
         <member name="M:Shared.CollectionNS.CollectionTool.AddUnique``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Adds items to a list, which are not already in the list. Compares with Equal().
@@ -940,6 +993,12 @@
             <summary>
             Returns itself, if value is a list. Otherwise creates a new list.
             </summary>
+        </member>
+        <member name="M:Shared.CollectionNS.CollectionTool.InjectBefore``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,``0})">
+            <summary>Injects a new element into an enumerable, if a condition is met.</summary>
+        </member>
+        <member name="M:Shared.CollectionNS.CollectionTool.InjectAfter``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,``0})">
+            <summary>Injects a new element into an enumerable, if a condition is met.</summary>
         </member>
         <member name="M:Shared.CollectionNS.CollectionTool.AddBefore``1(``0,System.Collections.Generic.IEnumerable{``0})">
             <summary>

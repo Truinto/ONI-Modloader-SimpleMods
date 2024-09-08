@@ -612,7 +612,7 @@ namespace CustomizePlants
 
                     plant.AddOrGet<Storage>().capacityKg = consumer.capacityKG;
                     if (plant.GetComponent<BlueGrass>() == null) // only one of them
-                        plant.AddOrGet<SaltPlant>();
+                        plant.AddOrGet<SaltPlant>(); // TODO use BlueGrass for all plants that also have StandardCropPlant
                 }
             }
             #endregion

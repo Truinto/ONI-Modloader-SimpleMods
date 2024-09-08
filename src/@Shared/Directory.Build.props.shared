@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<Nullable>annotations</Nullable>
+
+		<Company>Truinto</Company>
+		<Authors>Truinto</Authors>
+		<Copyright>Copyright © Truinto 2024</Copyright>
+		<Title>$(MSBuildProjectName)</Title>
+		<RepositoryUrl>https://github.com/Truinto/</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<ILRepackTargetsFile>$(MSBuildThisFileDirectory)ILRepack.targets</ILRepackTargetsFile>
+		<DoILRepack>false</DoILRepack>
+
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
+		<!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+		<!--<Optimize>false</Optimize>-->
+
+		<Tools>$(MSBuildThisFileDirectory)../Tools/</Tools>
+		<Tools Condition="!Exists('$(Tools)')">$(MSBuildThisFileDirectory)../../Tools/</Tools>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<!--<Reference Private="false" />-->
+		<!--<ProjectReference Private="false" />-->
+	</ItemDefinitionGroup>
+
+	<ItemGroup>
+		<GlobalAnalyzerConfigFiles Condition="'@(GlobalAnalyzerConfigFiles)'==''" Include="$(MSBuildThisFileDirectory).globalconfiguration" Link=".globalconfiguration" />
+
+		<PackageReference Include="AssemblyPublicizer" Version="1.0.4" ExcludeAssets="runtime" />
+		<PackageReference Include="BuildTaskVersionControl" Version="1.2.1" ExcludeAssets="runtime" />
+		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+
+
+	<!-- Copy this ItemGroup into your project.
+		 Note: ItemGroup inside a Target is applied only after the Target is finished. 
+		 Do not set ItemGroup and CallTarget in the same Target. -->
+	<ItemGroup Condition="false">
+		<VersioningTask_In Include="$(MSBuildThisFileFullPath)" />
+		<VersioningTask_In Include="changelog.md" />
+		<VersioningTask_Out DropRevision="never" Include="$(MSBuildThisFileFullPath)" />
+		<VersioningTask_Out DropRevision="keep" Include="info.json" />
+		<VersioningTask_Out DropRevision="keep" Include="Settings/Repository.json" Max="2" />
+		<TargetPublicizeItems Include="$(GameManaged)/Assembly-CSharp.dll" />
+		<TargetMergeItems Include="$(SolutionDir)/@Shared/UnityMod.dll" />
+		<TargetCopyTarget Include="$(ModFolder)/$(TargetName)/" />
+		<!--<TargetZipItems Include="false" />-->
+	</ItemGroup>
+
+	<!-- Target to generate publicized assemblies.
+		 required: @TargetPublicizeItems: assemblies to process
+		 optional: $TargetPublicizeDir: where to store new assemblies; if empty folder of first @TargetPublicizeItems -->
+	<Target Name="Publicize" BeforeTargets="Clean;BeforeBuild" AfterTargets="">
+		<ItemGroup>
+			<TargetPublicizeItemsA Include="@(TargetPublicizeItems->Reverse())" />
+		</ItemGroup>
+		<PropertyGroup>
+			<TargetPublicizeDir>$([MSBuild]::NormalizePath('%(TargetPublicizeItemsA.Identity)/../'))</TargetPublicizeDir>
+		</PropertyGroup>
+		<PublicizeTask InputAssemblies="@(TargetPublicizeItems)" OutputDir="$(TargetPublicizeDir)" />
+	</Target>
+
+	<!-- Target to merge given assemblies into primary assembly. Overwrites primary assembly.
+		 required: @TargetMergeItems: files to copy
+		 optional: @SourceDirs: parsed from project references
+		 output:   @SourceDirs -->
+	<Target Name="TargetMerge" AfterTargets="PostBuildEvent">
+		<CallTarget Targets="TargetMergeA" Condition="'@(TargetMergeItems)'!=''" />
+	</Target>
+
+	<Target Name="TargetMergeA">
+		<ItemGroup>
+			<SourceDirsA Include="@(SourceDirs)" />
+			<SourceDirsA Condition="'%(Reference.HintPath)'!=''" Include="$([MSBuild]::NormalizePath('%(Reference.HintPath)/../'))" />
+			<SourceDirs Remove="%(SourceDirs.Identity)" />
+			<SourceDirs Include="@(SourceDirsA->Distinct())" />
+
+			<TargetMergeItemsA Include="$(TargetDir)$(TargetName).dll" />
+			<TargetMergeItemsA Include="@(TargetMergeItems)" />
+			<TargetMergeItems Remove="%(TargetMergeItems.Identity)" />
+			<TargetMergeItems Include="@(TargetMergeItemsA->Distinct())" />
+		</ItemGroup>
+		<Message Condition="'%(Reference.HintPath)'!=''" Text="%(Reference.Identity) %09%09 $([System.IO.Path]::GetFullPath('%(Reference.HintPath)'))" Importance="Low" />
+		<Message Text="Merging assemblies..." Importance="Low" />
+		<Message Text="%09%(TargetMergeItems.Identity)" Importance="Low" />
+		<Message Text="%09with libs=@(SourceDirs)" Importance="Low" />
+		<ILRepack XmlDocumentation="true" Union="true" DebugInfo="true" LibraryPath="@(SourceDirs)" InputAssemblies="@(TargetMergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" />
+	</Target>
+
+	<!-- Generates mono debug binary. -->
+	<Target Name="TargetMDB" AfterTargets="TargetMerge" DependsOnTargets="TargetMerge">
+		<CallTarget Targets="TargetMDBA" Condition="Exists('$(Tools)') And '%(Reference.Identity)'=='UnityEngine'" />
+	</Target>
+
+	<Target Name="TargetMDBA">
+		<Message Text="Generating mdb file." Importance="High" />
+		<Exec Command="&quot;$(Tools)pdb2mdb.exe&quot; &quot;$(TargetDir)$(TargetName).dll&quot;"/>
+	</Target>
+
+	<!-- Copies files to target folder.
+		 required: @TargetCopyTarget: where to copy files
+		 optional: @TargetCopyItems: files to copy; if empty read all build files -->
+	<Target Name="TargetCopy" AfterTargets="TargetMDB" DependsOnTargets="TargetMDB">
+		<CallTarget Targets="TargetCopyA" Condition="'$(TargetCopyTarget)'!='' Or '@(TargetCopyTarget)'!=''" />
+	</Target>
+
+	<Target Name="TargetCopyA">
+		<ItemGroup>
+			<TargetCopyItems Condition="'@(TargetCopyItems)'==''" Include="$(TargetDir)/**" />
+		</ItemGroup>
+		<PropertyGroup>
+			<TargetCopyTarget Condition="'@(TargetCopyTarget)'!=''">%(TargetCopyTarget.Identity)</TargetCopyTarget>
+		</PropertyGroup>
+		<Message Text="Copy @(TargetCopyItems) -> $(TargetCopyTarget)" Importance="High" />
+		<Copy SourceFiles="@(TargetCopyItems)" DestinationFolder="$(TargetCopyTarget)/%(RecursiveDir)" UseHardlinksIfPossible="true" />
+	</Target>
+
+	<!-- Zips files. Force skipped if TargetZipItems is set to false.
+		 required: @TargetZipItems: file to zip; if empty reads $TargetCopyTarget instead
+		 optional: @TargetZipTarget: zip save path; if empty save next to first @TargetZipItems
+		 optional: $TargetZipWorkDir: working directory; if empty goes one folders up from first @TargetZipItems -->
+	<Target Name="TargetZip" AfterTargets="TargetCopy" DependsOnTargets="TargetCopy">
+		<CallTarget Targets="TargetZipA" Condition="$(Configuration.Contains('Release')) And '@(TargetZipItems)'!='false' And '$(TargetCopyTarget)'!='false' And ('@(TargetZipItems)'!='' Or '$(TargetCopyTarget)'!='')" />
+	</Target>
+
+	<Target Name="TargetZipA">
+		<PropertyGroup>
+			<TargetZipWorkDirA Condition="'@(TargetZipItems)'==''">$(TargetCopyTarget)</TargetZipWorkDirA>
+		</PropertyGroup>
+		<ItemGroup>
+			<TargetZipItems Condition="'@(TargetZipItems)'==''" Include="$(TargetCopyTarget)/**" />
+			<TargetZipItems Condition="'%(Extension)'=='.zip'" Remove="%(TargetZipItems.Identity)" />
+			<TargetZipItemsB Include="@(TargetZipItems->Reverse())" />
+		</ItemGroup>
+		<PropertyGroup>
+			<TargetZipWorkDirA Condition="'$(TargetZipWorkDirA)'==''">%(TargetZipItemsB.Identity)/..</TargetZipWorkDirA>
+			<TargetZipWorkDir Condition="'$(TargetZipWorkDir)'==''">$([MSBuild]::NormalizePath('$(TargetZipWorkDirA)/../'))</TargetZipWorkDir>
+			<TargetZipTarget Condition="'@(TargetZipTarget)'!=''">%(TargetZipTarget.Identity)</TargetZipTarget>
+			<TargetZipTarget Condition="'$(TargetZipTarget)'==''">$(TargetZipWorkDirA)/$(TargetName).zip</TargetZipTarget>
+			<TargetZipTarget>$([MSBuild]::NormalizePath('$(TargetZipTarget)'))</TargetZipTarget>
+		</PropertyGroup>
+		<Message Text="Zip w=$(TargetZipWorkDir) -> @(TargetZipItems) -> $(TargetZipTarget)" Importance="High" />
+		<ZipTask ZipFileName="$(TargetZipTarget)" WorkingDirectory="$(TargetZipWorkDir)" Files="@(TargetZipItems)" />
+	</Target>
+
+	<!-- Condition="$([System.Text.RegularExpressions.Regex]::IsMatch($(Configuration), '^.*_Bep$' ))" -->
+
+</Project>
