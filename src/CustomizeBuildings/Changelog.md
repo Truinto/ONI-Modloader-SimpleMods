@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.93.0] U52-626616-SC (release)
+- fix crash with AutoSweeperPickupAnything and liquifier
+
 ## [1.0.92.0] U51-600112-S
 - removed ConductivePanelPressure setting
 - changed PipeLiquidMaxPressure to include Conductive Panel

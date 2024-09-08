@@ -11,21 +11,6 @@ using Shared;
 
 namespace CustomizeBuildings
 {
-    //[HarmonyPatch(typeof(PlantablePlot), "RegisterWithPlant")]
-    public class TEST_3
-    {
-        public static bool Prefix(PlantablePlot __instance)
-        {
-            if (__instance.PrefabID() == FlowerVaseConfig.ID)
-            {
-                Helpers.Print($"TEST_3 prevented link to {__instance.PrefabID()}");
-                return false;
-            }
-
-            return true;
-        }
-    }
-
     public class AdvancedConditionerMod : IBuildingCompleteMod
     {
         public static LocString TextLogic; // = Helpers.StringsAddShort("Output exactly this temperature:", "AdvancedConditionerModLogic");

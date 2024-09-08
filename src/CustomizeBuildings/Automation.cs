@@ -22,12 +22,23 @@ namespace CustomizeBuildings
 
         public static bool Prefix(ref bool __result, SolidTransferArm __instance, KPrefabID prefabID, int storage_cell)
         {
-            __result = !prefabID.HasAnyTags(tagsCreatures) && __instance.IsCellReachable(storage_cell);
+            if (!__instance.IsCellReachable(storage_cell))
+                __result = false;
+            else if (Assets.IsTagSolidTransferArmConveyable(prefabID.PrefabTag))
+                __result = true;
+            else if (prefabID.HasAnyTags(tagsCreatures))
+                __result = false;
+            else if (prefabID.GetComponent<Pickupable>().targetWorkable is not (null or Pickupable))
+                __result = false;
+            else
+                __result = true;
+
+            //Helpers.Print($"MoveAnything: target={prefabID.GetComponent<Pickupable>().targetWorkable?.GetType()} tag={prefabID.PrefabTag} tags={prefabID.tags.Join()}");
 
             return false;
         }
 
-        public static Tag[] tagsCreatures = { GameTags.BagableCreature, GameTags.SwimmingCreature };
+        public static Tag[] tagsCreatures = [GameTags.BagableCreature, GameTags.SwimmingCreature];
     }
 
     [HarmonyPatch(typeof(SolidTransferArm), nameof(SolidTransferArm.OnPrefabInit))]

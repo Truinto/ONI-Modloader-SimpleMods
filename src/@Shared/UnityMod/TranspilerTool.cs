@@ -216,6 +216,80 @@ namespace Shared
         }
 
         /// <summary>
+        /// Moves index forward until calling a matching method or accessing a matching field. <br/>
+        /// Also resolves property getter, but their setter is ignored.
+        /// </summary>
+        /// <seealso cref="GetMemberInfo(Type, string, Type[], Type[])"/>
+        public TranspilerTool SeekSetter(Type type, string name)
+        {
+            var memberinfo = AccessTools.PropertyGetter(type, name);
+            while (true)
+            {
+                if (IsLast)
+                    throw new IndexOutOfRangeException("IsLast");
+
+                ++Index;
+                if (Calls(memberinfo))
+                    return this;
+            }
+        }
+
+        /// <summary>
+        /// Moves index backward until calling a matching method or accessing a matching field. <br/>
+        /// Also resolves property getter, but their setting is ignored.
+        /// </summary>
+        /// <seealso cref="GetMemberInfo(Type, string, Type[], Type[])"/>
+        public TranspilerTool RewindSetter(Type type, string name)
+        {
+            var memberinfo = AccessTools.PropertyGetter(type, name);
+            while (true)
+            {
+                if (IsFirst)
+                    throw new IndexOutOfRangeException("IsFirst");
+
+                --Index;
+                if (Calls(memberinfo))
+                    return this;
+            }
+        }
+
+        /// <summary>
+        /// Moves index forward until calling a matching method or accessing a matching field. <br/>
+        /// Also resolves property getter, but their setter is ignored.
+        /// </summary>
+        /// <seealso cref="GetMemberInfo(Type, string, Type[], Type[])"/>
+        public TranspilerTool Seek(MemberInfo memberInfo)
+        {
+            while (true)
+            {
+                if (IsLast)
+                    throw new IndexOutOfRangeException("IsLast");
+
+                ++Index;
+                if (Calls(memberInfo))
+                    return this;
+            }
+        }
+
+        /// <summary>
+        /// Moves index backward until calling a matching method or accessing a matching field. <br/>
+        /// Also resolves property getter, but their setting is ignored.
+        /// </summary>
+        /// <seealso cref="GetMemberInfo(Type, string, Type[], Type[])"/>
+        public TranspilerTool Rewind(MemberInfo memberInfo)
+        {
+            while (true)
+            {
+                if (IsFirst)
+                    throw new IndexOutOfRangeException("IsFirst");
+
+                --Index;
+                if (Calls(memberInfo))
+                    return this;
+            }
+        }
+
+        /// <summary>
         /// Moves index forward until a specified OpCode is used. Can optionally compare the operand as well.
         /// </summary>
         public TranspilerTool Seek(OpCode op, object operand = null)
@@ -340,6 +414,15 @@ namespace Shared
         #endregion
 
         #region Manipulation
+
+        /// <summary>
+        /// Overwrites Current.
+        /// </summary>
+        public void Set(OpCode opCode, object operand = null)
+        {
+            Current.opcode = opCode;
+            Current.operand = operand;
+        }
 
         /// <summary>
         /// Injects call. Increments index. Same as <see cref="InsertAfter(Delegate)"/> or <see cref="InsertBefore(Delegate)"/> <br/>
@@ -708,7 +791,7 @@ namespace Shared
             else if (replace is FieldInfo replaceField) // if a field call is overwritten
             {
                 Logger.PrintDebug($"ReplaceCall \n\t{mi.FullDescription()} -> \n\t{replace}");
-                parametersReplace = new ParameterInfo[0];
+                parametersReplace = [];
                 isReplaceStatic = Current.opcode != OpCodes.Ldfld;
 
                 if (!replaceField.FieldType.IsTypeCompatible(mi.ReturnType))
@@ -717,7 +800,7 @@ namespace Shared
             else if (Current.opcode == OpCodes.Ldc_I8)
             {
                 Logger.PrintDebug($"ReplaceCall \n\t{mi.FullDescription()} -> \n\t{Current.opcode}");
-                parametersReplace = new ParameterInfo[0];
+                parametersReplace = [];
                 isReplaceStatic = true;
 
                 if (!typeof(long).IsTypeCompatible(mi.ReturnType))
@@ -726,16 +809,34 @@ namespace Shared
             else if (OpCode_Ldc_i.Contains(Current.opcode))
             {
                 Logger.PrintDebug($"ReplaceCall \n\t{mi.FullDescription()} -> \n\t{Current.opcode}");
-                parametersReplace = new ParameterInfo[0];
+                parametersReplace = [];
                 isReplaceStatic = true;
 
                 if (!typeof(int).IsTypeCompatible(mi.ReturnType))
                     throw new ExceptionMissingReturn("Delegate must return identical type!");
             }
+            else if (Current.opcode == OpCodes.Ldc_R8)
+            {
+                Logger.PrintDebug($"ReplaceCall \n\t{mi.FullDescription()} -> \n\t{Current.opcode}");
+                parametersReplace = [];
+                isReplaceStatic = true;
+
+                if (typeof(double) != mi.ReturnType)
+                    throw new ExceptionMissingReturn("Delegate must return identical type!");
+            }
+            else if (Current.opcode == OpCodes.Ldc_R4)
+            {
+                Logger.PrintDebug($"ReplaceCall \n\t{mi.FullDescription()} -> \n\t{Current.opcode}");
+                parametersReplace = [];
+                isReplaceStatic = true;
+
+                if (typeof(float) != mi.ReturnType)
+                    throw new ExceptionMissingReturn("Delegate must return identical type!");
+            }
             else if (!(local = GetLocal()).IsEmpty)
             {
                 Logger.PrintDebug($"ReplaceCall \n\t{mi.FullDescription()} -> \n\t{local}");
-                parametersReplace = new ParameterInfo[0];
+                parametersReplace = [];
                 isReplaceStatic = true;
 
                 if (!local.Type.IsTypeCompatible(mi.ReturnType))
