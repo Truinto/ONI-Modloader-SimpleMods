@@ -119,7 +119,7 @@ namespace CustomizePlants
             { "placeholder1", new Dictionary<string, int>() { { "Algae", 40 }, { "Clay", 20 } } }
         };
 
-        public bool print_mutations { get; set; } = true;
+        public bool print_mutations { get; set; } = false;
 
         public HashSet<PlantMutationData> MutationSettings { get; set; } = new HashSet<PlantMutationData>()
         {

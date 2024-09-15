@@ -276,17 +276,19 @@ namespace Shared.StringsNS
             {
                 switch (c)
                 {
-                    case '\'': sb.Append(@"\'"); break;
-                    case '\"': sb.Append("\\\""); break;
+                    case '\"': sb.Append(@"\"""); break;
                     case '\\': sb.Append(@"\\"); break;
-                    case '\0': sb.Append(@"\0"); break;
-                    case '\a': sb.Append(@"\a"); break;
                     case '\b': sb.Append(@"\b"); break;
                     case '\f': sb.Append(@"\f"); break;
                     case '\n': sb.Append(@"\n"); break;
                     case '\r': sb.Append(@"\r"); break;
                     case '\t': sb.Append(@"\t"); break;
-                    case '\v': sb.Append(@"\v"); break;
+                    case '\'': sb.Append(@"\u0027"); break;
+                    case '\0': sb.Append(@"\u0000"); break;
+                    case '\a': sb.Append(@"\u0007"); break;
+                    case '\v': sb.Append(@"\u000B"); break;
+                    case '´': sb.Append(@"\u00B4"); break;
+                    case '`': sb.Append(@"\u0060"); break;
                     default:
                         if (c is >= (char)0x20 and <= (char)0x7e)
                         {
