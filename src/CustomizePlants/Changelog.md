@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.45.0] U52-626616-SC (release)
+- fixed config overwrite on error
+
 ## [1.0.44.0] U52-626616-SC (release)
 - fix for Alveo Vera
 

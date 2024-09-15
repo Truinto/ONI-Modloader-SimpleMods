@@ -97,7 +97,7 @@
 
 	<!-- Generates mono debug binary. -->
 	<Target Name="TargetMDB" AfterTargets="TargetMerge" DependsOnTargets="TargetMerge">
-		<CallTarget Targets="TargetMDBA" Condition="Exists('$(Tools)') And '%(Reference.Identity)'=='UnityEngine'" />
+		<CallTarget Targets="TargetMDBA" Condition="Exists('$(Tools)pdb2mdb.exe') And '%(Reference.Identity)'=='UnityEngine'" />
 	</Target>
 
 	<Target Name="TargetMDBA">
@@ -147,7 +147,7 @@
 			<TargetZipTarget Condition="'$(TargetZipTarget)'==''">$(TargetZipWorkDirA)/$(TargetName).zip</TargetZipTarget>
 			<TargetZipTarget>$([MSBuild]::NormalizePath('$(TargetZipTarget)'))</TargetZipTarget>
 		</PropertyGroup>
-		<Message Text="Zip w=$(TargetZipWorkDir) -> @(TargetZipItems) -> $(TargetZipTarget)" Importance="High" />
+		<Message Text="Zip w=$(TargetZipWorkDir) -> @(TargetZipItems) -> $(TargetZipTarget)" Importance="Low" />
 		<ZipTask ZipFileName="$(TargetZipTarget)" WorkingDirectory="$(TargetZipWorkDir)" Files="@(TargetZipItems)" />
 	</Target>
 
