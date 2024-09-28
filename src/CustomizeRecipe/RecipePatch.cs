@@ -98,9 +98,9 @@ namespace CustomizeRecipe
             }
 
             // check ID formatting
-            if (Assets.TryGetPrefab(setting.Id.TrySubstring('_')) == null)
+            if (!Assets.PrefabsByTag.Any(a => setting.Id.StartsWithIgnoreCase(a.Key.Name) && a.Value.GetComponent<BuildingHP>() != null))
             {
-                Config.PostBootDialog.ErrorList.Add($"Recipe ID is invalid. Must start with building and underscore, like this \"{RockCrusherConfig.ID}_\"");
+                Config.PostBootDialog.ErrorList.Add($"Recipe ID '{setting.Id}' is invalid. Must start with building + underscore.");
                 return;
             }
 
