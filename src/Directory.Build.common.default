@@ -7,11 +7,9 @@
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<Title>$(MSBuildProjectName)</Title>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RootNamespace>$(MSBuildProjectName)</RootNamespace>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<DebugType>embedded</DebugType>
 		<ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>false</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
 	</PropertyGroup>
 
@@ -29,48 +27,39 @@
 		<Compile Include="$(SolutionDir)Common\TechHelper.cs" Link="TechHelper.cs" />
 	</ItemGroup>
 
-	<!-- Nuget Packages -->
-	<ItemGroup>
-		<PackageReference Include="AssemblyPublicizer" Version="1.0.3" ExcludeAssets="runtime" />
-		<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" ExcludeAssets="runtime" />
-		<PackageReference Include="MSBuildTasks" Version="1.5.0.235" PrivateAssets="all" ExcludeAssets="" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
-	</ItemGroup>
-
 	<!-- Common References -->
 	<ItemGroup>
-		<Reference Include="System" />
-		<Reference Include="System.Core" />
-		<Reference Include="System.Xml" />
-		<Reference Include="System.Xml.Linq" />
-		<Reference Include="System.Data.DataSetExtensions" />
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.Data" />
-		<Reference Include="System.Net.Http" />
+		<Reference Private="false" Include="System" />
+		<Reference Private="false" Include="System.Core" />
+		<Reference Private="false" Include="System.Xml" />
+		<Reference Private="false" Include="System.Xml.Linq" />
+		<Reference Private="false" Include="System.Data.DataSetExtensions" />
+		<Reference Private="false" Include="Microsoft.CSharp" />
+		<Reference Private="false" Include="System.Data" />
+		<Reference Private="false" Include="System.Net.Http" />
 	</ItemGroup>
 
 	<!-- Project References -->
 	<ItemGroup>
-		<Reference Include="0Harmony" HintPath="$(GameManaged)\0Harmony.dll" />
-		<Reference Include="Assembly-CSharp_public" HintPath="$(GameManaged)\Assembly-CSharp_public.dll" />
-		<Reference Include="Assembly-CSharp-firstpass_public" HintPath="$(GameManaged)\Assembly-CSharp-firstpass_public.dll" />
-		<Reference Include="Newtonsoft.Json" HintPath="$(GameManaged)\Newtonsoft.Json.dll" />
-		<Reference Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
-		<Reference Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
-		<Reference Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
-		<Reference Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
+		<Reference Private="false" Include="0Harmony" HintPath="$(GameManaged)\0Harmony.dll" />
+		<Reference Private="false" Include="Assembly-CSharp_public" HintPath="$(GameManaged)\Assembly-CSharp_public.dll" />
+		<Reference Private="false" Include="Assembly-CSharp-firstpass_public" HintPath="$(GameManaged)\Assembly-CSharp-firstpass_public.dll" />
+		<Reference Private="false" Include="Newtonsoft.Json" HintPath="$(GameManaged)\Newtonsoft.Json.dll" />
+		<Reference Private="false" Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
+		<Reference Private="false" Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
+		<Reference Private="false" Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
+		<Reference Private="false" Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
 
-		<Reference Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod-net472.dll" />
-		<Reference Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
-		<Reference Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
-		<Reference Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Private="false" Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod-net472.dll" />
+		<Reference Private="false" Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Private="false" Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Private="false" Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 	</ItemGroup>
 
 	<!-- Other Files -->
 	<ItemGroup>
-		<GlobalAnalyzerConfigFiles Include="$(SolutionDir)\@Shared\.globalconfiguration" Link=".globalconfiguration" />
-
 		<None Remove="$(ProjectDir)_MERGE" />
-		<None Update="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<!-- Publicize -->
@@ -103,7 +92,6 @@
 		<Message Text="Merging PLibOptions..." Importance="High" />
 		<ILRepack Union="true" LibraryPath="$(GameManaged)" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" />
 		<!--<ILMerge Condition="$(DefineConstants.Contains('MERGE'))" ToolPath="packages\ilmerge.2.13.0307" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" SearchDirectories="$(GameManaged)" />-->
-		<Sleep Milliseconds="1000" />
 		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ModFolder)$(TargetName)\%(RecursiveDir)" />
 		<Message Text="Copied to $(ModFolder)$(TargetName)\" Importance="High" />
 		<Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(ModFolder)\$(TargetName)" Command="&quot;$(Zip7)&quot; u &quot;-x!*.zip&quot; &quot;$(SolutionDir)..\Mods\$(TargetName)\$(TargetName)-latest.zip&quot; &gt;NUL" />

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.4.1] U52-626616-SC (release)
+- fix for buildings with underscore #68
+
 ## [1.0.4.0] U45-546664-S
 - new default recipe
 
