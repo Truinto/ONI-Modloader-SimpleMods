@@ -21,10 +21,10 @@
 
 	<!-- Shared Libs -->
 	<ItemGroup>
-		<Compile Include="$(SolutionDir)Common\BootDialog.cs" Link="BootDialog.cs" />
-		<Compile Include="$(SolutionDir)Common\ConfigManager.cs" Link="ConfigManager.cs" />
-		<Compile Include="$(SolutionDir)Common\Helpers.cs" Link="Helpers.cs" />
-		<Compile Include="$(SolutionDir)Common\TechHelper.cs" Link="TechHelper.cs" />
+		<Compile Include="$(SolutionDir)Common\BootDialog.cs" Link="Common/BootDialog.cs" />
+		<Compile Include="$(SolutionDir)Common\ConfigManager.cs" Link="Common/ConfigManager.cs" />
+		<Compile Include="$(SolutionDir)Common\Helpers.cs" Link="Common/Helpers.cs" />
+		<Compile Include="$(SolutionDir)Common\TechHelper.cs" Link="Common/TechHelper.cs" />
 	</ItemGroup>
 
 	<!-- Common References -->
@@ -60,42 +60,26 @@
 	<ItemGroup>
 		<None Remove="$(ProjectDir)_MERGE" />
 		<None Include="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
 
-	<!-- Publicize -->
-	<Target Name="Publicize" BeforeTargets="PreBuildEvent;Clean" AfterTargets="">
-		<ItemGroup>
-			<PublicizeInput Include="$(GameManaged)\Assembly-CSharp.dll" />
-			<PublicizeInput Include="$(GameManaged)\Assembly-CSharp-firstpass.dll" />
-		</ItemGroup>
-		<PublicizeTask InputAssemblies="@(PublicizeInput)" OutputDir="$(GameManaged)\" />
-	</Target>
+		<TargetPublicizeItems Include="$(GameManaged)/Assembly-CSharp.dll" />
+		<TargetPublicizeItems Include="$(GameManaged)/Assembly-CSharp-firstpass.dll" />
+		
+		<TargetMergeItems Include="$(SolutionDir)@Shared/UnityMod-net472.dll" />
+		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibOptions.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
+		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibCore.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
+		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibUI.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
+		
+		<TargetCopyTarget Include="$(ModFolder)$(TargetName)/" />
+		<TargetCopyDelete Include="$(ModFolder)$(TargetName)/$(TargetName).pdb" Condition="$(Configuration.Contains('Release'))" />
+		<TargetCopyDelete Include="$(ModFolder)$(TargetName)/$(TargetName).xml" Condition="$(Configuration.Contains('Release'))" />
+		
+		<TargetZipTarget Include="$(SolutionDir)../Mods/$(TargetName)/$(TargetName)-latest.zip" />
+	</ItemGroup>
 
 	<!-- Update build version and run code editing (if enabled) -->
 	<Target Name="Versioning" BeforeTargets="PreBuildEvent">
 		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI\versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties\AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)\mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
 		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI\versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties\AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)\mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
-	</Target>
-
-	<!-- ILMerge and copy to mod folder -->
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<ItemGroup>
-			<_MergeItems Include="$(TargetDir)$(TargetName).dll" />
-			<_MergeItems Include="$(SolutionDir)@Shared\UnityMod-net472.dll" />
-			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
-			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
-			<_MergeItems Include="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
-
-			<_CopyItems Include="$(TargetDir)\*" />
-		</ItemGroup>
-
-		<Message Text="Merging PLibOptions..." Importance="High" />
-		<ILRepack Union="true" LibraryPath="$(GameManaged)" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" />
-		<!--<ILMerge Condition="$(DefineConstants.Contains('MERGE'))" ToolPath="packages\ilmerge.2.13.0307" InputAssemblies="@(_MergeItems)" OutputFile="$(TargetDir)$(TargetName).dll" SearchDirectories="$(GameManaged)" />-->
-		<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ModFolder)$(TargetName)\%(RecursiveDir)" />
-		<Message Text="Copied to $(ModFolder)$(TargetName)\" Importance="High" />
-		<Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(ModFolder)\$(TargetName)" Command="&quot;$(Zip7)&quot; u &quot;-x!*.zip&quot; &quot;$(SolutionDir)..\Mods\$(TargetName)\$(TargetName)-latest.zip&quot; &gt;NUL" />
-		<Message Condition="'$(Configuration)'=='Release'" Text="Updated $(TargetName)-latest.zip" Importance="High" />
 	</Target>
 
 </Project>

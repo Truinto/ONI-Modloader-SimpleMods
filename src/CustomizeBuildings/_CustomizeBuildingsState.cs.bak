@@ -33,6 +33,7 @@ namespace CustomizeBuildings
             StateManager.State.SealInsulateStorages = false;
             StateManager.State.LockerKG = 20000f;
             StateManager.State.LockerSmartKG = 20000f;
+            StateManager.State.StorageTileKG = 1000f;
             StateManager.State.GasReservoirKG = 1000f;
             StateManager.State.LiquidReservoirKG = 5000f;
             StateManager.State.RationBoxKG = 150f;
@@ -214,6 +215,8 @@ namespace CustomizeBuildings
         public float LockerKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_Title", "CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "Storage", "F0")]
         public float LockerSmartKG { get; set; } = 400000f;
+        [Option("Storage Tile Capacity", "", "Storage", "F0")]
+        public float StorageTileKG { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_Title", "CustomizeBuildings.LOCSTRINGS.GasReservoirKG_ToolTip", "Storage", "F0")]
         public float GasReservoirKG { get; set; } = 99000f;
         [Option("CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_Title", "CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_ToolTip", "Storage", "F0")]

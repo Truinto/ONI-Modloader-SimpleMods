@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.94.0] U52-626616-SC (release)
+- added storage tile kg setting
+
 ## [1.0.93.0] U52-626616-SC (release)
 - fix crash with AutoSweeperPickupAnything and liquifier
 
