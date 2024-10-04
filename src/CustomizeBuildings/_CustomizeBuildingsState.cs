@@ -33,6 +33,7 @@ namespace CustomizeBuildings
             StateManager.State.SealInsulateStorages = false;
             StateManager.State.LockerKG = 20000f;
             StateManager.State.LockerSmartKG = 20000f;
+            StateManager.State.StorageTileKG = 1000f;
             StateManager.State.GasReservoirKG = 1000f;
             StateManager.State.LiquidReservoirKG = 5000f;
             StateManager.State.RationBoxKG = 150f;
@@ -214,6 +215,8 @@ namespace CustomizeBuildings
         public float LockerKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_Title", "CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "Storage", "F0")]
         public float LockerSmartKG { get; set; } = 400000f;
+        [Option("CustomizeBuildings.LOCSTRINGS.StorageTileKG_Title", "CustomizeBuildings.LOCSTRINGS.StorageTileKG_ToolTip", "Storage", "F0")]
+        public float StorageTileKG { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_Title", "CustomizeBuildings.LOCSTRINGS.GasReservoirKG_ToolTip", "Storage", "F0")]
         public float GasReservoirKG { get; set; } = 99000f;
         [Option("CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_Title", "CustomizeBuildings.LOCSTRINGS.LiquidReservoirKG_ToolTip", "Storage", "F0")]
@@ -1234,6 +1237,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LockerSmartKG", "LockerSmartKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_Title", "Smart Storage Locker Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.StorageTileKG", "StorageTileKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.StorageTileKG_Title", "Storage Tile Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.StorageTileKG_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.GasReservoirKG", "GasReservoirKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_Title", "Gas Reservoir Capacity");

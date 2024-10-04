@@ -23,13 +23,13 @@ namespace CustomizeBuildings
             if (def.PrefabID == NoseconeHarvestConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.DrillConeKG);
 
-            else if (def.PrefabID == ModularLaunchpadPortGasConfig.ID || def.PrefabID == ModularLaunchpadPortGasUnloaderConfig.ID)
+            else if (def.PrefabID is ModularLaunchpadPortGasConfig.ID or ModularLaunchpadPortGasUnloaderConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.RocketPortGas);
 
-            else if (def.PrefabID == ModularLaunchpadPortLiquidConfig.ID || def.PrefabID == ModularLaunchpadPortLiquidUnloaderConfig.ID)
+            else if (def.PrefabID is ModularLaunchpadPortLiquidConfig.ID or ModularLaunchpadPortLiquidUnloaderConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.RocketPortLiquid);
 
-            else if (def.PrefabID == ModularLaunchpadPortSolidConfig.ID || def.PrefabID == ModularLaunchpadPortSolidUnloaderConfig.ID)
+            else if (def.PrefabID is ModularLaunchpadPortSolidConfig.ID or ModularLaunchpadPortSolidUnloaderConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.RocketPortSolid);
 
             else if (def.PrefabID == StorageLockerConfig.ID)
@@ -37,6 +37,9 @@ namespace CustomizeBuildings
 
             else if (def.PrefabID == StorageLockerSmartConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.LockerSmartKG);
+
+            else if (def.PrefabID == StorageTileConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.StorageTileKG);
 
             else if (def.PrefabID == RationBoxConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.RationBoxKG);
@@ -65,7 +68,7 @@ namespace CustomizeBuildings
             else if (def.PrefabID == SugarEngineConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.SugarEngineKG); //450f
 
-            else if (def.PrefabID == SteamEngineConfig.ID || def.PrefabID == SteamEngineClusterConfig.ID) //900f, 150f
+            else if (def.PrefabID is SteamEngineConfig.ID or SteamEngineClusterConfig.ID) //900f, 150f
                 setStorage(CustomizeBuildingsState.StateManager.State.SteamEngineKG);
 
             else if (def.PrefabID == KeroseneEngineClusterSmallConfig.ID) //450f
@@ -74,16 +77,16 @@ namespace CustomizeBuildings
             else if (def.PrefabID == HEPEngineConfig.ID) //4000f
                 setRads(CustomizeBuildingsState.StateManager.State.HEPEngineStorage);
 
-            else if (def.PrefabID == LiquidFuelTankClusterConfig.ID || def.PrefabID == LiquidFuelTankClusterConfig.ID) //900f
+            else if (def.PrefabID is LiquidFuelTankClusterConfig.ID or LiquidFuelTankClusterConfig.ID) //900f
                 setStorage(CustomizeBuildingsState.StateManager.State.LiquidFuelTankKG);
 
             else if (def.PrefabID == SmallOxidizerTankConfig.ID) //450f
                 setStorage(CustomizeBuildingsState.StateManager.State.SmallOxidizerTankKG);
 
-            else if (def.PrefabID == OxidizerTankConfig.ID || def.PrefabID == OxidizerTankClusterConfig.ID) //2700f, 900f
+            else if (def.PrefabID is OxidizerTankConfig.ID or OxidizerTankClusterConfig.ID) //2700f, 900f
                 setStorage(CustomizeBuildingsState.StateManager.State.LargeSolidOxidizerTankKG);
 
-            else if (def.PrefabID == OxidizerTankLiquidConfig.ID || def.PrefabID == OxidizerTankLiquidClusterConfig.ID) //2700f, 450f
+            else if (def.PrefabID is OxidizerTankLiquidConfig.ID or OxidizerTankLiquidClusterConfig.ID) //2700f, 450f
                 setStorage(CustomizeBuildingsState.StateManager.State.LiquidOxidizerTankKG);
 
             else if (def.PrefabID == SpiceGrinderConfig.ID)
