@@ -9,7 +9,7 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 7;
+        public int version { get; set; } = 8;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -53,7 +53,7 @@ namespace PipedEverything
 
             // Oxygen
             new PipeConfig(AlgaeHabitatConfig.ID, true, x: 0, y: 1, SimHashes.Water),
-            new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater) { StorageIndex = 1 },
+            new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater) { StorageIndex = 1, StorageCapacity = 800f },
             new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
 
             new PipeConfig(ElectrolyzerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
@@ -181,6 +181,13 @@ namespace PipedEverything
                     state.Configs.Add(new PipeConfig(IceKettleConfig.ID, true, x: 0, y: 1, SimHashes.Ice) { StorageIndex = 1 });
                     state.Configs.Add(new PipeConfig(IceKettleConfig.ID, false, x: 1, y: 0, SimHashes.Water) { StorageIndex = 2 });
                 }
+            }
+
+            if (state.version < 8)
+            {
+                var config = state.Configs.FirstOrDefault(f => f.Id == AlgaeHabitatConfig.ID && f.Filter.Length == 1 && f.Filter[0] == SimHashes.DirtyWater.ToString());
+                if (config != null)
+                    config.StorageCapacity = 800f;
             }
 
             return true;
