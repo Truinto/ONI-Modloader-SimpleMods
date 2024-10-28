@@ -27,7 +27,7 @@ namespace PipedEverything
             this.background = background ?? Color.black;
             this.border = border ?? this.color;
             this.StorageIndex = storageIndex ?? 0;
-            this.StorageCapacity = storageCapacity ?? (type == ConduitType.Gas ? 2f : 200f);
+            this.StorageCapacity = storageCapacity ?? (type == ConduitType.Gas ? 10f : 400f);
         }
     }
 }

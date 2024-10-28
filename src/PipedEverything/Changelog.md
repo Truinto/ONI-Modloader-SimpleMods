@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.17.0] U52-626616-SC (release)
+- increased default liquid capacity to 400kg
+- increased AlgaeHabitat capacity to 800kg, fixing manual emptying
+
 ## [1.0.16.0] U52-626616-SC (release)
 - added Ice Maker
 
