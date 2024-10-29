@@ -98,16 +98,26 @@ namespace PipedEverything
                     config.StorageIndex ??= def.BuildingComplete.GetComponents<Storage>().FindIndex(f => ReferenceEquals(f, config.Input ? complexFabricator.inStorage : complexFabricator.outStorage));
                 }
 
+                // check storage valid
+                config.StorageIndex ??= 0;
+                var storages = def.BuildingComplete.GetComponents<Storage>();
+                if (config.StorageIndex < 0 || storages.Length <= config.StorageIndex)
+                {
+                    Helpers.PrintDialog($"Storage index out of range for {config.Id}");
+                    continue;
+                }
+
+                // get default capacity, if null
+                var storage = def.BuildingComplete.GetComponents<Storage>()[config.StorageIndex ?? 0];
+                config.StorageCapacity ??= storage.capacityKg;
+
                 var portInfo = new PortDisplayInfo(filters.ToArray(), filterTags.ToArray(), conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
                 def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
                 def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
                 def.BuildingPreview.AddOrGet<PortDisplayController>().AssignPort(def.BuildingPreview, portInfo);
 
-                // ensure enough room for new elements and is sealed
-                def.BuildingComplete.AddOrGet<Storage>();
-                var storage = def.BuildingComplete.GetComponents<Storage>()[portInfo.StorageIndex];
-                if (portInfo.StorageCapacity < float.MaxValue)
-                    storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
+                // set capacity and sealed state
+                storage.capacityKg = portInfo.StorageCapacity;
                 if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
                     storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
 
