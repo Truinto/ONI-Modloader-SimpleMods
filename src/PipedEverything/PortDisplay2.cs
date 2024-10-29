@@ -227,6 +227,9 @@ namespace PipedEverything
 
         public bool IsBlocked()
         {
+            if (!IsConnected())
+                return false;
+
             float capacityElement = this.storageCapacity;
             foreach (var item in this.Storage.items)
             {
