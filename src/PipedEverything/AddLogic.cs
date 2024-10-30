@@ -115,7 +115,8 @@ namespace PipedEverything
 
                 // add capacity and set sealed state
                 var storage = storages[portInfo.StorageIndex];
-                storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
+                if (portInfo.StorageCapacity < float.MaxValue) // don't add ridiculous capacities
+                    storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
                 if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
                     storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
 

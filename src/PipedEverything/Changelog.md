@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.20.0] U52-626616-SC (release)
+- fixed infinite capacity
+
 ## [1.0.19.0] U52-626616-SC (release)
 - fixed Polymerizer.Emit ignoring pipes (probably)
 - readded default capacity, as this broke more stuff than it fixed
