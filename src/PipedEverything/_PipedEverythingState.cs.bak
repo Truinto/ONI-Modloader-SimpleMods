@@ -9,7 +9,7 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 7;
+        public int version { get; set; } = 8;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -53,7 +53,7 @@ namespace PipedEverything
 
             // Oxygen
             new PipeConfig(AlgaeHabitatConfig.ID, true, x: 0, y: 1, SimHashes.Water),
-            new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater) { StorageIndex = 1 },
+            new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater) { StorageIndex = 1, StorageCapacity = 800f },
             new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
 
             new PipeConfig(ElectrolyzerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
@@ -74,7 +74,7 @@ namespace PipedEverything
             new PipeConfig(AdvancedResearchCenterConfig.ID, true, x: 0, y: 0, SimHashes.Water),
 
             // ComplexFabricator            
-            new PipeConfig(GourmetCookingStationConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide),
+            new PipeConfig(GourmetCookingStationConfig.ID, false, x: 1, y: 2, SimHashes.CarbonDioxide) { StorageIndex = 0 },
 
             new PipeConfig(MicrobeMusherConfig.ID, true, x: 1, y: 0, SimHashes.Water),
 
@@ -100,7 +100,10 @@ namespace PipedEverything
             new PipeConfig(IceKettleConfig.ID, false, x: 1, y: 0, SimHashes.Water) { StorageIndex = 2 },
 
             new PipeConfig(CampfireConfig.ID, true, x: 0, y: 0, SimHashes.WoodLog),
-            new PipeConfig(CampfireConfig.ID, false, x: 1, y: 1, SimHashes.CarbonDioxide),
+            new PipeConfig(CampfireConfig.ID, false, x: 0, y: 1, SimHashes.CarbonDioxide),
+
+            new PipeConfig(IceMachineConfig.ID, true, x: 0, y: 0, SimHashes.Water) { StorageIndex = 0 },
+            new PipeConfig(IceMachineConfig.ID, false, x: 1, y: 0, SimHashes.Ice, SimHashes.Snow) { StorageIndex = 1 },
 
             new PipeConfig(AirFilterConfig.ID, false, x: 0, y: 0, SimHashes.Clay),
             new PipeConfig(DecontaminationShowerConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater),
@@ -164,9 +167,13 @@ namespace PipedEverything
             if (state.version < 7)
             {
                 foreach (var config in state.Configs)
+                {
                     for (int i = 0; i < config.Filter.Length; i++)
                         if (config.Filter[i] == "Creature")
                             config.Filter[i] = SimHashes.WoodLog.ToString();
+                    if (config.Id == GourmetCookingStationConfig.ID && config.Filter.Contains(SimHashes.CarbonDioxide.ToString()))
+                        config.StorageIndex = 0;
+                }
 
                 if (!state.Configs.Any(a => a.Id == IceKettleConfig.ID))
                 {
@@ -174,6 +181,13 @@ namespace PipedEverything
                     state.Configs.Add(new PipeConfig(IceKettleConfig.ID, true, x: 0, y: 1, SimHashes.Ice) { StorageIndex = 1 });
                     state.Configs.Add(new PipeConfig(IceKettleConfig.ID, false, x: 1, y: 0, SimHashes.Water) { StorageIndex = 2 });
                 }
+            }
+
+            if (state.version < 8)
+            {
+                var config = state.Configs.FirstOrDefault(f => f.Id == AlgaeHabitatConfig.ID && f.Filter.Length == 1 && f.Filter[0] == SimHashes.DirtyWater.ToString());
+                if (config != null)
+                    config.StorageCapacity = 800f;
             }
 
             return true;
