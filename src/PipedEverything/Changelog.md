@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.19.0] U52-626616-SC (release)
+- fixed Polymerizer.Emit ignoring pipes (probably)
+- readded default capacity, as this broke more stuff than it fixed
+- changed RemoveMaxAtmosphere to 100kg, instead of infinite
+
 ## [1.0.18.0] U52-626616-SC (release)
 - removed default capacity; undefined storages stay unchanged
 - fixed building ceasing operation (from v1.0.3) if storage full while pipe disconnected

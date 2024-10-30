@@ -107,17 +107,15 @@ namespace PipedEverything
                     continue;
                 }
 
-                // get default capacity, if null
-                var storage = def.BuildingComplete.GetComponents<Storage>()[config.StorageIndex ?? 0];
-                config.StorageCapacity ??= storage.capacityKg;
-
-                var portInfo = new PortDisplayInfo(filters.ToArray(), filterTags.ToArray(), conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
+                // attach controller
+                var portInfo = new PortDisplayInfo([.. filters], [.. filterTags], conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
                 def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
                 def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
                 def.BuildingPreview.AddOrGet<PortDisplayController>().AssignPort(def.BuildingPreview, portInfo);
 
-                // set capacity and sealed state
-                storage.capacityKg = portInfo.StorageCapacity;
+                // add capacity and set sealed state
+                var storage = storages[portInfo.StorageIndex];
+                storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
                 if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
                     storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
 
@@ -141,15 +139,15 @@ namespace PipedEverything
                 {
                     var electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
                     if (electrolyzer != null)
-                        electrolyzer.maxMass = float.PositiveInfinity;
+                        electrolyzer.maxMass = 100f;
                     var rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
                     if (rustDeoxidizer != null)
-                        rustDeoxidizer.maxMass = float.PositiveInfinity;
+                        rustDeoxidizer.maxMass = 100f;
                     var oilRefinery = def.BuildingComplete.GetComponent<OilRefinery>();
                     if (oilRefinery != null)
                     {
-                        oilRefinery.overpressureMass = float.PositiveInfinity;
-                        oilRefinery.overpressureWarningMass = float.PositiveInfinity;
+                        oilRefinery.overpressureMass = 100f;
+                        oilRefinery.overpressureWarningMass = 80f;
                     }
                 }
 

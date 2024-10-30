@@ -250,6 +250,39 @@ namespace PipedEverything
         }
     }
 
+    [HarmonyPatch]
+    public class Patches_Fixes
+    {
+        /// <summary>
+        /// Make Polymerizer not emit steam, if a port for steam is connected.
+        /// </summary>
+        [HarmonyPatch(typeof(Polymerizer), nameof(Polymerizer.TryEmit), typeof(PrimaryElement))]
+        [HarmonyPrefix]
+        public static bool Fix_Polymerizer(PrimaryElement primary_elem, Polymerizer __instance)
+        {
+            var controller = __instance.GetComponent<PortDisplayController>();
+            if (controller == null)
+                return true;
+
+            var element = primary_elem.ElementID;
+            bool portIsConnected = controller.outputPorts.Any(a => (a.filter.Contains(SimHashes.Void) || a.filter.Contains(element)) && a.IsConnected());
+
+            return !portIsConnected;
+        }
+
+        /// <summary>
+        /// Fix dead lock, where empty chore would only start when the building is 100% full, but building would be disabled (including chores) when storage full.
+        /// Maybe redundant with changes to <see cref="PortDisplay2.IsBlocked"/> checking now if connected.
+        /// </summary>
+        [HarmonyPatch(typeof(AlgaeHabitat.SMInstance), nameof(AlgaeHabitat.SMInstance.NeedsEmptying))]
+        [HarmonyPrefix]
+        public static bool Fix_AlgaeHabitat(AlgaeHabitat.SMInstance __instance, ref bool __result)
+        {
+            __result = __instance.smi.master.pollutedWaterStorage.ExactMassStored() >= 350f;
+            return false;
+        }
+    }
+
     public class Patches_AdvancedGenerators
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
