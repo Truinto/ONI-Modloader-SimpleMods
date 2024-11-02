@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.95.0] U52-626616-SC (release)
+- fixed pipe throughput option not applying to Biobot Builder
+
 ## [1.0.94.0] U52-626616-SC (release)
 - added storage tile kg setting
 

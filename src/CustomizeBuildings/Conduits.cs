@@ -50,10 +50,10 @@ namespace CustomizeBuildings
         public static void Postfix(Game __instance)
         {
             if (CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f)
-                AccessTools.Field(typeof(ConduitFlow), "MaxMass").SetValue(__instance.liquidConduitFlow, CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure);
+                __instance.liquidConduitFlow.MaxMass = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
 
             if (CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f)
-                AccessTools.Field(typeof(ConduitFlow), "MaxMass").SetValue(__instance.gasConduitFlow, CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure);
+                __instance.gasConduitFlow.MaxMass = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
         }
     }
 
@@ -159,10 +159,10 @@ namespace CustomizeBuildings
         public bool Enabled(string id)
         {
             return id is ContactConductivePipeBridgeConfig.ID
-                && (CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f 
+                && (CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f
                     || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f);
         }
-        
+
         public void Edit(BuildingDef def)
         {
             var pipeDef = def.BuildingComplete.GetDef<ContactConductivePipeBridge.Def>();
@@ -178,6 +178,22 @@ namespace CustomizeBuildings
         public void Undo(BuildingDef def)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    [HarmonyPatch(typeof(MorbRoverMaker.Def), nameof(MorbRoverMaker.Def.GetConduitMaxPackageMass))]
+    public class MorbRoverMaker_GetConduitMaxPackageMass
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f
+                    || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f;
+        }
+
+        public static bool Prefix(ref float __result)
+        {
+            __result = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            return false;
         }
     }
 
