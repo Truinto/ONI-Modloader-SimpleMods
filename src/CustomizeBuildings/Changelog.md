@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.96.0] U52-626616-SC (release)
+- removed reapplying skill station after completion
+
 ## [1.0.95.0] U52-626616-SC (release)
 - fixed pipe throughput option not applying to Biobot Builder
 

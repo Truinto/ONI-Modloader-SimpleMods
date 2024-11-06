@@ -333,8 +333,8 @@ namespace CustomizeBuildings
                 minion.ApplyTargetHat();
             }
 
-            // re-apply job, if attribute selected and exp sufficient
-            if (type == SkillType.Attribute && minion.TotalExperienceGained > SkillStationCosts.CostAddAttribute)
+            // (disabled) re-apply job, if attribute selected and exp sufficient
+            if (false && type == SkillType.Attribute && minion.TotalExperienceGained > SkillStationCosts.CostAddAttribute)
             {
                 __instance.assignable.Assign(assignee);
             }
