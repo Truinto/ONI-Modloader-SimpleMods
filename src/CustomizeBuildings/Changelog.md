@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.97.0] U52-626616-SC (release)
+- again reapplying skill station after completion, but added check to have enough skill points
+
 ## [1.0.96.0] U52-626616-SC (release)
 - removed reapplying skill station after completion
 
