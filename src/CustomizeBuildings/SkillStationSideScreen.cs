@@ -220,33 +220,18 @@ namespace CustomizeBuildings
                 type = SkillType.Error;
 
             // check if exp are sufficient
-            switch (type)
+            float exp_cost = type switch
             {
-                case SkillType.Reset:
-                    if (minion.TotalExperienceGained < SkillStationCosts.CostReset)
-                        type = SkillType.MissingExp;
-                    break;
-                case SkillType.RemoveTrait:
-                    if (minion.TotalExperienceGained < SkillStationCosts.CostRemoveTrait)
-                        type = SkillType.MissingExp;
-                    break;
-                case SkillType.GoodTrait:
-                    if (minion.TotalExperienceGained < SkillStationCosts.CostAddTrait)
-                        type = SkillType.MissingExp;
-                    break;
-                case SkillType.BadTrait:
-                    if (minion.TotalExperienceGained < SkillStationCosts.CostBadTrait)
-                        type = SkillType.MissingExp;
-                    break;
-                case SkillType.Attribute:
-                    if (minion.TotalExperienceGained < SkillStationCosts.CostAddAttribute)
-                        type = SkillType.MissingExp;
-                    break;
-                case SkillType.Aptitude:
-                    if (minion.TotalExperienceGained < SkillStationCosts.CostAddAptitude)
-                        type = SkillType.MissingExp;
-                    break;
-            }
+                SkillType.Reset => SkillStationCosts.CostReset,
+                SkillType.RemoveTrait => SkillStationCosts.CostRemoveTrait,
+                SkillType.GoodTrait => SkillStationCosts.CostAddTrait,
+                SkillType.BadTrait => SkillStationCosts.CostBadTrait,
+                SkillType.Attribute => SkillStationCosts.CostAddAttribute,
+                SkillType.Aptitude => SkillStationCosts.CostAddAptitude,
+                _ => 0f
+            };
+            if (minion.TotalExperienceGained < exp_cost)
+                type = SkillType.MissingExp;
 
             // execute
             string tooltip;
@@ -298,10 +283,11 @@ namespace CustomizeBuildings
                     if (attribute != null)
                     {
                         int level = attribute.GetLevel();
-                        attribute.SetLevel(level + 1);
+                        int levelplus = CustomizeBuildingsState.StateManager.State.SkillStationAttributeStep;
+                        attribute.SetLevel(level + levelplus);
                         attribute.Apply(attributes);
                         minion.AddExperience(-SkillStationCosts.CostAddAttribute);
-                        tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), filter.SelectedTag.ProperName(), level, level + 1);
+                        tooltip = string.Format(Strings.Get("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeUp"), minion.GetProperName(), filter.SelectedTag.ProperName(), level, level + levelplus);
                     }
                     else
                     {
@@ -333,10 +319,15 @@ namespace CustomizeBuildings
                 minion.ApplyTargetHat();
             }
 
-            // (disabled) re-apply job, if attribute selected and exp sufficient
-            if (false && type == SkillType.Attribute && minion.TotalExperienceGained > SkillStationCosts.CostAddAttribute)
+            // re-apply job, if attribute selected and exp and skill points sufficient
+            if (type == SkillType.Attribute)
             {
-                __instance.assignable.Assign(assignee);
+                int skillpoints_next = MinionResume.CalculateTotalSkillPointsGained(minion.TotalExperienceGained - SkillStationCosts.CostAddAttribute);
+                int skillpoints_used = minion.GrantedSkillIDs.Count - minion.SkillsMastered;
+                if (minion.TotalExperienceGained > SkillStationCosts.CostAddAttribute && skillpoints_next >= skillpoints_used)
+                {
+                    __instance.assignable.Assign(assignee);
+                }
             }
             else
             {
@@ -434,8 +425,7 @@ namespace CustomizeBuildings
                 if (__instance.GetComponent<KSelectable>().IsSelected)
                     DetailsScreen.Instance.Refresh(__instance.gameObject);
                 Helpers.PrintDebug("SkillStation OnAssign Refresh");
-            }
-            catch (System.Exception)
+            } catch (System.Exception)
             {
                 Helpers.PrintDebug("SkillStation OnAssign wups");
             }
@@ -468,8 +458,7 @@ namespace CustomizeBuildings
                     UnityEngine.Object.Destroy(row);
                 else
                     __instance.pooledRows[row.tag] = row;
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 Helpers.Print(ex.ToString());
             }

@@ -215,7 +215,7 @@ namespace CustomizeBuildings
         public float LockerKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_Title", "CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "Storage", "F0")]
         public float LockerSmartKG { get; set; } = 400000f;
-        [Option("Storage Tile Capacity", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.StorageTileKG_Title", "CustomizeBuildings.LOCSTRINGS.StorageTileKG_ToolTip", "Storage", "F0")]
         public float StorageTileKG { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_Title", "CustomizeBuildings.LOCSTRINGS.GasReservoirKG_ToolTip", "Storage", "F0")]
         public float GasReservoirKG { get; set; } = 99000f;
@@ -533,6 +533,8 @@ namespace CustomizeBuildings
         public float SkillStationCostAddAptitude { get; set; } = 10000f;
         [Option("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_Title", "CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Skill Station", "F0")]
         public float SkillStationCostAddAttribute { get; set; } = 5000f;
+        [Option("Skill Station Attribute Step", "Sets how many attributes are granted through the skill station.", "Skill Station")]
+        public int SkillStationAttributeStep { get; set; } = 1;
         #endregion
 
         #region Tuning
@@ -1157,7 +1159,7 @@ namespace CustomizeBuildings
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostAddAttribute", "SkillStationCostAddAttribute");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_Title", "Skill Station Add Attribute");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1.");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1 step.");
             #endregion
             #region Space Scanner
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerQualityMultiplier", "ScannerQualityMultiplier");
@@ -1237,6 +1239,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.LockerSmartKG", "LockerSmartKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_Title", "Smart Storage Locker Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.LockerSmartKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.StorageTileKG", "StorageTileKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.StorageTileKG_Title", "Storage Tile Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.StorageTileKG_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.GasReservoirKG", "GasReservoirKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.GasReservoirKG_Title", "Gas Reservoir Capacity");

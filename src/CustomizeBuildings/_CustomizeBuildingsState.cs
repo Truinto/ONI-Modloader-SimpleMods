@@ -533,6 +533,8 @@ namespace CustomizeBuildings
         public float SkillStationCostAddAptitude { get; set; } = 10000f;
         [Option("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_Title", "CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Skill Station", "F0")]
         public float SkillStationCostAddAttribute { get; set; } = 5000f;
+        [Option("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeStep_Title", "CustomizeBuildings.LOCSTRINGS.SkillStationAttributeStep_ToolTip", "Skill Station", null)]
+        public int SkillStationAttributeStep { get; set; } = 1;
         #endregion
 
         #region Tuning
@@ -1157,7 +1159,11 @@ namespace CustomizeBuildings
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationCostAddAttribute", "SkillStationCostAddAttribute");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_Title", "Skill Station Add Attribute");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1.");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationCostAddAttribute_ToolTip", "Exp cost to improve an attribute by 1 step.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SkillStationAttributeStep", "SkillStationAttributeStep");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeStep_Title", "Skill Station Attribute Step");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SkillStationAttributeStep_ToolTip", "Sets how many attributes are granted through the skill station.");
             #endregion
             #region Space Scanner
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ScannerQualityMultiplier", "ScannerQualityMultiplier");
