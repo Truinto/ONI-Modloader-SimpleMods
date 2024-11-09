@@ -323,7 +323,7 @@ namespace CustomizeBuildings
             if (type == SkillType.Attribute)
             {
                 int skillpoints_next = MinionResume.CalculateTotalSkillPointsGained(minion.TotalExperienceGained - SkillStationCosts.CostAddAttribute);
-                int skillpoints_used = minion.GrantedSkillIDs.Count - minion.SkillsMastered;
+                int skillpoints_used = minion.SkillsMastered - minion.GrantedSkillIDs.Count;
                 if (minion.TotalExperienceGained > SkillStationCosts.CostAddAttribute && skillpoints_next >= skillpoints_used)
                 {
                     __instance.assignable.Assign(assignee);
