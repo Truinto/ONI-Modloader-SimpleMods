@@ -118,6 +118,20 @@ namespace PipedEverything
             }
         }
 
+        [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.DropExcessIngredients))]
+        [HarmonyPrefix]
+        public static bool ComplexFabricator_DropExcessIngredients(ComplexFabricator __instance)
+        {
+            PortDisplayController controller = __instance.GetComponent<PortDisplayController>();
+            if (controller != null)
+            {
+                if (controller.solidOverlay.Any(inputIsConnected) || controller.liquidOverlay.Any(inputIsConnected) || controller.gasOverlay.Any(inputIsConnected))
+                    return false;
+            }
+            return true;
+            static bool inputIsConnected(PortDisplay2 port) => port.input && port.IsConnected();
+        }
+
         [HarmonyPatch(typeof(BuildingElementEmitter), nameof(BuildingElementEmitter.Sim200ms))]
         [HarmonyPrefix]
         public static bool BuildingElementEmitter_Prefix(float dt, BuildingElementEmitter __instance)
@@ -232,73 +246,6 @@ namespace PipedEverything
                 __result = __instance.IsValidConduitConnection(source_go, portDisplay.type, utility_cell, ref fail_reason);
                 if (!__result)
                     return;
-            }
-        }
-
-        /// <summary>
-        /// Fix crash when a zero mass object is added to a zero mass storage. #66
-        /// </summary>
-        [HarmonyPatch(typeof(GameUtil), nameof(GameUtil.GetFinalTemperature))]
-        [HarmonyPrefix]
-        public static void Fix_FinalTemperature(ref float m1, ref float m2)
-        {
-            if (m1 <= 0f && m2 <= 0f)
-            {
-                m1 = 1f;
-                m2 = 1f;
-            }
-        }
-    }
-
-    [HarmonyPatch]
-    public class Patches_Fixes
-    {
-        /// <summary>
-        /// Make Polymerizer not emit steam, if a port for steam is connected.
-        /// </summary>
-        [HarmonyPatch(typeof(Polymerizer), nameof(Polymerizer.TryEmit), typeof(PrimaryElement))]
-        [HarmonyPrefix]
-        public static bool Fix_Polymerizer(PrimaryElement primary_elem, Polymerizer __instance)
-        {
-            var controller = __instance.GetComponent<PortDisplayController>();
-            if (controller == null)
-                return true;
-
-            var element = primary_elem.ElementID;
-            bool portIsConnected = controller.outputPorts.Any(a => (a.filter.Contains(SimHashes.Void) || a.filter.Contains(element)) && a.IsConnected());
-
-            return !portIsConnected;
-        }
-
-        /// <summary>
-        /// Fix dead lock, where empty chore would only start when the building is 100% full, but building would be disabled (including chores) when storage full.
-        /// Maybe redundant with changes to <see cref="PortDisplay2.IsBlocked"/> checking now if connected.
-        /// </summary>
-        [HarmonyPatch(typeof(AlgaeHabitat.SMInstance), nameof(AlgaeHabitat.SMInstance.NeedsEmptying))]
-        [HarmonyPrefix]
-        public static bool Fix_AlgaeHabitat(AlgaeHabitat.SMInstance __instance, ref bool __result)
-        {
-            __result = __instance.smi.master.pollutedWaterStorage.ExactMassStored() >= 350f;
-            return false;
-        }
-    }
-
-    public class Patches_AdvancedGenerators
-    {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
-        {
-            Helpers.PrintDebug($"Patches_AdvancedGenerators {original}");
-
-            var data = new TranspilerTool(instructions, generator, original);
-
-            data.Seek(typeof(EnergyGenerator.OutputItem), nameof(EnergyGenerator.OutputItem.store));
-            data.InsertAfter(shouldStore);
-
-            return data;
-
-            bool shouldStore(bool storeOutput, KMonoBehaviour __instance, [LocalParameter(IndexByType = 0)] Element element)
-            {
-                return storeOutput || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element) == true;
             }
         }
     }

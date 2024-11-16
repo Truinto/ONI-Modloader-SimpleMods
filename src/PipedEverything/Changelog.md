@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.21.0] U52-626616-SC (release)
+- changed fabricators to not drop ingredients, if at least one input port is connected
+
 ## [1.0.20.0] U52-626616-SC (release)
 - fixed infinite capacity
 
