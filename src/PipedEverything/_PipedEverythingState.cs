@@ -78,8 +78,8 @@ namespace PipedEverything
 
             new PipeConfig(MicrobeMusherConfig.ID, true, x: 1, y: 0, SimHashes.Water),
 
-            new PipeConfig(KilnConfig.ID, true, x: 0, y: 0, SimHashes.Carbon, SimHashes.Clay) { StorageCapacity = 500f },
-            new PipeConfig(KilnConfig.ID, false, x: 1, y: 0, SimHashes.Ceramic, SimHashes.RefinedCarbon) { StorageIndex = 2 },
+            //new PipeConfig(KilnConfig.ID, true, x: 0, y: 0, SimHashes.Carbon, SimHashes.Clay) { StorageCapacity = 500f },
+            //new PipeConfig(KilnConfig.ID, false, x: 1, y: 0, SimHashes.Ceramic, SimHashes.RefinedCarbon) { StorageIndex = 2 },
 
             new PipeConfig(MetalRefineryConfig.ID, true, x: 0, y: 0, SimHashes.AluminumOre, SimHashes.Cuprite, SimHashes.Electrum, SimHashes.IronOre, SimHashes.GoldAmalgam, SimHashes.Cobaltite, SimHashes.FoolsGold, SimHashes.Wolframite, SimHashes.Lime, SimHashes.RefinedCarbon, SimHashes.Iron) { StorageCapacity = 500f },
             new PipeConfig(MetalRefineryConfig.ID, false, x: 1, y: 0, SimHashes.Aluminum, SimHashes.Copper, SimHashes.Iron, SimHashes.Gold, SimHashes.Cobalt, SimHashes.Lead, SimHashes.Tungsten, SimHashes.Steel) { StorageIndex = 2 },
