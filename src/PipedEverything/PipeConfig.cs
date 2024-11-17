@@ -43,11 +43,5 @@ namespace PipedEverything
             this.OffsetY = y;
             this.Filter = filter.Select(s => s.ToString()).ToArray();
         }
-
-        public PipeConfig RemoveAtmosphereCheck()
-        {
-            this.RemoveMaxAtmosphere = true;
-            return this;
-        }
     }
 }

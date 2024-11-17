@@ -45,8 +45,7 @@ namespace PipedEverything
             {
                 Helpers.PrintDebug($"ComplexFabricator.StartWorkingOrder {__exception.Message}");
                 __instance.nextOrderIsWorkable = false;
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
             return null;
         }
     }
@@ -81,6 +80,63 @@ namespace PipedEverything
         {
             __result = __instance.smi.master.pollutedWaterStorage.ExactMassStored() >= 350f;
             return false;
+        }
+    }
+
+    [HarmonyPatch]
+    public static class Fix_Overpressure
+    {
+        [HarmonyPatch(typeof(Electrolyzer), nameof(Electrolyzer.RoomForPressure), MethodType.Getter)]
+        [HarmonyPrefix]
+        public static bool Electrolyzer_RoomForPressure(Electrolyzer __instance, ref bool __result)
+        {
+            var controller = __instance.GetComponent<PortDisplayController>();
+            if (controller == null) return true;
+
+            if (controller.outputPorts.All(a => a.IsConnected()))
+            {
+                __result = true;
+                return false;
+            }
+
+            return true;
+        }
+
+        [HarmonyPatch(typeof(RustDeoxidizer), nameof(RustDeoxidizer.RoomForPressure), MethodType.Getter)]
+        [HarmonyPrefix]
+        public static bool RustDeoxidizer_RoomForPressure(RustDeoxidizer __instance, ref bool __result)
+        {
+            var controller = __instance.GetComponent<PortDisplayController>();
+            if (controller == null) return true;
+
+            if (controller.outputPorts.All(a => a.IsConnected()))
+            {
+                __result = true;
+                return false;
+            }
+
+            return true;
+        }
+
+        [HarmonyPatch(typeof(OilRefinery.StatesInstance), nameof(OilRefinery.StatesInstance.TestAreaPressure))]
+        [HarmonyPrefix]
+        public static bool OilRefinery_TestAreaPressure(OilRefinery.StatesInstance __instance)
+        {
+            var refinery = __instance.smi.master;
+            var controller = refinery.GetComponent<PortDisplayController>();
+            if (controller == null) return true;
+
+            if (controller.outputPorts.All(a => a.IsConnected()))
+            {
+                if (refinery.wasOverPressure)
+                {
+                    refinery.wasOverPressure = false;
+                    __instance.sm.isOverPressure.Set(false, __instance);
+                }
+                return false;
+            }
+
+            return true;
         }
     }
 }

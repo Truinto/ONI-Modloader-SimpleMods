@@ -140,15 +140,15 @@ namespace PipedEverything
                 {
                     var electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
                     if (electrolyzer != null)
-                        electrolyzer.maxMass = 100f;
+                        electrolyzer.maxMass = 100000f;
                     var rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
                     if (rustDeoxidizer != null)
-                        rustDeoxidizer.maxMass = 100f;
+                        rustDeoxidizer.maxMass = 100000f;
                     var oilRefinery = def.BuildingComplete.GetComponent<OilRefinery>();
                     if (oilRefinery != null)
                     {
-                        oilRefinery.overpressureMass = 100f;
-                        oilRefinery.overpressureWarningMass = 80f;
+                        oilRefinery.overpressureMass = 100000f;
+                        oilRefinery.overpressureWarningMass = 99000f;
                     }
                 }
 

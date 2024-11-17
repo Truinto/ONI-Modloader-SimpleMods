@@ -9,7 +9,7 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 8;
+        public int version { get; set; } = 9;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -27,7 +27,7 @@ namespace PipedEverything
             new PipeConfig(MethaneGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.DirtyWater),
 
             // Refinement
-            new PipeConfig(OilRefineryConfig.ID, false, x: -1, y: 3, SimHashes.Methane).RemoveAtmosphereCheck(),
+            new PipeConfig(OilRefineryConfig.ID, false, x: -1, y: 3, SimHashes.Methane),
 
             new PipeConfig(FertilizerMakerConfig.ID, true, x: 0, y: 0, SimHashes.Dirt, SimHashes.Phosphorite),
             new PipeConfig(FertilizerMakerConfig.ID, false, x: 2, y: 1, SimHashes.Fertilizer),
@@ -56,15 +56,15 @@ namespace PipedEverything
             new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 0, SimHashes.DirtyWater) { StorageIndex = 1, StorageCapacity = 800f },
             new PipeConfig(AlgaeHabitatConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
 
-            new PipeConfig(ElectrolyzerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
+            new PipeConfig(ElectrolyzerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen),
             new PipeConfig(ElectrolyzerConfig.ID, false, x: 0, y: 1, SimHashes.Hydrogen),
 
-            new PipeConfig(RustDeoxidizerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
+            new PipeConfig(RustDeoxidizerConfig.ID, false, x: 1, y: 1, SimHashes.Oxygen),
             new PipeConfig(RustDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.ChlorineGas),
             new PipeConfig(RustDeoxidizerConfig.ID, false, x: 1, y: 0, SimHashes.IronOre),
             new PipeConfig(RustDeoxidizerConfig.ID, true, x: 0, y: 0, SimHashes.Rust, SimHashes.Salt) { StorageCapacity = 780f },
 
-            new PipeConfig(MineralDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen).RemoveAtmosphereCheck(),
+            new PipeConfig(MineralDeoxidizerConfig.ID, false, x: 0, y: 1, SimHashes.Oxygen),
             new PipeConfig(MineralDeoxidizerConfig.ID, true, x: 0, y: 0, SimHashes.Algae) { StorageCapacity = 300f },
 
             new PipeConfig(SublimationStationConfig.ID, false, x: 0, y: 0, SimHashes.ContaminatedOxygen),
@@ -152,18 +152,6 @@ namespace PipedEverything
                 state.Configs.RemoveAll(a => a.Id == PolymerizerConfig.ID && a.Filter.FirstOrDefault() == SimHashes.CarbonDioxide.ToString());
             }
 
-            if (state.version < 6)
-            {
-                foreach (var config in state.Configs)
-                {
-                    if (config.Id is OilRefineryConfig.ID
-                        or MineralDeoxidizerConfig.ID
-                        or ElectrolyzerConfig.ID
-                        or RustDeoxidizerConfig.ID)
-                        config.RemoveAtmosphereCheck();
-                }
-            }
-
             if (state.version < 7)
             {
                 foreach (var config in state.Configs)
@@ -188,6 +176,12 @@ namespace PipedEverything
                 var config = state.Configs.FirstOrDefault(f => f.Id == AlgaeHabitatConfig.ID && f.Filter.Length == 1 && f.Filter[0] == SimHashes.DirtyWater.ToString());
                 if (config != null)
                     config.StorageCapacity = 800f;
+            }
+
+            if (state.version < 9)
+            {
+                foreach (var config in state.Configs)
+                    config.RemoveMaxAtmosphere = null;
             }
 
             return true;

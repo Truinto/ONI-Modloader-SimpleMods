@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.22.0] U52-626616-SC (release)
+- removed RemoveMaxAtmosphere from all configs
+- added conditional patch to disable pressure checks, if all output ports are connected
+
 ## [1.0.21.0] U52-626616-SC (release)
 - changed fabricators to not drop ingredients, if at least one input port is connected
 
