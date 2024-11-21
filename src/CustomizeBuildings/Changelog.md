@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.99.0] U53-642443-SC (release)
+- fix for update
+
 ## [1.0.98.0] U52-626616-SC (release)
 - fixed calculation of skill points
 

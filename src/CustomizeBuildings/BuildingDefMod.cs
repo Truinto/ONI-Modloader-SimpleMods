@@ -8,13 +8,14 @@ using System.Text.RegularExpressions;
 using Common;
 using Config;
 using System.Reflection;
+using Shared;
 
 namespace CustomizeBuildings
 {
     [HarmonyPatch(typeof(BuildingConfigManager), nameof(BuildingConfigManager.RegisterBuilding))]
     public class BuildingConfigManager_RegisterBuilding
     {
-        public static void CreateBuildingDefOverride(BuildingDef buildingDef)
+        public static BuildingDef BuildingDefOverride(BuildingDef buildingDef)
         {
             //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
             //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
@@ -24,7 +25,7 @@ namespace CustomizeBuildings
                 CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.Name.StripLinks(), out entry);
 
             if (entry == null)
-                return;
+                return buildingDef;
 
             #region checks
 
@@ -123,6 +124,8 @@ namespace CustomizeBuildings
             // public bool OnePerWorld = false;
 
             #endregion
+
+            return buildingDef;
         }
 
         public static bool Prepare()
@@ -130,19 +133,14 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.BuildingBaseSettingGlobalFlag;
         }
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator, MethodBase original)
         {
-            List<CodeInstruction> code = instr.ToList();
+            var tool = new TranspilerTool(code, generator, original);
 
-            int index = 0;
-            while (code[index++].opcode != OpCodes.Stloc_0) ;
+            tool.Seek(typeof(IBuildingConfig), nameof(IBuildingConfig.CreateBuildingDef));
+            tool.InsertAfter(BuildingDefOverride);
 
-            Debug.Log("BuildingConfigManager_RegisterBuilding patched at index: " + index);
-
-            code.Insert(index++, new CodeInstruction(OpCodes.Ldloc_0));
-            code.Insert(index++, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BuildingConfigManager_RegisterBuilding), nameof(CreateBuildingDefOverride))));
-
-            return code;
+            return tool;
         }
     }
 
@@ -151,9 +149,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            if (mods == null)
-                mods = Assembly.GetExecutingAssembly().GetTypes().Where(w => typeof(IBuildingCompleteMod).IsAssignableFrom(w) && w.IsClass).Select(s => Activator.CreateInstance(s) as IBuildingCompleteMod).ToList();
-
+            mods ??= Assembly.GetExecutingAssembly().GetTypes().Where(w => typeof(IBuildingCompleteMod).IsAssignableFrom(w) && w.IsClass).Select(s => Activator.CreateInstance(s) as IBuildingCompleteMod).ToList();
             Helpers.Print($"mods count={mods.Count}");
             return true;
         }

@@ -136,7 +136,7 @@ namespace CustomizeGeyser
             this.statusItemGuid = this.GetComponent<KSelectable>().RemoveStatusItem(this.workerStatusItem, false);
         }
 
-        public override void OnCompleteWork(Worker worker)
+        public override void OnCompleteWork(WorkerBase worker)
         {
             Helpers.PrintDebug("DEBUG OnCompleteWork");
             this.CancelChore();
