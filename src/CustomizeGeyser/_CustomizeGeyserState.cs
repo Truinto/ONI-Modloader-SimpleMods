@@ -274,6 +274,11 @@ namespace CustomizeGeyser
     {
         public static void LoadStrings()
         {
+
+
+
+
+
             #region Buttons
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "Reset: Custom Default");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Re-installs mod's default settings.");

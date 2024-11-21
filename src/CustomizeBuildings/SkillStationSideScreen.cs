@@ -183,7 +183,7 @@ namespace CustomizeBuildings
             return SkillStationCosts.IsEnabled;
         }
 
-        public static bool Prefix(Worker worker, ResetSkillsStation __instance)
+        public static bool Prefix(WorkerBase worker, ResetSkillsStation __instance)
         {
             // get basic components
             var minion = worker.GetComponent<MinionResume>();

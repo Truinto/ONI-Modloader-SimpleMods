@@ -1,20 +1,17 @@
 //#define LOCALE
+using Config;
+using HarmonyLib;
+using Klei.AI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using HarmonyLib;
-using System.Diagnostics;
-using UnityEngine;
-using System.Reflection;
-using Config;
 using System.IO;
-using Klei.AI;
-using System.Text.RegularExpressions;
-using System.Collections;
+using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Threading;
+using UnityEngine;
 
 namespace Common
 {
@@ -53,8 +50,7 @@ namespace Common
             try
             {
                 action?.Invoke();
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Print($"{action.Method.Name} caused an Exception: {e}");
             }
@@ -260,8 +256,7 @@ namespace Common
             try
             {
                 return str.Substring(start, str.IndexOf(c, start));
-            }
-            catch (Exception)
+            } catch (Exception)
             {
                 return null;
             }
@@ -278,8 +273,7 @@ namespace Common
             {
                 result = (Enum)Enum.Parse(enumType, value);
                 return true;
-            }
-            catch (Exception)
+            } catch (Exception)
             {
                 result = default;
                 return false;
@@ -421,8 +415,8 @@ namespace Common
             line = line.Replace("\\\"", "\"");
             line = line.Replace("\\t", "\t");
             line = line.Replace("\\n", "\n");
-            line = line.Replace("<style=“", "<style=\"");
-            line = line.Replace("”>", "\">");
+            line = line.Replace("<style=ï¿½", "<style=\"");
+            line = line.Replace("ï¿½>", "\">");
             line = line.Replace("<color=^p", "<color=#");
             return line;
         }
@@ -725,8 +719,7 @@ namespace Common
                 }
 
                 return Locale;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Print("Error reading language file: " + e.ToString());
                 return null;
@@ -897,8 +890,7 @@ namespace Common
                 }
                 // all owners shortcut
                 Debug.Log("All owners: " + String.Join(" ", info.Owners.ToArray()));
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
         }
 
         public static void RemoveComponent(GameObject go)
@@ -1016,6 +1008,5 @@ namespace Common
             return Grid.OffsetCell(bottomLeftCell, rotatedOffset);
         }
         #endregion
-
     }
 }
