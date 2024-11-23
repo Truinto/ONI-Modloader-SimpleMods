@@ -172,7 +172,8 @@ namespace CustomizeBuildings
             //storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
 
             var conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
-            conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            if (conduitConsumer != null)
+                conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
         }
 
         public void Undo(BuildingDef def)
