@@ -158,7 +158,11 @@ namespace CustomizeBuildings
                 (id == ElectrolyzerConfig.ID || id == RustDeoxidizerConfig.ID || id == MineralDeoxidizerConfig.ID);
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
         {
             Electrolyzer electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
             if (electrolyzer != null)
@@ -167,11 +171,6 @@ namespace CustomizeBuildings
             RustDeoxidizer rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
             if (rustDeoxidizer != null)
                 rustDeoxidizer.maxMass = CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
         }
     }
 
@@ -183,14 +182,13 @@ namespace CustomizeBuildings
                 || id == GantryConfig.ID && CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
         {
-            def.BuildingComplete.GetComponent<KPrefabID>()?.AddTag(GameTags.Bunker, false);
         }
 
-        public void Undo(BuildingDef def)
+        public void EditGO(BuildingDef def)
         {
-            throw new NotImplementedException();
+            def.BuildingComplete.GetComponent<KPrefabID>()?.AddTag(GameTags.Bunker, false);
         }
     }
 }

@@ -16,15 +16,14 @@ namespace CustomizeBuildings
             return id == HEPBatteryConfig.ID && CustomizeBuildingsState.StateManager.State.RadBattery != 1000f;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
         {
             var HEP = def.BuildingComplete.GetComponent<HighEnergyParticleStorage>();
             HEP.capacity = CustomizeBuildingsState.StateManager.State.RadBattery;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
         }
     }
 }

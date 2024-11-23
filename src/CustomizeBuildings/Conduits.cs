@@ -15,17 +15,16 @@ namespace CustomizeBuildings
             return id == WarpConduitSenderConfig.ID;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
         {
             var sender = def.BuildingComplete.GetComponent<WarpConduitSender>();
             sender.gasStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
             sender.liquidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
             sender.solidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize * 5f;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
         }
     }
 
@@ -163,7 +162,11 @@ namespace CustomizeBuildings
                     || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f);
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
         {
             var pipeDef = def.BuildingComplete.GetDef<ContactConductivePipeBridge.Def>();
             pipeDef.pumpKGRate = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
@@ -174,11 +177,6 @@ namespace CustomizeBuildings
             var conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
             if (conduitConsumer != null)
                 conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
         }
     }
 

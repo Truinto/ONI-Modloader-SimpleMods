@@ -310,16 +310,13 @@ namespace CustomizeBuildings
             return id == NoseconeHarvestConfig.ID && CustomizeBuildingsState.StateManager.State.DrillConeSpeed != 7.5f;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
         {
-            def.BuildingComplete.GetDef<ResourceHarvestModule.Def>().harvestSpeed = CustomizeBuildingsState.StateManager.State.DrillConeSpeed;
         }
 
-        public void Undo(BuildingDef def)
+        public void EditGO(BuildingDef def)
         {
-            // 2700f * 10f / 3600f = 7.5f
-            def.BuildingComplete.GetDef<ResourceHarvestModule.Def>().harvestSpeed
-                = TUNING.ROCKETRY.SOLID_CARGO_BAY_CLUSTER_CAPACITY * TUNING.ROCKETRY.CARGO_CAPACITY_SCALE / new NoseconeHarvestConfig().timeToFill;
+            def.BuildingComplete.GetDef<ResourceHarvestModule.Def>().harvestSpeed = CustomizeBuildingsState.StateManager.State.DrillConeSpeed;
         }
     }
     #endregion
