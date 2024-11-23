@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CustomizeBuildings
 {
-    [HarmonyPatch(typeof(Switch), "OnMinionToggle")]
+    [HarmonyPatch(typeof(Switch), nameof(Switch.OnMinionToggle))]
     internal class Switch_OnMinionToggle
     {
 
@@ -18,18 +18,18 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(Valve), "ChangeFlow")]
+    [HarmonyPatch(typeof(Valve), nameof(Valve.ChangeFlow))]
     internal class Valve_ChangeFlow
     {
 
-        private static bool Prefix(ref Valve __instance, float amount, ref ValveBase ___valveBase, ref float ___desiredFlow)
+        private static bool Prefix(float amount, Valve __instance)
         {
             if (!CustomizeBuildingsState.StateManager.State.NoDupeValves) return true;
 
-            ___desiredFlow = Mathf.Clamp(amount, 0.0f, ___valveBase.MaxFlow);
+            __instance.desiredFlow = Mathf.Clamp(amount, 0.0f, __instance.valveBase.MaxFlow);
 
             KSelectable component = __instance.GetComponent<KSelectable>();
-            component.ToggleStatusItem(Db.Get().BuildingStatusItems.PumpingLiquidOrGas, ___desiredFlow >= 0.0, (object)___valveBase.AccumulatorHandle);
+            component.ToggleStatusItem(Db.Get().BuildingStatusItems.PumpingLiquidOrGas, __instance.desiredFlow >= 0.0, (object)__instance.valveBase.AccumulatorHandle);
 
             __instance.UpdateFlow();
             return false;
@@ -42,8 +42,10 @@ namespace CustomizeBuildings
 
         private static bool Prefix(int targetIdx, Toggleable __instance)
         {
-            if (!CustomizeBuildingsState.StateManager.State.NoDupeToogleBuildings) return true;
-            if (__instance.targets[targetIdx].Value != null) return true;
+            if (!CustomizeBuildingsState.StateManager.State.NoDupeToogleBuildings)
+                return true;
+            if (__instance.targets[targetIdx].Value != null)
+                return true;
 
             try
             {
@@ -54,7 +56,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(Door), "QueueStateChange")]
+    [HarmonyPatch(typeof(Door), nameof(Door.QueueStateChange))]
     public class Door_QueueStateChange
     {
         public static bool Prepare()
@@ -62,23 +64,19 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.NoDupeToogleDoors;
         }
 
-        public static bool Prefix(Door.ControlState nextState, Door __instance, ref Door.ControlState ___requestedState, ref Door.ControlState ___controlState)
+        public static bool Prefix(Door.ControlState nextState, Door __instance)
         {
-            //Debug.Log( nextState.ToString() +" : "+ ___requestedState.ToString() + " : " + ___controlState.ToString() + " : " + __instance.ToString() );
-            //if (!CustomizeBuildingsState.StateManager.State.NoDupeToogleDoors) return true;
+            if (__instance.requestedState == nextState || __instance.controlState == nextState)
+                return true;
 
-            if (___requestedState == nextState || ___controlState == nextState) return true;
-
-            ___requestedState = nextState;
-            ___controlState = nextState;
-            AccessTools.Method(typeof(Door), "RefreshControlState").Invoke(__instance, null);
-            AccessTools.Method(typeof(Door), "OnOperationalChanged").Invoke(__instance, new object[] { null });
+            __instance.requestedState = nextState;
+            __instance.controlState = nextState;
+            __instance.RefreshControlState();
+            __instance.OnOperationalChanged(null);
             __instance.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, false);
             __instance.Open();
             __instance.Close();
             return false;
         }
     }
-
-
 }

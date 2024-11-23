@@ -218,33 +218,53 @@ namespace CustomizeBuildings
     //    }
     //}
 
-    [HarmonyPatch(typeof(IceCooledFanConfig), "CreateBuildingDef")]
-    internal class IceCooledFanPre
+    public class NoDupe_IceCooledFan : IBuildingCompleteMod
     {
-        private static bool Prepare()
+        public bool Enabled(string id)
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
+            return id is IceCooledFanConfig.ID;
         }
 
-        private static void Postfix(BuildingDef __result)
+        public void Edit(BuildingDef def)
         {
-            __result.ExhaustKilowattsWhenActive = -58f;
-            __result.SelfHeatKilowattsWhenActive = -6f;
-            __result.RequiresPowerInput = true;
-            __result.EnergyConsumptionWhenActive = 120f;
+            def.ExhaustKilowattsWhenActive = -58f;
+            def.SelfHeatKilowattsWhenActive = -6f;
+            def.RequiresPowerInput = true;
+            def.EnergyConsumptionWhenActive = 120f;
+
+            def.BuildingComplete.GetComponent<BuildingComplete>().isManuallyOperated = false;
+            def.BuildingComplete.RemoveComponent<IceCooledFan>();
+            def.BuildingComplete.RemoveComponent<IceCooledFanWorkable>();
+
+            var storage = def.BuildingComplete.GetComponent<ManualDeliveryKG>().storage;
+
+            var elementConverter = def.BuildingComplete.AddOrGet<ElementConverter>(); // TODO set storages
+            elementConverter.consumedElements = [new(GameTags.IceOre, 0.01f)];
+            elementConverter.outputElements = [new(0.01f, SimHashes.Water, 278.15f, false, true)];
+            elementConverter.storage = storage;
+
+            var elementDropper = def.BuildingComplete.AddOrGet<ElementDropper>();
+            elementDropper.emitMass = 10f;
+            elementDropper.emitTag = SimHashes.Water.ToTag();
+            elementDropper.emitOffset = new Vector3(0.0f, 1f, 0.0f);
+            elementDropper.storage = storage;
+        }
+
+        public void Undo(BuildingDef def)
+        {
+            throw new NotImplementedException();
         }
     }
 
-
-    [HarmonyPatch(typeof(IceCooledFanConfig), "ConfigureBuildingTemplate")]
-    internal class IceCooledFanMid
+    //[HarmonyPatch(typeof(IceCooledFanConfig), "ConfigureBuildingTemplate")]
+    public static class IceCooledFanMid
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
         }
 
-        private static bool Prefix(GameObject go, Tag prefab_tag)
+        public static bool Prefix(GameObject go, Tag prefab_tag)
         {
             Storage storage1 = go.AddOrGet<Storage>();
             storage1.capacityKg = 50f;
@@ -278,18 +298,17 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(IceCooledFanConfig), "DoPostConfigureComplete")]
-    internal class IceCooledFanPost
+    //[HarmonyPatch(typeof(IceCooledFanConfig), "DoPostConfigureComplete")]
+    public static class IceCooledFanPost
     {
-        private static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
         }
 
-        private static bool Prefix(GameObject go)
+        public static bool Prefix(GameObject go)
         {
             return false;
         }
     }
-
 }
