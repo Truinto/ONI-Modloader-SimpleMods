@@ -114,10 +114,10 @@ namespace CustomizeBuildings
     {
         public static ButtonMenuTextOverride Text = new()
         {
-            Text = Helpers.StringsAddShort("[x] Allow Duplicant to store material", "ReservoirToggleSideScreen_Store1"),
-            CancelText = Helpers.StringsAddShort("[ ] Allow Duplicant to store material", "ReservoirToggleSideScreen_Store2"),
-            ToolTip = Helpers.StringsAddShort("Currently allowed", "ButtonToggleToolTip"),
-            CancelToolTip = Helpers.StringsAddShort("Currently disallowed", "ButtonToggleCancelToolTip")
+            Text = Helpers.StringsGetLocShort("ReservoirToggleSideScreen_Store1"),
+            CancelText = Helpers.StringsGetLocShort("ReservoirToggleSideScreen_Store2"),
+            ToolTip = Helpers.StringsGetLocShort("ButtonToggleToolTip"),
+            CancelToolTip = Helpers.StringsGetLocShort("ButtonToggleCancelToolTip")
         };
 
         public override ButtonMenuTextOverride GetButtonTextOverride() => Text;
@@ -134,10 +134,10 @@ namespace CustomizeBuildings
 
         public static ButtonMenuTextOverride Text = new()
         {
-            Text = Helpers.StringsAddShort("[x] Allow Duplicant to remove material", "ReservoirToggleSideScreen_Remove1"),
-            CancelText = Helpers.StringsAddShort("[ ] Allow Duplicant to remove material", "ReservoirToggleSideScreen_Remove2"),
-            ToolTip = Helpers.StringsAddShort("Currently allowed", "ButtonToggleToolTip"),
-            CancelToolTip = Helpers.StringsAddShort("Currently disallowed", "ButtonToggleCancelToolTip")
+            Text = Helpers.StringsGetLocShort("ReservoirToggleSideScreen_Remove1"),
+            CancelText = Helpers.StringsGetLocShort("ReservoirToggleSideScreen_Remove2"),
+            ToolTip = Helpers.StringsGetLocShort("ButtonToggleToolTip"),
+            CancelToolTip = Helpers.StringsGetLocShort("ButtonToggleCancelToolTip")
         };
 
         public override ButtonMenuTextOverride GetButtonTextOverride() => Text;

@@ -21,7 +21,7 @@ namespace CustomizeBuildings
         public static void Prefix(GameObject go)
         {
             go.AddOrGet<ValveBaseTemperature>();
-            go.AddOrGet<SliderTemperatureSideScreen>().TextLogic = ValveBaseTemperature.TextLogic;
+            go.AddOrGet<SliderTemperatureSideScreen>().TextLogic = Helpers.StringsGetLocShort("ValveTemperatureLogic");
         }
     }
 
@@ -36,14 +36,13 @@ namespace CustomizeBuildings
         public static void Prefix(GameObject go)
         {
             go.AddOrGet<ValveBaseTemperature>();
-            go.AddOrGet<SliderTemperatureSideScreen>().TextLogic = ValveBaseTemperature.TextLogic;
+            go.AddOrGet<SliderTemperatureSideScreen>().TextLogic = Helpers.StringsGetLocShort("ValveTemperatureLogic");
         }
     }
 
     [SerializationConfig(MemberSerialization.OptIn)]
     public class ValveBaseTemperature : ValveBase
     {
-        public static LocString TextLogic; // = Helpers.StringsAddShort("Let material through if:", "ValveTemperatureLogic");
         [MyCmpAdd] private SliderTemperatureSideScreen temperatureSlider;
 
         public override void OnSpawn()

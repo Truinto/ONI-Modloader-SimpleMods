@@ -582,7 +582,7 @@ namespace Common
             Strings.Add(key, text);
         }
 
-        public static LocString StringsAddShort(string text, string key_short)
+        public static LocString StringsAddShort(string key_short, string text)
         {
             key_short = $"{Helpers.ModName}.LOCSTRINGS.{key_short}";
 #if LOCALE
@@ -590,6 +590,12 @@ namespace Common
 #endif
             Strings.Add(key_short, text);
             return new LocString(text, key_short);
+        }
+
+        public static LocString StringsGetLocShort(string key_short)
+        {
+            key_short = $"{Helpers.ModName}.LOCSTRINGS.{key_short}";
+            return new LocString(Strings.Get(key_short), key_short);
         }
 
         [System.Diagnostics.Conditional("LOCALE")]
@@ -632,8 +638,7 @@ namespace Common
         {
             try
             {
-                if (path == null)
-                    path = Helpers.PathLocale;
+                path ??= Helpers.PathLocale;
 
                 if (!File.Exists(path))
                 {
@@ -692,9 +697,9 @@ namespace Common
                     }
                     if (line.StartsWith("msgstr", StringComparison.Ordinal))
                     {
-                        if (quote == null)
+                        if (quote is null or "")
                         {
-                            Print($"Error: quote is null at i={i} j={j}");
+                            Print($"Error: quote is empty at i={i} j={j}");
                             continue;
                         }
                         if (!isTag && (key == null || key == ""))

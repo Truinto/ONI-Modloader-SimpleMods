@@ -13,8 +13,6 @@ namespace CustomizeBuildings
 {
     public class AdvancedConditionerMod : IBuildingCompleteMod
     {
-        public static LocString TextLogic; // = Helpers.StringsAddShort("Output exactly this temperature:", "AdvancedConditionerModLogic");
-
         public bool Enabled(string id)
         {
             return id is AirConditionerConfig.ID or LiquidConditionerConfig.ID
@@ -27,7 +25,7 @@ namespace CustomizeBuildings
 
         public void EditGO(BuildingDef def)
         {
-            def.BuildingComplete.AddOrGet<AirConditionerSliders>().TextLogic = TextLogic;
+            def.BuildingComplete.AddOrGet<AirConditionerSliders>().TextLogic = Helpers.StringsGetLocShort("AdvancedConditionerModLogic");
             def.BuildingComplete.AddOrGet<Storage>().capacityKg = 2f *
                 (def.PrefabID is AirConditionerConfig.ID ?
                 CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure :
@@ -380,8 +378,6 @@ namespace CustomizeBuildings
 
     public class SpaceHeaterSliderMod : IBuildingCompleteMod
     {
-        public static LocString TextLogic; // = Helpers.StringsAddShort("Operates until temperature reached:", "SpaceHeaterSliderLogic");
-
         public bool Enabled(string id)
         {
             return id is SpaceHeaterConfig.ID or LiquidHeaterConfig.ID or "GasRefrigerationUnit" or "LiquidRefrigerationUnit"
@@ -395,7 +391,7 @@ namespace CustomizeBuildings
         public void EditGO(BuildingDef def)
         {
             var slider = def.BuildingComplete.AddOrGet<SpaceHeaterSlider>();
-            slider.TextLogic = TextLogic;
+            slider.TextLogic = Helpers.StringsGetLocShort("SpaceHeaterSliderLogic");
             slider.SetTemperature = def.PrefabID is "GasRefrigerationUnit" or "LiquidRefrigerationUnit" ? 16f : 273.15f + 80f;
         }
     }
