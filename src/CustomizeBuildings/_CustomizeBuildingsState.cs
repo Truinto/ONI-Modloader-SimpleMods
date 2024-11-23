@@ -1658,9 +1658,16 @@ namespace CustomizeBuildings
 
         public static void LoadSideScreenStrings()
         {
-            ValveBaseTemperature.TextLogic = Helpers.StringsAddShort("Let material through if:", "ValveTemperatureLogic");
-            SpaceHeaterSliderMod.TextLogic = Helpers.StringsAddShort("Operates until temperature reached:\n(Above/below does nothing)", "SpaceHeaterSliderLogic");
-            AdvancedConditionerMod.TextLogic = Helpers.StringsAddShort("Output exactly this temperature:\n(MIN temperature does -14°C instead)", "AdvancedConditionerModLogic");
+            Helpers.StringsAddShort("ValveTemperatureLogic", "Let material through if:");
+            Helpers.StringsAddShort("SpaceHeaterSliderLogic", "Operates until temperature reached:\n(Above/below does nothing)");
+            Helpers.StringsAddShort("AdvancedConditionerModLogic", "Output exactly this temperature:\n(MIN temperature does -14°C instead)");
+
+            Helpers.StringsAddShort("ReservoirToggleSideScreen_Store1", "[x] Allow Duplicant to store material");
+            Helpers.StringsAddShort("ReservoirToggleSideScreen_Store2", "[ ] Allow Duplicant to store material");
+            Helpers.StringsAddShort("ReservoirToggleSideScreen_Remove1", "[x] Allow Duplicant to remove material");
+            Helpers.StringsAddShort("ReservoirToggleSideScreen_Remove2", "[ ] Allow Duplicant to remove material");
+            Helpers.StringsAddShort("ButtonToggleToolTip", "Currently allowed");
+            Helpers.StringsAddShort("ButtonToggleCancelToolTip", "Currently disallowed");
         }
 
         public static void SkillStationStrings()

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.102.0] U53-642695-SC (release)
+- fixed some localization not being applied
+
 ## [1.0.101.0] U53-642695-SC (release)
 - fixed loading crash
 
