@@ -21,18 +21,17 @@ namespace CustomizeBuildings
                 && CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
         {
             def.BuildingComplete.AddOrGet<AirConditionerSliders>().TextLogic = TextLogic;
             def.BuildingComplete.AddOrGet<Storage>().capacityKg = 2f *
                 (def.PrefabID is AirConditionerConfig.ID ?
                 CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure :
                 CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure);
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
         }
     }
 
@@ -389,16 +388,15 @@ namespace CustomizeBuildings
                 && CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
         {
             var slider = def.BuildingComplete.AddOrGet<SpaceHeaterSlider>();
             slider.TextLogic = TextLogic;
             slider.SetTemperature = def.PrefabID is "GasRefrigerationUnit" or "LiquidRefrigerationUnit" ? 16f : 273.15f + 80f;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
         }
     }
 

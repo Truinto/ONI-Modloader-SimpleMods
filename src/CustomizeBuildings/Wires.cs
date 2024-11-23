@@ -37,7 +37,11 @@ namespace CustomizeBuildings
                 || id == PowerTransformerSmallConfig.ID && CustomizeBuildingsState.StateManager.State.PowerTransformerSmall != 1000;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
         {
             int cap = def.PrefabID == PowerTransformerConfig.ID
                 ? CustomizeBuildingsState.StateManager.State.PowerTransformerLarge 
@@ -48,11 +52,6 @@ namespace CustomizeBuildings
             var battery = def.BuildingComplete.GetComponent<Battery>();
             battery.capacity = cap;
             battery.chargeWattage = cap;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

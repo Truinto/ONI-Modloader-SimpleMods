@@ -222,23 +222,28 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id is IceCooledFanConfig.ID;
+            return id is IceCooledFanConfig.ID 
+                && CustomizeBuildingsState.StateManager.State.NoDupeGlobal 
+                && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
         {
             def.ExhaustKilowattsWhenActive = -58f;
             def.SelfHeatKilowattsWhenActive = -6f;
             def.RequiresPowerInput = true;
             def.EnergyConsumptionWhenActive = 120f;
+        }
 
+        public void EditGO(BuildingDef def)
+        {
             def.BuildingComplete.GetComponent<BuildingComplete>().isManuallyOperated = false;
             def.BuildingComplete.RemoveComponent<IceCooledFan>();
             def.BuildingComplete.RemoveComponent<IceCooledFanWorkable>();
 
             var storage = def.BuildingComplete.GetComponent<ManualDeliveryKG>().storage;
 
-            var elementConverter = def.BuildingComplete.AddOrGet<ElementConverter>(); // TODO set storages
+            var elementConverter = def.BuildingComplete.AddOrGet<ElementConverter>();
             elementConverter.consumedElements = [new(GameTags.IceOre, 0.01f)];
             elementConverter.outputElements = [new(0.01f, SimHashes.Water, 278.15f, false, true)];
             elementConverter.storage = storage;
@@ -248,67 +253,6 @@ namespace CustomizeBuildings
             elementDropper.emitTag = SimHashes.Water.ToTag();
             elementDropper.emitOffset = new Vector3(0.0f, 1f, 0.0f);
             elementDropper.storage = storage;
-        }
-
-        public void Undo(BuildingDef def)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    //[HarmonyPatch(typeof(IceCooledFanConfig), "ConfigureBuildingTemplate")]
-    public static class IceCooledFanMid
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
-        }
-
-        public static bool Prefix(GameObject go, Tag prefab_tag)
-        {
-            Storage storage1 = go.AddOrGet<Storage>();
-            storage1.capacityKg = 50f;
-            storage1.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
-
-            go.AddOrGet<MassiveHeatSink>();
-            go.AddOrGetDef<PoweredActiveController.Def>();
-
-            go.AddOrGet<MinimumOperatingTemperature>().minimumTemperature = 273.15f;
-            go.AddOrGet<LoopingSounds>();
-            Prioritizable.AddRef(go);
-            ManualDeliveryKG manualDeliveryKg = go.AddComponent<ManualDeliveryKG>();
-            manualDeliveryKg.SetStorage(storage1);
-            manualDeliveryKg.RequestedItemTag = GameTags.IceOre;
-            manualDeliveryKg.capacity = storage1.capacityKg;
-            manualDeliveryKg.refillMass = storage1.capacityKg * 0.2f;
-            manualDeliveryKg.MinimumMass = 10f;
-            manualDeliveryKg.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
-
-            ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
-            elementConverter.consumedElements = new ElementConverter.ConsumedElement[]
-                { new ElementConverter.ConsumedElement(GameTags.IceOre, 0.01f) };
-            elementConverter.outputElements = new ElementConverter.OutputElement[]
-                { new ElementConverter.OutputElement(0.01f, SimHashes.Water, 278.15f, false, true, 0.0f, 0.5f, 1f, byte.MaxValue, 0) };
-
-            ElementDropper elementDropper = go.AddOrGet<ElementDropper>();
-            elementDropper.emitMass = 10f;
-            elementDropper.emitTag = SimHashes.Water.ToTag();
-            elementDropper.emitOffset = new Vector3(0.0f, 1f, 0.0f);
-            return false;
-        }
-    }
-
-    //[HarmonyPatch(typeof(IceCooledFanConfig), "DoPostConfigureComplete")]
-    public static class IceCooledFanPost
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
-        }
-
-        public static bool Prefix(GameObject go)
-        {
-            return false;
         }
     }
 }

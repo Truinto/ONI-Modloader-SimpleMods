@@ -14,14 +14,13 @@ namespace CustomizeBuildings
                 && CustomizeBuildingsState.StateManager.State.NoDupeRanchStation;
         }
 
-        public void Edit(BuildingDef def)
+        public void EditDef(BuildingDef def)
         {
-            Db.Get().effects.Get("Ranched").duration = 60000f;
         }
 
-        public void Undo(BuildingDef def)
+        public void EditGO(BuildingDef def)
         {
-            throw new NotImplementedException();
+            Db.Get().effects.Get("Ranched").duration = 60000f;
         }
     }
 }

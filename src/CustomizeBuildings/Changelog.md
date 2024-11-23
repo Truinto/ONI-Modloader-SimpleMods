@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.101.0] U53-642695-SC (release)
+- fixed loading crash
+
 ## [1.0.100.0] U53-642695-SC (release)
 - fixed some no-dupe crashes
 

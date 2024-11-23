@@ -20,6 +20,17 @@ namespace CustomizeBuildings
             //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
             //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
 
+            foreach (var mod in Mods.Get)
+            {
+                if (mod.Enabled(buildingDef.PrefabID))
+                {
+                    try
+                    {
+                        mod.EditDef(buildingDef);
+                    } catch (Exception e) { Helpers.Print(e.ToString()); }
+                }
+            }
+
             CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out var entry);
             if (entry == null)
                 CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.Name.StripLinks(), out entry);
@@ -147,27 +158,20 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(Assets), nameof(Assets.AddBuildingDef))]
     public class Assets_AddBuildingDef
     {
-        public static bool Prepare()
-        {
-            mods ??= Assembly.GetExecutingAssembly().GetTypes().Where(w => typeof(IBuildingCompleteMod).IsAssignableFrom(w) && w.IsClass).Select(s => Activator.CreateInstance(s) as IBuildingCompleteMod).ToList();
-            Helpers.Print($"mods count={mods.Count}");
-            return true;
-        }
-
-        private static List<IBuildingCompleteMod> mods;
-
         public static void Prefix(BuildingDef def)
         {
             Helpers.Print($"Loading {def.PrefabID}, {def.Name.StripLinks()}");
 
-            foreach (var mod in mods)
+            foreach (var mod in Mods.Get)
             {
                 if (mod.Enabled(def.PrefabID))
+                {
                     try
                     {
-                        mod.Edit(def); // TODO: update all capacity patches to new IBuildingCompleteMod
+                        mod.EditGO(def); // TODO: update all capacity patches to new IBuildingCompleteMod
                     }
                     catch (Exception e) { Helpers.Print(e.ToString()); }
+                }
             }
 
             if (def.PrefabID == RefrigeratorConfig.ID 

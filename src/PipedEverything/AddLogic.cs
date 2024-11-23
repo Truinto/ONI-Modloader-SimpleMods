@@ -95,7 +95,7 @@ namespace PipedEverything
                 var complexFabricator = def.BuildingComplete.GetComponent<ComplexFabricator>();
                 if (complexFabricator != null)
                 {
-                    config.StorageIndex ??= def.BuildingComplete.GetComponents<Storage>().FindIndex(f => ReferenceEquals(f, config.Input ? complexFabricator.inStorage : complexFabricator.outStorage));
+                    config.StorageIndex ??= def.BuildingComplete.GetComponents<Storage>().GetIndex(f => ReferenceEquals(f, config.Input ? complexFabricator.inStorage : complexFabricator.outStorage));
                 }
 
                 // check storage valid
