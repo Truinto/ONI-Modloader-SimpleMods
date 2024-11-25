@@ -237,18 +237,21 @@ namespace CustomizeBuildings
 
         public void EditGO(BuildingDef def)
         {
-            def.BuildingComplete.GetComponent<BuildingComplete>().isManuallyOperated = false;
-            def.BuildingComplete.RemoveComponent<IceCooledFan>();
-            def.BuildingComplete.RemoveComponent<IceCooledFanWorkable>();
+            var go = def.BuildingComplete;
+            go.GetComponent<BuildingComplete>().isManuallyOperated = false;
+            go.RemoveComponent<IceCooledFan>();
+            go.RemoveComponent<IceCooledFanWorkable>();
+            go.AddOrGet<MassiveHeatSink>();
+            go.AddOrGetDef<PoweredActiveController.Def>();
 
-            var storage = def.BuildingComplete.GetComponent<ManualDeliveryKG>().storage;
+            var storage = go.GetComponent<ManualDeliveryKG>().storage;
 
-            var elementConverter = def.BuildingComplete.AddOrGet<ElementConverter>();
+            var elementConverter = go.AddOrGet<ElementConverter>();
             elementConverter.consumedElements = [new(GameTags.IceOre, 0.01f)];
             elementConverter.outputElements = [new(0.01f, SimHashes.Water, 278.15f, false, true)];
             elementConverter.storage = storage;
 
-            var elementDropper = def.BuildingComplete.AddOrGet<ElementDropper>();
+            var elementDropper = go.AddOrGet<ElementDropper>();
             elementDropper.emitMass = 10f;
             elementDropper.emitTag = SimHashes.Water.ToTag();
             elementDropper.emitOffset = new Vector3(0.0f, 1f, 0.0f);

@@ -31,6 +31,9 @@ namespace CustomizeBuildings
                 }
             }
 
+            if (!CustomizeBuildingsState.StateManager.State.BuildingBaseSettingGlobalFlag)
+                return buildingDef;
+
             CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out var entry);
             if (entry == null)
                 CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.Name.StripLinks(), out entry);
@@ -137,11 +140,6 @@ namespace CustomizeBuildings
             #endregion
 
             return buildingDef;
-        }
-
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.BuildingBaseSettingGlobalFlag;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator, MethodBase original)

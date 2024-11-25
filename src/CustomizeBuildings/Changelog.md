@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.103.0] U53-642695-SC (release)
+- fixed no-dupe Ice-E Fan
+
 ## [1.0.102.0] U53-642695-SC (release)
 - fixed some localization not being applied
 
