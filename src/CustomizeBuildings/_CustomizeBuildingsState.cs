@@ -1672,9 +1672,6 @@ namespace CustomizeBuildings
 
         public static void SkillStationStrings()
         {
-            Helpers.StringsTag("CustomizeBuildings.TAG.Narolepsy", "Narcolepsy");
-            Helpers.StringsTag("CustomizeBuildings.TAG.RockCrusher", "RockCrusher");
-
             Helpers.StringsTag("CustomizeBuildings.TAG.Bad_Traits", "Bad Traits");
             Helpers.StringsTag("CustomizeBuildings.TAG.Remove_Traits", "Remove Traits");
             Helpers.StringsTag("CustomizeBuildings.TAG.Good_Traits", "Good Traits");
