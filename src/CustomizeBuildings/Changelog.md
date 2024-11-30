@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.104.0] U53-643502-SC (release)
+- changed skill station to no longer show options that would lead to negative skill points
+- fixed skill station traits not importing trait names
+
 ## [1.0.103.0] U53-642695-SC (release)
 - fixed no-dupe Ice-E Fan
 

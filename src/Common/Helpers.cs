@@ -622,16 +622,16 @@ namespace Common
             key = key.Replace(' ', '_');
             StringsDic[key] = id;
 #endif
-            TagManager.Create(id, proper ?? id);
+            TagManager.Create(id, proper is null or "" ? id : proper);
         }
 
-        public static void StringsTagShort(string id, string short_key, string proper = null)
+        public static void StringsTagShort(string short_key, string id, string proper = null)
         {
 #if LOCALE
             short_key = $"{Helpers.ModName}.TAG.{short_key.Replace(' ', '_')}";
             StringsDic[short_key] = id;
 #endif
-            TagManager.Create(id, proper ?? id);
+            TagManager.Create(id, proper is null or "" ? id : proper);
         }
 
         public static string StringsLoad(string path = null)

@@ -24,6 +24,19 @@ namespace CustomizeBuildings
         internal static float CostBadTrait => CustomizeBuildingsState.StateManager.State.SkillStationCostBadTrait;
         internal static float CostAddAptitude => CustomizeBuildingsState.StateManager.State.SkillStationCostAddAptitude;
         internal static float CostAddAttribute => CustomizeBuildingsState.StateManager.State.SkillStationCostAddAttribute;
+
+        /// <summary>
+        /// Returns true if minion can spend <paramref name="cost"/> without going into negative skill points.
+        /// </summary>
+        internal static bool HasEnoughExp(this MinionResume minion, float cost)
+        {
+            if (cost <= 0f)
+                return true;
+
+            int skillpoints_next = MinionResume.CalculateTotalSkillPointsGained(minion.TotalExperienceGained - cost);
+            int skillpoints_used = minion.SkillsMastered - minion.GrantedSkillIDs.Count;
+            return minion.TotalExperienceGained >= cost && skillpoints_next >= skillpoints_used;
+        }
     }
 
     [HarmonyPatch(typeof(Filterable), nameof(Filterable.GetTagOptions))]
@@ -74,13 +87,12 @@ namespace CustomizeBuildings
 
         public static void Init()
         {
-            //_Attributes_levels = AccessTools.Field(typeof(AttributeLevels), "levels");
-            BadTraits = new HashSet<Tag>(DUPLICANTSTATS.BADTRAITS.Select(x => GetTag(x.id)));
-            GoodTraits = new HashSet<Tag>(DUPLICANTSTATS.GOODTRAITS.Select(x => GetTag(x.id)));
-            GeneTraits = new HashSet<Tag>(DUPLICANTSTATS.GENESHUFFLERTRAITS.Select(x => GetTag(x.id)));
-            CongenitalTraits = new HashSet<Tag>(DUPLICANTSTATS.CONGENITALTRAITS.Select(x => GetTag(x.id)));
-            StressTraits = new HashSet<Tag>(DUPLICANTSTATS.STRESSTRAITS.Select(x => GetTag(x.id)));
-            JoyTraits = new HashSet<Tag>(DUPLICANTSTATS.JOYTRAITS.Select(x => GetTag(x.id)));
+            BadTraits = new HashSet<Tag>(DUPLICANTSTATS.BADTRAITS.Select(GetTag));
+            GoodTraits = new HashSet<Tag>(DUPLICANTSTATS.GOODTRAITS.Select(GetTag));
+            GeneTraits = new HashSet<Tag>(DUPLICANTSTATS.GENESHUFFLERTRAITS.Select(GetTag));
+            CongenitalTraits = new HashSet<Tag>(DUPLICANTSTATS.CONGENITALTRAITS.Select(GetTag));
+            StressTraits = new HashSet<Tag>(DUPLICANTSTATS.STRESSTRAITS.Select(GetTag));
+            JoyTraits = new HashSet<Tag>(DUPLICANTSTATS.JOYTRAITS.Select(GetTag));
             Attributes = new HashSet<Tag>(DUPLICANTSTATS.ALL_ATTRIBUTES.Select(x => GetTag("Attribute " + x)));
             Aptitudes = new HashSet<Tag>(Db.Get().SkillGroups.resources.Select(x => GetTag(x.Id)));
 
@@ -95,19 +107,25 @@ namespace CustomizeBuildings
             Helpers.Print($"Skillstation cleaned {count} duplicates."); //should be zero
         }
 
-#if LOCALE
         private static Tag GetTag(string id)
         {
             Tag result = (Tag)id;
             if (!TagManager.ProperNames.ContainsKey(result))
             {
-                Helpers.StringsTag("CustomizeBuildings.TAG." + id, id);
+                Helpers.StringsTagShort(id, id);
             }
             return result;
         }
-#else
-        private static Tag GetTag(string id) => (Tag)id;
-#endif
+
+        private static Tag GetTag(DUPLICANTSTATS.TraitVal traitVal)
+        {
+            Tag result = (Tag)traitVal.id;
+            if (!TagManager.ProperNames.ContainsKey(result))
+            {
+                Helpers.StringsTagShort(traitVal.id, traitVal.id, (Db.Get().traits?.TryGet(traitVal.id))?.Name);
+            }
+            return result;
+        }
 
         public static string ConvertAptitude(HashedString hashed)
         {
@@ -132,12 +150,11 @@ namespace CustomizeBuildings
                 {
                     var dupeTraits = new HashSet<Tag>(minion.gameObject.GetComponent<Traits>().GetTraitIds().Select(x => (Tag)x));
                     var dupeAptitudes = minion.AptitudeBySkillGroup.Select(x => (Tag)ConvertAptitude(x.Key));
-                    float exp = minion.TotalExperienceGained;
 
                     __result["Bad Traits"] = BadTraits.RemoveRange(dupeTraits);
-                    if (exp >= SkillStationCosts.CostRemoveTrait)
+                    if (minion.HasEnoughExp(SkillStationCosts.CostRemoveTrait))
                         __result["Remove Traits"] = dupeTraits;
-                    if (exp >= SkillStationCosts.CostAddTrait)
+                    if (minion.HasEnoughExp(SkillStationCosts.CostAddTrait))
                     {
                         __result["Good Traits"] = GoodTraits.RemoveRange(dupeTraits);
                         __result["Gene Traits"] = GeneTraits.RemoveRange(dupeTraits);
@@ -145,9 +162,9 @@ namespace CustomizeBuildings
                         __result["Stress Traits"] = StressTraits.RemoveRange(dupeTraits);
                         __result["Joy Traits"] = JoyTraits.RemoveRange(dupeTraits);
                     }
-                    if (exp >= SkillStationCosts.CostAddAptitude)
+                    if (minion.HasEnoughExp(SkillStationCosts.CostAddAptitude))
                         __result["Aptitudes"] = Aptitudes.RemoveRange(dupeAptitudes);
-                    if (exp >= SkillStationCosts.CostAddAttribute)
+                    if (minion.HasEnoughExp(SkillStationCosts.CostAddAttribute))
                         __result["Attributes"] = Attributes;
 #if false
                     Debug.Log("[SkillStation] Good Traits: " + DUPLICANTSTATS.GOODTRAITS.Select(x => x.id).Join());
@@ -322,9 +339,7 @@ namespace CustomizeBuildings
             // re-apply job, if attribute selected and exp and skill points sufficient
             if (type == SkillType.Attribute)
             {
-                int skillpoints_next = MinionResume.CalculateTotalSkillPointsGained(minion.TotalExperienceGained - SkillStationCosts.CostAddAttribute);
-                int skillpoints_used = minion.SkillsMastered - minion.GrantedSkillIDs.Count;
-                if (minion.TotalExperienceGained > SkillStationCosts.CostAddAttribute && skillpoints_next >= skillpoints_used)
+                if (minion.HasEnoughExp(SkillStationCosts.CostAddAttribute))
                 {
                     __instance.assignable.Assign(assignee);
                 }
