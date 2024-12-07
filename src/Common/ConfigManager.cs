@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using Newtonsoft.Json.Serialization;
 using Common;
+using Newtonsoft.Json.Converters;
 
 namespace Config
 {
@@ -39,7 +40,7 @@ namespace Config
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
             ObjectCreationHandling = ObjectCreationHandling.Replace,
-            //Converters = new List<JsonConverter>() { new ApiErrorConverter() },
+            Converters = { new StringEnumConverter() },
             ContractResolver = new TranslationResolver(),
         });
 

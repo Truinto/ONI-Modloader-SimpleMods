@@ -15,7 +15,8 @@ Ubuntu: ~/.config/unity3d/Klei/Oxygen Not Included/mods/PipedEverything.json
 * Filter: string[] | Collection of SimHashes that can pass through the port (tags NOT allowed)
 * Color: Color32 | Port's color scheme like "Color":{"r": 128,"g": 128,"b": 128,"a": 255}, default based on SimHashes
 * StorageIndex: int | Which storage to use, default 0
-* StorageCapacity int | How much of each element can be stored, default 100kg (except gas with 2kg)
+* StorageCapacity: int | How much of each element can be stored, default 100kg (except gas with 2kg)
+* OriginalPort: enum | Set X and Y position of a basic port (e.g. water input of electrolyzer)
 
 ### Source
 [Github](https://github.com/Truinto/ONI-Modloader-SimpleMods) \
@@ -23,3 +24,4 @@ Thanks to Nightinggale for the ground work of this project. [Link](https://githu
 
 ### Notes
 * Filter accepts the string 'Solid', 'Liquid', and 'Gas' for ports; this will process any element of that type
+* OriginalPort makes the config apply to an original port. Usually set it to 'Utility'. Set to 'Extra1' to 'Extra4' for extra ports (e.g. filters/warp). You cannot change its color.

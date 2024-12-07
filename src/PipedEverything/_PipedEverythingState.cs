@@ -50,6 +50,8 @@ namespace PipedEverything
 
             new PipeConfig(WaterPurifierConfig.ID, true, x: 0, y: 0, SimHashes.Sand, SimHashes.Regolith),
             new PipeConfig(WaterPurifierConfig.ID, false, x: 1, y: 0, SimHashes.ToxicSand),
+            new PipeConfig(WaterPurifierConfig.ID, true, x: -1, y: 2, (string[])[]) { OriginalPort = Port.Utility },
+            new PipeConfig(WaterPurifierConfig.ID, false, x: 2, y: 2, (string[])[]) { OriginalPort = Port.Utility },
 
             // Oxygen
             new PipeConfig(AlgaeHabitatConfig.ID, true, x: 0, y: 1, SimHashes.Water),

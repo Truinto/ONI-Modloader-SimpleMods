@@ -23,6 +23,7 @@ namespace PipedEverything
         public int? StorageIndex;
         public float? StorageCapacity;
         public bool? RemoveMaxAtmosphere;
+        public Port? OriginalPort;
 
         public PipeConfig() { }
 
@@ -43,5 +44,14 @@ namespace PipedEverything
             this.OffsetY = y;
             this.Filter = filter.Select(s => s.ToString()).ToArray();
         }
+    }
+
+    public enum Port
+    {
+        Extra1,
+        Extra2,
+        Extra3,
+        Extra4,
+        Utility = 100,
     }
 }
