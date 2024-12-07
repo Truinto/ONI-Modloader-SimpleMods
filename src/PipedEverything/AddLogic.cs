@@ -19,140 +19,175 @@ namespace PipedEverything
 
             foreach (var config in PipedEverythingState.StateManager.State.Configs.Where(w => w.Id == def.PrefabID || w.Id == def.Name.StripLinks()))
             {
-                var conduitType = ConduitType.None;
-                var offset = new CellOffset(config.OffsetX, config.OffsetY);
-                var color = config.Color;
-                var filters = new List<SimHashes>();
-                var filterTags = new List<Tag>();
-                bool isToxic = false;
-                Helpers.PrintDebug($"AddLogic adding {config.Id} {offset}");
-                foreach (var filter in config.Filter)
+                if (config.OriginalPort is null)
+                    TryAddLogicNew(def, config);
+                else
+                    TryAddLogicOriginal(def, config);
+            }
+        }
+
+        private static void TryAddLogicNew(BuildingDef def, PipeConfig config)
+        {
+            var conduitType = ConduitType.None;
+            var offset = new CellOffset(config.OffsetX, config.OffsetY);
+            var color = config.Color;
+            var filters = new List<SimHashes>();
+            var filterTags = new List<Tag>();
+            bool isToxic = false;
+            Helpers.PrintDebug($"AddLogic adding {config.Id} {offset}");
+            foreach (var filter in config.Filter)
+            {
+                if (filter == "Solid")
                 {
-                    if (filter == "Solid")
-                    {
-                        conduitType = ConduitType.Solid;
-                        filters.Add(SimHashes.Void);
-                        continue;
-                    }
-                    if (filter == "Liquid")
-                    {
-                        conduitType = ConduitType.Liquid;
-                        filters.Add(SimHashes.Void);
-                        continue;
-                    }
-                    if (filter == "Gas")
-                    {
-                        conduitType = ConduitType.Gas;
-                        filters.Add(SimHashes.Void);
-                        continue;
-                    }
+                    conduitType = ConduitType.Solid;
+                    filters.Add(SimHashes.Void);
+                    continue;
+                }
+                if (filter == "Liquid")
+                {
+                    conduitType = ConduitType.Liquid;
+                    filters.Add(SimHashes.Void);
+                    continue;
+                }
+                if (filter == "Gas")
+                {
+                    conduitType = ConduitType.Gas;
+                    filters.Add(SimHashes.Void);
+                    continue;
+                }
 
-                    filterTags.Add(filter.ToTagSafe());
+                filterTags.Add(filter.ToTagSafe());
 
-                    var element = filter.ToElement();
+                var element = filter.ToElement();
+                if (element == null || element.id == SimHashes.Void)
+                {
+                    foreach (var v in filter.GetElements())
+                    {
+                        filters.Add(v.id);
+                        element = v;
+                    }
                     if (element == null || element.id == SimHashes.Void)
                     {
-                        foreach (var v in filter.GetElements())
-                        {
-                            filters.Add(v.id);
-                            element = v;
-                        }
-                        if (element == null || element.id == SimHashes.Void)
-                        {
-                            if (conduitType == ConduitType.None)
-                                conduitType = ConduitType.Solid;
-                            if (conduitType == ConduitType.Solid)
-                                continue;
-                            Helpers.PrintDialog($"Unable to resolve: {filter} in {config.Id}");
+                        if (conduitType == ConduitType.None)
+                            conduitType = ConduitType.Solid;
+                        if (conduitType == ConduitType.Solid)
                             continue;
-                        }
-                    }
-
-                    if (conduitType == ConduitType.None)
-                        conduitType = element.IsGas ? ConduitType.Gas : element.IsLiquid ? ConduitType.Liquid : ConduitType.Solid;
-                    else if (conduitType == ConduitType.Gas && !element.IsGas
-                        || conduitType == ConduitType.Liquid && !element.IsLiquid
-                        || conduitType == ConduitType.Solid && !element.IsSolid)
-                    {
-                        Helpers.PrintDialog($"Element does not match conduit type {conduitType}: {filter} in {config.Id}");
+                        Helpers.PrintDialog($"Unable to resolve: {filter} in {config.Id}");
                         continue;
                     }
-
-                    if (element.sublimateId != 0)
-                        isToxic = true;
-
-                    color ??= GetColor(element);
-                    filters.Add(element.id);
                 }
 
                 if (conduitType == ConduitType.None)
+                    conduitType = element.IsGas ? ConduitType.Gas : element.IsLiquid ? ConduitType.Liquid : ConduitType.Solid;
+                else if (conduitType == ConduitType.Gas && !element.IsGas
+                    || conduitType == ConduitType.Liquid && !element.IsLiquid
+                    || conduitType == ConduitType.Solid && !element.IsSolid)
                 {
-                    Helpers.PrintDialog($"No valid filter for {config.Id}");
+                    Helpers.PrintDialog($"Element does not match conduit type {conduitType}: {filter} in {config.Id}");
                     continue;
                 }
 
-                // set default for outputs on ComplexFabricator to 3rd storage (usually)
-                var complexFabricator = def.BuildingComplete.GetComponent<ComplexFabricator>();
-                if (complexFabricator != null)
+                if (element.sublimateId != 0)
+                    isToxic = true;
+
+                color ??= GetColor(element);
+                filters.Add(element.id);
+            }
+
+            if (conduitType == ConduitType.None)
+            {
+                Helpers.PrintDialog($"No valid filter for {config.Id}");
+                return;
+            }
+
+            // set default for outputs on ComplexFabricator to 3rd storage (usually)
+            var complexFabricator = def.BuildingComplete.GetComponent<ComplexFabricator>();
+            if (complexFabricator != null)
+            {
+                config.StorageIndex ??= def.BuildingComplete.GetComponents<Storage>().GetIndex(f => ReferenceEquals(f, config.Input ? complexFabricator.inStorage : complexFabricator.outStorage));
+            }
+
+            // check storage valid
+            config.StorageIndex ??= 0;
+            var storages = def.BuildingComplete.GetComponents<Storage>();
+            if (config.StorageIndex < 0 || storages.Length <= config.StorageIndex)
+            {
+                Helpers.PrintDialog($"Storage index out of range for {config.Id}");
+                return;
+            }
+
+            // attach controller
+            var portInfo = new PortDisplayInfo([.. filters], [.. filterTags], conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
+            def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
+            def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
+            def.BuildingPreview.AddOrGet<PortDisplayController>().AssignPort(def.BuildingPreview, portInfo);
+
+            // add capacity and set sealed state
+            var storage = storages[portInfo.StorageIndex];
+            if (portInfo.StorageCapacity < float.MaxValue) // don't add ridiculous capacities
+                storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
+            if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
+                storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
+
+            // add conduit consumer/dispenser
+            if (config.Input)
+            {
+                if (conduitType != ConduitType.Solid)
+                    def.BuildingComplete.AddComponent<ConduitConsumerOptional>().AssignPort(portInfo);
+                else
+                    def.BuildingComplete.AddComponent<ConduitConsumerOptionalSolid>().AssignPort(portInfo);
+            }
+            else
+            {
+                if (conduitType != ConduitType.Solid)
+                    def.BuildingComplete.AddComponent<ConduitDispenserOptional>().AssignPort(portInfo);
+                else
+                    def.BuildingComplete.AddComponent<ConduitDispenserOptionalSolid>().AssignPort(portInfo);
+            }
+
+            if (config.RemoveMaxAtmosphere == true)
+            {
+                var electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
+                if (electrolyzer != null)
+                    electrolyzer.maxMass = 100000f;
+                var rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
+                if (rustDeoxidizer != null)
+                    rustDeoxidizer.maxMass = 100000f;
+                var oilRefinery = def.BuildingComplete.GetComponent<OilRefinery>();
+                if (oilRefinery != null)
                 {
-                    config.StorageIndex ??= def.BuildingComplete.GetComponents<Storage>().GetIndex(f => ReferenceEquals(f, config.Input ? complexFabricator.inStorage : complexFabricator.outStorage));
+                    oilRefinery.overpressureMass = 100000f;
+                    oilRefinery.overpressureWarningMass = 99000f;
                 }
+            }
 
-                // check storage valid
-                config.StorageIndex ??= 0;
-                var storages = def.BuildingComplete.GetComponents<Storage>();
-                if (config.StorageIndex < 0 || storages.Length <= config.StorageIndex)
-                {
-                    Helpers.PrintDialog($"Storage index out of range for {config.Id}");
-                    continue;
-                }
+            Helpers.PrintDebug($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");
+        }
 
-                // attach controller
-                var portInfo = new PortDisplayInfo([.. filters], [.. filterTags], conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
-                def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
-                def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
-                def.BuildingPreview.AddOrGet<PortDisplayController>().AssignPort(def.BuildingPreview, portInfo);
-
-                // add capacity and set sealed state
-                var storage = storages[portInfo.StorageIndex];
-                if (portInfo.StorageCapacity < float.MaxValue) // don't add ridiculous capacities
-                    storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
-                if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
-                    storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
-
-                // add conduit consumer/dispenser
+        private static void TryAddLogicOriginal(BuildingDef def, PipeConfig config)
+        {
+            if (config.OriginalPort is Port.Utility)
+            {
+                if (config.Input)
+                    def.UtilityInputOffset = new(config.OffsetX, config.OffsetY);
+                else
+                    def.UtilityOutputOffset = new(config.OffsetX, config.OffsetY);
+            }
+            else
+            {
+                int index = (int)config.OriginalPort;
                 if (config.Input)
                 {
-                    if (conduitType != ConduitType.Solid)
-                        def.BuildingComplete.AddComponent<ConduitConsumerOptional>().AssignPort(portInfo);
-                    else
-                        def.BuildingComplete.AddComponent<ConduitConsumerOptionalSolid>().AssignPort(portInfo);
+                    var ports = def.BuildingComplete.GetComponents<ConduitSecondaryInput>();
+                    if (ports.Length > index)
+                        ports[index].portInfo.offset = new(config.OffsetX, config.OffsetY); // this will also mutated preview/construction
                 }
                 else
                 {
-                    if (conduitType != ConduitType.Solid)
-                        def.BuildingComplete.AddComponent<ConduitDispenserOptional>().AssignPort(portInfo);
-                    else
-                        def.BuildingComplete.AddComponent<ConduitDispenserOptionalSolid>().AssignPort(portInfo);
+                    var ports = def.BuildingComplete.GetComponents<ConduitSecondaryOutput>();
+                    if (ports.Length > index)
+                        ports[index].portInfo.offset = new(config.OffsetX, config.OffsetY); // this will also mutated preview/construction
                 }
-
-                if (config.RemoveMaxAtmosphere == true)
-                {
-                    var electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
-                    if (electrolyzer != null)
-                        electrolyzer.maxMass = 100000f;
-                    var rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
-                    if (rustDeoxidizer != null)
-                        rustDeoxidizer.maxMass = 100000f;
-                    var oilRefinery = def.BuildingComplete.GetComponent<OilRefinery>();
-                    if (oilRefinery != null)
-                    {
-                        oilRefinery.overpressureMass = 100000f;
-                        oilRefinery.overpressureWarningMass = 99000f;
-                    }
-                }
-
-                Helpers.PrintDebug($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");
             }
         }
 

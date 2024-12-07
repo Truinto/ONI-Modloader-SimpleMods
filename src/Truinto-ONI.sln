@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedStorage", "SharedStor
 		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityMod", "@Shared\UnityMod\UnityMod.csproj", "{B8DFDD12-F12F-4A3B-9CA8-49DC242B4B89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityMod-net472", "@Shared\UnityMod\UnityMod-net472.csproj", "{583E1939-680C-4D14-AE60-8BB262B9BD10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,10 +125,10 @@ Global
 		{D87113BB-CFFD-4518-950B-5475A4DA06AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D87113BB-CFFD-4518-950B-5475A4DA06AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D87113BB-CFFD-4518-950B-5475A4DA06AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8DFDD12-F12F-4A3B-9CA8-49DC242B4B89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8DFDD12-F12F-4A3B-9CA8-49DC242B4B89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8DFDD12-F12F-4A3B-9CA8-49DC242B4B89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8DFDD12-F12F-4A3B-9CA8-49DC242B4B89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{583E1939-680C-4D14-AE60-8BB262B9BD10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{583E1939-680C-4D14-AE60-8BB262B9BD10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{583E1939-680C-4D14-AE60-8BB262B9BD10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{583E1939-680C-4D14-AE60-8BB262B9BD10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
