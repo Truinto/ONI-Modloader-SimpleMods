@@ -47,13 +47,17 @@ namespace CustomizeBuildings
         public static void Prefix(ref float ___max_carry_weight)
         {
             ___max_carry_weight = CustomizeBuildingsState.StateManager.State.AutoSweeperCapacity;
-            //__instance.pickupRange = 12;
         }
     }
 
     [HarmonyPatch]
     public class SolidTransferArmConfig_Patches
     {
+        public static bool Prepare(MethodBase original)
+        {
+            return CustomizeBuildingsState.StateManager.State.AutoSweeperRange > 4;
+        }
+
         [HarmonyPatch(typeof(SolidTransferArmConfig), nameof(SolidTransferArmConfig.DoPostConfigureComplete))]
         [HarmonyPostfix]
         private static void Postfix1(GameObject go)
@@ -105,7 +109,7 @@ namespace CustomizeBuildings
             }
         }
 
-        public static Tag[] BuildingsIgnoreLOS = new Tag[] { FarmTileConfig.ID, HydroponicFarmConfig.ID };
+        public static Tag[] BuildingsIgnoreLOS = [FarmTileConfig.ID, HydroponicFarmConfig.ID];
         public static bool BlockingCbx(int cell)
         {
             if (!Grid.Solid[cell])
