@@ -97,12 +97,13 @@ namespace CustomizeRecipe
                 return;
             }
 
-            // check ID formatting
-            if (!Assets.PrefabsByTag.Any(a => setting.Id.StartsWithIgnoreCase(a.Key.Name) && a.Value.GetComponent<BuildingHP>() != null))
-            {
-                Config.PostBootDialog.ErrorList.Add($"Recipe ID '{setting.Id}' is invalid. Must start with building + underscore.");
-                return;
-            }
+            // broken after bionic update
+            //// check ID formatting
+            //if (!Assets.PrefabsByTag.Any(a => setting.Id.StartsWithIgnoreCase(a.Key.Name) && a.Value.GetComponent<BuildingHP>() != null))
+            //{
+            //    Config.PostBootDialog.ErrorList.Add($"Recipe ID '{setting.Id}' is invalid. Must start with building + underscore.");
+            //    return;
+            //}
 
             // try to find recipe, if non found try to generate a new one
             var recipe = ComplexRecipeManager.Get().recipes.Find(f => f.id == setting.Id);

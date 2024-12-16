@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.4.2] U54-646843-SCR (release)
+- removed ID safeguard
+
 ## [1.0.4.1] U52-626616-SC (release)
 - fix for buildings with underscore #68
 
