@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 56;
+        public int version { get; set; } = 57;
 
         #region $Reset Button
         [JsonIgnore]
@@ -40,7 +40,12 @@ namespace CustomizeBuildings
             StateManager.State.FridgeKG = 100f;
             StateManager.State.CritterFeederKG = 2000f;
             StateManager.State.FishFeederKG = 200f;
-            StateManager.State.CanisterFillerKG = 10f;
+            StateManager.State.BottleFillerKG = 200f;
+            StateManager.State.CanisterFillerKG = 25f;
+            StateManager.State.BottleEmptierKG = 200f;
+            StateManager.State.CanisterEmptierKG = 200f;
+            StateManager.State.BottleEmptierConduitKG = 200f;
+            StateManager.State.CanisterEmptierConduitKG = 200f;
             StateManager.State.ConveyorLoaderKG = 1000f;
             StateManager.State.ConveyorReceptacleKG = 100f;
             StateManager.State.IUserControlledMax = 20000f;
@@ -229,8 +234,18 @@ namespace CustomizeBuildings
         public float CritterFeederKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.FishFeederKG_Title", "CustomizeBuildings.LOCSTRINGS.FishFeederKG_ToolTip", "Storage", "F0")]
         public float FishFeederKG { get; set; } = 400000f;
+        [Option("CustomizeBuildings.LOCSTRINGS.BottleFillerKG_Title", "CustomizeBuildings.LOCSTRINGS.BottleFillerKG_ToolTip", "Storage", "F0")]
+        public float BottleFillerKG { get; set; } = 200f;
         [Option("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_Title", "CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_ToolTip", "Storage", "F0")]
-        public float CanisterFillerKG { get; set; } = 400000f;
+        public float CanisterFillerKG { get; set; } = 25f;
+        [Option("CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_Title", "CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_ToolTip", "Storage", "F0")]
+        public float BottleEmptierKG { get; set; } = 200f;
+        [Option("CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_Title", "CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_ToolTip", "Storage", "F0")]
+        public float CanisterEmptierKG { get; set; } = 200f;
+        [Option("CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_Title", "CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_ToolTip", "Storage", "F0")]
+        public float BottleEmptierConduitKG { get; set; } = 200f;
+        [Option("CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_Title", "CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_ToolTip", "Storage", "F0")]
+        public float CanisterEmptierConduitKG { get; set; } = 200f;
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_ToolTip", "Storage", "F0")]
         public float ConveyorLoaderKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleKG_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleKG_ToolTip", "Storage", "F0")]
@@ -1272,9 +1287,29 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FishFeederKG_Title", "Fish Feeder Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FishFeederKG_ToolTip", "");
 
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BottleFillerKG", "BottleFillerKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleFillerKG_Title", "Bottle Filler Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleFillerKG_ToolTip", "");
+
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CanisterFillerKG", "CanisterFillerKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_Title", "Canister Filler Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BottleEmptierKG", "BottleEmptierKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_Title", "Bottle Emptier Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CanisterEmptierKG", "CanisterEmptierKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_Title", "Canister Emptier Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BottleEmptierConduitKG", "BottleEmptierConduitKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_Title", "Bottle Emptier Conduit Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CanisterEmptierConduitKG", "CanisterEmptierConduitKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_Title", "Canister Emptier Conduit Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderKG", "ConveyorLoaderKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_Title", "Conveyor Loader Capacity");

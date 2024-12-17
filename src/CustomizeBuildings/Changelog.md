@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.105.0] U54-646843-SCR (release)
+- applied conduit settings to conduit bottlers
+- added settings for all the bottler storages
+
 ## [1.0.104.0] U53-643502-SC (release)
 - changed skill station to no longer show options that would lead to negative skill points
 - fixed skill station traits not importing trait names

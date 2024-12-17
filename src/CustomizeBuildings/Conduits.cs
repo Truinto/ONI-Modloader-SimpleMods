@@ -8,6 +8,34 @@ using System;
 
 namespace CustomizeBuildings
 {
+    public class Bottler_Patch : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            if (id is BottleEmptierConduitLiquidConfig.ID && CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f)
+                return true;
+            if (id is BottleEmptierConduitGasConfig.ID && CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f)
+                return true;
+            return false;
+        }
+
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
+        {
+            var emptier = def.BuildingComplete.GetComponent<BottleEmptier>();
+            if (emptier != null)
+            {
+                emptier.emptyRate =
+                    emptier.isGasEmptier
+                    ? CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent
+                    : CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            }
+        }
+    }
+
     public class WarpConduitSender_Patch : IBuildingCompleteMod
     {
         public bool Enabled(string id)

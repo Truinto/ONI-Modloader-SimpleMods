@@ -53,8 +53,23 @@ namespace CustomizeBuildings
             else if (def.PrefabID == FishFeederConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.FishFeederKG);
 
+            else if (def.PrefabID == LiquidBottlerConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.BottleFillerKG); //200f
+
             else if (def.PrefabID == GasBottlerConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.CanisterFillerKG);
+                setStorage(CustomizeBuildingsState.StateManager.State.CanisterFillerKG); //25f
+
+            else if (def.PrefabID == BottleEmptierConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.BottleEmptierKG); //200f
+
+            else if (def.PrefabID == BottleEmptierGasConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.CanisterEmptierKG); //200f
+
+            else if (def.PrefabID == BottleEmptierConduitLiquidConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.BottleEmptierConduitKG); //200f
+
+            else if (def.PrefabID == BottleEmptierConduitGasConfig.ID)
+                setStorage(CustomizeBuildingsState.StateManager.State.CanisterEmptierConduitKG); //200f
 
             else if (def.PrefabID == SolidConduitInboxConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.ConveyorLoaderKG);
@@ -125,6 +140,9 @@ namespace CustomizeBuildings
 
                 foreach (var consumer in def.BuildingComplete.GetComponents<OxidizerTank>())
                     consumer.maxFillMass = value;
+
+                foreach (var consumer in def.BuildingComplete.GetComponents<Bottler>())
+                    consumer.userMaxCapacity = value;
             }
 
             void setRads(float value)
