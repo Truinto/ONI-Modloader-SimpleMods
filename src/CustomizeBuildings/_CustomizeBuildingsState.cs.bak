@@ -40,7 +40,12 @@ namespace CustomizeBuildings
             StateManager.State.FridgeKG = 100f;
             StateManager.State.CritterFeederKG = 2000f;
             StateManager.State.FishFeederKG = 200f;
-            StateManager.State.CanisterFillerKG = 10f;
+            StateManager.State.BottleFillerKG = 200f;
+            StateManager.State.CanisterFillerKG = 25f;
+            StateManager.State.BottleEmptierKG = 200f;
+            StateManager.State.CanisterEmptierKG = 200f;
+            StateManager.State.BottleEmptierConduitKG = 200f;
+            StateManager.State.CanisterEmptierConduitKG = 200f;
             StateManager.State.ConveyorLoaderKG = 1000f;
             StateManager.State.ConveyorReceptacleKG = 100f;
             StateManager.State.IUserControlledMax = 20000f;
@@ -229,8 +234,18 @@ namespace CustomizeBuildings
         public float CritterFeederKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.FishFeederKG_Title", "CustomizeBuildings.LOCSTRINGS.FishFeederKG_ToolTip", "Storage", "F0")]
         public float FishFeederKG { get; set; } = 400000f;
+        [Option("Bottle Filler Capacity", "", "Storage", "F0")]
+        public float BottleFillerKG { get; set; } = 200f;
         [Option("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_Title", "CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_ToolTip", "Storage", "F0")]
-        public float CanisterFillerKG { get; set; } = 400000f;
+        public float CanisterFillerKG { get; set; } = 200f;
+        [Option("Bottle Emptier Capacity", "", "Storage", "F0")]
+        public float BottleEmptierKG { get; set; } = 200f;
+        [Option("Canister Emptier Capacity", "", "Storage", "F0")]
+        public float CanisterEmptierKG { get; set; } = 200f;
+        [Option("Bottle Emptier Conduit Capacity", "", "Storage", "F0")]
+        public float BottleEmptierConduitKG { get; set; } = 200f;
+        [Option("Canister Emptier Conduit Capacity", "", "Storage", "F0")]
+        public float CanisterEmptierConduitKG { get; set; } = 200f;
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_ToolTip", "Storage", "F0")]
         public float ConveyorLoaderKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleKG_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorReceptacleKG_ToolTip", "Storage", "F0")]
@@ -1672,9 +1687,6 @@ namespace CustomizeBuildings
 
         public static void SkillStationStrings()
         {
-            Helpers.StringsTag("CustomizeBuildings.TAG.Narolepsy", "Narcolepsy");
-            Helpers.StringsTag("CustomizeBuildings.TAG.RockCrusher", "RockCrusher");
-
             Helpers.StringsTag("CustomizeBuildings.TAG.Bad_Traits", "Bad Traits");
             Helpers.StringsTag("CustomizeBuildings.TAG.Remove_Traits", "Remove Traits");
             Helpers.StringsTag("CustomizeBuildings.TAG.Good_Traits", "Good Traits");
