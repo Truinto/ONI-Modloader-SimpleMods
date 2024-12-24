@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.19.0] U54-647408-SCR (release)
+- updated for dlc
+
 ## [1.0.18.0] U52-622509-SC (release)
 - updated for frosty dlc
 

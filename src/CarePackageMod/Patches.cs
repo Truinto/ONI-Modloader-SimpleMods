@@ -33,9 +33,10 @@ namespace CarePackageMod
     [HarmonyPatch(typeof(MinionStartingStats), nameof(MinionStartingStats.GenerateTraits))]
     public class Reshuffle3
     {
-        public static void Postfix(ref int __result)
+        public static void Postfix(ref int __result, MinionStartingStats __instance)
         {
-            __result += CarePackageState.StateManager.State.attributeBonusChance;
+            if (__instance.personality.model != BionicMinionConfig.MODEL)
+                __result += CarePackageState.StateManager.State.attributeBonusChance;
         }
     }
 
@@ -62,7 +63,7 @@ namespace CarePackageMod
 
             return tool;
 
-            int patch(int minInclusive, int maxExclusive)
+            static int patch(int minInclusive, int maxExclusive)
             {
                 return UnityEngine.Random.Range(MinInterests, MaxInterests);
             }
