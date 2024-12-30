@@ -1,0 +1,459 @@
+{
+  "version": 33,
+  "PlantSettings": [
+    {
+      "id": "PrickleFlower",
+      "irrigation": {
+        "SquishyWater": 5.0
+      }
+    },
+    {
+      "id": "BasicSingleHarvestPlant",
+      "irrigation": {
+        "Dirt": 5.0
+      },
+      "temperatures": [
+        218.15,
+        278.15,
+        308.15,
+        398.15
+      ]
+    },
+    {
+      "id": "MushroomPlant",
+      "fruitId": "Mushroom",
+      "fruit_grow_time": 3600.0,
+      "fruit_amount": 1,
+      "irrigation": {},
+      "input_element": "CarbonDioxide",
+      "input_rate": 0.001
+    },
+    {
+      "id": "SeaLettuce",
+      "irrigation": {
+        "SaltWater": 5.0
+      }
+    },
+    {
+      "id": "BeanPlant",
+      "irrigation": {
+        "Ethanol": 5.0
+      }
+    },
+    {
+      "id": "SpiceVine",
+      "irrigation": {
+        "DirtyWater": 15.0,
+        "Phosphorite": 1.0
+      }
+    },
+    {
+      "id": "ForestTree",
+      "irrigation": {
+        "DirtyWater": 62.5,
+        "Dirt": 10.0
+      }
+    },
+    {
+      "id": "ColdBreather",
+      "irrigation": {},
+      "radiation": 0.0,
+      "radiation_radius": 6
+    },
+    {
+      "id": "GasGrass",
+      "illumination": 100.0
+    },
+    {
+      "id": "PrickleGrass",
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide",
+        "ChlorineGas"
+      ],
+      "input_element": "ChlorineGas",
+      "input_rate": 0.01
+    },
+    {
+      "id": "LeafyPlant",
+      "fruitId": "placeholder1",
+      "fruit_grow_time": 2400.0,
+      "irrigation": {
+        "Water": 10.0
+      }
+    },
+    {
+      "id": "CactusPlant",
+      "safe_elements": [
+        "Oxygen",
+        "ContaminatedOxygen",
+        "CarbonDioxide",
+        "Methane"
+      ],
+      "pressures": [
+        0.0,
+        0.0,
+        2.0,
+        30.0
+      ],
+      "input_element": "Methane",
+      "input_rate": 0.01,
+      "output_element": "CarbonDioxide",
+      "output_rate": 0.01
+    },
+    {
+      "id": "EvilFlower",
+      "safe_elements": [
+        "CarbonDioxide",
+        "ChlorineGas"
+      ],
+      "pressures": [
+        0.0,
+        0.0,
+        5.0
+      ],
+      "output_element": "ChlorineGas",
+      "output_rate": 0.012
+    }
+  ],
+  "SpecialCropSettings": {
+    "placeholder1": {
+      "Algae": 40,
+      "Clay": 20
+    }
+  },
+  "print_mutations": false,
+  "MutationSettings": [
+    {
+      "id": "moderatelyLoose",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Easygoing",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Easygoing",
+          "AttributeId": "WiltTempRangeMod",
+          "Value": 0.5,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Easygoing",
+          "AttributeId": "YieldAmount",
+          "Value": -0.25,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Easygoing",
+          "AttributeId": "FertilizerUsageMod",
+          "Value": -0.5,
+          "IsMultiplier": true
+        }
+      ]
+    },
+    {
+      "id": "moderatelyTight",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Specialized",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Specialized",
+          "AttributeId": "WiltTempRangeMod",
+          "Value": -0.5,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Specialized",
+          "AttributeId": "YieldAmount",
+          "Value": 0.5,
+          "IsMultiplier": true
+        }
+      ]
+    },
+    {
+      "id": "extremelyTight",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Superspecialized",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Superspecialized",
+          "AttributeId": "WiltTempRangeMod",
+          "Value": -0.8,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Superspecialized",
+          "AttributeId": "YieldAmount",
+          "Value": 1.0,
+          "IsMultiplier": true
+        }
+      ],
+      "bGFXAnim": "mutate_glow_fx_kanim"
+    },
+    {
+      "id": "bonusLice",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Licey",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Licey",
+          "AttributeId": "FertilizerUsageMod",
+          "Value": 0.25,
+          "IsMultiplier": true
+        }
+      ],
+      "bonusCropID": "BasicPlantFood",
+      "bonusCropAmount": 1.0,
+      "symbolOverrideInfo": [
+        "snapTo_mutate1;mutate_snaps_kanim;meal_lice_mutate1",
+        "snapTo_mutate2;mutate_snaps_kanim;meal_lice_mutate2"
+      ],
+      "additionalSoundEvents": [
+        "event:/expansion1/expansion1_Plants/Mutations/Plant_mutation_MealLice"
+      ]
+    },
+    {
+      "id": "sunnySpeed",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Leafy",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Leafy",
+          "AttributeId": "MinLightLux",
+          "Value": 1000.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Leafy",
+          "AttributeId": "MaturityMax",
+          "Value": -0.5,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Leafy",
+          "AttributeId": "FertilizerUsageMod",
+          "Value": 0.25,
+          "IsMultiplier": true
+        }
+      ],
+      "symbolOverrideInfo": [
+        "snapTo_mutate1;mutate_snaps_kanim;leaf_mutate1",
+        "snapTo_mutate2;mutate_snaps_kanim;leaf_mutate2"
+      ],
+      "additionalSoundEvents": [
+        "event:/expansion1/expansion1_Plants/Mutations/Plant_mutation_Leaf"
+      ]
+    },
+    {
+      "id": "slowBurn",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Wildish",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Wildish",
+          "AttributeId": "FertilizerUsageMod",
+          "Value": -0.9,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Wildish",
+          "AttributeId": "MaturityMax",
+          "Value": 3.5,
+          "IsMultiplier": true
+        }
+      ]
+    },
+    {
+      "id": "blooms",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Blooming",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Blooming",
+          "AttributeId": "Decor",
+          "Value": 20.0,
+          "IsMultiplier": false
+        }
+      ],
+      "symbolOverrideInfo": [
+        "snapTo_mutate1;mutate_snaps_kanim;blossom_mutate1",
+        "snapTo_mutate2;mutate_snaps_kanim;blossom_mutate2"
+      ],
+      "additionalSoundEvents": [
+        "event:/expansion1/expansion1_Plants/Mutations/Plant_mutation_PrickleFlower"
+      ]
+    },
+    {
+      "id": "loadedWithFruit",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Bountiful",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Bountiful",
+          "AttributeId": "YieldAmount",
+          "Value": 1.0,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Bountiful",
+          "AttributeId": "HarvestTime",
+          "Value": 4.0,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Bountiful",
+          "AttributeId": "MinLightLux",
+          "Value": 200.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Bountiful",
+          "AttributeId": "FertilizerUsageMod",
+          "Value": 0.2,
+          "IsMultiplier": true
+        }
+      ],
+      "symbolScaleTargets": [
+        "swap_crop01",
+        "swap_crop02"
+      ],
+      "symbolScales": [
+        1.3,
+        1.3
+      ]
+    },
+    {
+      "id": "rottenHeaps",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Exuberant",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Exuberant",
+          "AttributeId": "MaturityMax",
+          "Value": -0.75,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Exuberant",
+          "AttributeId": "FertilizerUsageMod",
+          "Value": 0.5,
+          "IsMultiplier": true
+        }
+      ],
+      "bonusCropID": "RotPile",
+      "bonusCropAmount": 4.0,
+      "harvestDiseaseID": 0,
+      "harvestDiseaseAmount": 10000,
+      "forcePrefersDarkness": true,
+      "symbolTintTargets": [
+        "swap_crop01",
+        "swap_crop02"
+      ],
+      "fGFXAnim": "mutate_stink_fx_kanim"
+    },
+    {
+      "id": "heavyFruit",
+      "originalMutation": false,
+      "restrictedPrefabIDs": [],
+      "requiredPrefabIDs": [],
+      "attributes": [
+        {
+          "Description": "Juicy Fruits",
+          "AttributeId": "MinRadiationThreshold",
+          "Value": 250.0,
+          "IsMultiplier": false
+        },
+        {
+          "Description": "Juicy Fruits",
+          "AttributeId": "FertilizerUsageMod",
+          "Value": 0.25,
+          "IsMultiplier": true
+        },
+        {
+          "Description": "Juicy Fruits",
+          "AttributeId": "OldAgeMax",
+          "Value": -0.999999,
+          "IsMultiplier": true
+        }
+      ],
+      "forceSelfHarvestOnGrown": true,
+      "symbolTintTargets": [
+        "swap_crop01",
+        "swap_crop02"
+      ]
+    }
+  ],
+  "MutantPlantsDropSeeds": true,
+  "SeedsGoIntoAnyFlowerPots": true,
+  "WheezewortTempDelta": -20.0,
+  "OxyfernOxygenPerSecond": 0.03125,
+  "CheatMutationAnalyze": false,
+  "CheatFlowerVase": true,
+  "WildFlowerVase": true,
+  "ApplyBugFixes": true,
+  "AutomaticallyAddModPlants": false,
+  "IgnoreList": [],
+  "ModPlants": []
+}
