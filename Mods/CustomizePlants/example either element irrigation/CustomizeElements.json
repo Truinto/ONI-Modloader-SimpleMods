@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "Elements": [
+    {
+      "Id": "DirtyWater",
+      "oreTags": [
+        "Mixture",
+        "AnyWater",
+        "SquishyWater"
+      ]
+    },
+    {
+      "Id": "SaltWater",
+      "oreTags": [
+        "AnyWater",
+        "SaltyWater",
+        "SquishyWater"
+      ]
+    },
+    {
+      "Id": "Brine",
+      "oreTags": [
+        "AnyWater",
+        "SaltyWater"
+      ]
+    },
+    {
+      "Id": "Oxygen",
+      "molarMass": 15.9
+    },
+    {
+      "Id": "Aluminum",
+      "oreTags": [
+        "BuildableAny",
+        "Metal"
+      ]
+    },
+    {
+      "Id": "Copper",
+      "oreTags": [
+        "BuildableAny",
+        "Metal"
+      ]
+    },
+    {
+      "Id": "DepletedUranium",
+      "oreTags": [
+        "BuildableAny",
+        "Metal"
+      ]
+    },
+    {
+      "Id": "Gold",
+      "oreTags": [
+        "BuildableAny",
+        "Metal"
+      ]
+    },
+    {
+      "Id": "Iron",
+      "oreTags": [
+        "BuildableAny",
+        "Metal"
+      ]
+    },
+    {
+      "Id": "Cobalt",
+      "oreTags": [
+        "BuildableAny",
+        "Metal"
+      ]
+    },
+    {
+      "Id": "Lead",
+      "oreTags": [
+        "BuildableAny",
+        "Metal"
+      ]
+    },
+    {
+      "Id": "Tungsten",
+      "oreTags": [
+        "BuildableAny",
+        "Metal",
+        "Plumbable"
+      ]
+    },
+    {
+      "Id": "Katairite",
+      "oreTags": [
+        "BuildableRaw",
+        "BuildableAny"
+      ]
+    },
+    {
+      "Id": "Niobium",
+      "attributeModifiers": [
+        {
+          "AttributeId": "OverheatTemperature",
+          "Value": 100.0,
+          "IsMultiplier": false
+        },
+        {
+          "AttributeId": "Decor",
+          "Value": 5.0,
+          "IsMultiplier": false
+        }
+      ]
+    },
+    {
+      "Id": "TempConductorSolid",
+      "attributeModifiers": [
+        {
+          "AttributeId": "OverheatTemperature",
+          "Value": 100.0,
+          "IsMultiplier": false
+        },
+        {
+          "AttributeId": "Decor",
+          "Value": 5.0,
+          "IsMultiplier": false
+        }
+      ]
+    }
+  ]
+}

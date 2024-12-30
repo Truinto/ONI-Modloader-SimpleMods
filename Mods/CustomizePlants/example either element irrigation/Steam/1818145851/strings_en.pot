@@ -1,0 +1,4 @@
+#. CustomizePlants.TAG.SquishyWater
+msgctxt "CustomizePlants.TAG.SquishyWater"
+msgid "SquishyWater"
+msgstr "Squishy (Salt or Dirt Water)"
