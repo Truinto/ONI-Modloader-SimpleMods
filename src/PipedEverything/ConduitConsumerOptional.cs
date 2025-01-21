@@ -332,23 +332,33 @@ namespace PipedEverything
 
         private float CapacityForElement(SimHashes element)
         {
-            if (!elementFilter.Contains(element) && !elementFilter.Contains(SimHashes.Void))
-                return 0f;
-
-            float capacityElement = this.capacityKG;
-            float capacityStorage = this.Storage.capacityKg;
-            foreach (var item in this.Storage.items)
+            try
             {
-                if (item == null)
-                    continue;
+                if (!elementFilter.Contains(element) && !elementFilter.Contains(SimHashes.Void))
+                    return 0f;
 
-                var element2 = item.GetComponent<PrimaryElement>();
-                capacityStorage -= element2.Mass;
-                if (element == element2.ElementID)
-                    capacityElement -= element2.Mass;
+                float capacityElement = this.capacityKG;
+                float capacityStorage = this.Storage.capacityKg;
+                foreach (var item in this.Storage.items)
+                {
+                    if (item == null)
+                        continue;
+
+                    var element2 = item.GetComponent<PrimaryElement>();
+                    capacityStorage -= element2.Mass;
+                    if (element == element2.ElementID)
+                        capacityElement -= element2.Mass;
+                }
+
+                return Mathf.Min(capacityElement, capacityStorage);
+            } catch (Exception)
+            {
+#if DEBUG
+                throw;
+#else
+                return 0f;
+#endif
             }
-
-            return Mathf.Min(capacityElement, capacityStorage);
         }
 
         public void AssignPort(PortDisplayInfo port)

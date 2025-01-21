@@ -120,28 +120,38 @@ namespace PipedEverything
 
         private float CapacityForElement(Pickupable element)
         {
-            Tag tag;
-            if (tagFilter.Length == 0)
-                tag = element.PrimaryElement.ElementID.ToTag();
-            else
-                tag = GetMatch(element.GetComponent<KPrefabID>());
-            if (!tag.IsValid)
-                return 0f;
-
-            float capacityElement = this.capacityKG;
-            float capacityStorage = this.Storage.capacityKg;
-            foreach (var item in this.Storage.items)
+            try
             {
-                if (item == null)
-                    continue;
+                Tag tag;
+                if (tagFilter.Length == 0)
+                    tag = element.PrimaryElement.ElementID.ToTag();
+                else
+                    tag = GetMatch(element.GetComponent<KPrefabID>());
+                if (!tag.IsValid)
+                    return 0f;
 
-                var element2 = item.GetComponent<PrimaryElement>();
-                capacityStorage -= element2.Mass;
-                if (item.HasTag(tag))
-                    capacityElement -= element2.Mass;
+                float capacityElement = this.capacityKG;
+                float capacityStorage = this.Storage.capacityKg;
+                foreach (var item in this.Storage.items)
+                {
+                    if (item == null)
+                        continue;
+
+                    var element2 = item.GetComponent<PrimaryElement>();
+                    capacityStorage -= element2.Mass;
+                    if (item.HasTag(tag))
+                        capacityElement -= element2.Mass;
+                }
+
+                return Mathf.Min(capacityElement, capacityStorage);
+            } catch (Exception)
+            {
+#if DEBUG
+                throw;
+#else
+                return 0f;
+#endif
             }
-
-            return Mathf.Min(capacityElement, capacityStorage);
         }
 
         private Tag GetMatch(KPrefabID prefabID)

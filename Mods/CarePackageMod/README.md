@@ -1,5 +1,7 @@
 Care Package Manager
 
+Note: Seems to be incompatible with DGSM (Duplicants Generation Settings Manager).
+
 Let's you change what care packages can contain. 让你能改变补给包包含什么。
 
 Features:
