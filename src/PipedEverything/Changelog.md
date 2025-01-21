@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.24.0] U54-650327-SCR (release)
+- hopefully fixed very rare crash #77
+
 ## [1.0.23.0] U53-644960-SC (release)
 - added options to move original ports
 
