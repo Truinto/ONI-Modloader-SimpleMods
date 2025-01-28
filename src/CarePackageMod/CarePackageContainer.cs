@@ -38,7 +38,7 @@ namespace CarePackageMod
 
         public static bool CheckCondition(string id, int? afterCycle = null, int? untilCycle = null)
         {
-            bool after = GameClock.Instance.GetCycle() > (afterCycle ?? 0);
+            bool after = GameClock.Instance.GetCycle() >= (afterCycle ?? -1);
             bool until = GameClock.Instance.GetCycle() <= (untilCycle ?? int.MaxValue);
             bool discover = !CarePackageState.StateManager.State.allowOnlyDiscoveredElements 
                             || ElementLoader.FindElementByName(id) == null 

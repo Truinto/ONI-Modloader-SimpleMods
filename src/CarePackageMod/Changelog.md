@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.0.20.0] U54-651155-SCR (release)
+
 ## [1.0.19.0] U54-647408-SCR (release)
 - updated for dlc
 
