@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.106.0]
+- fixed incompatibility with GigawattWire
+
 ## [1.0.105.0] U54-646843-SCR (release)
 - applied conduit settings to conduit bottlers
 - added settings for all the bottler storages

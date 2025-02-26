@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace CustomizeBuildings
 {
-    [HarmonyPatch(typeof(Wire), "GetMaxWattageAsFloat")]
+    [HarmonyPatch(typeof(Wire), nameof(Wire.GetMaxWattageAsFloat))]
+    [HarmonyPriority(Priority.Low)]
     public class Wire_GetMaxWattageAsFloat
     {
-
         public static void Postfix(Wire.WattageRating rating, ref float __result)
         {
             if (CustomizeBuildingsState.StateManager.State.WireSmallWatts == 1000 &&
@@ -19,12 +19,11 @@ namespace CustomizeBuildings
 
             __result = rating switch
             {
-                Wire.WattageRating.Max500 => 500f,
                 Wire.WattageRating.Max1000 => CustomizeBuildingsState.StateManager.State.WireSmallWatts,
                 Wire.WattageRating.Max2000 => CustomizeBuildingsState.StateManager.State.WireRefinedWatts,
                 Wire.WattageRating.Max20000 => CustomizeBuildingsState.StateManager.State.WireHeavyWatts,
                 Wire.WattageRating.Max50000 => CustomizeBuildingsState.StateManager.State.WireRefinedHeavyWatts,
-                _ => 0.0f,
+                _ => __result,
             };
         }
     }

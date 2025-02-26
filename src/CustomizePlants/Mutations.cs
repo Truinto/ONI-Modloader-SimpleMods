@@ -27,7 +27,7 @@ namespace CustomizePlants
         }
     }
 
-    [HarmonyPatch(typeof(PlantMutation), "ApplyFunctionalTo")]
+    [HarmonyPatch(typeof(PlantMutation), nameof(PlantMutation.ApplyFunctionalTo))]
     public class PlantMutations_GetRandomMutationPatch
     {
         public static bool Prepare()
