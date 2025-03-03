@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.25.0] U54-652372-SCR (release)
+- fixed AdvancedGenerators not being detected, because the assembly has a new name >:(
+  you still need to have AdvancedGenerators first in load order!
+
 ## [1.0.24.0] U54-650327-SCR (release)
 - hopefully fixed very rare crash #77
 

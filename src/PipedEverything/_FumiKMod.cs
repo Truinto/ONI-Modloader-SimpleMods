@@ -4,6 +4,7 @@ using KMod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,13 +34,27 @@ namespace PipedEverything
 
             // patch all harmony classes
             base.OnLoad(harmony);
-            var advancedGen = Type.GetType("AdvancedGenerators.Common.AdvancedEnergyGenerator, AdvancedGenerators");
+            var advancedGen = Type.GetType("AdvancedGenerators.Common.AdvancedEnergyGenerator, AdvancedGenerators")
+                ?? Type.GetType("AdvancedGenerators.Common.AdvancedEnergyGenerator, Advanced Generators");
+
             if (advancedGen != null)
             {
                 harmony.Patch(
                     advancedGen.GetMethod("EmitElements", Helpers.AllBinding), 
                     transpiler: new HarmonyMethod(typeof(Patches_AdvancedGenerators).GetMethod(nameof(Patches_AdvancedGenerators.Transpiler)))
                     );
+            }
+            else
+            {
+                Helpers.Print($"AdvancedGenerators is not installed");
+                //foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+                //{
+                //    Console.WriteLine($"Assembly: {ass.FullName}");
+                //    foreach (Type t in ass.GetTypes())
+                //    {
+                //        Console.WriteLine($"Assembly: {t.AssemblyQualifiedName}");
+                //    }
+                //}
             }
         }
     }

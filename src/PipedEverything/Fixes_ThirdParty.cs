@@ -11,7 +11,7 @@ namespace PipedEverything
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
         {
-            Helpers.PrintDebug($"Patches_AdvancedGenerators {original}");
+            Helpers.Print($"Patches_AdvancedGenerators {original}");
 
             var data = new TranspilerTool(instructions, generator, original);
 
