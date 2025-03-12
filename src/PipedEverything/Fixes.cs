@@ -1,9 +1,11 @@
 ﻿using Common;
-using Epic.OnlineServices;
 using HarmonyLib;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,29 +27,51 @@ namespace PipedEverything
     [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.StartWorkingOrder))]
     public static class Fix_ComplexFabricator_StartWorkingOrder
     {
+        /// <summary>
+        /// Replacing vanilla method and carving out the exceptions. Hopefully this fixes #81
+        /// </summary>
         public static bool Prefix(int index, ComplexFabricator __instance)
         {
-            // fixed based on #47 ; unable to reproduce or test
-            if (__instance.openOrderCounts[index] < 1)
+            if (__instance.HasWorkingOrder)
             {
-                __instance.nextOrderIsWorkable = false;
+                __instance.queueDirty = true;
                 return false;
             }
-
-            return true;
-        }
-
-        public static Exception Finalizer(Exception __exception, ComplexFabricator __instance)
-        {
-            if (__exception == null)
-                return null;
-            try
+            //Debug.Assert(!__instance.HasWorkingOrder, "machineOrderIdx already set");
+            __instance.workingOrderIdx = index;
+            if (__instance.recipe_list[__instance.workingOrderIdx].id != __instance.lastWorkingRecipe)
             {
-                Helpers.PrintDebug($"ComplexFabricator.StartWorkingOrder {__exception.Message}");
-                __instance.nextOrderIsWorkable = false;
-            } catch (Exception) { }
-            return null;
+                __instance.orderProgress = 0f;
+                __instance.lastWorkingRecipe = __instance.recipe_list[__instance.workingOrderIdx].id;
+            }
+            __instance.TransferCurrentRecipeIngredientsForBuild();
+            if (__instance.openOrderCounts[__instance.workingOrderIdx] <= 0)
+            {
+                __instance.queueDirty = true;
+                return false;
+            }
+            //Debug.Assert(__instance.openOrderCounts[__instance.workingOrderIdx] > 0, "openOrderCount invalid");
+            __instance.openOrderCounts[__instance.workingOrderIdx]--;
+            __instance.UpdateChore();
+            __instance.Trigger((int)GameHashes.FabricatorOrderStarted, __instance.recipe_list[__instance.workingOrderIdx]);
+            __instance.AdvanceNextOrder();
+            return false;
         }
+
+        //public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator, MethodBase original)
+        //{
+        //    var tool = new TranspilerTool(code, generator, original);
+        //    while (!tool.IsLast)
+        //    {
+        //        if (tool.Calls(typeof(Debug), nameof(Debug.Assert), [ typeof(bool), typeof(object) ]))
+        //            tool.ReplaceCall(patch1, before: true);
+        //        tool.Index++;
+        //    }
+        //    return tool;
+        //    static void patch1(bool condition, object message)
+        //    {
+        //    }
+        //}
     }
 
     [HarmonyPatch(typeof(Polymerizer), nameof(Polymerizer.TryEmit), typeof(PrimaryElement))]
