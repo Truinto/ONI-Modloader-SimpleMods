@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace CustomizeGeyser
 {
-    [HarmonyPatch(typeof(GeyserGenericConfig), "CreateGeyser")]
+    [HarmonyPatch(typeof(GeyserGenericConfig), nameof(GeyserGenericConfig.CreateGeyser), [typeof(string), typeof(string), typeof(int), typeof(int), typeof(string), typeof(string), typeof(HashedString), typeof(float), typeof(string[]), typeof(string[])])]
     public static class MorphPatch
     {
         public static bool Prepare()

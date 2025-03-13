@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.29.0] U55-659901-SCR (release)
+- fix for update
+
 ## [1.0.28.0] U53-642443-SC (release)
 - fix for update
 
