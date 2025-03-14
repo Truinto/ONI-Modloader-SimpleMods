@@ -28,7 +28,7 @@ namespace CustomizeBuildings
         {
             base.OnSpawn();
             UserMaxCapacity = UserValue;
-            visualizer.BlockingCb = SolidTransferArmConfig_Patches.BlockingCbx;
+            //visualizer.BlockingCb = SolidTransferArmConfig_Patches.BlockingCbx;
         }
 
         public override void OnCleanUp()

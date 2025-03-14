@@ -13,7 +13,7 @@ namespace CustomizeBuildings
 {
     #region Autosweeper
     [HarmonyPatch(typeof(SolidTransferArm), nameof(SolidTransferArm.IsPickupableRelevantToMyInterests))]
-    public class SolidTransferarm_MoveAnything
+    public class SolidTransferArm_MoveAnything
     {
         public static bool Prepare()
         {
@@ -42,7 +42,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(SolidTransferArm), nameof(SolidTransferArm.OnPrefabInit))]
-    public class SolidTransferArm_OnPrefabInit
+    public class SolidTransferArm_AutoSweeperCapacity
     {
         public static void Prefix(ref float ___max_carry_weight)
         {
@@ -51,7 +51,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch]
-    public class SolidTransferArmConfig_Patches
+    public class SolidTransferArmConfig_AutoSweeperRange
     {
         public static bool Prepare(MethodBase original)
         {
@@ -85,44 +85,16 @@ namespace CustomizeBuildings
             rangeVisualizer.RangeMax.y = range;
             rangeVisualizer.BlockingTileVisible = true;
 
-            // fix farm tile
-            rangeVisualizer.BlockingCb = BlockingCbx;
-
             return false;
         }
+    }
 
-        [HarmonyPatch(typeof(SolidTransferArm), nameof(SolidTransferArm.AsyncUpdate))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> Transpiler3(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
-        {
-            // fix farm tile
-            var data = new TranspilerTool(instructions, generator, original);
-
-            if (1 != data.ReplaceAllCalls(typeof(Grid), nameof(Grid.IsPhysicallyAccessible), patch))
-                throw new Exception("");
-
-            return data;
-
-            bool patch(int x, int y, int x2, int y2, bool blocking_tile_visible)
-            {
-                return Grid.TestLineOfSight(x, y, x2, y2, BlockingCbx, blocking_tile_visible);
-            }
-        }
-
+    // broke with update, not interested right now
+    public class SolidTransferArm_ReachThrough
+    {
         public static Tag[] BuildingsIgnoreLOS = [FarmTileConfig.ID, HydroponicFarmConfig.ID];
-        public static bool BlockingCbx(int cell)
-        {
-            if (!Grid.Solid[cell])
-                return false;
 
-            try
-            {
-                return Grid.Objects[cell, 1]?.GetComponent<KPrefabID>()?.IsAnyPrefabID(BuildingsIgnoreLOS) != true;
-            }
-            catch (Exception) { }
-
-            return true;
-        }
+        // IMPORTANT: overwrite visualizer in UserControlledTransferArm.OnSpawn!
     }
 
     #endregion
@@ -189,11 +161,66 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
-    public class AutoMiner_DigBlockingCB
+    public class AutoMiner_RoboMinerDigAnyTile
+    {
+        public static bool Prepare(MethodBase original)
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+            data.InsertAfterAll(typeof(Element), nameof(Element.hardness), patch);
+            return data;
+
+            static byte patch(byte __stack)
+            {
+                if (__stack is > 150 and < 255)
+                    return 150;
+                return __stack;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.ValidDigCell))]
+    public class AutoMiner_RoboMinerDigAnyTile2
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile || CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass;
+            return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
+        }
+
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            return AutoMiner_RoboMinerDigAnyTile.Transpiler(instructions, generator, original);
+        }
+    }
+
+    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
+    public class AutoMiner_RoboMinerDigThroughGlass
+    {
+        public static bool Prepare(MethodBase original)
+        {
+            return CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass;
+        }
+
+        [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+
+            data.Seek(typeof(Grid), nameof(Grid.Solid));
+            data.Seek(f => f.IsLdloc(typeof(bool)));
+            data.InsertAfter(patch);
+            return data;
+
+            static bool patch(bool __stack, int cell)
+            {
+                if (__stack)
+                    return true;
+                return Grid.Transparent[cell];
+            }
         }
 
         public static bool Prefix(int cell, ref bool __result)
@@ -220,32 +247,10 @@ namespace CustomizeBuildings
 
                 __result = false;
                 return false;
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
             return true;
         }
     }
-
-    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.ValidDigCell))]
-    public class AutoMiner_ValidDigCell
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
-        }
-
-        public static bool Prefix(int cell, ref bool __result)
-        {
-            try
-            {
-                __result = Grid.Solid[cell] && !Grid.Foundation[cell] && Grid.Element[cell].hardness < 255;
-                return false;
-            }
-            catch (Exception) { }
-            return true;
-        }
-    }
-
 
     [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.UpdateDig))]
     public class AutoMiner_UpdateDig
@@ -261,11 +266,9 @@ namespace CustomizeBuildings
             {
                 if (Grid.Element[___dig_cell].id == SimHashes.Regolith)
                     dt *= 6f;
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
         }
     }
-
 
     [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.UpdateDig))]
     public class AutoMiner_UpdateDig2

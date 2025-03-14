@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.107.0] U55-659901-SCR (release)
+- fix for update
+
 ## [1.0.106.0] U54-651155-SCR (release)
 - fixed incompatibility with GigawattWire
 
