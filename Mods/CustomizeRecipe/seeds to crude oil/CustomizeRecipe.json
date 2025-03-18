@@ -1,0 +1,628 @@
+{
+  "version": 1,
+  "CheatFast": false,
+  "CheatFree": false,
+  "AllowZeroInput": true,
+  "RecipeSettings": [
+    {
+      "Id": "SludgePress_I_BasicSingleHarvestPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "BasicSingleHarvestPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_BeanPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "BeanPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_BlueGrassSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "BlueGrassSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_BulbPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "BulbPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_CactusPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "CactusPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_CarrotPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "CarrotPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_ColdBreatherSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "ColdBreatherSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_ColdWheatSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "ColdWheatSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_CritterTrapPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "CritterTrapPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_CylindricaSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "CylindricaSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_EvilFlowerSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "EvilFlowerSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_FilterPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "FilterPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_ForestTreeSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "ForestTreeSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_GasGrassSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "GasGrassSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_HardSkinBerryPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "HardSkinBerryPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_BasicFabricMaterialPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "BasicFabricMaterialPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_IceFlowerSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "IceFlowerSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_ToePlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "ToePlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_SwampLilySeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "SwampLilySeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_SwampHarvestPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "SwampHarvestPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_OxyfernSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "OxyfernSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_PrickleFlowerSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "PrickleFlowerSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_SpiceVineSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "SpiceVineSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_SpaceTreeSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "SpaceTreeSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_PrickleGrassSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "PrickleGrassSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_SeaLettuceSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "SeaLettuceSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_SaltPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "SaltPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_WormPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "WormPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_WineCupsSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "WineCupsSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_MushroomSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "MushroomSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    },
+    {
+      "Id": "SludgePress_I_LeafyPlantSeed_O_CrudeOil",
+      "Building": "SludgePress",
+      "Inputs": [
+        {
+          "material": "LeafyPlantSeed",
+          "amount": 1.0
+        }
+      ],
+      "Outputs": [
+        {
+          "material": "CrudeOil",
+          "amount": 10.0
+        }
+      ],
+      "Time": 1.0,
+      "HEP": 0,
+      "HEPout": 0,
+      "Description": "Press seed into crude oil."
+    }
+  ]
+}
