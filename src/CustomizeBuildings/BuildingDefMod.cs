@@ -134,6 +134,26 @@ namespace CustomizeBuildings
                 buildingDef.Mass = newmass;
             }
 
+            if (entry.ObjectLayer != null)
+            {
+                buildingDef.ObjectLayer = entry.ObjectLayer.Value;
+            }
+
+            if (entry.TileLayer != null)
+            {
+                buildingDef.TileLayer = entry.TileLayer.Value;
+            }
+
+            if (entry.ReplacementLayer != null)
+            {
+                buildingDef.ReplacementLayer = entry.ReplacementLayer.Value;
+            }
+
+            if (entry.SceneLayer != null)
+            {
+                buildingDef.SceneLayer = entry.SceneLayer.Value;
+            }
+
             // public bool Cancellable = true;
             // public bool OnePerWorld = false;
 

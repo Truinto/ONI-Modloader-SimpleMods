@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.108.0] U55-660455-SCR (release)
+- added layer options to BuildingBaseSettings
+
 ## [1.0.107.0] U55-659901-SCR (release)
 - fix for update
 

@@ -1,0 +1,12 @@
+
+    "BuildingBaseSettingGlobalFlag": true,
+    "BuildingBaseSettings": {
+        "Ladder": {
+            "LocationRule": "Anywhere",
+            "ObjectLayer": "Canvases"
+        },
+        "LadderFast": {
+            "LocationRule": "Anywhere",
+            "ObjectLayer": "Canvases"
+        }
+    }

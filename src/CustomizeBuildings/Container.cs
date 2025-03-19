@@ -103,46 +103,32 @@ namespace CustomizeBuildings
             return ec;
         }
     }
-    public class BuildingStruct
-    {
-        public float? PowerConsumption;
-        public float? OverheatTemperature;
-        public string MaterialCategory;
-        public float? ExhaustKilowattsWhenActive;
-        public float? SelfHeatKilowattsWhenActive;
-        public float? GeneratorWattageRating;
-        public float? GeneratorBaseCapacity;
-        public float? BaseDecor;
-        public float? BaseDecorRadius;
-        public BuildLocationRule? LocationRule;
-        public PermittedRotations? Rotations;
-        public bool? Floodable;
-        public bool? IsFoundation;
-        public float[] ConstructionMass;
-        public float? ThermalConductivity;
-
-        public BuildingStruct(float? PowerConsumption = null, string MaterialCategory = null, float? OverheatTemperature = null,
+    public class BuildingStruct(float? PowerConsumption = null, string MaterialCategory = null, float? OverheatTemperature = null,
             float? ExhaustKilowattsWhenActive = null, float? SelfHeatKilowattsWhenActive = null, float? GeneratorWattageRating = null,
             float? GeneratorBaseCapacity = null, float? BaseDecor = null, float? BaseDecorRadius = null, BuildLocationRule? LocationRule = null,
             PermittedRotations? Rotations = null, bool? Floodable = null, bool? IsFoundation = null, float[] ConstructionMass = null,
-            float? ThermalConductivity = null)
-        {
-            this.PowerConsumption = PowerConsumption;
-            this.MaterialCategory = MaterialCategory;
-            this.OverheatTemperature = OverheatTemperature;
-            this.ExhaustKilowattsWhenActive = ExhaustKilowattsWhenActive;
-            this.SelfHeatKilowattsWhenActive = SelfHeatKilowattsWhenActive;
-            this.GeneratorWattageRating = GeneratorWattageRating;
-            this.GeneratorBaseCapacity = GeneratorBaseCapacity;
-            this.BaseDecor = BaseDecor;
-            this.BaseDecorRadius = BaseDecorRadius;
-            this.LocationRule = LocationRule;
-            this.Rotations = Rotations;
-            this.Floodable = Floodable;
-            this.IsFoundation = IsFoundation;
-            this.ConstructionMass = ConstructionMass;
-            this.ThermalConductivity = ThermalConductivity;
-        }
+            float? ThermalConductivity = null, ObjectLayer? ObjectLayer = null, ObjectLayer? TileLayer = null, ObjectLayer? ReplacementLayer = null,
+            Grid.SceneLayer? SceneLayer = null)
+    {
+        public float? PowerConsumption = PowerConsumption;
+        public string MaterialCategory = MaterialCategory;
+        public float? OverheatTemperature = OverheatTemperature;
+        public float? ExhaustKilowattsWhenActive = ExhaustKilowattsWhenActive;
+        public float? SelfHeatKilowattsWhenActive = SelfHeatKilowattsWhenActive;
+        public float? GeneratorWattageRating = GeneratorWattageRating;
+        public float? GeneratorBaseCapacity = GeneratorBaseCapacity;
+        public float? BaseDecor = BaseDecor;
+        public float? BaseDecorRadius = BaseDecorRadius;
+        public BuildLocationRule? LocationRule = LocationRule;
+        public PermittedRotations? Rotations = Rotations;
+        public bool? Floodable = Floodable;
+        public bool? IsFoundation = IsFoundation;
+        public float[] ConstructionMass = ConstructionMass;
+        public float? ThermalConductivity = ThermalConductivity;
+        public ObjectLayer? ObjectLayer = ObjectLayer;
+        public ObjectLayer? TileLayer = TileLayer;
+        public ObjectLayer? ReplacementLayer = ReplacementLayer;
+        public Grid.SceneLayer? SceneLayer = SceneLayer;
     }
     public class BuildingAdv
     {

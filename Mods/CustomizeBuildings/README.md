@@ -58,7 +58,7 @@ ALL setting are optional and can be turned off.
 
 [Github](https://github.com/Truinto/ONI-Modloader-SimpleMods/tree/master/Mods/Customize%20Buildings)
 
-# README v41
+# README v108
 
 If CustomizeBuildings.json is corrupted or otherwise does not work, delete it and restart the game. A new clean file will be generated.
 
@@ -281,6 +281,10 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
   - MaterialCategory: single string, separate multiple with spacebar; must match count of elements; each entry must be a valid Tag like: Metal, RefinedMetal, Alloy, BuildableRaw, BuildableProcessed, PreciousRock, Farmable, Plastic, Glass, Transparent, BuildingFiber, FlyingCritterEdible, or BuildableAny
   - ConstructionMass: array of float; must match count of elements; how much kg are needed to build it
   - ThermalConductivity: thermal multiplier, probably only works on buildings already messing with temperatures; 0..1 will reduce the temperature transfer, while 1..100 will increase it; normal settings are 0.01 for insulated tiles and 2 for radiant pipes
+  - ObjectLayer: enum to set ObjectLayer; see values below
+  - TileLayer: 
+  - ReplacementLayer: 
+  - SceneLayer: 
 * BuildingAdvancedMachineMultiplier: a list of building IDs; will multiply all storage and element converting properties of a building, which might break some stuff, so be mindfull
 * BuildingAdvancedGlobalFlag: if false, disable this feature altogether
 * BuildingAdvancedMaterial: more complex patches to buildings
@@ -293,7 +297,56 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 
 
 
-
+References:
+public enum ObjectLayer
+{
+    Minion,
+    Building,
+    Backwall,
+    Pickupables,
+    Canvases,
+    Plants,
+    FillPlacer,
+    DigPlacer,
+    MopPlacer,
+    FoundationTile,
+    PlasticTile,
+    ReplacementTile,
+    GasConduit,
+    GasConduitTile,
+    ReplacementGasConduit,
+    GasConduitConnection,
+    LiquidConduit,
+    LiquidConduitTile,
+    ReplacementLiquidConduit,
+    LiquidConduitConnection,
+    SolidConduit,
+    SolidConduitTile,
+    ReplacementSolidConduit,
+    SolidConduitConnection,
+    LadderTile,
+    ReplacementLadder,
+    Wire,
+    WireTile,
+    ReplacementWire,
+    WireConnectors,
+    LogicGate,
+    LogicWire,
+    LogicWireTile,
+    ReplacementLogicWire,
+    TravelTube,
+    TravelTubeTile,
+    ReplacementTravelTube,
+    TravelTubeConnection,
+    AttachableBuilding,
+    Gantry,
+    Mover,
+    Rover,
+    Critter,
+    ReplacementBackwall,
+    MovePlacer,
+    NumLayers
+}
 
 
 
