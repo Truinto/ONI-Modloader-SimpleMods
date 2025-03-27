@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.5.0] U55-661174-SCR (release)
+- ensured description field is not null
+
 ## [1.0.4.2] U54-646843-SCR (release)
 - removed ID safeguard
 

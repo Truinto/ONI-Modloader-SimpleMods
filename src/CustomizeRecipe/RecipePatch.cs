@@ -136,6 +136,8 @@ namespace CustomizeRecipe
                 recipe.consumedHEP = setting.HEP.Value;
             if (setting.HEPout != null)
                 recipe.producedHEP = setting.HEPout.Value;
+
+            recipe.description ??= "";
         }
 
         public static void Print()
