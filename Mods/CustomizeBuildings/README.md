@@ -119,7 +119,6 @@ If CustomizeBuildings.json is corrupted or otherwise does not work, delete it an
 * SteamTurbineSourceElement: 
 * SteamTurbineOutputElement: 
 * SteamTurbinePumpRateKG: 
-* SteamTurbineMaxSelfHeat: 
 * SteamTurbineHeatTransferPercent: 
 * SteamTurbineMinActiveTemperature: 
 * SteamTurbineIdealTemperature: 

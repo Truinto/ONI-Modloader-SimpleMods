@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.109.0]
+- removed unused maxSelfHeat, close #83
+
 ## [1.0.108.0] U55-660455-SCR (release)
 - added layer options to BuildingBaseSettings
 

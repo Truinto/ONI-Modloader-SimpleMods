@@ -97,7 +97,6 @@ namespace CustomizeBuildings
             StateManager.State.SteamTurbineSourceElement = "Steam";
             StateManager.State.SteamTurbineOutputElement = "Water";
             StateManager.State.SteamTurbinePumpRateKG = 2f;
-            StateManager.State.SteamTurbineMaxSelfHeat = 64f;
             StateManager.State.SteamTurbineHeatTransferPercent = 0.1f;
             StateManager.State.SteamTurbineMinActiveTemperature = 398.15f;
             StateManager.State.SteamTurbineIdealTemperature = 473.15f;
@@ -368,8 +367,6 @@ namespace CustomizeBuildings
         public string SteamTurbineOutputElement { get; set; } = "Water";
         [Option("CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_Title", "CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_ToolTip", "Steam Turbine", "F2")]
         public float SteamTurbinePumpRateKG { get; set; } = 2f;
-        [Option("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_Title", "CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_ToolTip", "Steam Turbine", "F2")]
-        public float SteamTurbineMaxSelfHeat { get; set; } = 64f;
         [Option("CustomizeBuildings.LOCSTRINGS.SteamTurbineHeatTransferPercent_Title", "CustomizeBuildings.LOCSTRINGS.SteamTurbineHeatTransferPercent_ToolTip", "Steam Turbine", "P2")]
         [Limit(0, 1)]
         public float SteamTurbineHeatTransferPercent { get; set; } = 0.1f;

@@ -44,7 +44,6 @@ namespace CustomizeBuildings
             steamTurbine.srcElem = CustomizeBuildingsState.StateManager.State.SteamTurbineSourceElement.ToSimHash(SimHashes.Steam); //SimHashes.Steam
             steamTurbine.destElem = CustomizeBuildingsState.StateManager.State.SteamTurbineOutputElement.ToSimHash(SimHashes.Water); //SimHashes.Water
             steamTurbine.pumpKGRate = CustomizeBuildingsState.StateManager.State.SteamTurbinePumpRateKG; //2f
-            steamTurbine.maxSelfHeat = CustomizeBuildingsState.StateManager.State.SteamTurbineMaxSelfHeat; //64f
             steamTurbine.wasteHeatToTurbinePercent = CustomizeBuildingsState.StateManager.State.SteamTurbineHeatTransferPercent; //0.1f
             
             //steamTurbine.requiredMass = CustomizeBuildingsState.StateManager.State.SteamTurbineMinMass; //1f / 1000f;
