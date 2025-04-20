@@ -1,7 +1,8 @@
 # Changelog
 
-## [1.0.109.0]
+## [1.0.109.0] U55-663500-SCR (release)
 - removed unused maxSelfHeat, close #83
+- fixed parsing of index in advanced logic
 
 ## [1.0.108.0] U55-660455-SCR (release)
 - added layer options to BuildingBaseSettings
