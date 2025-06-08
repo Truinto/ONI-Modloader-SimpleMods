@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.110.0] U55-663500-SCR (release)
+- added logic to handle StatemachineDef in advanced settings
+
 ## [1.0.109.0] U55-663500-SCR (release)
 - removed unused maxSelfHeat, close #83
 - fixed parsing of index in advanced logic

@@ -310,7 +310,7 @@ namespace CustomizeBuildings
                 if (componentEntry.Key.Length < 4) continue;
 
                 Type componentType = null;
-                UnityEngine.Object component = null;
+                object component = null;
 
                 if (componentEntry.Key == "BASE") //edit BuildingDef instead
                 {
@@ -320,43 +320,33 @@ namespace CustomizeBuildings
                 else if (componentEntry.Key.StartsWith("ADD:")) //addicomponent
                 {
                     componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
-                    if (componentType == null)
-                    {
-                        PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
-                        continue;
-                    }
-                    component = def.BuildingComplete.AddComponent(componentType);
+                    if (componentType != null)
+                        component = def.BuildingComplete.AddComponent(componentType);
                 }
                 else if (componentEntry.Key.StartsWith("DEL:")) //delete component
                 {
                     componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
-                    if (componentType == null)
-                    {
-                        PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
-                        continue;
-                    }
-                    component = def.BuildingComplete.GetComponent(componentType);
-                    if (component == null)
-                    {
-                        PostBootDialog.ErrorList.Add(def.PrefabID + ": could not get component for deletion: " + componentEntry.Key);
-                        continue;
-                    }
-                    UnityEngine.Object.DestroyImmediate(component);
+                    if (componentType != null)
+                        component = def.BuildingComplete.GetComponent(componentType);
+                    UnityEngine.Object.DestroyImmediate(component as UnityEngine.Object);
                     continue;
                 }
                 else if (Regex.IsMatch(componentEntry.Key, @"AT\d:")) //edit component at index
                 {
                     componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
-                    if (componentType == null)
-                    {
-                        PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
-                        continue;
-                    }
-                    component = def.BuildingComplete.GetComponents(componentType)[int.Parse(componentEntry.Key.Substring(2, 1))];
+                    if (componentType != null)
+                        component = def.BuildingComplete.GetComponents(componentType)[int.Parse(componentEntry.Key.Substring(2, 1))];
+                }
+                else if (componentEntry.Key.EndsWith(".Def"))
+                {
+                    componentType = Type.GetType(componentEntry.Key.Replace('.', '+') + ", Assembly-CSharp", false);
+                    component = def.BuildingComplete.GetComponent<StateMachineController>()?.cmpdef.defs.FirstOrDefault(f => f.GetType() == componentType);
                 }
                 else //edit component
                 {
                     componentType = Type.GetType(componentEntry.Key + ", Assembly-CSharp", false);
+                    if (componentType != null)
+                        component = def.BuildingComplete.GetComponent(componentType);
                 }
 
                 // null checks
@@ -365,7 +355,6 @@ namespace CustomizeBuildings
                     PostBootDialog.ErrorList.Add(def.PrefabID + ": component type does not exist: " + componentEntry.Key);
                     continue;
                 }
-                component ??= def.BuildingComplete.GetComponent(componentType);
                 if (component == null)
                 {
                     PostBootDialog.ErrorList.Add(def.PrefabID + ": does not have component: " + componentEntry.Key);

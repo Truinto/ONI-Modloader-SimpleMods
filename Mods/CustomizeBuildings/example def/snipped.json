@@ -1,0 +1,10 @@
+{
+    "AdvancedSettings": {
+        "MercuryCeilingLight": {
+            "MercuryLight.Def": {
+                "FUEL_MASS_PER_SECOND": 0.0
+            }
+        }
+    }
+}
+// removes the mercury consumption; still needs some in it's storage

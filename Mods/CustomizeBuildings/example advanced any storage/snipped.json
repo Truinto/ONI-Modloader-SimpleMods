@@ -1,0 +1,14 @@
+{
+    "AdvancedSettings": {
+        "SupermaterialRefinery": {
+            "Storage": {
+                "capacityKg": 123456.0
+            },
+            "AT1:Storage": {
+                "capacityKg": 123456.0
+            }
+        }
+    }
+}
+// you can use ATx: to access duplicate components from index 0 to 9
+// btw, use BASE to access BuildingDef instead
