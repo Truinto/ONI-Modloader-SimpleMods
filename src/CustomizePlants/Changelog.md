@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.46.0] U56-674504-SCR (release)
+- fixed crash with illumination settings
+
 ## [1.0.45.0] U52-626616-SC (release)
 - fixed config overwrite on error
 

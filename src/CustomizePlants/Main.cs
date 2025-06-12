@@ -376,42 +376,27 @@ namespace CustomizePlants
             #region illumination
             if (setting.illumination != null)
             {
-                IlluminationVulnerable illumination = plant.GetComponent<IlluminationVulnerable>();
-                CropSleepingMonitor.Def cropSleep = plant.GetDef<CropSleepingMonitor.Def>();
+                var illumination = plant.GetComponent<IlluminationVulnerable>();
 
                 if (setting.illumination == 0f)
                 {
                     if (illumination != null)
                         UnityEngine.Object.DestroyImmediate(illumination);
-                    if (cropSleep != null)
-                        Helpers.RemoveDef(plant, cropSleep);
                 }
                 else if (setting.illumination < 0f)
                 {
-                    if (illumination == null)
-                        illumination = plant.AddOrGet<IlluminationVulnerable>();
-                    if (cropSleep != null)
-                        Helpers.RemoveDef(plant, cropSleep);
-
+                    illumination ??= plant.AddOrGet<IlluminationVulnerable>();
                     illumination.SetPrefersDarkness(true);
                 }
                 else if (setting.illumination == 1f)
                 {
-                    if (illumination == null)
-                        illumination = plant.AddOrGet<IlluminationVulnerable>();
-                    if (cropSleep != null)
-                        Helpers.RemoveDef(plant, cropSleep);
-
+                        illumination ??= plant.AddOrGet<IlluminationVulnerable>();
                     illumination.SetPrefersDarkness(false);
                 }
                 else
                 {
                     if (illumination != null)
                         UnityEngine.Object.DestroyImmediate(illumination);
-                    if (cropSleep == null)
-                        cropSleep = plant.AddOrGetDef<CropSleepingMonitor.Def>();
-                    cropSleep.prefersDarkness = false;
-
                     EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.MinLightLux.Id, setting.illumination.Value);
                 }
             }
