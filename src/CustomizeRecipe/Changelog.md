@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.6.0] U56-674504-SCR (release)
+- fixed crash with new update
+
 ## [1.0.5.0] U55-661174-SCR (release)
 - ensured description field is not null
 

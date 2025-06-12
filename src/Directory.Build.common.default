@@ -41,9 +41,10 @@
 
 	<!-- Project References -->
 	<ItemGroup>
+		<Reference Private="false" Include="Assembly-CSharp" HintPath="$(GameManaged)\Assembly-CSharp.dll" Publicize="true" />
+		<Reference Private="false" Include="Assembly-CSharp-firstpass" HintPath="$(GameManaged)\Assembly-CSharp-firstpass.dll" Publicize="true" />
+		
 		<Reference Private="false" Include="0Harmony" HintPath="$(GameManaged)\0Harmony.dll" />
-		<Reference Private="false" Include="Assembly-CSharp_public" HintPath="$(GameManaged)\Assembly-CSharp_public.dll" />
-		<Reference Private="false" Include="Assembly-CSharp-firstpass_public" HintPath="$(GameManaged)\Assembly-CSharp-firstpass_public.dll" />
 		<Reference Private="false" Include="Newtonsoft.Json" HintPath="$(GameManaged)\Newtonsoft.Json.dll" />
 		<Reference Private="false" Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
 		<Reference Private="false" Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
@@ -60,9 +61,6 @@
 	<ItemGroup>
 		<None Remove="$(ProjectDir)_MERGE" />
 		<None Include="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
-
-		<TargetPublicizeItems Include="$(GameManaged)/Assembly-CSharp.dll" />
-		<TargetPublicizeItems Include="$(GameManaged)/Assembly-CSharp-firstpass.dll" />
 		
 		<TargetMergeItems Include="$(SolutionDir)@Shared/UnityMod-net472.dll" />
 		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibOptions.dll" Condition="$(DefineConstants.Contains('MERGE'))" />

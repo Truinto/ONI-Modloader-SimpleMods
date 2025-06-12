@@ -31,8 +31,6 @@ namespace CustomizeRecipe
     [HarmonyPriority(Priority.LowerThanNormal)]
     public class RecipePatch
     {
-        public static ComplexRecipe.RecipeElement[] EmptyIngredient = Array.Empty<ComplexRecipe.RecipeElement>();
-
         [HarmonyPostfix]
         public static void Load()
         {
@@ -115,7 +113,8 @@ namespace CustomizeRecipe
                     return;
                 }
 
-                recipe = new ComplexRecipe(setting.Id, EmptyIngredient, EmptyIngredient)
+                Helpers.Print($"Making new Recipe: {setting.Id}");
+                recipe = new ComplexRecipe(setting.Id, setting.InputsArray, setting.OutputsArray)
                 {
                     time = 40f,
                     fabricators = new List<Tag>() { setting.Building.ToTag() },
