@@ -27,6 +27,15 @@ namespace CustomizeRecipe
         }
     }
 
+    //[HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.ValidateNextOrder))]
+    public class BugSearch2
+    {
+        public static void Prefix(ComplexFabricator __instance)
+        {
+            Helpers.Print($"name={__instance.name} go={__instance.gameObject.name} len={__instance.recipe_list.Length} order={__instance.nextOrderIdx}");
+        }
+    }
+
     [HarmonyPatch(typeof(ComplexRecipeManager), nameof(ComplexRecipeManager.PostProcess))]
     [HarmonyPriority(Priority.LowerThanNormal)]
     public class RecipePatch
@@ -62,21 +71,23 @@ namespace CustomizeRecipe
 
             foreach (var building in Assets.BuildingDefs)
             {
-                var fabricator = building?.BuildingComplete?.GetComponent<ComplexFabricator>();
-                if (fabricator != null && fabricator.storeProduced == true)
+                if (building is null)
+                    continue;
+                var fabricator = building.BuildingComplete?.GetComponent<ComplexFabricator>();
+                if (fabricator == null || fabricator.storeProduced != true)
+                    continue;
+                
+                foreach (var recipe in recipes)
                 {
-                    foreach (var recipe in recipes)
+                    if (recipe.fabricators.Contains(building.Tag))
                     {
-                        if (recipe.fabricators.Contains(building.Tag))
+                        foreach (var output in recipe.results)
                         {
-                            foreach (var output in recipe.results)
+                            var element = output.material.ToElement();
+                            if (element != null && element.IsLiquid)
                             {
-                                var element = output.material.ToElement();
-                                if (element != null && element.IsLiquid)
-                                {
-                                    output.storeElement = true;
-                                    fabricator.storeProduced = false;
-                                }
+                                output.storeElement = true;
+                                fabricator.storeProduced = false;
                             }
                         }
                     }
@@ -97,7 +108,7 @@ namespace CustomizeRecipe
             }
 
             // try to find recipe by ID
-            ComplexRecipe recipe = null;
+            ComplexRecipe? recipe = null;
             foreach (var preProcessedRecipe in ComplexRecipeManager.Get().preProcessRecipes)
             {
                 if (preProcessedRecipe.id == setting.Id)

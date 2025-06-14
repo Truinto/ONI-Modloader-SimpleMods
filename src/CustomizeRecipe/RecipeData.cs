@@ -1,9 +1,12 @@
 ﻿using Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Shared.CollectionNS;
 
 namespace CustomizeRecipe
 {
@@ -12,23 +15,27 @@ namespace CustomizeRecipe
     /// buildings must be able to handle HEP, otherwise values higher than 0 will cause a crash when recipe is selected
     public class RecipeData
     {
-        public string Id;
-        public string Building;
-        public List<RecipeElement> Inputs;
-        public List<RecipeElement> Outputs;
+        public string? Id;
+        public string? Building;
+        public List<RecipeElement> Inputs = new();
+        public List<RecipeElement> Outputs = new();
         public float? Time;
         public int? HEP;
         public int? HEPout;
-        public string Description;
+        public string? Description;
 
         public class RecipeElement
         {
-            public string material;
-            public float amount;
+            public string? material;
+            public string[]? materials;
+            public float? amount;
+            public float[]? amounts;
             [JsonConverter(typeof(StringEnumConverter))]
             public ComplexRecipe.RecipeElement.TemperatureOperation? temperatureOperation;
             public bool? storeElement;
             public bool? inheritElement;
+            public string? facadeID;
+            public bool? doNotConsume;
 
             public RecipeElement() { }
 
@@ -41,32 +48,54 @@ namespace CustomizeRecipe
 
             public static implicit operator ComplexRecipe.RecipeElement(RecipeElement recipe)
             {
-                Tag material = recipe.material;
-                if (Assets.TryGetPrefab(material) == null) // note: this only works after Assets.CreatePrefabs(), which is the case here
-                    material = SimHashes.Unobtanium.ToString();
-
-                return new ComplexRecipe.RecipeElement(material, recipe.amount, recipe.temperatureOperation ?? 0, recipe.storeElement ?? material.ToElement()?.IsLiquid ?? false)
+                var output = new ComplexRecipe.RecipeElement(recipe.material.ToTagSafe(), recipe.amount ?? 0f);
+                if (recipe.materials != null && recipe.materials.Length > 0)
                 {
-                    inheritElement = recipe.inheritElement ?? false
-                };
+                    output.possibleMaterials = new Tag[recipe.materials.Length];
+                    for (int i = 0; i < output.possibleMaterials.Length; i++)
+                        output.possibleMaterials[i] = recipe.materials[i].ToTagSafe();
+                    output.possibleMaterialAmounts = new float[output.possibleMaterials.Length];
+                    for (int i = 0; i < output.possibleMaterialAmounts.Length; i++)
+                        output.possibleMaterialAmounts[i] = recipe.amounts?.ElementAtOrDefault(i) ?? output.amount;
+                }
+                output.temperatureOperation = recipe.temperatureOperation ?? 0;
+                output.storeElement = recipe.storeElement ?? output.possibleMaterials[0].ToElement().IsLiquid;
+                output.inheritElement = recipe.inheritElement ?? false;
+                output.facadeID = recipe.facadeID;
+                output.doNotConsume = recipe.doNotConsume ?? false;
+                return output;
             }
 
             public static implicit operator RecipeElement(ComplexRecipe.RecipeElement recipe)
             {
-                var result = new RecipeElement(recipe.material.ToString(), recipe.amount);
+                var output = new RecipeElement();
+                if (recipe.possibleMaterials.Length == 1) // possibleMaterials is never null
+                {
+                    output.material = recipe.possibleMaterials[0].ToString();
+                    output.amount = recipe.amount != 0f ? recipe.amount : recipe.possibleMaterialAmounts?.ElementAtOrDefault(0) ?? 0f;
+                }
+                else
+                {
+                    output.materials = recipe.possibleMaterials.Select(s => s.ToString()).ToArray();
+                    output.amounts = recipe.possibleMaterialAmounts ?? new float[output.materials.Length].Fill(0f);
+                }
                 if (recipe.temperatureOperation != 0)
-                    result.temperatureOperation = recipe.temperatureOperation;
+                    output.temperatureOperation = recipe.temperatureOperation;
                 if (recipe.storeElement)
-                    result.storeElement = true;
+                    output.storeElement = true;
                 if (recipe.inheritElement)
-                    result.inheritElement = true;
-                return result;
+                    output.inheritElement = true;
+                if (output.facadeID is not null or "")
+                    output.facadeID = recipe.facadeID;
+                if (recipe.doNotConsume)
+                    output.doNotConsume = recipe.doNotConsume;
+                return output;
             }
         }
 
         public RecipeData() { }
 
-        public RecipeData(string Id = null, string Building = null, float? Time = null, int? HEP = null, int? HEPout = null, string Description = null, ComplexRecipe.RecipeElement[] ingredients = null, ComplexRecipe.RecipeElement[] results = null)
+        public RecipeData(string? Id = null, string? Building = null, float? Time = null, int? HEP = null, int? HEPout = null, string? Description = null, ComplexRecipe.RecipeElement[]? ingredients = null, ComplexRecipe.RecipeElement[]? results = null)
         {
             this.Id = Id;
             this.Building = Building;
@@ -77,14 +106,12 @@ namespace CustomizeRecipe
 
             if (ingredients != null)
             {
-                this.Inputs = new List<RecipeElement>();
                 foreach (var ingredient in ingredients)
                     this.Inputs.Add(ingredient);
             }
 
             if (results != null)
             {
-                this.Outputs = new List<RecipeElement>();
                 foreach (var result in results)
                     this.Outputs.Add(result);
             }
@@ -112,16 +139,12 @@ namespace CustomizeRecipe
 
         public RecipeData In(string material, float amount)
         {
-            if (this.Inputs == null)
-                this.Inputs = new List<RecipeElement>();
             this.Inputs.Add(new RecipeElement(material, amount));
             return this;
         }
 
         public RecipeData Out(string material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation? temperatureOperation = null)
         {
-            if (this.Outputs == null)
-                this.Outputs = new List<RecipeElement>();
             this.Outputs.Add(new RecipeElement(material, amount, temperatureOperation));
             return this;
         }

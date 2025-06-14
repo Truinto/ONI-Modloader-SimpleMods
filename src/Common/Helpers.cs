@@ -109,13 +109,13 @@ namespace Common
             return tag;
         }
 
-        public static Tag ToTagSafe(this string tag_string, string proper_name = null)
+        public static Tag ToTagSafe(this string? tag_string, string? proper_name = null)
         {
             // todo extract list of valid tags and add sanity check
             // may also check Assets.TryGetPrefab for new entries, but that doesn't work early during bootup
             // should probably export valid tags into game folder
 
-            Tag tag = proper_name is null or "" ? TagManager.Create(tag_string) : TagManager.Create(tag_string, proper_name);
+            Tag tag = proper_name is null or "" ? TagManager.Create(tag_string ?? "") : TagManager.Create(tag_string ?? "", proper_name);
             tag.hash = Hash.SDBMLower(tag_string);
             return tag;
         }
@@ -139,6 +139,9 @@ namespace Common
             return Void;
         }
 
+        /// <summary>
+        /// Returns Element or Element.Void. Never returns null.
+        /// </summary>
         public static Element ToElement(this Tag tag)
         {
             if (ElementLoader.elementTable == null)
@@ -430,14 +433,6 @@ namespace Common
             line = line.Replace("\n", "\\n");
             line = line.Replace("<color=#", "<color=^p");
             return line;
-        }
-
-        public static void Fill<T>(this T[] array, T value)
-        {
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = value;
-            }
         }
 
         public static bool Ensure<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value, Func<TValue> getter)

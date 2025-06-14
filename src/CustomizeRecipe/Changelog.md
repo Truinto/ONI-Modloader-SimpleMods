@@ -1,8 +1,11 @@
 # Changelog
 
-## [1.0.8.0] U56-674504-SCRP (release)
-- fixed recipes with fuzzy input (like AnyWater) to not split into sub-recipes
+## [1.0.9.0] U56-674504-SCRP (release)
+- added support for multi ingredient inputs
 - fixed recipe printout
+
+## [1.0.8.0] U56-674504-SCRP (release)
+- nevermind, does not fix it
 
 ## [1.0.7.0] U56-674504-SCRP (release)
 - fixed custom recipe not being added

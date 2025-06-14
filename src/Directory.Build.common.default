@@ -3,9 +3,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
-		<LangVersion>latest</LangVersion>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
 		<Title>$(MSBuildProjectName)</Title>
 		<RootNamespace>$(MSBuildProjectName)</RootNamespace>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>

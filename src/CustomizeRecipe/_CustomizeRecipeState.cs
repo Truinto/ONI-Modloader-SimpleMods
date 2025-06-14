@@ -4,6 +4,7 @@ using Common;
 using PeterHan.PLib.Options;
 using System.IO;
 using System;
+using System.Linq;
 
 namespace CustomizeRecipe
 {
@@ -11,7 +12,7 @@ namespace CustomizeRecipe
     [RestartRequired]
     public class CustomizeRecipeState : IManualConfig
     {
-        public int version { get; set; } = 1;
+        public int version { get; set; } = 2;
 
         [Option("CustomizeRecipe.LOCSTRINGS.LoadAllRecipesToConfig_Title", "CustomizeRecipe.LOCSTRINGS.LoadAllRecipesToConfig_ToolTip", "", null)]
         [JsonIgnore]
@@ -54,6 +55,15 @@ namespace CustomizeRecipe
 
         public static bool OnUpdate(CustomizeRecipeState state)
         {
+            if (state.version < 2)
+            {
+                var rs = state.RecipeSettings;
+                for (int i = rs.Count - 1; i >= 0; i--)
+                {
+                    if (rs[i].Inputs.Any(a => a.material is "0"))
+                        rs.RemoveAt(i);
+                }
+            }
             return true;
         }
 
