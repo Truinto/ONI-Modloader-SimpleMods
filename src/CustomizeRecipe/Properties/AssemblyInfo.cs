@@ -2,5 +2,5 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("CustomizeRecipe")]
 [assembly: AssemblyProduct("CustomizeRecipe")]
-[assembly: AssemblyVersion("1.0.7.3")]
-[assembly: AssemblyFileVersion("1.0.7.3")]
+[assembly: AssemblyVersion("1.0.8.0")]
+[assembly: AssemblyFileVersion("1.0.8.0")]

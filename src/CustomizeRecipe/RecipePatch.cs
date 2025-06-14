@@ -27,15 +27,15 @@ namespace CustomizeRecipe
         }
     }
 
-    [HarmonyPatch(typeof(Assets), nameof(Assets.CreatePrefabs))]
+    [HarmonyPatch(typeof(ComplexRecipeManager), nameof(ComplexRecipeManager.PostProcess))]
     [HarmonyPriority(Priority.LowerThanNormal)]
     public class RecipePatch
     {
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         public static void Load()
         {
 #if DEBUG
-            foreach (var recipe in ComplexRecipeManager.Get().recipes)
+            foreach (var recipe in ComplexRecipeManager.Get().preProcessRecipes)
                 Helpers.Print($"id: {recipe.id}, description: {recipe.description}, building: {recipe.fabricators.FirstOrDefault()}");
 #endif
             UnlockStorage();
@@ -44,10 +44,11 @@ namespace CustomizeRecipe
                 Process(setting);
 
             if (CustomizeRecipeState.StateManager.State.CheatFast)
-                ComplexRecipeManager.Get().recipes.ForEach(a => a.time = 5f);
+                foreach (var recipe in ComplexRecipeManager.Get().preProcessRecipes)
+                    recipe.time = 5f;
 
             if (CustomizeRecipeState.StateManager.State.CheatFree)
-                foreach (var recipe in ComplexRecipeManager.Get().recipes)
+                foreach (var recipe in ComplexRecipeManager.Get().preProcessRecipes)
                     for (int i = 0; i < recipe.ingredients.Length; i++)
                         recipe.ingredients[i] = new ComplexRecipe.RecipeElement(recipe.ingredients[i].material, 0f, recipe.ingredients[i].temperatureOperation, recipe.ingredients[i].storeElement);
         }
@@ -57,7 +58,7 @@ namespace CustomizeRecipe
         /// </summary>
         public static void UnlockStorage()
         {
-            var recipes = ComplexRecipeManager.Get().recipes;
+            var recipes = ComplexRecipeManager.Get().preProcessRecipes;
 
             foreach (var building in Assets.BuildingDefs)
             {
@@ -95,17 +96,18 @@ namespace CustomizeRecipe
                 return;
             }
 
-            // broken after bionic update
-            //// check ID formatting
-            //if (!Assets.PrefabsByTag.Any(a => setting.Id.StartsWithIgnoreCase(a.Key.Name) && a.Value.GetComponent<BuildingHP>() != null))
-            //{
-            //    Config.PostBootDialog.ErrorList.Add($"Recipe ID '{setting.Id}' is invalid. Must start with building + underscore.");
-            //    return;
-            //}
+            // try to find recipe by ID
+            ComplexRecipe recipe = null;
+            foreach (var preProcessedRecipe in ComplexRecipeManager.Get().preProcessRecipes)
+            {
+                if (preProcessedRecipe.id == setting.Id)
+                {
+                    recipe = preProcessedRecipe;
+                    break;
+                }
+            }
 
-            // try to find recipe, if non found try to generate a new one
-            bool addToManager = false;
-            var recipe = ComplexRecipeManager.Get().recipes.Find(f => f.id == setting.Id);
+            // generate new recipe, since ID wasn't found
             if (recipe == null)
             {
                 if (setting.Building == null || setting.Inputs == null || setting.Outputs == null)
@@ -113,7 +115,6 @@ namespace CustomizeRecipe
                     Config.PostBootDialog.ErrorList.Add("Trying to generate new recipe, but could not parse building, inputs, or outputs: " + recipe.id);
                     return;
                 }
-
                 Helpers.Print($"Making new Recipe: {setting.Id}");
                 recipe = new ComplexRecipe(setting.Id, setting.InputsArray, setting.OutputsArray)
                 {
@@ -122,7 +123,6 @@ namespace CustomizeRecipe
                     nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult,
                     description = "",
                 };
-                addToManager = true;
             }
 
             // apply modifications
@@ -139,16 +139,12 @@ namespace CustomizeRecipe
             if (setting.HEPout != null)
                 recipe.producedHEP = setting.HEPout.Value;
             recipe.description ??= "";
-
-            // we need to call this, since it's added in post
-            if (addToManager)
-                ComplexRecipeManager.Get().Add(recipe, true);
         }
 
         public static void Print()
         {
             CustomizeRecipeState.StateManager.State.RecipeSettings.Clear();
-            foreach (var recipe in ComplexRecipeManager.Get().recipes)
+            foreach (var recipe in ComplexRecipeManager.Get().preProcessRecipes)
             {
                 var item = new RecipeData(
                     recipe.id,
