@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.7.0] U56-674504-SCRP (release)
+- fixed custom recipe not being added
+
 ## [1.0.6.0] U56-674504-SCR (release)
 - fixed crash with new update
 

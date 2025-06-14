@@ -9,7 +9,7 @@ using Common;
 
 namespace CustomizeRecipe
 {
-    //[HarmonyPatch(typeof(ComplexFabricator), "StartWorkingOrder")]
+    //[HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.StartWorkingOrder))]
     public class BugSearch
     {
         public static Dictionary<ComplexFabricator, int> Handles = new();
@@ -27,7 +27,7 @@ namespace CustomizeRecipe
         }
     }
 
-    [HarmonyPatch(typeof(Assets), "CreatePrefabs")]
+    [HarmonyPatch(typeof(Assets), nameof(Assets.CreatePrefabs))]
     [HarmonyPriority(Priority.LowerThanNormal)]
     public class RecipePatch
     {
@@ -104,6 +104,7 @@ namespace CustomizeRecipe
             //}
 
             // try to find recipe, if non found try to generate a new one
+            bool addToManager = false;
             var recipe = ComplexRecipeManager.Get().recipes.Find(f => f.id == setting.Id);
             if (recipe == null)
             {
@@ -118,8 +119,10 @@ namespace CustomizeRecipe
                 {
                     time = 40f,
                     fabricators = new List<Tag>() { setting.Building.ToTag() },
-                    nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult
+                    nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult,
+                    description = "",
                 };
+                addToManager = true;
             }
 
             // apply modifications
@@ -135,8 +138,11 @@ namespace CustomizeRecipe
                 recipe.consumedHEP = setting.HEP.Value;
             if (setting.HEPout != null)
                 recipe.producedHEP = setting.HEPout.Value;
-
             recipe.description ??= "";
+
+            // we need to call this, since it's added in post
+            if (addToManager)
+                ComplexRecipeManager.Get().Add(recipe, true);
         }
 
         public static void Print()
@@ -158,7 +164,7 @@ namespace CustomizeRecipe
         }
     }
 
-    [HarmonyPatch(typeof(PrimaryElement), "SetTemperature")]
+    [HarmonyPatch(typeof(PrimaryElement), nameof(PrimaryElement.SetTemperature))]
     public class TemperatureFix
     {
         public static bool Prepare()
@@ -175,7 +181,7 @@ namespace CustomizeRecipe
         }
     }
 
-    [HarmonyPatch(typeof(ComplexFabricator), "StartWorkingOrder")]
+    [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.StartWorkingOrder))]
     public class FetchFix
     {
         public static bool Prepare()
