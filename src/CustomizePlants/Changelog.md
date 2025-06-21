@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.47.0] U56-675600-SCRP (release)
+- fixed crash without DLC SpacedOut
+
 ## [1.0.46.0] U56-674504-SCR (release)
 - fixed crash with illumination settings
 

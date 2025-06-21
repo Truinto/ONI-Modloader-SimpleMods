@@ -240,9 +240,9 @@ namespace CustomizePlants
         public static void ProcessPlant(GameObject plant)
         {
             var match = PlantLookupPatch.FindBetweenLink.Match(plant.GetProperName() ?? "null");
-            string displayName = match.Success ? match.Groups[1].Value : null;
+            string? displayName = match.Success ? match.Groups[1].Value : null;
 
-            PlantData setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.PrefabID() || t.id == displayName);
+            PlantData? setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.PrefabID() || t.id == displayName);
             if (setting == null) return;
 
             #region trait fix
@@ -295,16 +295,16 @@ namespace CustomizePlants
                     seedProducer.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
                     seedProducer.seedInfo.newSeedsProduced = 1;
 
-                    var mutantseed = Assets.TryGetPrefab(seedProducer.seedInfo.seedId)?.AddOrGet<MutantPlant>();
-                    if (mutantseed != null)
+                    if (DlcManager.FeaturePlantMutationsEnabled())
                     {
-                        mutantseed.SpeciesID = plant.GetComponent<KPrefabID>().PrefabTag;
-                    }
-
-                    var mutantcompost = Assets.TryGetPrefab("Compost" + plant.GetComponent<KPrefabID>().name)?.AddOrGet<MutantPlant>();
-                    if (mutantcompost != null)
-                    {
-                        mutantcompost.SpeciesID = mutantseed.SpeciesID;
+                        var mutantseed = Assets.TryGetPrefab(seedProducer.seedInfo.seedId)?.AddOrGet<MutantPlant>();
+                        if (mutantseed != null)
+                        {
+                            mutantseed.SpeciesID = plant.GetComponent<KPrefabID>().PrefabTag;
+                            var mutantcompost = Assets.TryGetPrefab("Compost" + plant.GetComponent<KPrefabID>().name)?.AddOrGet<MutantPlant>();
+                            if (mutantcompost != null)
+                                mutantcompost.SpeciesID = mutantseed.SpeciesID;
+                        }
                     }
                 }
             }
@@ -390,7 +390,7 @@ namespace CustomizePlants
                 }
                 else if (setting.illumination == 1f)
                 {
-                        illumination ??= plant.AddOrGet<IlluminationVulnerable>();
+                    illumination ??= plant.AddOrGet<IlluminationVulnerable>();
                     illumination.SetPrefersDarkness(false);
                 }
                 else
