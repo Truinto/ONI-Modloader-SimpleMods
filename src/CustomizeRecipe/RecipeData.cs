@@ -22,6 +22,9 @@ namespace CustomizeRecipe
         public float? Time;
         public int? HEP;
         public int? HEPout;
+        public ComplexRecipe.RecipeNameDisplay? NameDisplay;
+        public string? CustomName;
+        public string? CustomSpritePrefabID;
         public string? Description;
 
         public class RecipeElement

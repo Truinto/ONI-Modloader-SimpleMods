@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.10.0] U56-675600-SCRP (release)
+- added fields NameDisplay, CustomName, CustomSpritePrefabID
+
 ## [1.0.9.0] U56-674504-SCRP (release)
 - added support for multi ingredient inputs
 - fixed recipe printout

@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using System.Linq;
 using System;
 using Common;
+using Shared.CollectionNS;
 
 namespace CustomizeRecipe
 {
@@ -76,7 +77,7 @@ namespace CustomizeRecipe
                 var fabricator = building.BuildingComplete?.GetComponent<ComplexFabricator>();
                 if (fabricator == null || fabricator.storeProduced != true)
                     continue;
-                
+
                 foreach (var recipe in recipes)
                 {
                     if (recipe.fabricators.Contains(building.Tag))
@@ -137,6 +138,12 @@ namespace CustomizeRecipe
             }
 
             // apply modifications
+            if (setting.NameDisplay != null)
+                recipe.nameDisplay = setting.NameDisplay.Value;
+            if (setting.CustomSpritePrefabID != null)
+                recipe.customSpritePrefabID = setting.CustomSpritePrefabID;
+            if (setting.CustomName != null)
+                recipe.customName = setting.CustomName;
             if (setting.Description != null)
                 recipe.description = setting.Description;
             if (setting.Inputs != null)
@@ -157,15 +164,20 @@ namespace CustomizeRecipe
             CustomizeRecipeState.StateManager.State.RecipeSettings.Clear();
             foreach (var recipe in ComplexRecipeManager.Get().preProcessRecipes)
             {
-                var item = new RecipeData(
-                    recipe.id,
-                    recipe.fabricators.FirstOrDefault().ToString(),
-                    recipe.time,
-                    recipe.consumedHEP,
-                    recipe.producedHEP,
-                    recipe.description,
-                    recipe.ingredients,
-                    recipe.results);
+                var item = new RecipeData()
+                {
+                    Id = recipe.id,
+                    Building = recipe.fabricators.FirstOrDefault().ToString(),
+                    Time = recipe.time,
+                    HEP = recipe.consumedHEP > 0 ? recipe.consumedHEP : null,
+                    HEPout = recipe.producedHEP > 0 ? recipe.producedHEP : null,
+                    NameDisplay = recipe.nameDisplay,
+                    CustomName = recipe.customName,
+                    CustomSpritePrefabID = recipe.customSpritePrefabID,
+                    Description = recipe.description,
+                    Inputs = { recipe.ingredients.Select(s => (RecipeData.RecipeElement)s) },
+                    Outputs = { recipe.results.Select(s => (RecipeData.RecipeElement)s) },
+                };
                 CustomizeRecipeState.StateManager.State.RecipeSettings.Add(item);
             }
         }

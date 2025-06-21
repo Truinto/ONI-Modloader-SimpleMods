@@ -38,13 +38,13 @@ namespace CustomizeRecipe
             new RecipeData("RockCrusher_I_Fossil_O_Lime_SedimentaryRock", RockCrusherConfig.ID)
                 .In(SimHashes.Fossil, 100f)
                 .Out(SimHashes.Lime, 20f).Out(SimHashes.SedimentaryRock, 80f),
-            new RecipeData("RockCrusher_NewExampleRecipe1", RockCrusherConfig.ID, 5f, 0, 0, "This is the description.")
+            new RecipeData("RockCrusher_NewExampleRecipe1", RockCrusherConfig.ID, Time: 5f, Description: "This is the description.")
                 .In(SimHashes.Water, 100f).In(SimHashes.Dirt, 50f)
                 .Out(SimHashes.Lime, 25f).Out(SimHashes.SedimentaryRock, 10f),
-            new RecipeData(null, RockCrusherConfig.ID, 40f, 0, 0, "Turns Regolith into Sand and Dirt.")
+            new RecipeData(null, RockCrusherConfig.ID, Time: 40f, Description: "Turns Regolith into Sand and Dirt.")
                 .In(SimHashes.Regolith, 100f)
                 .Out(SimHashes.Sand, 100f),
-            new RecipeData(null, GlassForgeConfig.ID, 40f, 0, 0, "Extracts pure <link=\"LIQUIDPHOSPHORUS\">Phosphorus</link> from <link=\"PHOSPHORITE\">Phosphorite</link>.")
+            new RecipeData(null, GlassForgeConfig.ID, Time: 40f, Description: "Extracts pure <link=\"LIQUIDPHOSPHORUS\">Phosphorus</link> from <link=\"PHOSPHORITE\">Phosphorite</link>.")
                 .In(SimHashes.Phosphorite, 100f)
                 .Out(SimHashes.LiquidPhosphorus, 100f, ComplexRecipe.RecipeElement.TemperatureOperation.Melted)
         };
