@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.27.0] U56-677228-SCRP (release)
+- added defaults for Plant Pulverizer and Peat Burner
+- added PipesOnGeysers switch, which adds one pipe on every geyser
+
 ## [1.0.26.0] U54-652372-SCR (release)
 - new attempt to fix #47 #81
 

@@ -18,6 +18,9 @@ namespace PipedEverything
     [HarmonyPatch]
     public static class Patches
     {
+        /// <summary>
+        /// Prevent item drop, if pipe connnected.
+        /// </summary>
         [HarmonyPatch(typeof(ElementConverter), nameof(ElementConverter.ConvertMass))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ElementConverter_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -35,6 +38,9 @@ namespace PipedEverything
             }
         }
 
+        /// <summary>
+        /// Prevent item drop, if pipe connnected.
+        /// </summary>
         [HarmonyPatch(typeof(EnergyGenerator), nameof(EnergyGenerator.Emit))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> EnergyGenerator_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -52,6 +58,9 @@ namespace PipedEverything
             }
         }
 
+        /// <summary>
+        /// Prevent item drop, if pipe connnected.
+        /// </summary>
         [HarmonyPatch(typeof(AutoStorageDropper.Instance), nameof(AutoStorageDropper.Instance.Drop))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> AutoStorageDropper_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -75,6 +84,9 @@ namespace PipedEverything
             }
         }
 
+        /// <summary>
+        /// Prevent specific item drop, if pipe connnected.
+        /// </summary>
         [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.DropExcessIngredients))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ComplexFabricator_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -101,6 +113,9 @@ namespace PipedEverything
             }
         }
 
+        /// <summary>
+        /// Prevent item drop, if pipe connnected.
+        /// </summary>
         [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.SpawnOrderProduct))]
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> ComplexFabricator_Transpiler2(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -118,6 +133,9 @@ namespace PipedEverything
             }
         }
 
+        /// <summary>
+        /// Prevent all item drop, if input pipe connnected.
+        /// </summary>
         [HarmonyPatch(typeof(ComplexFabricator), nameof(ComplexFabricator.DropExcessIngredients))]
         [HarmonyPrefix]
         public static bool ComplexFabricator_DropExcessIngredients(ComplexFabricator __instance)
@@ -132,6 +150,9 @@ namespace PipedEverything
             static bool inputIsConnected(PortDisplay2 port) => port.input && port.IsConnected();
         }
 
+        /// <summary>
+        /// Re-route emitter to pipe, if connected.
+        /// </summary>
         [HarmonyPatch(typeof(BuildingElementEmitter), nameof(BuildingElementEmitter.Sim200ms))]
         [HarmonyPrefix]
         public static bool BuildingElementEmitter_Prefix(float dt, BuildingElementEmitter __instance)
@@ -148,7 +169,7 @@ namespace PipedEverything
             bool emitting = __instance.statusHandle != Guid.Empty;
             var element = __instance.element.ToElement();
             var port = controller.GetPort(false, element.GetConduitType(), element.id);
-            if (!port.IsConnected())
+            if (port == null || !port.IsConnected())
             {
                 if (!emitting)
                     __instance.dirty = true;
@@ -156,7 +177,7 @@ namespace PipedEverything
             }
 
             // try store; if not, maybe clean
-            float mass = __instance.emitRate * 0.2f;
+            float mass = __instance.emitRate * dt;
             if (!port.TryStore(element, mass, __instance.temperature))
             {
                 if (!emitting)
@@ -188,9 +209,14 @@ namespace PipedEverything
         }
 
         /// <summary>
-        /// cache variables
+        /// Attach pipe logic to geysers.
         /// </summary>
-        public static readonly HashSet<string> DrawBuildings = new();
+        [HarmonyPatch(typeof(GeyserGenericConfig), nameof(GeyserGenericConfig.CreateGeyser), typeof(string), typeof(string), typeof(int), typeof(int), typeof(string), typeof(string), typeof(HashedString), typeof(float), typeof(string[]), typeof(string[]))]
+        [HarmonyPostfix]
+        public static void GeyserGenericConfig_CreateGeyser_Postfix(GameObject __result)
+        {
+            AddLogic.TryAddGeyser(__result);
+        }
 
         /// <summary>
         /// Draw conduit port icons.
@@ -199,15 +225,8 @@ namespace PipedEverything
         [HarmonyPrefix]
         public static void DrawPorts_Prefix(EntityCellVisualizer __instance, HashedString mode)
         {
-            if (__instance is BuildingCellVisualizer buildingCellVisualizer)
-            {
-                if (DrawBuildings.Contains(buildingCellVisualizer.building.Def.PrefabID))
-                {
-                    var go = buildingCellVisualizer.building.gameObject;
-                    var controller = go.GetComponent<PortDisplayController>();
-                    controller?.Draw(buildingCellVisualizer, mode, go);
-                }
-            }
+            var controller = __instance.GetComponent<PortDisplayController>();
+            controller?.Draw(__instance, mode);
         }
 
         /// <summary>

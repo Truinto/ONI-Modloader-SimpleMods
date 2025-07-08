@@ -21,7 +21,7 @@ namespace PipedEverything
         public CellOffset conduitOffset;
 
         [SerializeField]
-        public SimHashes[] elementFilter;
+        public SimHashes[]? elementFilter;
 
         [SerializeField]
         public int storageIndex;
@@ -45,20 +45,20 @@ namespace PipedEverything
         public bool useSecondaryOutput;
 
         [MyCmpReq]
-        private Operational operational;
+        private Operational operational = null!;
 
-        private Storage _storage;
+        private Storage? _storage;
 
         [MyCmpReq]
-        private Building building;
+        private Building building = null!;
 
         private HandleVector<int>.Handle partitionerEntry;
 
         private int utilityCell = -1;
 
-        private int elementOutputOffset;
+        private int RoundRobinIndex;
 
-        private FlowUtilityNetwork.NetworkItem networkItem;
+        private FlowUtilityNetwork.NetworkItem? networkItem;
 
         public Storage Storage => this._storage ??= GetComponents<Storage>()[this.storageIndex];
 
@@ -90,11 +90,11 @@ namespace PipedEverything
             {
                 ConduitType.Gas => Game.Instance.gasConduitFlow,
                 ConduitType.Liquid => Game.Instance.liquidConduitFlow,
-                _ => null,
+                _ => throw new Exception("Cannot get valid ConduitType"),
             };
         }
 
-        private void OnConduitConnectionChanged(object data)
+        private void OnConduitConnectionChanged(object? data)
         {
             base.Trigger((int)GameHashes.ConduitConnectionChanged, this.IsConnected);
         }
@@ -146,7 +146,7 @@ namespace PipedEverything
             {
                 this.utilityCell = GetOutputCell(GetConduitManager().conduitType);
             }
-            PrimaryElement primaryElement = FindSuitableElement();
+            var primaryElement = FindSuitableElement();
             if (primaryElement != null)
             {
                 primaryElement.KeepZeroMassObject = true;
@@ -170,18 +170,18 @@ namespace PipedEverything
             }
         }
 
-        private PrimaryElement FindSuitableElement()
+        private PrimaryElement? FindSuitableElement()
         {
             List<GameObject> items = this.Storage.items;
             int count = items.Count;
             for (int i = 0; i < count; i++)
             {
-                int index = (i + this.elementOutputOffset) % count;
-                PrimaryElement component = items[index].GetComponent<PrimaryElement>();
-                if (component != null && component.Mass > 0f && ((this.conduitType == ConduitType.Liquid) ? component.Element.IsLiquid : component.Element.IsGas) && (this.elementFilter == null || this.elementFilter.Length == 0 || (!this.invertElementFilter && IsFilteredElement(component.ElementID)) || (this.invertElementFilter && !IsFilteredElement(component.ElementID))))
+                int index = (i + this.RoundRobinIndex) % count;
+                var primaryElement = items[index].GetComponent<PrimaryElement>();
+                if (primaryElement != null && primaryElement.Mass > 0f && ((this.conduitType == ConduitType.Liquid) ? primaryElement.Element.IsLiquid : primaryElement.Element.IsGas) && (this.elementFilter == null || this.elementFilter.Length == 0 || (!this.invertElementFilter && IsFilteredElement(primaryElement.ElementID)) || (this.invertElementFilter && !IsFilteredElement(primaryElement.ElementID))))
                 {
-                    this.elementOutputOffset = (this.elementOutputOffset + 1) % count;
-                    return component;
+                    this.RoundRobinIndex = (this.RoundRobinIndex + 1) % count;
+                    return primaryElement;
                 }
             }
             return null;
@@ -189,7 +189,7 @@ namespace PipedEverything
 
         private bool IsFilteredElement(SimHashes element)
         {
-            for (int i = 0; i != this.elementFilter.Length; i++)
+            for (int i = 0; i != this.elementFilter!.Length; i++)
             {
                 if (this.elementFilter[i] == element || this.elementFilter[i] == SimHashes.Void)
                 {

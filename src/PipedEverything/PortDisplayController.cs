@@ -7,7 +7,7 @@ using Common;
 namespace PipedEverything
 {
     [SkipSaveFileSerialization]
-    internal class PortDisplayController : KMonoBehaviour
+    public class PortDisplayController : KMonoBehaviour
     {
         [SerializeField]
         private HashedString lastMode = OverlayModes.None.ID;
@@ -25,7 +25,7 @@ namespace PipedEverything
         public List<PortDisplay2> solidOverlay = new();
 
         [MyCmpGet]
-        private Operational operational;
+        private Operational? operational;
 
         public override void OnSpawn()
         {
@@ -40,7 +40,7 @@ namespace PipedEverything
             }
         }
 
-        public void AssignPort(GameObject go, PortDisplayInfo port)
+        public void AddPort(GameObject go, PortDisplayInfo port)
         {
             PortDisplay2 portDisplay = go.AddComponent<PortDisplay2>();
             portDisplay.AssignPort(port);
@@ -63,14 +63,13 @@ namespace PipedEverything
 
             // criteria for drawing port icons on buildings
             // vanilla will only attempt to draw icons on buildings with BuildingCellVisualizer
-            go.AddOrGet<BuildingCellVisualizer>();
-
-            // when vanilla tries to draw, call this controller if the building is in the DrawPorts list
-            string ID = go.GetComponent<KPrefabID>().PrefabTag.Name;
-            Patches.DrawBuildings.Add(ID);
+            if (go.GetComponent<Building>() != null)
+                go.AddOrGet<BuildingCellVisualizer>();
+            else
+                go.AddOrGet<EntityCellVisualizer>();
         }
 
-        public bool Draw(BuildingCellVisualizer __instance, HashedString mode, GameObject go)
+        public bool Draw(EntityCellVisualizer __instance, HashedString mode)
         {
             bool isNewMode = mode != this.lastMode;
 
@@ -82,7 +81,7 @@ namespace PipedEverything
 
             foreach (PortDisplay2 port in GetPorts(mode))
             {
-                port.Draw(go, __instance, isNewMode);
+                port.Draw(__instance, isNewMode);
             }
 
             return true;
@@ -149,11 +148,11 @@ namespace PipedEverything
             return false;
         }
 
-        public PortDisplay2 GetPort(bool input, ConduitType conduitType, SimHashes hash)
+        public PortDisplay2? GetPort(bool input, ConduitType conduitType, SimHashes hash)
         {
             foreach (var port in conduitType == ConduitType.Gas ? gasOverlay : conduitType == ConduitType.Liquid ? liquidOverlay : solidOverlay)
             {
-                if (port.input == input && (port.filter.Contains(SimHashes.Void) || port.filter.Contains(hash)))
+                if (port.input == input && (port.filter.Contains(SimHashes.Void) || port.filter.Contains(hash) || hash == SimHashes.Void))
                     return port;
             }
             return null;

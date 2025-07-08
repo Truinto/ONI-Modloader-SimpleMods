@@ -25,3 +25,4 @@ Thanks to Nightinggale for the ground work of this project. [Link](https://githu
 ### Notes
 * Filter accepts the string 'Solid', 'Liquid', and 'Gas' for ports; this will process any element of that type
 * OriginalPort makes the config apply to an original port. Usually set it to 'Utility'. Set to 'Extra1' to 'Extra4' for extra ports (e.g. filters/warp). You cannot change its color.
+* If StorageCapacity is positive infinity, then the storage capacity will not be expanded. And the storage is only considered full, if all capacity is exhausted.

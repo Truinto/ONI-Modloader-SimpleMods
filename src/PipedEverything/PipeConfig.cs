@@ -11,11 +11,11 @@ namespace PipedEverything
 {
     public class PipeConfig
     {
-        public string Id;
+        public string? Id;
         public bool Input;
         public int OffsetX;
         public int OffsetY;
-        public string[] Filter;
+        public string[] Filter = [];
 
         public Color32? Color;
         public Color32? ColorBackground;

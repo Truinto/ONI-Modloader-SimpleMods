@@ -12,9 +12,9 @@ namespace PipedEverything
         private static List<(Sprite sprite, Color color, Color background, Color border)> sprites_in = new();
         private static List<(Sprite sprite, Color color, Color background, Color border)> sprites_out = new();
 
-        private GameObject portObject;
+        private GameObject? portObject;
 
-        private int lastUtilityCell = -1;
+        public int lastUtilityCell = -1;
 
         [SerializeField]
         public ConduitType type;
@@ -29,13 +29,13 @@ namespace PipedEverything
         public Color32 color;
 
         [SerializeField]
-        public Sprite sprite;
+        public Sprite? sprite;
 
         [SerializeField]
-        public SimHashes[] filter;
+        public SimHashes[] filter = [];
 
         [SerializeField]
-        public Tag[] tags;
+        public Tag[] tags = [];
 
         [SerializeField]
         public int storageIndex;
@@ -43,7 +43,7 @@ namespace PipedEverything
         [SerializeField]
         public float storageCapacity;
 
-        private Storage storage;
+        private Storage? storage;
 
         public Storage Storage => storage ??= GetComponents<Storage>()[this.storageIndex];
 
@@ -130,7 +130,7 @@ namespace PipedEverything
                     var p = source_texture.GetPixel(i + x, j + y);
 
                     if (p.r < 0.5f)     // if color is 50% dark, invert it and tint with background                    
-                        target_texture.SetPixel(i, j, p.Invert() * background);                    
+                        target_texture.SetPixel(i, j, p.Invert() * background);
                     else if (i < ml || i > mh || j < ml || j > mh)
                         target_texture.SetPixel(i, j, p * border);     // if in border, tint with border
                     else
@@ -163,9 +163,9 @@ namespace PipedEverything
             return readable_texture;
         }
 
-        public void Draw(GameObject obj, BuildingCellVisualizer visualizer, bool force)
+        public void Draw(EntityCellVisualizer visualizer, bool force)
         {
-            int utilityCell = visualizer.building.GetCellWithOffset(this.offset);
+            int utilityCell = visualizer.GetCellWithOffset(this.offset);
 
             // redraw if anything changed
             if (force || utilityCell != this.lastUtilityCell)
@@ -252,6 +252,23 @@ namespace PipedEverything
                 this.Storage.AddGasChunk(element.id, mass, temperature, 0, 0, keep_zero_mass: true);
             else if (element.IsLiquid)
                 this.Storage.AddLiquid(element.id, mass, temperature, 0, 0, keep_zero_mass: true);
+            else if (element.IsSolid)
+                this.Storage.AddOre(element.id, mass, temperature, 0, 0, keep_zero_mass: true);
+
+            return true;
+        }
+
+        public bool TryStore(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count)
+        {
+            //if (GetCapacity(element) < 0)
+            //    return false;
+
+            if (type is ConduitType.Gas)
+                this.Storage.AddGasChunk(element, mass, temperature, disease_idx, disease_count, keep_zero_mass: true);
+            else if (type is ConduitType.Liquid)
+                this.Storage.AddLiquid(element, mass, temperature, disease_idx, disease_count, keep_zero_mass: true);
+            else if (type is ConduitType.Solid)
+                this.Storage.AddOre(element, mass, temperature, disease_idx, disease_count, keep_zero_mass: true);
 
             return true;
         }

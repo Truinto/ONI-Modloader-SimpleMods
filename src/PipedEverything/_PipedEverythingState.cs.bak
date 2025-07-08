@@ -9,7 +9,9 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 9;
+        public int version { get; set; } = 10;
+
+        public bool PipesOnGeysers { get; set; } = true;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -25,6 +27,10 @@ namespace PipedEverything
 
             new PipeConfig(MethaneGeneratorConfig.ID, false, x: 2, y: 2, SimHashes.CarbonDioxide),
             new PipeConfig(MethaneGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.DirtyWater),
+
+            new PipeConfig(PeatGeneratorConfig.ID, true, x: 0, y: 0, SimHashes.Peat) { StorageCapacity = float.PositiveInfinity },
+            new PipeConfig(PeatGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.CarbonDioxide),
+            new PipeConfig(PeatGeneratorConfig.ID, false, x: 1, y: 0, SimHashes.DirtyWater),
 
             // Refinement
             new PipeConfig(OilRefineryConfig.ID, false, x: -1, y: 3, SimHashes.Methane),
@@ -93,6 +99,11 @@ namespace PipedEverything
             new PipeConfig(UraniumCentrifugeConfig.ID, true, x: 0, y: 0, SimHashes.UraniumOre) { StorageCapacity = 500f },
             new PipeConfig(UraniumCentrifugeConfig.ID, false, x: 0, y: 0, SimHashes.EnrichedUranium) { StorageIndex = 2 },
 
+            new PipeConfig(MilkPressConfig.ID, true, x: 0, y: 0, SimHashes.Water),
+            new PipeConfig(MilkPressConfig.ID, true, x: 1, y: 0, "Solid") { StorageCapacity = float.PositiveInfinity },
+            new PipeConfig(MilkPressConfig.ID, false, x: 0, y: 1, "Liquid") { Color = new(244,212,237,255) },
+            new PipeConfig(MilkPressConfig.ID, false, x: 1, y: 1, "Solid") { Color = new(181,173,101,255) },
+
             // Utility & other
             new PipeConfig(OilWellCapConfig.ID, false, x: 2, y: 1, SimHashes.CrudeOil),
             new PipeConfig(OilWellCapConfig.ID, false, x: 1, y: 1, SimHashes.Methane),
@@ -141,11 +152,7 @@ namespace PipedEverything
 
         #region _implementation
 
-        public static Config.Manager<PipedEverythingState> StateManager;
-
-        public static void BeforeUpdate()
-        {
-        }
+        public static Config.Manager<PipedEverythingState> StateManager = null!;
 
         public static bool OnUpdate(PipedEverythingState state)
         {
@@ -186,7 +193,24 @@ namespace PipedEverything
                     config.RemoveMaxAtmosphere = null;
             }
 
+            if (state.version < 10)
+            {
+                addIfNew(new PipeConfig(MilkPressConfig.ID, true, x: 0, y: 0, SimHashes.Water));
+                addIfNew(new PipeConfig(MilkPressConfig.ID, true, x: 1, y: 0, "Solid") { StorageCapacity = float.PositiveInfinity });
+                addIfNew(new PipeConfig(MilkPressConfig.ID, false, x: 0, y: 1, "Liquid") { Color = new(244, 212, 237, 255) });
+                addIfNew(new PipeConfig(MilkPressConfig.ID, false, x: 1, y: 1, "Solid") { Color = new(181, 173, 101, 255) });
+                addIfNew(new PipeConfig(PeatGeneratorConfig.ID, true, x: 0, y: 0, "Solid") { StorageCapacity = float.PositiveInfinity });
+                addIfNew(new PipeConfig(PeatGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.CarbonDioxide));
+                addIfNew(new PipeConfig(PeatGeneratorConfig.ID, false, x: 1, y: 0, SimHashes.DirtyWater));
+            }
+
             return true;
+
+            void addIfNew(PipeConfig config)
+            {
+                if (!state.Configs.Any(a => a.Id == config.Id && a.Input == config.Input && (a.OffsetX == config.OffsetX && a.OffsetY == config.OffsetY || a.Filter.SequenceEqual(config.Filter))))
+                    state.Configs.Add(config);
+            }
         }
 
         public object ReadSettings()

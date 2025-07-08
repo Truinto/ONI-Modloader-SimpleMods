@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Common;
-using static Storage;
 using Shared.CollectionNS;
 
 namespace PipedEverything
@@ -117,17 +114,17 @@ namespace PipedEverything
             }
 
             // attach controller
-            var portInfo = new PortDisplayInfo([.. filters], [.. filterTags], conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
-            def.BuildingComplete.AddOrGet<PortDisplayController>().AssignPort(def.BuildingComplete, portInfo);
-            def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AssignPort(def.BuildingUnderConstruction, portInfo);
-            def.BuildingPreview.AddOrGet<PortDisplayController>().AssignPort(def.BuildingPreview, portInfo);
+            var portInfo = new PortDisplayInfo(filters.ToArray(), filterTags.ToArray(), conduitType, offset, config.Input, color, config.ColorBackground, config.ColorBorder, config.StorageIndex, config.StorageCapacity);
+            def.BuildingComplete.AddOrGet<PortDisplayController>().AddPort(def.BuildingComplete, portInfo);
+            def.BuildingUnderConstruction.AddOrGet<PortDisplayController>().AddPort(def.BuildingUnderConstruction, portInfo);
+            def.BuildingPreview.AddOrGet<PortDisplayController>().AddPort(def.BuildingPreview, portInfo);
 
             // add capacity and set sealed state
             var storage = storages[portInfo.StorageIndex];
             if (portInfo.StorageCapacity < float.MaxValue) // don't add ridiculous capacities
                 storage.capacityKg += portInfo.StorageCapacity * portInfo.filters.Length;
-            if (isToxic && !storage.defaultStoredItemModifers.Contains(StoredItemModifier.Seal))
-                storage.defaultStoredItemModifers.Add(StoredItemModifier.Seal);
+            if (isToxic && !storage.defaultStoredItemModifers.Contains(Storage.StoredItemModifier.Seal))
+                storage.defaultStoredItemModifers.Add(Storage.StoredItemModifier.Seal);
 
             // add conduit consumer/dispenser
             if (config.Input)
@@ -166,6 +163,9 @@ namespace PipedEverything
 
         private static void TryAddLogicOriginal(BuildingDef def, PipeConfig config)
         {
+            if (config.OriginalPort is null)
+                throw new ArgumentNullException(nameof(config.OriginalPort));
+
             if (config.OriginalPort is Port.Utility)
             {
                 if (config.Input)
@@ -189,6 +189,32 @@ namespace PipedEverything
                         ports[index].portInfo.offset = new(config.OffsetX, config.OffsetY); // this will also mutated preview/construction
                 }
             }
+        }
+
+        public static void TryAddGeyser(GameObject go)
+        {
+            if (!PipedEverythingState.StateManager.State.PipesOnGeysers)
+                return;
+
+            // get geyser data
+            var configurator = go.GetComponent<GeyserConfigurator>() ?? throw new NullReferenceException(nameof(GeyserConfigurator));
+            var config = GeyserConfigurator.FindType(configurator.presetType) ?? throw new NullReferenceException(nameof(GeyserConfigurator.GeyserType));
+            var element = config.element.ToElement();
+            if (element.id == SimHashes.Void)
+                throw new Exception("Geyser element is Void");
+
+            // add storage
+            var storage = go.AddOrGet<Storage>();
+            storage.capacityKg = element.IsGas ? 100f : 1000f;
+            storage.defaultStoredItemModifers = Storage.StandardInsulatedStorage;
+
+            // add port
+            var portInfo = new PortDisplayInfo(filters: [SimHashes.Void], filterTags: [element.GetConduitType().ToString()], type: element.GetConduitType(),
+                offset: new(0, 1), input: false, color: GetColor(element), background: default, border: default, storageIndex: default, storageCapacity: float.PositiveInfinity);
+            go.AddOrGet<PortDisplayController>().AddPort(go, portInfo);
+            go.AddOrGet<ConduitDispenserGeyser>();
+
+            Helpers.Print($"Attached pipe dispenser to {go.PrefabID()}");
         }
 
         public static Color32 GetColor(Element element)

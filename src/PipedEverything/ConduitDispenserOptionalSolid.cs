@@ -92,7 +92,7 @@ namespace PipedEverything
             Game.Instance.solidConduitSystem.RemoveFromNetworks(this.utilityCell, this.networkItem, is_endpoint: true);
         }
 
-        private void OnConduitConnectionChanged(object data)
+        private void OnConduitConnectionChanged(object? data)
         {
             this.dispensing = this.dispensing && this.IsConnected;
             base.Trigger(-2094018600, this.IsConnected);

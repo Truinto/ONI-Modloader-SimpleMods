@@ -205,11 +205,13 @@ namespace Common
 
         public static ConduitType GetConduitType(this Element element)
         {
-            if (element.IsGas)
-                return ConduitType.Gas;
-            if (element.IsLiquid)
-                return ConduitType.Liquid;
-            return ConduitType.Solid;
+            return (element.state & Element.State.Solid) switch
+            {
+                Element.State.Gas => ConduitType.Gas,
+                Element.State.Liquid => ConduitType.Liquid,
+                Element.State.Solid => ConduitType.Solid,
+                _ => ConduitType.None,
+            };
         }
         #endregion
 
@@ -978,34 +980,25 @@ namespace Common
         }
 
         /// <summary>
-        /// Get a cell of a building. Takes rotation into account
+        /// Get a cell of an object. Takes rotation into account.
         /// </summary>
         public static int GetCellWithOffset(this KMonoBehaviour go, CellOffset offset)
         {
-            var building = go.GetComponent<Building>();
+            Rotatable rotatable;
+            if ((rotatable = go.GetComponent<Rotatable>()) != null)
+                offset = rotatable.GetRotatedCellOffset(offset);
 
-            if (building == null)
-            {
-#if DEBUG
-                throw new Exception("KMonoBehaviour has no Building to get CellWithOffset from.");
-#else
-                return 0;
-#endif
-            }
-
-            return building.GetCellWithOffset(offset);
+            return Grid.OffsetCell(Grid.PosToCell(go.transform.position), offset);
         }
 
         /// <summary>
-        /// Get a cell of a building. Takes rotation into account
+        /// Get a cell of a building. Takes rotation into account.
         /// </summary>
         public static int GetCellWithOffset(this Building building, CellOffset offset)
         {
-            Vector3 position = building.transform.GetPosition();
-            int bottomLeftCell = Grid.PosToCell(position);
-
-            CellOffset rotatedOffset = building.GetRotatedOffset(offset);
-            return Grid.OffsetCell(bottomLeftCell, rotatedOffset);
+            int bottomLeftCell = Grid.PosToCell(building.transform.position);
+            offset = building.GetRotatedOffset(offset);
+            return Grid.OffsetCell(bottomLeftCell, offset);
         }
         #endregion
     }
