@@ -16,8 +16,8 @@ namespace versioncontrol_ONI
      * - properties and attributes must be in a single line
      * - put your options into named regions e.g. '#region Settings'
      * - you can prefix a region with $ to keep it category-less
-	 * - number of decimal places is copied from default value
-	 * - if variable ends with 'Percent' uses format 'P'
+     * - number of decimal places is copied from default value
+     * - if variable ends with 'Percent' uses format 'P'
      */
     public class LanguageFillOut
     {
@@ -25,19 +25,19 @@ namespace versioncontrol_ONI
         public static Regex rex_numbers = new(@"\d+\.?(\d*)f;", RegexOptions.Compiled);
 
         public static Dictionary<string, Data> AllData = new(50);
-        public static string Namespace;
+        public static string? Namespace;
 
         public class Data
         {
             public bool HasRegion => Region != null && Region != "";
-            public string Region;
-            public string PropertyName;
-            public string Title;
-            public string ToolTip;
-            public string format;
+            public string? Region;
+            public string? PropertyName;
+            public string? Title;
+            public string? ToolTip;
+            public string? format;
         }
 
-        public static void Run(string pathStateSource, bool overwrite = false)
+        public static void Run(string? pathStateSource, bool overwrite = false)
         {
             if (pathStateSource == null || !File.Exists(pathStateSource))
                 return;
@@ -119,8 +119,8 @@ namespace versioncontrol_ONI
                         int j = FindPreviousLine(line, i, "[Option(");
                         if (j < 0 && j >= -2)
                         {
-                            string q1 = line[i + j].GetQuotationString(1) ?? "";
-                            string q2 = line[i + j].GetQuotationString(2) ?? "";
+                            string? q1 = line[i + j].GetQuotationString(1) ?? "";
+                            string? q2 = line[i + j].GetQuotationString(2) ?? "";
                             if (q1.Contains(".LOCSTRINGS.", StringComparison.Ordinal)) q1 = null;
                             if (q2.Contains(".LOCSTRINGS.", StringComparison.Ordinal)) q2 = null;
                             if (q1 != null) AllData[variable].Title = q1;
@@ -148,7 +148,7 @@ namespace versioncontrol_ONI
             for (int i = 0; i <= index1; i++)
                 result.Add(line[i]);
 
-            string region = null;
+            string? region = null;
             foreach (var data in AllData.OrderBy(o => o.Value.Region))
             {
                 if (region != data.Value.Region)
@@ -198,7 +198,7 @@ namespace versioncontrol_ONI
             bool isStart = false;   // ignore everything before OnLoad
             bool isLastCategory = false;	// ignore missing $ categories until the end
             string trimmed;
-            string region = null;
+            string? region = null;
             Dictionary<string, List<string>> dic = GetAllOptions(line);
 
             for (int i = 0; i < line.Count; i++)

@@ -11,19 +11,20 @@ namespace versioncontrol_ONI
 
         public class Data
         {
-            public string Path_Log;
-            public string Path_MD;
-            public string Path_Info;
-            public string Path_Assembly;
-            public string Path_State;
-            public string GameVersion;
-            public string GameVersion_Prefix;
-            public string AssemblyVersion;
-            public string ProjectName;
+            public string? Path_Log;
+            public string? Path_MD;
+            public string? Path_Info;
+            public string? Path_Assembly;
+            public string? Path_State;
+            public string? GameVersion;
+            public string? GameVersion_Prefix;
+            public string? AssemblyVersion;
+            public string? ProjectName;
             public int GameVersion_Int;
             public bool B_exp1;
             public bool Overwrite_state;
             public bool NewVersion;
+            public bool Auto_Increase;
         }
 
         public static int Main(string[] args)
@@ -41,7 +42,8 @@ namespace versioncontrol_ONI
                 // read assemblyversion and update gameversion to changelog
                 UpdateChangelog(data);
 
-                UpdateRevisionVersion(data);
+                if (data.Auto_Increase)
+                    UpdateRevisionVersion(data);
 
                 CreateBackup(data);
 
@@ -56,8 +58,7 @@ namespace versioncontrol_ONI
 
                 Console.WriteLine("versioncontrol done!");
                 return 0;
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
                 return 1;
@@ -94,6 +95,9 @@ namespace versioncontrol_ONI
                     case "-stateoverwrite":
                         data.Overwrite_state = true;
                         break;
+                    case "-autoincrease":
+                        data.Auto_Increase = true;
+                        break;
                 }
             }
         }
@@ -115,6 +119,8 @@ namespace versioncontrol_ONI
             while (!log.EndOfStream && counter++ < 50)
             {
                 var line = log.ReadLine();
+                if (line == null)
+                    continue;
 
                 if (line.Contains("[INFO] Expansion1: True", StringComparison.Ordinal))
                 {
@@ -139,11 +145,11 @@ namespace versioncontrol_ONI
         /// </summary>
         private static void UpdateChangelog(Data data)
         {
-            if (data.Path_MD == null)            
+            if (data.Path_MD == null)
                 return;
 
             var rx = new Regex(@"\[([\d\.]+)\]");
-            
+
             var changelog = File.ReadAllLines(data.Path_MD);
             for (int i = 0; i < changelog.Length; i++)
             {
@@ -168,7 +174,7 @@ namespace versioncontrol_ONI
         /// </summary>
         private static void UpdateRevisionVersion(Data data)
         {
-            if (data.Path_Info == null)
+            if (data.Path_Info == null || data.AssemblyVersion == null)
                 return;
 
             var match = Regex.Match(File.ReadAllText(data.Path_Info), "^version: ([\\d\\.]+)", RegexOptions.Multiline);
@@ -191,7 +197,7 @@ namespace versioncontrol_ONI
             if (data.Path_Info == null)
                 return;
 
-            string path_mod = new FileInfo(data.Path_Info).Directory.FullName;
+            string? path_mod = new FileInfo(data.Path_Info).Directory?.FullName ?? "";
             var match = Regex.Match(File.ReadAllText(data.Path_Info), "^minimumSupportedBuild: (\\d+)", RegexOptions.Multiline);
             if (!match.Success)
                 return;
@@ -247,9 +253,9 @@ namespace versioncontrol_ONI
         /// </summary>
         private static void UpdateAssembly(Data data)
         {
-            if (data.Path_Assembly == null || data.AssemblyVersion == null)            
+            if (data.Path_Assembly == null || data.AssemblyVersion == null)
                 return;
-            
+
             //Console.WriteLine("Reading assembly...");
             var assembly = File.ReadAllLines(data.Path_Assembly);
             for (int i = 0; i < assembly.Length; i++)
