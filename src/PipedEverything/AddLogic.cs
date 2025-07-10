@@ -193,12 +193,16 @@ namespace PipedEverything
 
         public static void TryAddGeyser(GameObject go)
         {
-            if (!PipedEverythingState.StateManager.State.GeyserPipes)
-                return;
-
             // get geyser data
-            var configurator = go.GetComponent<GeyserConfigurator>() ?? throw new NullReferenceException(nameof(GeyserConfigurator));
-            var config = GeyserConfigurator.FindType(configurator.presetType) ?? throw new NullReferenceException(nameof(GeyserConfigurator.GeyserType));
+            var configurator = go.GetComponent<GeyserConfigurator>();
+            if (configurator == null)
+                return;
+            var config = GeyserConfigurator.FindType(configurator.presetType); //?? throw new NullReferenceException(nameof(GeyserConfigurator.GeyserType));
+            if (config == null)
+            {
+                Helpers.Print($"Error: Geyser id='{go.GetComponent<KPrefabID>()?.PrefabTag}' type='{configurator.presetType}' is invalid");
+                return;
+            }
             var element = config.element.ToElement();
             if (element.id == SimHashes.Void)
                 throw new Exception("Geyser element is Void");

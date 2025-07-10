@@ -211,11 +211,17 @@ namespace PipedEverything
         /// <summary>
         /// Attach pipe logic to geysers.
         /// </summary>
-        [HarmonyPatch(typeof(GeyserGenericConfig), nameof(GeyserGenericConfig.CreateGeyser), typeof(string), typeof(string), typeof(int), typeof(int), typeof(string), typeof(string), typeof(HashedString), typeof(float), typeof(string[]), typeof(string[]))]
+        [HarmonyPatch(typeof(Assets), nameof(Assets.CreatePrefabs))]
         [HarmonyPostfix]
-        public static void GeyserGenericConfig_CreateGeyser_Postfix(GameObject __result)
+        public static void Assets_CreatePrefabs_Postfix()
         {
-            AddLogic.TryAddGeyser(__result);
+            if (!PipedEverythingState.StateManager.State.GeyserPipes)
+                return;
+
+            foreach (var prefab in Assets.Prefabs)
+            {
+                AddLogic.TryAddGeyser(prefab.gameObject);
+            }
         }
 
         /// <summary>

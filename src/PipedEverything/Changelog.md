@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.28.0] U56-677228-SCRP (release)
+- fix for 'Fast Track'
+
 ## [1.0.27.1] U56-677228-SCRP (release)
 - added defaults for Plant Pulverizer and Peat Burner
 - added GeyserPipes switch, which adds one pipe on every geyser
