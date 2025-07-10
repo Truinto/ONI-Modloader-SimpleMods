@@ -27,30 +27,25 @@ namespace PipedEverything
         public int storageIndex;
 
         [MyCmpReq]
-        private Operational operational;
-
-        private Storage _storage;
+        private Operational operational = null!;
 
         [MyCmpReq]
-        private Building building;
+        private Building building = null!;
 
         private HandleVector<int>.Handle partitionerEntry;
 
         private int utilityCell = -1;
 
-        private FlowUtilityNetwork.NetworkItem networkItem;
-
-        private bool dispensing;
+        private FlowUtilityNetwork.NetworkItem? networkItem;
 
         private int round_robin_index;
 
+        private Storage? _storage;
         public Storage Storage => this._storage ??= GetComponents<Storage>()[this.storageIndex];
 
         public ConduitType ConduitType => ConduitType.Solid;
 
         public SolidConduitFlow.ConduitContents ConduitContents => GetConduitFlow().GetContents(this.utilityCell);
-
-        public bool IsDispensing => this.dispensing;
 
         public bool IsConnected
         {
@@ -94,57 +89,61 @@ namespace PipedEverything
 
         private void OnConduitConnectionChanged(object? data)
         {
-            this.dispensing = this.dispensing && this.IsConnected;
-            base.Trigger(-2094018600, this.IsConnected);
+            base.Trigger((int)GameHashes.ConduitConnectionChanged, this.IsConnected);
         }
 
         private void ConduitUpdate(float dt)
         {
-            bool flag = false;
             //this.operational.SetFlag(SolidConduitDispenser.outputConduitFlag, this.IsConnected);
             if (this.operational.IsOperational || this.alwaysDispense)
             {
                 SolidConduitFlow conduitFlow = GetConduitFlow();
                 if (conduitFlow.HasConduit(this.utilityCell) && conduitFlow.IsConduitEmpty(this.utilityCell))
                 {
-                    Pickupable pickupable = FindSuitableItem();
-                    if ((bool)pickupable)
+                    var pickupable = FindSuitableItem();
+                    if (pickupable != null)
                     {
-                        if (pickupable.PrimaryElement.Mass > 20f)
-                        {
-                            pickupable = pickupable.Take(20f);
-                        }
+                        if (pickupable.PrimaryElement.Mass > FumiKMod.SolidMaxMass)
+                            pickupable = pickupable.Take(FumiKMod.SolidMaxMass) ?? pickupable;
                         conduitFlow.AddPickupable(this.utilityCell, pickupable);
-                        flag = true;
                     }
                 }
             }
             this.Storage.storageNetworkID = GetConnectedNetworkID();
-            this.dispensing = flag;
         }
 
-        private Pickupable FindSuitableItem()
+        private Pickupable? FindSuitableItem()
         {
-            var list = this.Storage.items;
-            var list3 = new List<GameObject>(list.Count);
-            foreach (var item in list)
+            var items = this.Storage.items;
+            int count = items.Count;
+            for (int i = 0; i < count; i++)
             {
-                if ((tagFilter.Length == 0 && item.GetComponent<PrimaryElement>().Element.IsSolid) || item.HasAnyTags(tagFilter))
-                    list3.Add(item);
+                int index = (i + this.round_robin_index) % count;
+                if (items[index] == null)
+                {
+                    items.RemoveAt(index);
+                    count = items.Count;
+                    continue;
+                }
+                var primaryElement = items[index].GetComponent<PrimaryElement>();
+                if (primaryElement == null || primaryElement.Mass <= 0f)
+                    continue;
+                var pickupable = primaryElement.GetComponent<Pickupable>();
+                if (pickupable == null)
+                    continue;
+                if (this.tagFilter.Length != 0 && !items[index].HasAnyTags(this.tagFilter))
+                    continue;
+
+                this.round_robin_index = (i + 1) % count;
+                return pickupable;
             }
-
-            if (list3.Count < 1)
-                return null;
-
-            this.round_robin_index %= list3.Count;
-            return list3[this.round_robin_index++]?.GetComponent<Pickupable>();
+            return null;
         }
 
         private int GetConnectedNetworkID()
         {
-            GameObject gameObject = Grid.Objects[this.utilityCell, 20];
-            SolidConduit solidConduit = ((gameObject != null) ? gameObject.GetComponent<SolidConduit>() : null);
-            return ((solidConduit != null) ? solidConduit.GetNetwork() : null)?.id ?? (-1);
+            var gameObject = Grid.Objects[this.utilityCell, 20];
+            return gameObject?.GetComponent<SolidConduit>()?.GetNetwork()?.id ?? -1;
         }
 
         private int GetOutputCell()

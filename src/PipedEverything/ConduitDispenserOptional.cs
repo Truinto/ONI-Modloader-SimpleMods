@@ -21,7 +21,7 @@ namespace PipedEverything
         public CellOffset conduitOffset;
 
         [SerializeField]
-        public SimHashes[]? elementFilter;
+        public SimHashes[] elementFilter = [];
 
         [SerializeField]
         public int storageIndex;
@@ -177,10 +177,22 @@ namespace PipedEverything
             for (int i = 0; i < count; i++)
             {
                 int index = (i + this.RoundRobinIndex) % count;
-                var primaryElement = items[index].GetComponent<PrimaryElement>();
-                if (primaryElement != null && primaryElement.Mass > 0f && ((this.conduitType == ConduitType.Liquid) ? primaryElement.Element.IsLiquid : primaryElement.Element.IsGas) && (this.elementFilter == null || this.elementFilter.Length == 0 || (!this.invertElementFilter && IsFilteredElement(primaryElement.ElementID)) || (this.invertElementFilter && !IsFilteredElement(primaryElement.ElementID))))
+                if (items[index] == null)
                 {
-                    this.RoundRobinIndex = (this.RoundRobinIndex + 1) % count;
+                    items.RemoveAt(index);
+                    count = items.Count;
+                    continue;
+                }
+                var primaryElement = items[index].GetComponent<PrimaryElement>();
+                if (primaryElement == null || primaryElement.Mass <= 0f)
+                    continue;
+                if (this.ConduitType != primaryElement.Element.GetConduitType())
+                    continue;
+                if (this.elementFilter.Length == 0 
+                    || (!this.invertElementFilter && IsFilteredElement(primaryElement.ElementID)) 
+                    || (this.invertElementFilter && !IsFilteredElement(primaryElement.ElementID)))
+                {
+                    this.RoundRobinIndex = (i + 1) % count;
                     return primaryElement;
                 }
             }

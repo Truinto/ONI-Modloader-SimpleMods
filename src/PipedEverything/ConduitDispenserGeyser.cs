@@ -1,4 +1,5 @@
 ﻿using Common;
+using Klei;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,6 @@ namespace PipedEverything
         [SerializeField]
         public SimHashes OutputElement = SimHashes.Void;
 
-        private bool realIsBlocked;
         private ElementEmitter? ElementEmitter;
         private PortDisplayController? Controller;
         private PortDisplay2? Port;
@@ -24,6 +24,8 @@ namespace PipedEverything
         private int UtilityCell;
         private int NextStorageIndex;
         private FlowUtilityNetwork.NetworkItem? NetworkItem;
+        private bool Discharge;
+        private int Cooldown;
 
         public override void OnSpawn()
         {
@@ -42,35 +44,15 @@ namespace PipedEverything
             OnConduitConnectionChanged(null);
             this.NetworkItem = new FlowUtilityNetwork.NetworkItem(this.ConduitType, Endpoint.Source, this.UtilityCell, base.gameObject);
             Conduit.GetNetworkManager(this.ConduitType).AddToNetworks(this.UtilityCell, this.NetworkItem, true);
-
-            Subscribe((int)GameHashes.EmitterBlocked, OnEmitterBlocked);
-            Subscribe((int)GameHashes.EmitterUnblocked, OnEmitterUnblocked);
         }
 
         public override void OnCleanUp()
         {
-            Unsubscribe((int)GameHashes.EmitterBlocked, OnEmitterBlocked);
-            Unsubscribe((int)GameHashes.EmitterUnblocked, OnEmitterUnblocked);
-
             // conduit remove
             GetConduitManager().RemoveConduitUpdater(ConduitUpdate);
             GameScenePartitioner.Instance.Free(ref this.PartitionerEntry);
             base.OnCleanUp();
             Conduit.GetNetworkManager(this.ConduitType).RemoveFromNetworks(this.UtilityCell, this.NetworkItem, is_endpoint: true);
-        }
-
-        /// <summary>
-        /// Remember the real blocked state, by listening to events other than this component.
-        /// </summary>
-        private void OnEmitterBlocked(object? obj)
-        {
-            if (!ReferenceEquals(this, obj))
-                realIsBlocked = true;
-        }
-        private void OnEmitterUnblocked(object? obj)
-        {
-            if (!ReferenceEquals(this, obj))
-                realIsBlocked = false;
         }
 
         private void OnConduitConnectionChanged(object? data)
@@ -84,29 +66,47 @@ namespace PipedEverything
             if (this.ElementEmitter == null)
                 throw new NullReferenceException(nameof(this.ElementEmitter));
             if (!this.ElementEmitter.simActive)
+            {
+                this.Cooldown = 0;
+                return;
+            }
+            if (!Sim.IsValidHandle(this.ElementEmitter.simHandle))
                 return;
             if (this.Port == null)
                 throw new NullReferenceException(nameof(this.Port));
 
             bool usePort = this.Port.IsConnected() && !this.Port.Storage.IsFull();
+
+            // prevent flickering
             if (usePort)
             {
+                if (this.Cooldown > 0)
+                {
+                    this.Cooldown--;
+                    usePort = false;
+                }
+            }
+            else
+            {
+                this.Cooldown = 20;
+            }
+
+            if (usePort)
+            {
+                var emitterOutput = this.ElementEmitter.outputElement;
+
                 // disable emission
                 if (this.ElementEmitter.emissionFrequency > 0f)
                 {
                     this.ElementEmitter.emissionFrequency = 0f;
-                    SimMessages.ModifyElementEmitter(ElementEmitter.simHandle, 0, 0, SimHashes.Vacuum, 0f, 0f, 0f, 0f, byte.MaxValue, 0);
+                    int game_cell = Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), (int)emitterOutput.outputElementOffset.x, (int)emitterOutput.outputElementOffset.y);
+                    SimMessages.ModifyElementEmitter(this.ElementEmitter.simHandle, game_cell, 1, SimHashes.Vacuum, 0f, 0f, 0f, this.ElementEmitter.maxPressure, byte.MaxValue, 0);
                 }
-
                 // store in storage
-                var emitterOutput = this.ElementEmitter.outputElement;
-                float emit_temperature = emitterOutput.minOutputTemperature == 0f ? ElementEmitter.GetComponent<PrimaryElement>().Temperature : emitterOutput.minOutputTemperature;
-                this.Port.TryStore(emitterOutput.elementHash, emitterOutput.massGenerationRate * dt, emit_temperature, emitterOutput.addedDiseaseIdx, emitterOutput.addedDiseaseCount);
-                if (this.ElementEmitter.isEmitterBlocked)
+                else
                 {
-                    realIsBlocked = true;
-                    this.ElementEmitter.isEmitterBlocked = false;
-                    Trigger((int)GameHashes.EmitterUnblocked, this);
+                    float emit_temperature = emitterOutput.minOutputTemperature == 0f ? this.ElementEmitter.GetComponent<PrimaryElement>().Temperature : emitterOutput.minOutputTemperature;
+                    this.Port.TryStore(emitterOutput.elementHash, emitterOutput.massGenerationRate * dt, emit_temperature, emitterOutput.addedDiseaseIdx, emitterOutput.addedDiseaseCount);
                 }
             }
             else
@@ -115,22 +115,14 @@ namespace PipedEverything
                 if (this.ElementEmitter.emissionFrequency < 1f)
                 {
                     this.ElementEmitter.emissionFrequency = 1f;
-                    var emitterOutput = ElementEmitter.outputElement;
+                    var emitterOutput = this.ElementEmitter.outputElement;
                     int game_cell = Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), (int)emitterOutput.outputElementOffset.x, (int)emitterOutput.outputElementOffset.y);
-                    float emit_temperature = emitterOutput.minOutputTemperature == 0f ? ElementEmitter.GetComponent<PrimaryElement>().Temperature : emitterOutput.minOutputTemperature;
-                    SimMessages.ModifyElementEmitter(ElementEmitter.simHandle, game_cell, ElementEmitter.emitRange, emitterOutput.elementHash, ElementEmitter.emissionFrequency, emitterOutput.massGenerationRate, emit_temperature, ElementEmitter.maxPressure, emitterOutput.addedDiseaseIdx, emitterOutput.addedDiseaseCount);
-                }
-                if (this.ElementEmitter.isEmitterBlocked != realIsBlocked)
-                {
-                    this.ElementEmitter.isEmitterBlocked = realIsBlocked;
-                    if (realIsBlocked)
-                        Trigger((int)GameHashes.EmitterBlocked, this);
-                    else
-                        Trigger((int)GameHashes.EmitterUnblocked, this);
+                    float emit_temperature = emitterOutput.minOutputTemperature == 0f ? this.ElementEmitter.GetComponent<PrimaryElement>().Temperature : emitterOutput.minOutputTemperature;
+                    SimMessages.ModifyElementEmitter(this.ElementEmitter.simHandle, game_cell, this.ElementEmitter.emitRange, emitterOutput.elementHash, this.ElementEmitter.emissionFrequency, emitterOutput.massGenerationRate, emit_temperature, this.ElementEmitter.maxPressure, emitterOutput.addedDiseaseIdx, emitterOutput.addedDiseaseCount);
+
+                    this.Port.TryStore(emitterOutput.elementHash, emitterOutput.massGenerationRate * dt, emit_temperature, emitterOutput.addedDiseaseIdx, emitterOutput.addedDiseaseCount);
                 }
             }
-
-            // TODO: fix state being Overpressure (idle in 1.4 cycles); Emitting Steam: Infinity t
         }
 
         public bool IsConnected() => Grid.Objects[this.UtilityCell, GetLayer()]?.GetComponent<BuildingComplete>() != null;
@@ -152,7 +144,9 @@ namespace PipedEverything
         private void ConduitUpdate(float dt)
         {
             if (this.Port == null)
-                return;
+                throw new NullReferenceException(nameof(this.Port));
+            if (this.ElementEmitter == null)
+                throw new NullReferenceException(nameof(this.ElementEmitter));
 
             // put element on conduit
             var element = findElement();
@@ -162,7 +156,11 @@ namespace PipedEverything
                 switch (GetConduitManager())
                 {
                     case ConduitFlow pipeFlow:
-                        float massAddedToPipe = pipeFlow.AddElement(this.UtilityCell, element.ElementID, element.Mass, element.Temperature, element.DiseaseIdx, element.DiseaseCount);
+                        float massAddedToPipe;
+                        if (PipedEverythingState.StateManager.State.GeyserPipesUnlimited)
+                            massAddedToPipe = ConduitAddElementOverpressure(pipeFlow, this.UtilityCell, element.ElementID, element.Mass, element.Temperature, element.DiseaseIdx, element.DiseaseCount, this.ElementEmitter.outputElement.massGenerationRate);
+                        else
+                            massAddedToPipe = pipeFlow.AddElement(this.UtilityCell, element.ElementID, element.Mass, element.Temperature, element.DiseaseIdx, element.DiseaseCount);
                         if (massAddedToPipe > 0f)
                         {
                             int diseaseAddedToPipe = (int)(massAddedToPipe / element.Mass * element.DiseaseCount);
@@ -175,9 +173,13 @@ namespace PipedEverything
                     case SolidConduitFlow solidFlow:
                         if (solidFlow.HasConduit(this.UtilityCell) && solidFlow.IsConduitEmpty(this.UtilityCell))
                         {
+                            float mass = FumiKMod.SolidMaxMass;
+                            if (PipedEverythingState.StateManager.State.GeyserPipesUnlimited)
+                                mass = Mathf.Max(mass, this.ElementEmitter.outputElement.massGenerationRate);
+
                             var pickupable = element.GetComponent<Pickupable>();
                             if (pickupable != null)
-                                solidFlow.AddPickupable(this.UtilityCell, pickupable.Take(20f));
+                                solidFlow.AddPickupable(this.UtilityCell, pickupable.Take(mass) ?? pickupable);
                         }
                         break;
                 }
@@ -194,6 +196,12 @@ namespace PipedEverything
                 for (int i = 0; i < count; i++)
                 {
                     int index = (i + this.NextStorageIndex) % count;
+                    if (items[index] == null)
+                    {
+                        items.RemoveAt(index);
+                        count = items.Count;
+                        continue;
+                    }
                     var primaryElement = items[index].GetComponent<PrimaryElement>();
                     if (primaryElement == null || primaryElement.Mass <= 0f)
                         continue;
@@ -207,6 +215,45 @@ namespace PipedEverything
                 }
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Overload the input node. This won't increase the whole pipe's volume. For that you could patch <see cref="ConduitFlow.ConduitContents.GetEffectiveCapacity(float)"/>.<br/>
+        /// Loading a save will sanities the node, deleting some mass. To fix patch <see cref="ConduitFlow.OnDeserialized"/>.
+        /// </summary>
+        public static float ConduitAddElementOverpressure(ConduitFlow instance, int cell_idx, SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, float massOverpressure)
+        {
+            // check connected
+            if (instance.grid[cell_idx].conduitIdx == -1)
+                return 0f;
+
+            // check pipe empty or same element
+            var contents = instance.GetConduit(cell_idx).GetContents(instance);
+            if (contents.element != element && contents.element != SimHashes.Vacuum && mass > 0f)
+                return 0f;
+
+            // get transfer mass
+            float transferMass = Mathf.Min(mass, Mathf.Max(massOverpressure, instance.MaxMass) - contents.mass);
+            if (transferMass <= 0f)
+                return 0f;
+
+            // transfer properties
+            contents.temperature = GameUtil.GetFinalTemperature(temperature, transferMass, contents.temperature, contents.mass);
+            contents.AddMass(transferMass);
+            contents.element = element;
+            contents.ConsolidateMass();
+            float percent = transferMass / mass;
+            int transferDisease = (int)(percent * disease_count);
+            if (transferDisease > 0)
+            {
+                var diseaseInfo = SimUtil.CalculateFinalDiseaseInfo(disease_idx, transferDisease, contents.diseaseIdx, contents.diseaseCount);
+                contents.diseaseIdx = diseaseInfo.idx;
+                contents.diseaseCount = diseaseInfo.count;
+            }
+
+            // set output
+            instance.SetContents(cell_idx, contents);
+            return transferMass;
         }
     }
 }

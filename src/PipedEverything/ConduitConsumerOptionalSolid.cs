@@ -120,43 +120,44 @@ namespace PipedEverything
 
         private float CapacityForElement(Pickupable element)
         {
-            try
+            Tag tag;
+            if (this.tagFilter.Length == 0)
+                tag = element?.PrimaryElement?.ElementID.ToTag() ?? default;
+            else
+                tag = GetMatch(element?.GetComponent<KPrefabID>());
+            if (!tag.IsValid)
+                return 0f;
+
+            var storage = this.Storage;
+            float capacityElement = this.capacityKG;
+            float capacityStorage = this.Storage.capacityKg;
+            int count = storage.items.Count;
+            for (int i = 0; i < count; i++)
             {
-                Tag tag;
-                if (tagFilter.Length == 0)
-                    tag = element.PrimaryElement.ElementID.ToTag();
-                else
-                    tag = GetMatch(element.GetComponent<KPrefabID>());
-                if (!tag.IsValid)
-                    return 0f;
-
-                float capacityElement = this.capacityKG;
-                float capacityStorage = this.Storage.capacityKg;
-                foreach (var item in this.Storage.items)
+                var item = storage.items[i];
+                if (item == null)
                 {
-                    if (item == null)
-                        continue;
-
-                    var element2 = item.GetComponent<PrimaryElement>();
-                    capacityStorage -= element2.Mass;
-                    if (item.HasTag(tag))
-                        capacityElement -= element2.Mass;
+                    storage.items.RemoveAt(i);
+                    count = storage.items.Count;
+                    continue;
                 }
 
-                return Mathf.Min(capacityElement, capacityStorage);
-            } catch (Exception)
-            {
-#if DEBUG
-                throw;
-#else
-                return 0f;
-#endif
+                var element2 = item.GetComponent<PrimaryElement>();
+                if (element2 == null)
+                    continue;
+                capacityStorage -= element2.Mass;
+                if (item.HasTag(tag))
+                    capacityElement -= element2.Mass;
             }
+
+            return Mathf.Min(capacityElement, capacityStorage);
         }
 
-        private Tag GetMatch(KPrefabID prefabID)
+        private Tag GetMatch(KPrefabID? prefabID)
         {
-            foreach (var tag in tagFilter)
+            if (prefabID == null)
+                return default;
+            foreach (var tag in this.tagFilter)
             {
                 if (tag.IsTag(prefabID.PrefabTag))
                     return tag;

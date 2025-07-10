@@ -163,4 +163,42 @@ namespace PipedEverything
             return true;
         }
     }
+
+    [HarmonyPatch(typeof(ElementEmitter), nameof(ElementEmitter.OnSimDeactivate))]
+    public static class Fix_GeyserOverpressure
+    {
+        /// <summary>
+        /// Prevent the overpressure event to occur. Vanilla does set max pressure to 0kg,
+        /// so when the idle phase is over it will overpressure for a couple frames,
+        /// until the values are updated. Setting the real max pressure skips that.
+        /// </summary>
+        public static bool Prefix(ElementEmitter __instance)
+        {
+            int game_cell = Grid.OffsetCell(Grid.PosToCell(__instance.transform.GetPosition()), (int)__instance.outputElement.outputElementOffset.x, (int)__instance.outputElement.outputElementOffset.y);
+            SimMessages.ModifyElementEmitter(__instance.simHandle, game_cell, 1, SimHashes.Vacuum, 0f, 0f, 0f, __instance.maxPressure, byte.MaxValue, 0);
+            if (__instance.showDescriptor)
+                __instance.statusHandle = __instance.GetComponent<KSelectable>().RemoveStatusItem(__instance.statusHandle);
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(Database.BuildingStatusItems), nameof(Database.BuildingStatusItems.CreateStatusItems))]
+    public static class Fix_StatusItem
+    {
+        /// <summary>
+        /// Fix the status info, when emitter is redirected to storage.
+        /// </summary>
+        public static void Postfix(Database.BuildingStatusItems __instance)
+        {
+            __instance.ElementEmitterOutput.resolveStringCallback = delegate (string str, object data)
+            {
+                if (data is ElementEmitter elementEmitter)
+                {
+                    str = str.Replace("{ElementTypes}", elementEmitter.outputElement.Name);
+                    str = str.Replace("{FlowRate}", GameUtil.GetFormattedMass(elementEmitter.outputElement.massGenerationRate, GameUtil.TimeSlice.PerSecond));
+                }
+                return str;
+            };
+        }
+    }
 }

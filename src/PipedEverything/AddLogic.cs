@@ -158,7 +158,7 @@ namespace PipedEverything
                 }
             }
 
-            Helpers.PrintDebug($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");
+            Helpers.Print($"Controller added port {config.Id} {conduitType} {offset} input={config.Input}");
         }
 
         private static void TryAddLogicOriginal(BuildingDef def, PipeConfig config)
@@ -193,7 +193,7 @@ namespace PipedEverything
 
         public static void TryAddGeyser(GameObject go)
         {
-            if (!PipedEverythingState.StateManager.State.PipesOnGeysers)
+            if (!PipedEverythingState.StateManager.State.GeyserPipes)
                 return;
 
             // get geyser data
@@ -205,7 +205,7 @@ namespace PipedEverything
 
             // add storage
             var storage = go.AddOrGet<Storage>();
-            storage.capacityKg = element.IsGas ? 100f : 1000f;
+            storage.capacityKg = element.IsGas ? PipedEverythingState.StateManager.State.GeyserGasStorageKG : PipedEverythingState.StateManager.State.GeyserStorageKG;
             storage.defaultStoredItemModifers = Storage.StandardInsulatedStorage;
 
             // add port

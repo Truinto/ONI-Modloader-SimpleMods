@@ -50,8 +50,8 @@ namespace CustomizeBuildings
         public void EditGO(BuildingDef def)
         {
             var sender = def.BuildingComplete.GetComponent<WarpConduitSender>();
-            sender.gasStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
-            sender.liquidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
+            sender.gasStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * 2f;
+            sender.liquidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * 2f;
             sender.solidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize * 5f;
         }
     }

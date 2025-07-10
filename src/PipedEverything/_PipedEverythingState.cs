@@ -9,9 +9,12 @@ namespace PipedEverything
 {
     public class PipedEverythingState
     {
-        public int version { get; set; } = 10;
+        public int version { get; set; } = 11;
 
-        public bool PipesOnGeysers { get; set; } = true;
+        public bool GeyserPipes { get; set; } = true;
+        public bool GeyserPipesUnlimited { get; set; } = true;
+        public float GeyserStorageKG { get; set; } = 1000f;
+        public float GeyserGasStorageKG { get; set; } = 100f;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {

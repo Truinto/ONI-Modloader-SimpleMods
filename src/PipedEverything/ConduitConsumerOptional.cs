@@ -18,7 +18,7 @@ namespace PipedEverything
         public CellOffset conduitOffset;
 
         [SerializeField]
-        public SimHashes[] elementFilter = Array.Empty<SimHashes>();
+        public SimHashes[] elementFilter = [];
 
         [SerializeField]
         public ConduitType conduitType;
@@ -282,7 +282,7 @@ namespace PipedEverything
             if (num <= 0f)
                 return;
 
-            bool isAllowedElement = this.elementFilter.Contains(element.id) || this.elementFilter.Contains(SimHashes.Void);
+            bool isAllowedElement = true || this.elementFilter.Contains(element.id) || this.elementFilter.Contains(SimHashes.Void); // CapacityForElement returns anyway, if this wasn't true
             if (!isAllowedElement)
             {
                 base.Trigger(-794517298, new BuildingHP.DamageSourceInfo
@@ -332,33 +332,32 @@ namespace PipedEverything
 
         private float CapacityForElement(SimHashes element)
         {
-            try
+            if (!elementFilter.Contains(element) && !elementFilter.Contains(SimHashes.Void))
+                return 0f;
+
+            var storage = this.Storage;
+            float capacityElement = this.capacityKG;
+            float capacityStorage = storage.capacityKg;
+            int count = storage.items.Count;
+            for (int i = 0; i < count; i++)
             {
-                if (!elementFilter.Contains(element) && !elementFilter.Contains(SimHashes.Void))
-                    return 0f;
-
-                float capacityElement = this.capacityKG;
-                float capacityStorage = this.Storage.capacityKg;
-                foreach (var item in this.Storage.items)
+                var item = storage.items[i];
+                if (item == null)
                 {
-                    if (item == null)
-                        continue;
-
-                    var element2 = item.GetComponent<PrimaryElement>();
-                    capacityStorage -= element2.Mass;
-                    if (element == element2.ElementID)
-                        capacityElement -= element2.Mass;
+                    storage.items.RemoveAt(i);
+                    count = storage.items.Count;
+                    continue;
                 }
 
-                return Mathf.Min(capacityElement, capacityStorage);
-            } catch (Exception)
-            {
-#if DEBUG
-                throw;
-#else
-                return 0f;
-#endif
+                var element2 = item.GetComponent<PrimaryElement>();
+                if (element2 == null)
+                    continue;
+                capacityStorage -= element2.Mass;
+                if (element == element2.ElementID)
+                    capacityElement -= element2.Mass;
             }
+
+            return Mathf.Min(capacityElement, capacityStorage);
         }
 
         public void AssignPort(PortDisplayInfo port)

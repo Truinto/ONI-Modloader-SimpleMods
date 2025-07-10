@@ -1,8 +1,12 @@
 # Changelog
 
-## [1.0.27.0] U56-677228-SCRP (release)
+## [1.0.27.1] U56-677228-SCRP (release)
 - added defaults for Plant Pulverizer and Peat Burner
-- added PipesOnGeysers switch, which adds one pipe on every geyser
+- added GeyserPipes switch, which adds one pipe on every geyser
+- added GeyserPipesUnlimited, which allows geysers overload the input node (use multiple pipes on the same port)
+- added GeyserStorageKG and GeyserGasStorageKG to set storage size of geysers (only while pipe connected)
+- added null sanitation to storage, fix #85
+- changed solid pipes to respect CustomizeBuildings pipe size
 
 ## [1.0.26.0] U54-652372-SCR (release)
 - new attempt to fix #47 #81
