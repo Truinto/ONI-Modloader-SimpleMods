@@ -54,13 +54,26 @@ namespace CustomizeRecipe
                 Process(setting);
 
             if (CustomizeRecipeState.StateManager.State.CheatFast)
+            {
                 foreach (var recipe in ComplexRecipeManager.Get().preProcessRecipes)
+                {
                     recipe.time = 5f;
+                }
+            }
 
             if (CustomizeRecipeState.StateManager.State.CheatFree)
+            {
                 foreach (var recipe in ComplexRecipeManager.Get().preProcessRecipes)
+                {
                     for (int i = 0; i < recipe.ingredients.Length; i++)
-                        recipe.ingredients[i] = new ComplexRecipe.RecipeElement(recipe.ingredients[i].material, 0f, recipe.ingredients[i].temperatureOperation, recipe.ingredients[i].storeElement);
+                    {
+                        recipe.ingredients[i].amount = 0f;
+                        if (recipe.ingredients[i].possibleMaterialAmounts != null)
+                            for (int j = 0; j < recipe.ingredients[i].possibleMaterialAmounts.Length; j++)
+                                recipe.ingredients[i].possibleMaterialAmounts[j] = 0f;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -186,11 +199,6 @@ namespace CustomizeRecipe
     [HarmonyPatch(typeof(PrimaryElement), nameof(PrimaryElement.SetTemperature))]
     public class TemperatureFix
     {
-        public static bool Prepare()
-        {
-            return CustomizeRecipeState.StateManager.State.CheatFree || CustomizeRecipeState.StateManager.State.AllowZeroInput;
-        }
-
         public static bool Prefix(PrimaryElement __instance, float temperature)
         {
             if (float.IsNaN(temperature) || float.IsInfinity(temperature) || temperature <= 0f)

@@ -7,7 +7,7 @@ namespace CustomizeRecipe
     public class FumiKMod : KMod.UserMod2
     {
         public const string ModName = "CustomizeRecipe";
-        public static Harmony instance;
+        public static Harmony? instance;
 
         public override void OnLoad(Harmony harmony)
         {
@@ -25,7 +25,7 @@ namespace CustomizeRecipe
             Helpers.ActiveLocale = Helpers.StringsLoad();
 
             // load settings
-            CustomizeRecipeState.StateManager = new(CustomizeRecipeState.GetStaticConfigPath(), true, CustomizeRecipeState.OnUpdate, null);
+            CustomizeRecipeState.StateManager = new(CustomizeRecipeState.GetStaticConfigPath(), true, CustomizeRecipeState.OnUpdate, CustomizeRecipeState.OnLoaded);
 
             // init options menu
             new POptions().RegisterOptions(this, typeof(CustomizeRecipeState));

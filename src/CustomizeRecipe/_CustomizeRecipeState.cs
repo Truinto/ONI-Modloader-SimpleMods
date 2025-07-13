@@ -32,7 +32,7 @@ namespace CustomizeRecipe
         public bool CheatFree { get; set; } = false;
 
         [Option("CustomizeRecipe.LOCSTRINGS.AllowZeroInput_Title", "CustomizeRecipe.LOCSTRINGS.AllowZeroInput_ToolTip", "", null)]
-        public bool AllowZeroInput { get; set; } = true;
+        public bool AllowZeroInput { get; set; } = false;
 
         public List<RecipeData> RecipeSettings { get; set; } = new List<RecipeData>() {
             new RecipeData("RockCrusher_I_Fossil_O_Lime_SedimentaryRock", RockCrusherConfig.ID)
@@ -51,7 +51,7 @@ namespace CustomizeRecipe
 
         #region _implementation
 
-        public static Config.Manager<CustomizeRecipeState> StateManager;
+        public static Config.Manager<CustomizeRecipeState> StateManager = null!;
 
         public static bool OnUpdate(CustomizeRecipeState state)
         {
@@ -65,6 +65,24 @@ namespace CustomizeRecipe
                 }
             }
             return true;
+        }
+
+        public static void OnLoaded(CustomizeRecipeState state)
+        {
+            // if no zero inputs, skip patches for zero inputs
+            if (state.AllowZeroInput)
+            {
+                foreach (var recipe in state.RecipeSettings)
+                {
+                    foreach (var input in recipe.Inputs)
+                    {
+                        if (input.amount <= 0f || input.amounts != null && input.amounts.Any(a => a <= 0f))
+                            goto exit_1;
+                    }
+                }
+                state.AllowZeroInput = false;
+            exit_1:;
+            }
         }
 
         public object ReadSettings()

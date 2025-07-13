@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.11.0] U56-678383-SCRP (release)
+- fixed crash with CheatFree
+
 ## [1.0.10.0] U56-675600-SCRP (release)
 - added fields NameDisplay, CustomName, CustomSpritePrefabID
 
