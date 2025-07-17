@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.30.0] U56-678383-SCRP (release)
+- fixed button Preset: Copy
+
 ## [1.0.29.0] U55-659901-SCR (release)
 - fix for update
 

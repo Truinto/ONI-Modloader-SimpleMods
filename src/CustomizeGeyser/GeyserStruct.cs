@@ -8,10 +8,8 @@ namespace CustomizeGeyser
     {
         private int hash;
         public string id;
-        public string element;
-        public string anim;
-        [JsonConverter(typeof(StringEnumConverter))]
-        public GeyserConfigurator.GeyserShape? shape;
+        public string? element;
+        public string? anim;
         public int? width;
         public int? height;
         public float? temperature;
@@ -26,16 +24,18 @@ namespace CustomizeGeyser
         public float? maxYearLength;
         public float? minYearPercent;
         public float? maxYearPercent;
-        public string Name;
-        public string Description;
-        public string Disease;
+        public string? Name;
+        public string? Description;
+        public string? Disease;
         public int? DiseaseCount;
         public bool? IsGeneric;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public GeyserConfigurator.GeyserShape? shape;
 
         public GeyserStruct(
             string id,
-            string element = null,
-            string anim = null,
+            string? element = null,
+            string? anim = null,
             int? width = null,
             int? height = null,
             float? temperature = null,
@@ -50,11 +50,12 @@ namespace CustomizeGeyser
             float? maxYearLength = null,
             float? minYearPercent = null,
             float? maxYearPercent = null,
-            string Name = null,
-            string Description = null,
-            string Disease = null,
+            string? Name = null,
+            string? Description = null,
+            string? Disease = null,
             int? DiseaseCount = null,
-            bool? IsGeneric = null)
+            bool? IsGeneric = null,
+            GeyserConfigurator.GeyserShape? shape = null)
         {
             this.id = id;
             this.element = element;
@@ -78,6 +79,7 @@ namespace CustomizeGeyser
             this.Disease = Disease;
             this.DiseaseCount = DiseaseCount;
             this.IsGeneric = IsGeneric;
+            this.shape = shape;
         }
 
         public override bool Equals(object obj)

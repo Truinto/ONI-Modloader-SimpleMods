@@ -33,8 +33,7 @@ namespace CustomizeGeyser
                         Directory.Move(temp, temp2);
                     }
                 }
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Helpers.Print(e.ToString());
             }
@@ -105,14 +104,35 @@ namespace CustomizeGeyser
             StateManager.State.Geysers.Clear();
             foreach (var config in GeyserInfo.Config)
             {
-                var x = config.geyserType;
-                StateManager.State.Geysers.Add(new GeyserStruct(x.id, x.element.ToString()));
+                var geyserType = config.geyserType;
+                StateManager.State.Geysers.Add(new GeyserStruct(
+                    id: geyserType.id,
+                    element: geyserType.element.ToString(),
+                    anim: config.anim,
+                    width: config.width,
+                    height: config.height,
+                    temperature: geyserType.temperature,
+                    minRatePerCycle: geyserType.minRatePerCycle,
+                    maxRatePerCycle: geyserType.maxRatePerCycle,
+                    maxPressure: geyserType.maxPressure,
+                    minIterationLength: geyserType.minIterationLength,
+                    maxIterationLength: geyserType.maxIterationLength,
+                    minIterationPercent: geyserType.minIterationPercent,
+                    maxIterationPercent: geyserType.maxIterationPercent,
+                    minYearLength: geyserType.minYearLength,
+                    maxYearLength: geyserType.maxYearLength,
+                    minYearPercent: geyserType.minYearPercent,
+                    maxYearPercent: geyserType.maxYearPercent,
+                    Name: Strings.Get(config.nameStringKey),
+                    Description: Strings.Get(config.descStringKey),
+                    Disease: geyserType.diseaseInfo.idx == byte.MaxValue ? null : Db.Get().Diseases[geyserType.diseaseInfo.idx].Id,
+                    DiseaseCount: geyserType.diseaseInfo.count == 0 ? null : geyserType.diseaseInfo.count,
+                    IsGeneric: config.isGenericGeyser,
+                    shape: geyserType.shape
+                ));
             }
 
             StateManager.TrySaveConfigurationState();
-            OptionsDialog.Last?.CloseDialog();
-            OptionsDialog.Last?.CheckForRestart();
-            OptionsDialog.Last = null;
         };
 
         [Option("CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_Title", "CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_ToolTip", "Buttons", null)]
@@ -236,7 +256,7 @@ namespace CustomizeGeyser
 
         #region _implementation
 
-        public static Config.Manager<CustomizeGeyserState> StateManager;
+        public static Config.Manager<CustomizeGeyserState> StateManager = null!;
         public static bool OnUpdate(CustomizeGeyserState state)
         {
             return true;

@@ -11,11 +11,11 @@ namespace CustomizeGeyser
         /// <summary>Reference to the geyser configs. Only after GeyserGenericConfig_GenerateConfigs.Postfix has executed.</summary>
         public static List<GeyserGenericConfig.GeyserPrefabParams> Config = new();
 
-        public static List<GeyserConfigurator.GeyserType> GeyserTypes = (List<GeyserConfigurator.GeyserType>)AccessTools.Field(typeof(GeyserConfigurator), "geyserTypes").GetValue(null);
+        public static List<GeyserConfigurator.GeyserType> GeyserTypes => GeyserConfigurator.geyserTypes;
 
         public static List<string> IdsBaseGame = new();
 
-        public static string ConvertGeyserId(this HashedString hash)
+        public static string? ConvertGeyserId(this HashedString hash)
         {
             return GeyserTypes.Find(s => s.idHash == hash)?.id;
         }
@@ -33,8 +33,6 @@ namespace CustomizeGeyser
         //public static readonly string[] GeyserKAnimsVanilla = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_oil_kanim", "geyser_liquid_sulfur_kanim" };
         //public static readonly string[] GeyserKAnimsDLC1 = { "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_sulfur_kanim" };
 
-        public static Dictionary<Tag, string> ProperTags = AccessTools.Field(typeof(TagManager), "ProperNamesNoLinks").GetValue(null) as Dictionary<Tag, string>;
-
         public static void Postfix(ref List<GeyserGenericConfig.GeyserPrefabParams> __result)
         {
             GeyserInfo.Config = __result;
@@ -51,7 +49,7 @@ namespace CustomizeGeyser
             {
                 if (modifier.id == null) continue;
 
-                var tagID = ProperTags.FirstOrDefault(f => f.Key.Name.StartsWithIgnoreCase("geyser_") && f.Value == modifier.id);
+                var tagID = TagManager.ProperNamesNoLinks.FirstOrDefault(f => f.Key.Name.StartsWithIgnoreCase("geyser_") && f.Value == modifier.id);
                 if (tagID.Key.IsValid)
                     modifier.id = tagID.Key.Name.Substring(7);
 
@@ -167,7 +165,7 @@ namespace CustomizeGeyser
                 }
 
                 // make sure there is both a GeyserTypes and a GeyserConfig; if not delete the type
-                GeyserConfigurator.GeyserType geyserType = GeyserInfo.GeyserTypes.Find(x => x.id == modifier.id);
+                var geyserType = GeyserInfo.GeyserTypes.Find(x => x.id == modifier.id);
                 if (geyserType != null && !GeyserInfo.Config.Any(a => a.id == "GeyserGeneric_" + geyserType.id))
                 {
                     Helpers.Print($"{geyserType.id} has no valid geyser type");
@@ -230,6 +228,9 @@ namespace CustomizeGeyser
                         else
                             geyserType.diseaseInfo = new Klei.SimUtil.DiseaseInfo() { idx = diseaseIndex, count = (int)modifier.DiseaseCount };
                     }
+
+                    if (modifier.shape != null)
+                        geyserType.shape = modifier.shape.Value;
 
                     Helpers.Print("Changed geyser with id: " + modifier.id);
                 }
@@ -368,6 +369,8 @@ namespace CustomizeGeyser
                                 (float)modifier.minRatePerCycle,
                                 (float)modifier.maxRatePerCycle,
                                 (float)modifier.maxPressure,
+                                [],
+                                [],
                                 (float)modifier.minIterationLength,
                                 (float)modifier.maxIterationLength,
                                 (float)modifier.minIterationPercent,
