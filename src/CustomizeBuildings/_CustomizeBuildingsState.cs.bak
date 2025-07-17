@@ -14,12 +14,12 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 56;
+        public int version { get; set; } = 58;
 
         #region $Reset Button
         [JsonIgnore]
         [Option("CustomizeBuildings.LOCSTRINGS.Header_Title", "CustomizeBuildings.LOCSTRINGS.Header_ToolTip", "", null)]
-        public LocText Header => null;
+        public LocText? Header => null;
 
         [Option("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_ToolTip")]
         [JsonIgnore]
@@ -97,7 +97,6 @@ namespace CustomizeBuildings
             StateManager.State.SteamTurbineSourceElement = "Steam";
             StateManager.State.SteamTurbineOutputElement = "Water";
             StateManager.State.SteamTurbinePumpRateKG = 2f;
-            StateManager.State.SteamTurbineMaxSelfHeat = 64f;
             StateManager.State.SteamTurbineHeatTransferPercent = 0.1f;
             StateManager.State.SteamTurbineMinActiveTemperature = 398.15f;
             StateManager.State.SteamTurbineIdealTemperature = 473.15f;
@@ -115,6 +114,7 @@ namespace CustomizeBuildings
             StateManager.State.ConveyorReceptacleHasSlider = false;
             StateManager.State.ConveyorLoaderAcceptLiquidsGas = false;
             StateManager.State.ValveEnableTemperatureFilter = false;
+            StateManager.State.ConveyorMeterLimit = 500f;
             StateManager.State.AutoSweeperCapacity = 1000f;
             StateManager.State.AutoSweeperRange = 4;
             StateManager.State.AutoSweeperSlider = false;
@@ -234,17 +234,17 @@ namespace CustomizeBuildings
         public float CritterFeederKG { get; set; } = 400000f;
         [Option("CustomizeBuildings.LOCSTRINGS.FishFeederKG_Title", "CustomizeBuildings.LOCSTRINGS.FishFeederKG_ToolTip", "Storage", "F0")]
         public float FishFeederKG { get; set; } = 400000f;
-        [Option("Bottle Filler Capacity", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.BottleFillerKG_Title", "CustomizeBuildings.LOCSTRINGS.BottleFillerKG_ToolTip", "Storage", "F0")]
         public float BottleFillerKG { get; set; } = 200f;
         [Option("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_Title", "CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_ToolTip", "Storage", "F0")]
-        public float CanisterFillerKG { get; set; } = 200f;
-        [Option("Bottle Emptier Capacity", "", "Storage", "F0")]
+        public float CanisterFillerKG { get; set; } = 25f;
+        [Option("CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_Title", "CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_ToolTip", "Storage", "F0")]
         public float BottleEmptierKG { get; set; } = 200f;
-        [Option("Canister Emptier Capacity", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_Title", "CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_ToolTip", "Storage", "F0")]
         public float CanisterEmptierKG { get; set; } = 200f;
-        [Option("Bottle Emptier Conduit Capacity", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_Title", "CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_ToolTip", "Storage", "F0")]
         public float BottleEmptierConduitKG { get; set; } = 200f;
-        [Option("Canister Emptier Conduit Capacity", "", "Storage", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_Title", "CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_ToolTip", "Storage", "F0")]
         public float CanisterEmptierConduitKG { get; set; } = 200f;
         [Option("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_ToolTip", "Storage", "F0")]
         public float ConveyorLoaderKG { get; set; } = 400000f;
@@ -368,8 +368,6 @@ namespace CustomizeBuildings
         public string SteamTurbineOutputElement { get; set; } = "Water";
         [Option("CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_Title", "CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_ToolTip", "Steam Turbine", "F2")]
         public float SteamTurbinePumpRateKG { get; set; } = 2f;
-        [Option("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_Title", "CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_ToolTip", "Steam Turbine", "F2")]
-        public float SteamTurbineMaxSelfHeat { get; set; } = 64f;
         [Option("CustomizeBuildings.LOCSTRINGS.SteamTurbineHeatTransferPercent_Title", "CustomizeBuildings.LOCSTRINGS.SteamTurbineHeatTransferPercent_ToolTip", "Steam Turbine", "P2")]
         [Limit(0, 1)]
         public float SteamTurbineHeatTransferPercent { get; set; } = 0.1f;
@@ -411,6 +409,9 @@ namespace CustomizeBuildings
 
         [Option("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_Title", "CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_ToolTip", "Pipes", null)]
         public bool ValveEnableTemperatureFilter { get; set; } = false;
+
+        [Option("Conveyor Meter Limit", "", "Pipes", null)]
+        public float ConveyorMeterLimit { get; set; } = 500f;
         #endregion
 
         #region Auto Sweeper
@@ -718,7 +719,7 @@ namespace CustomizeBuildings
             .Input("Dirt", 0.030000001f).Input("Water", 0.3f)
             .Output("Oxygen", 0.040000003f).Output("Algae", 0.29033336f).Store(false, true);
 
-        public Dictionary<string, Dictionary<string, Dictionary<string, object>>> AdvancedSettings { get; set; } = null;
+        public Dictionary<string, Dictionary<string, Dictionary<string, object>>>? AdvancedSettings { get; set; } = null;
 
         //    = new Dictionary<string, Dictionary<string, Dictionary<string, object>>>() {
         //        { "LiquidHeater", new Dictionary<string, Dictionary<string, object>> { { "SpaceHeater", new Dictionary<string, object> { { "targetTemperature", 1000f} }  } } }
@@ -727,7 +728,7 @@ namespace CustomizeBuildings
 
         #region _implementation
 
-        public static Config.Manager<CustomizeBuildingsState> StateManager;
+        public static Config.Manager<CustomizeBuildingsState> StateManager = null!;
 
         public static void BeforeUpdate()
         {
@@ -1287,9 +1288,29 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FishFeederKG_Title", "Fish Feeder Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.FishFeederKG_ToolTip", "");
 
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BottleFillerKG", "BottleFillerKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleFillerKG_Title", "Bottle Filler Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleFillerKG_ToolTip", "");
+
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CanisterFillerKG", "CanisterFillerKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_Title", "Canister Filler Capacity");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterFillerKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BottleEmptierKG", "BottleEmptierKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_Title", "Bottle Emptier Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CanisterEmptierKG", "CanisterEmptierKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_Title", "Canister Emptier Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BottleEmptierConduitKG", "BottleEmptierConduitKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_Title", "Bottle Emptier Conduit Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.BottleEmptierConduitKG_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.CanisterEmptierConduitKG", "CanisterEmptierConduitKG");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_Title", "Canister Emptier Conduit Capacity");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.CanisterEmptierConduitKG_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorLoaderKG", "ConveyorLoaderKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorLoaderKG_Title", "Conveyor Loader Capacity");

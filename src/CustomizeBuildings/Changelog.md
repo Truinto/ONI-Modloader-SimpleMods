@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.111.0] U56-678383-SCRP (release)
+- added ConveyorMeterLimit
+
 ## [1.0.110.0] U55-663500-SCR (release)
 - added logic to handle StatemachineDef in advanced settings
 

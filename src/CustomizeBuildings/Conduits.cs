@@ -208,6 +208,25 @@ namespace CustomizeBuildings
         }
     }
 
+    public class SolidLimitValvelMod : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id is SolidLimitValveConfig.ID
+                && (CustomizeBuildingsState.StateManager.State.ConveyorMeterLimit != 500f);
+        }
+
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
+        {
+            var limitValve = def.BuildingComplete.GetComponent<LimitValve>();
+            limitValve.maxLimitKg = CustomizeBuildingsState.StateManager.State.ConveyorMeterLimit;
+        }
+    }
+
     [HarmonyPatch(typeof(MorbRoverMaker.Def), nameof(MorbRoverMaker.Def.GetConduitMaxPackageMass))]
     public class MorbRoverMaker_GetConduitMaxPackageMass
     {
