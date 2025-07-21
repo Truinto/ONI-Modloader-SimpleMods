@@ -19,7 +19,6 @@ Steps to reproduce the behavior:
 
 **[required] Debug Logs**
 - attach log found here: %AppData%\..\LocalLow\Klei\Oxygen Not Included
-- attach log(s) found here: Steam\SteamApps\common\OxygenNotIncluded\Mods\_Logs
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
