@@ -330,6 +330,9 @@ namespace CustomizePlants
                     if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
                     if (cropval.numProduced < 1) cropval.numProduced = 1;
                     crop.Configure(cropval);
+
+                    EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
+                    EnsureAmount(modifiers, baseTrait, Db.Get().Amounts.Maturity, maxValue: cropval.cropDuration / 600f);
                 }
                 else
                 {

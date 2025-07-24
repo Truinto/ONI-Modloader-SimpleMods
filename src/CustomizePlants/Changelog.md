@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.49.0] U56-679336-SCRP (release)
+- fixed fruit settings not applying changes to traits
+
 ## [1.0.48.0] U56-679336-SCRP (release)
 - fixed crashes with new feature plants and fruit settings
 
