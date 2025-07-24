@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.48.0] U56-679336-SCRP (release)
+- fixed crashes with new feature plants and fruit settings
+
 ## [1.0.47.0] U56-675600-SCRP (release)
 - fixed crash without DLC SpacedOut
 

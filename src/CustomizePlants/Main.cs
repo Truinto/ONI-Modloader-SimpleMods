@@ -51,7 +51,7 @@ namespace CustomizePlants
                     Prefix_OnWiltRecover(__instance);
             }
         }
-        public static void OnReplanted(object data = null)
+        public static void OnReplanted(object? data = null)
         {
             var go = Helpers.GetGameObject(data);
             if (go == null)
@@ -250,7 +250,7 @@ namespace CustomizePlants
             Modifiers modifiers = plant.AddOrGet<Modifiers>();
             Trait baseTrait;
             {
-                string traitName = modifiers.initialTraits.FirstOrDefault();
+                string? traitName = modifiers.initialTraits.FirstOrDefault();
                 if (traitName == null)
                 {
                     traitName = plant.PrefabID() + "Modded";
@@ -289,7 +289,7 @@ namespace CustomizePlants
                     //kbatchedAnimController.initialAnim = "idle_empty";
                 }
 
-                SeedProducer seedProducer = plant.GetComponent<SeedProducer>(); // this fixes the missing mutantion on deco plant seeds
+                var seedProducer = plant.GetComponent<SeedProducer>(); // this fixes the missing mutantion on deco plant seeds
                 if (seedProducer != null)
                 {
                     seedProducer.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
@@ -319,33 +319,48 @@ namespace CustomizePlants
             #region fruitId
             if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
             {
-                GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, plant.PrefabID().ToString());
-                Crop crop = plant.AddOrGet<Crop>();
-                Crop.CropVal cropval = crop.cropVal;   //this is a copy
-                if (setting.fruitId != null) cropval.cropId = setting.fruitId;
-                if (cropval.cropId == "") cropval.cropId = "WoodLog";
-                if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
-                if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
-                if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
-                if (cropval.numProduced < 1) cropval.numProduced = 1;
-                crop.Configure(cropval);
-
-                EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
-                EnsureAmount(modifiers, baseTrait, Db.Get().Amounts.Maturity, maxValue: cropval.cropDuration / 600f);
-
-                plant.AddOrGet<Growing>();
-                if (setting.id != ForestTreeConfig.ID)  // don't harvest arbor trees directly
-                    plant.AddOrGet<Harvestable>();
-                plant.AddOrGet<HarvestDesignatable>();
-                if (DlcManager.FeaturePlantMutationsEnabled())
+                Crop crop = plant.GetComponent<Crop>();
+                if (crop != null)
                 {
-                    var mutant = plant.AddOrGet<MutantPlant>();
-                    mutant.SpeciesID = plant.GetComponent<KPrefabID>().PrefabTag;
-                    Helpers.Print("Set mutant.SpeciesID to " + mutant.SpeciesID);
-                    SymbolOverrideControllerUtil.AddToPrefab(plant);
+                    Crop.CropVal cropval = crop.cropVal;   // this is a copy
+                    if (setting.fruitId != null) cropval.cropId = setting.fruitId;
+                    if (cropval.cropId is null or "") cropval.cropId = "WoodLog";
+                    if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
+                    if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
+                    if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
+                    if (cropval.numProduced < 1) cropval.numProduced = 1;
+                    crop.Configure(cropval);
                 }
+                else
+                {
+                    GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, plant.PrefabID().ToString());
+                    crop = plant.AddOrGet<Crop>();
+                    Crop.CropVal cropval = crop.cropVal;   // this is a copy
+                    if (setting.fruitId != null) cropval.cropId = setting.fruitId;
+                    if (cropval.cropId is null or "") cropval.cropId = "WoodLog";
+                    if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
+                    if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
+                    if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
+                    if (cropval.numProduced < 1) cropval.numProduced = 1;
+                    crop.Configure(cropval);
 
-                plant.AddOrGet<StandardCropPlant>();
+                    EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
+                    EnsureAmount(modifiers, baseTrait, Db.Get().Amounts.Maturity, maxValue: cropval.cropDuration / 600f);
+
+                    plant.AddOrGet<Growing>();
+                    if (setting.id != ForestTreeConfig.ID)  // don't harvest arbor trees directly
+                        plant.AddOrGet<Harvestable>();
+                    plant.AddOrGet<HarvestDesignatable>();
+                    if (DlcManager.FeaturePlantMutationsEnabled())
+                    {
+                        var mutant = plant.AddOrGet<MutantPlant>();
+                        mutant.SpeciesID = plant.GetComponent<KPrefabID>().PrefabTag;
+                        Helpers.Print("Set mutant.SpeciesID to " + mutant.SpeciesID);
+                        SymbolOverrideControllerUtil.AddToPrefab(plant);
+                    }
+
+                    plant.AddOrGet<StandardCropPlant>();
+                }
             }
             #endregion
             #region irrigation
@@ -562,7 +577,7 @@ namespace CustomizePlants
                 if (setting.disease_amount != null)
                     def.averageEmitPerSecond = (int)setting.disease_amount;
                 if (setting.disease_once != null)
-                    def.singleEmitQuantity = (int)setting.disease_amount;
+                    def.singleEmitQuantity = (int)setting.disease_once;
 
                 if (def.diseaseIdx == byte.MaxValue || (def.averageEmitPerSecond == 0 && def.singleEmitQuantity == 0))
                     Common.Helpers.RemoveDef(plant, def);
@@ -577,6 +592,11 @@ namespace CustomizePlants
                 if (element == null || element.IsSolid || element.IsVacuum)                //invalid element
                 {
                     Debug.Log(ToDialog("input_element is bad element: " + setting.input_element));
+                    UnityEngine.Object.DestroyImmediate(consumer);
+                }
+                else if (setting.input_rate == null)
+                {
+                    Debug.Log(ToDialog("input_rate is null"));
                     UnityEngine.Object.DestroyImmediate(consumer);
                 }
                 else if (setting.input_rate <= 0f)   //delete consumer
@@ -611,6 +631,11 @@ namespace CustomizePlants
                 if (element == null || element.IsVacuum)    //invalid element
                 {
                     Debug.Log(ToDialog("output_element is bad element: " + setting.output_element));
+                    UnityEngine.Object.DestroyImmediate(converter);
+                }
+                else if (setting.output_rate == null)
+                {
+                    Debug.Log(ToDialog("output_rate is null"));
                     UnityEngine.Object.DestroyImmediate(converter);
                 }
                 else if (setting.output_rate <= 0f)  //delete converter

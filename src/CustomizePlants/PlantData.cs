@@ -6,26 +6,26 @@ namespace CustomizePlants
     {
         private int hash;
         public string id;
-        public string fruitId;
+        public string? fruitId;
         public float? fruit_grow_time;
         public int? fruit_amount;
-        public Dictionary<string, float> irrigation;
+        public Dictionary<string, float>? irrigation;
         public float? illumination;
-        public string[] safe_elements;
-        public float[] temperatures;
-        public float[] pressures;
+        public string[]? safe_elements;
+        public float[]? temperatures;
+        public float[]? pressures;
         public int? decor_value;
         public int? decor_radius;
         public float? submerged_threshold;
         public bool? can_tinker;
         public bool? require_solid_tile;
         public float? max_age;
-        public string disease;
+        public string? disease;
         public int? disease_amount;
         public int? disease_once;
-        public string input_element;
+        public string? input_element;
         public float? input_rate;
-        public string output_element;
+        public string? output_element;
         public float? output_rate;
         public float? radiation;
         public int? radiation_radius;
@@ -61,7 +61,7 @@ namespace CustomizePlants
         /// <param name="radiation_radius">Radius of radiation (if any).</param>
         /// <param name="radiation_threshold_min">Minimum radiation threshold.</param>
         /// <param name="radiation_threshold_max">Maximum radiation threshold.</param>
-        public PlantData(string id, string fruitId = null, float? fruit_grow_time = null, int? fruit_amount = null, Dictionary<string, float> irrigation = null, float? illumination = null, string[] safe_elements = null, float[] temperatures = null, float[] pressures = null, int? decor_value = null, int? decor_radius = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string disease = null, int? disease_amount = null, int? disease_once = null, string input_element = null, float? input_rate = null, string output_element = null, float? output_rate = null, float? radiation = null, int? radiation_radius = null, float? radiation_threshold_min = null, float? radiation_threshold_max = null)
+        public PlantData(string id, string? fruitId = null, float? fruit_grow_time = null, int? fruit_amount = null, Dictionary<string, float>? irrigation = null, float? illumination = null, string[]? safe_elements = null, float[]? temperatures = null, float[]? pressures = null, int? decor_value = null, int? decor_radius = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string? disease = null, int? disease_amount = null, int? disease_once = null, string? input_element = null, float? input_rate = null, string? output_element = null, float? output_rate = null, float? radiation = null, int? radiation_radius = null, float? radiation_threshold_min = null, float? radiation_threshold_max = null)
         {
             this.id = id;
             this.fruitId = fruitId;
@@ -92,11 +92,13 @@ namespace CustomizePlants
         }
 
         public PlantData()
-        { }
+        {
+            this.id ??= null!;
+        }
 
         public override bool Equals(object obj)
         {
-            return this.GetHashCode() == (obj as PlantData)?.GetHashCode();
+            return GetHashCode() == (obj as PlantData)?.GetHashCode();
         }
 
         public override int GetHashCode()

@@ -4,6 +4,7 @@ using HarmonyLib;
 using Klei.AI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,9 +19,9 @@ namespace Common
     public static class Helpers
     {
         #region Log
-        public static string ModName;
+        public static string? ModName;
 
-        public static string ActiveLocale;
+        public static string? ActiveLocale;
 
         /// <summary>Prints text to the log.</summary>
         public static void Print(string text)
@@ -256,7 +257,7 @@ namespace Common
             return str1.StartsWith(str2, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static string TrySubstring(this string str, char c, int start = 0)
+        public static string? TrySubstring(this string str, char c, int start = 0)
         {
             try
             {
@@ -272,7 +273,7 @@ namespace Common
             return str != null && str != "";
         }
 
-        public static bool TryParseEnum(Type enumType, string value, out Enum result)
+        public static bool TryParseEnum(Type enumType, string value, [NotNullWhen(true)] out Enum? result)
         {
             try
             {
@@ -354,7 +355,7 @@ namespace Common
         }
 
         /// <summary>Returns string inside quotation marks. Respects escape character.</summary>
-        public static string GetQuotationString(this string line, int occurrence, char delimiter = '"')
+        public static string? GetQuotationString(this string line, int occurrence, char delimiter = '"')
         {
             if (line == null) return null;
             occurrence--;
@@ -403,7 +404,7 @@ namespace Common
             return null;
         }
 
-        public static string GetQuotationString(this string line)
+        public static string? GetQuotationString(this string line)
         {
             if (line == null) return null;
             int index1 = line.IndexOf('"') + 1;
@@ -413,7 +414,7 @@ namespace Common
             return null;
         }
 
-        public static string GetUndoLiteralString(this string line)
+        public static string? GetUndoLiteralString(this string line)
         {
             if (line == null) return null;
             line = line.Replace("\\\\", "\\");
@@ -426,7 +427,7 @@ namespace Common
             return line;
         }
 
-        public static string GetLiteralString(this string line)
+        public static string? GetLiteralString(this string line)
         {
             if (line == null) return null;
             line = line.Replace("\\", "\\\\");
@@ -473,7 +474,7 @@ namespace Common
             sw.WriteLine($"# README Customize Buildings v{version}\n");
             sw.WriteLine(desc);
 
-            string lastcategory = null;
+            string? lastcategory = null;
             foreach (var field in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
                 var attr = field.GetCustomAttribute(type);
@@ -553,7 +554,7 @@ namespace Common
         /// Can be called multiple times. Consecutive calls will appended. Must #define LOCALE to be used.
         public static bool StringsAppend = false;
         [System.Diagnostics.Conditional("LOCALE")]
-        public static void StringsPrint(string path = null)
+        public static void StringsPrint(string? path = null)
         {
             using (StreamWriter sw = new(path ?? Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_NEW.pot"), StringsAppend))
             {
@@ -613,7 +614,7 @@ namespace Common
         }
 
         /// Adds string to TagManager.
-        public static void StringsTag(string key, string id, string proper = null)
+        public static void StringsTag(string key, string id, string? proper = null)
         {
 #if LOCALE
             key = key.Replace(' ', '_');
@@ -622,7 +623,7 @@ namespace Common
             TagManager.Create(id, proper is null or "" ? id : proper);
         }
 
-        public static void StringsTagShort(string short_key, string id, string proper = null)
+        public static void StringsTagShort(string short_key, string id, string? proper = null)
         {
 #if LOCALE
             short_key = $"{Helpers.ModName}.TAG.{short_key.Replace(' ', '_')}";
@@ -631,7 +632,7 @@ namespace Common
             TagManager.Create(id, proper is null or "" ? id : proper);
         }
 
-        public static string StringsLoad(string path = null)
+        public static string? StringsLoad(string? path = null)
         {
             try
             {
@@ -653,8 +654,8 @@ namespace Common
                 //        Strings.Add(pair.Key, pair.Value);
                 //}
 
-                string key = null;
-                string id = null;
+                string? key = null;
+                string? id = null;
                 bool isTag = false;
                 var lines = File.ReadAllLines(path);
                 int i = 0;
@@ -662,7 +663,7 @@ namespace Common
                 for (; i < lines.Length; i++)
                 {
                     string line = lines[i];
-                    string quote = line.GetQuotationString();
+                    string? quote = line.GetQuotationString();
                     int j = 0;
                     // resolve multi-line quotes
                     while (true)
@@ -671,7 +672,7 @@ namespace Common
                             break;
                         if (lines.Length <= i + 1)
                             break;
-                        string quote2 = lines[i + 1];
+                        string? quote2 = lines[i + 1];
                         if (!quote2.StartsWith("\"", StringComparison.Ordinal))
                             break;
                         quote2 = quote2.GetQuotationString();
@@ -728,7 +729,7 @@ namespace Common
             }
         }
 
-        public static void LocalizeTypeToPOT(Type type, string path = null)
+        public static void LocalizeTypeToPOT(Type type, string? path = null)
         {
             string typename = type.FullName.Replace('+', '.');
             using (StreamWriter sw = new StreamWriter(path ?? "STRINGS.pot", true))
@@ -752,7 +753,7 @@ namespace Common
         public static PropertyInfo _AttributeModifierValue = AccessTools.Property(typeof(AttributeModifier), nameof(AttributeModifier.Value));
         public static PropertyInfo _AttributeModifierIsMultiplier = AccessTools.Property(typeof(AttributeModifier), nameof(AttributeModifier.IsMultiplier));
 
-        public static void EnsureAttributeModifier(this List<AttributeModifier> list, string AttributeId, float value, bool is_multiplier, string description = null, bool uiOnly = false, bool is_readonly = false)
+        public static void EnsureAttributeModifier(this List<AttributeModifier> list, string AttributeId, float value, bool is_multiplier, string? description = null, bool uiOnly = false, bool is_readonly = false)
         {
             var attribute = list.Find(s => s.AttributeId == AttributeId);
             if (attribute == null)
@@ -768,13 +769,15 @@ namespace Common
 
         public class AttributeContainer
         {
-            public string Description;
+            public string? Description;
             public string AttributeId;
             public float Value;
             public bool IsMultiplier;
 
             public AttributeContainer()
-            { }
+            {
+                this.AttributeId ??= null!;
+            }
 
             public AttributeContainer(AttributeModifier source)
             {
@@ -784,7 +787,7 @@ namespace Common
                 this.IsMultiplier = source.IsMultiplier;
             }
 
-            public AttributeContainer(string id, float value, string name = null, bool isMultiplier = false)
+            public AttributeContainer(string id, float value, string? name = null, bool isMultiplier = false)
             {
                 this.Description = name;
                 this.AttributeId = id;
@@ -801,7 +804,7 @@ namespace Common
 
         #region Components
 
-        public static GameObject GetGameObject(object obj)
+        public static GameObject? GetGameObject(object? obj)
         {
             if (obj is StateMachine.Instance smi)
                 obj = smi.GetMaster();
@@ -813,7 +816,7 @@ namespace Common
         }
 
         /// <summary>Searches Assets for the Prefab (from which instances are cloned) and returns its Component <typeparamref name="T"/> or null, if no match.</summary>
-        public static T GetPrefabComponent<T>(object obj, [CallerMemberName] string memberName = "") where T : Component
+        public static T? GetPrefabComponent<T>(object? obj, [CallerMemberName] string memberName = "") where T : Component
         {
             var go = GetGameObject(obj);
             if (go == null)
@@ -835,21 +838,21 @@ namespace Common
         }
 
         /// <inheritdoc cref="GetPrefabComponent{T}(object)"/>
-        public static T GetPrefabComponent<T>(this GameObject go, [CallerMemberName] string memberName = "") where T : Component
+        public static T? GetPrefabComponent<T>(this GameObject? go, [CallerMemberName] string memberName = "") where T : Component
         {
-            return GetPrefabComponent<T>((object)go, memberName);
+            return GetPrefabComponent<T>((object?)go, memberName);
         }
 
         /// <inheritdoc cref="GetPrefabComponent{T}(object)"/>
-        public static T GetPrefabComponent<T>(this StateMachine.Instance smi, [CallerMemberName] string memberName = "") where T : Component
+        public static T? GetPrefabComponent<T>(this StateMachine.Instance? smi, [CallerMemberName] string memberName = "") where T : Component
         {
-            return GetPrefabComponent<T>((object)smi, memberName);
+            return GetPrefabComponent<T>((object?)smi, memberName);
         }
 
         /// <inheritdoc cref="GetPrefabComponent{T}(object)"/>
-        public static T GetPrefabComponent<T>(this Component comp, [CallerMemberName] string memberName = "") where T : Component
+        public static T? GetPrefabComponent<T>(this Component? comp, [CallerMemberName] string memberName = "") where T : Component
         {
-            return GetPrefabComponent<T>((object)comp, memberName);
+            return GetPrefabComponent<T>((object?)comp, memberName);
         }
 
         public static void PrintAllPatches(Type type, string method)
@@ -941,7 +944,7 @@ namespace Common
 
         public static BindingFlags AllBinding = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-        public static void ReplaceCall(this CodeInstruction code, Type type, string name, Type[] parameters = null, Type[] generics = null)
+        public static void ReplaceCall(this CodeInstruction code, Type type, string name, Type[]? parameters = null, Type[]? generics = null)
         {
             var repl = CodeInstruction.Call(type, name, parameters, generics);
             code.opcode = repl.opcode;
