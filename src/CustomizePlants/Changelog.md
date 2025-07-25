@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.50.0] U56-679336-SCRP (release)
+- fixed crash by excluding butterfly plant from mutation patches
+
 ## [1.0.49.0] U56-679336-SCRP (release)
 - fixed fruit settings not applying changes to traits
 

@@ -290,7 +290,7 @@ namespace CustomizePlants
                 }
 
                 var seedProducer = plant.GetComponent<SeedProducer>(); // this fixes the missing mutantion on deco plant seeds
-                if (seedProducer != null)
+                if (seedProducer != null && plant.PrefabID() != ButterflyPlantConfig.ID)
                 {
                     seedProducer.seedInfo.productionType = SeedProducer.ProductionType.Harvest;
                     seedProducer.seedInfo.newSeedsProduced = 1;
