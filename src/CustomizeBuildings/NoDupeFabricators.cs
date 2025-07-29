@@ -9,10 +9,10 @@ namespace CustomizeBuildings
 {
     public class NoDupeHelper
     {
-        public static void SetAutomatic(GameObject go, object fabricatorObject)
+        public static void SetAutomatic(GameObject go)
         {
-            BuildingComplete bc = go.GetComponent<BuildingComplete>();
-            ComplexFabricator fabricator = (ComplexFabricator)fabricatorObject;
+            var bc = go.GetComponent<BuildingComplete>();
+            var fabricator = go.GetComponent<ComplexFabricator>();
 
             if (bc == null)
             {
@@ -25,196 +25,101 @@ namespace CustomizeBuildings
                 return;
             }
 
-            go.AddOrGet<BuildingComplete>().isManuallyOperated = false;
+            bc.isManuallyOperated = false;
             fabricator.duplicantOperated = false;
         }
     }
 
     #region ComplexFabricator
 
-    [HarmonyPatch(typeof(ApothecaryConfig), "ConfigureBuildingTemplate")]
-    public class ApothecaryConfig_ConfigureBuildingTemplate
+    public class NoDupeMods : IBuildingCompleteMod
     {
-        public static bool Prepare()
+        public bool Enabled(string id)
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeApothecary;
+            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal;
         }
 
-        public static void Postfix(GameObject go)
+        public void EditDef(BuildingDef def)
         {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
+        }
+
+        public void EditGO(BuildingDef def)
+        {
+            switch (def.PrefabID)
+            {
+                case ApothecaryConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeApothecary)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case ClothingFabricatorConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeClothingFabricator)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case CookingStationConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeCookingStation)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case EggCrackerConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeEggCracker)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case GlassForgeConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeGlassForge)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case GourmetCookingStationConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeGourmetCookingStation)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case MetalRefineryConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeMetalRefinery)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case MicrobeMusherConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeMicrobeMusher)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case RockCrusherConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeRockCrusher)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case DiamondPressConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeDiamondPress)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case SuitFabricatorConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeSuitFabricator)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case SupermaterialRefineryConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeSupermaterialRefinery)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case SludgePressConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeSludgePress)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case MilkPressConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeMilkPress)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case ChemicalRefineryConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeChemicalRefinery)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case MissileFabricatorConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeMissileFabricator)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+                case DeepfryerConfig.ID:
+                    if (CustomizeBuildingsState.StateManager.State.NoDupeDeepfryer)
+                        NoDupeHelper.SetAutomatic(def.BuildingComplete);
+                    break;
+            }
         }
     }
 
-    [HarmonyPatch(typeof(ClothingFabricatorConfig), "ConfigureBuildingTemplate")]
-    public class ClothingFabricatorConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeClothingFabricator;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
-        }
-    }
-
-    [HarmonyPatch(typeof(CookingStationConfig), "ConfigureBuildingTemplate")]
-    public class CookingStationConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeCookingStation;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<CookingStation>());
-        }
-    }
-
-    [HarmonyPatch(typeof(EggCrackerConfig), "ConfigureBuildingTemplate")]
-    public class EggCrackerConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeEggCracker;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
-        }
-    }
-
-    [HarmonyPatch(typeof(GlassForgeConfig), "ConfigureBuildingTemplate")]
-    public class GlassForgeConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeGlassForge;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<GlassForge>());
-        }
-    }
-
-    [HarmonyPatch(typeof(GourmetCookingStationConfig), "ConfigureBuildingTemplate")]
-    public class GourmetCookingStationConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeGourmetCookingStation;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<GourmetCookingStation>());
-        }
-    }
-
-    [HarmonyPatch(typeof(MetalRefineryConfig), "ConfigureBuildingTemplate")]
-    public class MetalRefineryConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeMetalRefinery;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<LiquidCooledRefinery>());
-        }
-    }
-
-    [HarmonyPatch(typeof(MicrobeMusherConfig), "ConfigureBuildingTemplate")]
-    public class MicrobeMusherConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeMicrobeMusher;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<MicrobeMusher>());
-        }
-    }
-
-    [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
-    public class RockCrusherConfig_ConfigureBuildingTemplate2
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeRockCrusher;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
-        }
-    }
-
-    [HarmonyPatch(typeof(DiamondPressConfig), "ConfigureBuildingTemplate")]
-    public class DiamondPressConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeDiamondPress;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
-        }
-    }
-
-    [HarmonyPatch(typeof(SuitFabricatorConfig), "ConfigureBuildingTemplate")]
-    public class SuitFabricatorConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeSuitFabricator;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
-        }
-    }
-
-    [HarmonyPatch(typeof(SupermaterialRefineryConfig), "ConfigureBuildingTemplate")]
-    public class SupermaterialRefineryConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeSupermaterialRefinery;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
-        }
-    }
-
-    [HarmonyPatch(typeof(SludgePressConfig), "ConfigureBuildingTemplate")]
-    public class SludgePressConfig_ConfigureBuildingTemplate
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeSludgePress;
-        }
-
-        public static void Postfix(GameObject go)
-        {
-            NoDupeHelper.SetAutomatic(go, go.GetComponent<ComplexFabricator>());
-        }
-    }
-
-#endregion
+    #endregion
 
     [HarmonyPatch(typeof(OilRefineryConfig), "ConfigureBuildingTemplate")]
     public class OilRefineryConfig_ConfigureBuildingTemplate

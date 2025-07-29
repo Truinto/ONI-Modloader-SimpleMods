@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 58;
+        public int version { get; set; } = 59;
 
         #region $Reset Button
         [JsonIgnore]
@@ -161,6 +161,10 @@ namespace CustomizeBuildings
             StateManager.State.NoDupeTelescope = false;
             StateManager.State.NoDupeAlgaeTerrarium = false;
             StateManager.State.NoDupePayloadOpener = false;
+            StateManager.State.NoDupeMilkPress = false;
+            StateManager.State.NoDupeChemicalRefinery = false;
+            StateManager.State.NoDupeMissileFabricator = false;
+            StateManager.State.NoDupeDeepfryer = false;
             StateManager.State.SkillStationEnabled = false;
             StateManager.State.SkillStationCostTime = 180f;
             StateManager.State.SkillStationCostReset = 0f;
@@ -528,6 +532,14 @@ namespace CustomizeBuildings
         public bool NoDupeAlgaeTerrarium { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "No Dupe", null)]
         public bool NoDupePayloadOpener { get; set; } = false;
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupeMilkPress_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeMilkPress_ToolTip", "No Dupe", null)]
+        public bool NoDupeMilkPress { get; set; } = false;
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupeChemicalRefinery_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeChemicalRefinery_ToolTip", "No Dupe", null)]
+        public bool NoDupeChemicalRefinery { get; set; } = false;
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupeMissileFabricator_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeMissileFabricator_ToolTip", "No Dupe", null)]
+        public bool NoDupeMissileFabricator { get; set; } = false;
+        [Option("CustomizeBuildings.LOCSTRINGS.NoDupeDeepfryer_Title", "CustomizeBuildings.LOCSTRINGS.NoDupeDeepfryer_ToolTip", "No Dupe", null)]
+        public bool NoDupeDeepfryer { get; set; } = false;
 
         //public bool NoDupeShearingStation { get; set; } = true;
         #endregion
@@ -1010,6 +1022,22 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupePayloadOpener", "NoDupePayloadOpener");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "No Dupe Payload Opener");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeMilkPress", "NoDupeMilkPress");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMilkPress_Title", "No Dupe Plant Pulverizer");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMilkPress_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeChemicalRefinery", "NoDupeChemicalRefinery");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeChemicalRefinery_Title", "No Dupe Emulsifier");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeChemicalRefinery_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeMissileFabricator", "NoDupeMissileFabricator");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMissileFabricator_Title", "No Dupe Blastshot Maker");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeMissileFabricator_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeDeepfryer", "NoDupeDeepfryer");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDeepfryer_Title", "No Dupe Deep Fryer");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupeDeepfryer_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeShearingStation", "NoDupeShearingStation");
             #endregion

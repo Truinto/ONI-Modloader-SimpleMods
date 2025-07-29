@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
-        public int version { get; set; } = 58;
+        public int version { get; set; } = 59;
 
         #region $Reset Button
         [JsonIgnore]
@@ -410,7 +410,7 @@ namespace CustomizeBuildings
         [Option("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_Title", "CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_ToolTip", "Pipes", null)]
         public bool ValveEnableTemperatureFilter { get; set; } = false;
 
-        [Option("Conveyor Meter Limit", "", "Pipes", null)]
+        [Option("CustomizeBuildings.LOCSTRINGS.ConveyorMeterLimit_Title", "CustomizeBuildings.LOCSTRINGS.ConveyorMeterLimit_ToolTip", "Pipes", "F0")]
         public float ConveyorMeterLimit { get; set; } = 500f;
         #endregion
 
@@ -528,6 +528,14 @@ namespace CustomizeBuildings
         public bool NoDupeAlgaeTerrarium { get; set; } = false;
         [Option("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "No Dupe", null)]
         public bool NoDupePayloadOpener { get; set; } = false;
+        [Option("No Dupe Plant Pulverizer", "", "No Dupe", null)]
+        public bool NoDupeMilkPress { get; set; } = false;
+        [Option("No Dupe Emulsifier", "", "No Dupe", null)]
+        public bool NoDupeChemicalRefinery { get; set; } = false;
+        [Option("No Dupe Blastshot Maker", "", "No Dupe", null)]
+        public bool NoDupeMissileFabricator { get; set; } = false;
+        [Option("No Dupe Deep Fryer", "", "No Dupe", null)]
+        public bool NoDupeDeepfryer { get; set; } = false;
 
         //public bool NoDupeShearingStation { get; set; } = true;
         #endregion
@@ -805,11 +813,14 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_Title", "Conductive Panel Pressure");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConductivePanelPressure_ToolTip", "Liquid pressure.");
 
-            #region 
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.version", "version");
-
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.Header_Title", "_______________________________________________________________________________________");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.Header_ToolTip", "");
+
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_Title", "Steam Turbine Max Self-Heat");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_ToolTip", "Steam Turbine maximum amount of heat tranfered from gas to machine.");
+
+            #region 
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.version", "version");
 
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_Title", "Reset To Klei Default");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ResetToKleiDefault_ToolTip", "This will discard all changes and set all options to 'off'.");
@@ -835,8 +846,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BuildingAdvancedOutputTemp", "BuildingAdvancedOutputTemp");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AlgaeTerrarium", "AlgaeTerrarium");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AdvancedSettings", "AdvancedSettings");
             #endregion
             #region Auto Sweeper
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.AutoSweeperCapacity", "AutoSweeperCapacity");
@@ -1009,8 +1018,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupePayloadOpener", "NoDupePayloadOpener");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_Title", "No Dupe Payload Opener");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.NoDupePayloadOpener_ToolTip", "");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.NoDupeShearingStation", "NoDupeShearingStation");
             #endregion
             #region Pipes
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PipeThroughputPercent", "PipeThroughputPercent");
@@ -1060,6 +1067,10 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ValveEnableTemperatureFilter", "ValveEnableTemperatureFilter");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_Title", "Valve Enable Temperature Filter");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ValveEnableTemperatureFilter_ToolTip", "If true, will add slider to filter elements by temperature.");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.ConveyorMeterLimit", "ConveyorMeterLimit");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorMeterLimit_Title", "Conveyor Meter Limit");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.ConveyorMeterLimit_ToolTip", "");
             #endregion
             #region Power
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.BatterySmartKJ", "BatterySmartKJ");
@@ -1222,10 +1233,6 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbinePumpRateKG", "SteamTurbinePumpRateKG");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_Title", "Steam Turbine Pump-Rate");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbinePumpRateKG_ToolTip", "Steam Turbine amount of gas absorbed at once.");
-
-            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineMaxSelfHeat", "SteamTurbineMaxSelfHeat");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_Title", "Steam Turbine Max Self-Heat");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineMaxSelfHeat_ToolTip", "Steam Turbine maximum amount of heat tranfered from gas to machine.");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SteamTurbineHeatTransferPercent", "SteamTurbineHeatTransferPercent");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SteamTurbineHeatTransferPercent_Title", "Steam Turbine Heat Transfer Percent");

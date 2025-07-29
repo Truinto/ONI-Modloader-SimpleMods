@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.112.0] U56-679336-SCRP (release)
+- added a couple nodupe options
+
 ## [1.0.111.0] U56-678383-SCRP (release)
 - added ConveyorMeterLimit
 
