@@ -39,8 +39,12 @@ namespace CustomizeBuildings
                 setStorage(CustomizeBuildingsState.StateManager.State.LockerSmartKG);
 
             else if (def.PrefabID == StorageTileConfig.ID)
+            {
                 setStorage(CustomizeBuildingsState.StateManager.State.StorageTileKG);
-
+                var tileDef = def.BuildingComplete.GetDef<StorageTile.Def>();
+                if (tileDef != null)
+                    tileDef.MaxCapacity = CustomizeBuildingsState.StateManager.State.StorageTileKG;
+            }
             else if (def.PrefabID == RationBoxConfig.ID)
                 setStorage(CustomizeBuildingsState.StateManager.State.RationBoxKG);
 

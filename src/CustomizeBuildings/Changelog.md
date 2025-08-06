@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.113.0] U56-679336-SCRP (release)
+- fixed storage tile slider respect capacity
+
 ## [1.0.112.0] U56-679336-SCRP (release)
 - added a couple nodupe options
 
