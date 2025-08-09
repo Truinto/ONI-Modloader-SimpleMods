@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.114.0] U56-679336-SCRP (release)
+- fixed chilly sealed doors
+
 ## [1.0.113.0] U56-679336-SCRP (release)
 - fixed storage tile slider respect capacity
 

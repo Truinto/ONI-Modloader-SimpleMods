@@ -10,7 +10,7 @@ namespace CustomizeBuildings
 {
     [HarmonyPatch(typeof(FallMonitor.Instance), nameof(FallMonitor.Instance.UpdateFalling))]
     [HarmonyPriority(Priority.Low)]
-    public class DoorEntomb_Patch
+    public static class DoorEntomb_Patch
     {
         public static bool Prepare()
         {
@@ -34,7 +34,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(Door), nameof(Door.OnPrefabInit))]
-    public class DoorOnPrefabInit_Patch
+    public static class DoorOnPrefabInit_Patch
     {
         public static void Postfix(ref Door __instance)
         {
@@ -46,7 +46,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(Door), nameof(Door.OnCleanUp))]
-    public class DoorOnCleanUp_Patch
+    public static class DoorOnCleanUp_Patch
     {
         public static void Postfix(Door __instance)
         {
@@ -57,9 +57,28 @@ namespace CustomizeBuildings
         }
     }
 
+    [HarmonyPatch(typeof(SimTemperatureTransfer), nameof(SimTemperatureTransfer.OnCellChanged))]
+    public static class DuplicantVacuum_Patch
+    {
+        public static bool Prepare()
+        {
+            return CustomizeBuildingsState.StateManager.State.DoorSelfSealing;
+        }
+
+        public static bool Prefix(SimTemperatureTransfer __instance)
+        {
+            if (__instance is CreatureSimTemperatureTransfer)
+            {
+                int cell = Grid.PosToCell(__instance);
+                if (Grid.IsValidCell(cell) && Grid.HasDoor[cell])
+                    return false;
+            }
+            return true;
+        }
+    }
 
     [HarmonyPatch(typeof(Door), nameof(Door.SetSimState))]
-    public class DoorSelfSealing_Patch
+    public static class DoorSelfSealing_Patch
     {
         public static bool Prepare()
         {
