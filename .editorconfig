@@ -35,6 +35,7 @@ dotnet_diagnostic.IDE0062.severity = none
 
 # IDE0305: Initialisierung der Sammlung vereinfachen
 dotnet_diagnostic.IDE0305.severity = none
+dotnet_diagnostic.IDE0306.severity = none
 
 # CA1041: ObsoleteAttribute-Meldung bereitstellen
 dotnet_diagnostic.CA1041.severity = none

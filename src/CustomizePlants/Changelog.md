@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.51.0] U56-679336-SCRP (release)
+- fixed crash by excluding CritterTrap plant from mutation patches as well
+
 ## [1.0.50.0] U56-679336-SCRP (release)
 - fixed crash by excluding butterfly plant from mutation patches
 
