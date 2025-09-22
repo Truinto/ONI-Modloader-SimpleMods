@@ -42,7 +42,7 @@ namespace CustomizeBuildings
 
         /// <summary>
         /// wrapper that allows fetching a config state value of type T
-        /// Can only reliably be called after all mods are loaded, e.g. during a non-transpiler patch
+        /// Can only reliably be called after all mods are loaded, e.g. during a non-transpiler patch or in a building/entity definition method
         /// </summary>
         /// <typeparam name="T">type of the property to fetch</typeparam>
         /// <param name="propertyName">name of the property</param>
