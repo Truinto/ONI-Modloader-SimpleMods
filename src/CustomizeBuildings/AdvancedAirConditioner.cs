@@ -26,10 +26,11 @@ namespace CustomizeBuildings
         public void EditGO(BuildingDef def)
         {
             def.BuildingComplete.AddOrGet<AirConditionerSliders>().TextLogic = Helpers.StringsGetLocShort("AdvancedConditionerModLogic");
-            def.BuildingComplete.AddOrGet<Storage>().capacityKg = 2f *
+            var storage = def.BuildingComplete.AddOrGet<Storage>();
+            storage.capacityKg = Math.Max(storage.capacityKg, 2f *
                 (def.PrefabID is AirConditionerConfig.ID ?
                 CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure :
-                CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure);
+                CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure));
         }
     }
 
@@ -40,150 +41,6 @@ namespace CustomizeBuildings
         public static bool Prepare()
         {
             return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
-        }
-
-        public static Func<int, object, bool> UpdateStateCbDelegate = (Func<int, object, bool>)AccessTools.Field(typeof(AirConditioner), "UpdateStateCbDelegate").GetValue(null);
-
-        // old patch
-        public static bool Prefix_OFFLINE(float dt, AirConditioner __instance, ref float ___envTemp, ref int ___cellCount, ref float ___lowTempLag, ref int ___cooledAirOutputCell,
-            ref float ___lastSampleTime, ref HandleVector<int>.Handle ___structureTemperature)
-        {
-            var consumer = __instance.GetComponent<ConduitConsumer>();
-            var occupyArea = __instance.GetComponent<OccupyArea>();
-            var operational = __instance.GetComponent<Operational>();
-            var storage = __instance.GetComponent<Storage>();
-            var slider = __instance.GetComponent<AirConditionerSliders>();
-
-            bool isSatisfied = consumer.IsSatisfied;
-            ___envTemp = 0f;
-            ___cellCount = 0;
-            if (occupyArea != null && __instance.gameObject != null)
-            {
-                occupyArea.TestArea(Grid.PosToCell(__instance.gameObject), __instance, UpdateStateCbDelegate);
-                ___envTemp /= (float)___cellCount;
-            }
-            __instance.lastEnvTemp = ___envTemp;
-            List<GameObject> items = storage.items;
-            for (int i = 0; i < items.Count; i++)
-            {
-                PrimaryElement element = items[i].GetComponent<PrimaryElement>();
-                if (element.Mass > 0f && (__instance.isLiquidConditioner && element.Element.IsLiquid || !__instance.isLiquidConditioner && element.Element.IsGas))
-                {
-                    isSatisfied = true;
-                    __instance.lastGasTemp = element.Temperature;
-                    float temperatureNew = element.Temperature + __instance.temperatureDelta;
-                    if (slider != null)
-                    {
-                        slider.CurrentTemperature = element.Temperature;
-                        if (slider.SetTemperature >= 1f)
-                            temperatureNew = slider.SetTemperature; //# target temperature
-                    }
-                    if (temperatureNew < 1f)
-                    {
-                        temperatureNew = 1f;
-                        ___lowTempLag = Mathf.Min(___lowTempLag + dt / 5f, 1f);
-                    }
-                    else
-                    {
-                        ___lowTempLag = Mathf.Min(___lowTempLag - dt / 5f, 0f);
-                    }
-
-                    float temperatureCooled = temperatureNew - element.Temperature;
-                    float mass_max = element.Mass;
-                    if (slider != null && temperatureCooled != 0f && slider.SetTemperature >= 1f)
-                    {
-                        float mass_DPU = slider.SetDPU / (Math.Abs(temperatureCooled) * element.Element.specificHeatCapacity);
-                        mass_max = Math.Min(element.Mass, mass_DPU);
-#if DEBUG
-                        if (mass_max < 0f)
-                            Helpers.Print("mass_max is less than 0!");
-#endif
-                        mass_max = Math.Max(mass_max, 0f);
-                    }
-
-                    ConduitFlow conduit = __instance.isLiquidConditioner ? Game.Instance.liquidConduitFlow : Game.Instance.gasConduitFlow;
-                    float mass_output = conduit.AddElement(___cooledAirOutputCell, element.ElementID, mass_max, temperatureNew, element.DiseaseIdx, element.DiseaseCount); //#
-                    element.KeepZeroMassObject = true;
-                    float diseasePercent = mass_output / element.Mass;
-                    int diseaseCount = (int)((float)element.DiseaseCount * diseasePercent);
-                    element.Mass -= mass_output;
-                    element.ModifyDiseaseCount(-diseaseCount, "AirConditioner.UpdateState");
-                    float DPU_removed = temperatureCooled * element.Element.specificHeatCapacity * mass_output;
-
-                    if (slider != null)
-                    {
-                        slider.CurrentDPU = DPU_removed;
-                    }
-
-                    float display_dt = (___lastSampleTime > 0f) ? (Time.time - ___lastSampleTime) : 1f;
-                    ___lastSampleTime = Time.time;
-                    GameComps.StructureTemperatures.ProduceEnergy(___structureTemperature, Math.Max(4f, -DPU_removed), STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, display_dt);
-                    break;
-                }
-            }
-
-            if (Time.time - ___lastSampleTime > 2f)
-            {
-                GameComps.StructureTemperatures.ProduceEnergy(___structureTemperature, 0f, STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, Time.time - ___lastSampleTime);
-                ___lastSampleTime = Time.time;
-            }
-            operational.SetActive(isSatisfied, false);
-            __instance.UpdateStatus();
-
-            return false;
-        }
-
-        // copy of original
-        private static void UpdateState(float dt, AirConditioner __instance)
-        {
-            bool isSatisfied = __instance.consumer.IsSatisfied;
-            __instance.envTemp = 0f;
-            __instance.cellCount = 0;
-            if (__instance.occupyArea != null && __instance.gameObject != null)
-            {
-                __instance.occupyArea.TestArea(Grid.PosToCell(__instance.gameObject), __instance, AirConditioner.UpdateStateCbDelegate);
-                __instance.envTemp /= __instance.cellCount;
-            }
-            __instance.lastEnvTemp = __instance.envTemp;
-            List<GameObject> items = __instance.storage.items;
-            for (int i = 0; i < items.Count; i++)
-            {
-                PrimaryElement element = items[i].GetComponent<PrimaryElement>();
-                if (element.Mass > 0f && (__instance.isLiquidConditioner && element.Element.IsLiquid || !__instance.isLiquidConditioner && element.Element.IsGas))
-                {
-                    isSatisfied = true;
-                    __instance.lastGasTemp = element.Temperature;
-                    float temperatureNew = element.Temperature + __instance.temperatureDelta;
-                    if (temperatureNew < 1f)
-                    {
-                        temperatureNew = 1f;
-                        __instance.lowTempLag = Mathf.Min(__instance.lowTempLag + dt / 5f, 1f);
-                    }
-                    else
-                    {
-                        __instance.lowTempLag = Mathf.Min(__instance.lowTempLag - dt / 5f, 0f);
-                    }
-                    float mass_output = (__instance.isLiquidConditioner ? Game.Instance.liquidConduitFlow : Game.Instance.gasConduitFlow).AddElement(__instance.cooledAirOutputCell, element.ElementID, element.Mass, temperatureNew, element.DiseaseIdx, element.DiseaseCount);
-                    element.KeepZeroMassObject = true;
-                    float diseasePercent = mass_output / element.Mass;
-                    int diseaseCount = (int)(element.DiseaseCount * diseasePercent);
-                    element.Mass -= mass_output;
-                    element.ModifyDiseaseCount(-diseaseCount, "AirConditioner.UpdateState");
-                    float DPU_removed = (temperatureNew - element.Temperature) * element.Element.specificHeatCapacity * mass_output;
-                    float display_dt = (__instance.lastSampleTime > 0f) ? (Time.time - __instance.lastSampleTime) : 1f;
-                    __instance.lastSampleTime = Time.time;
-                    GameComps.StructureTemperatures.ProduceEnergy(__instance.structureTemperature, 0f - DPU_removed, STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, display_dt);
-                    break;
-                }
-            }
-
-            if (Time.time - __instance.lastSampleTime > 2f)
-            {
-                GameComps.StructureTemperatures.ProduceEnergy(__instance.structureTemperature, 0f, STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, Time.time - __instance.lastSampleTime);
-                __instance.lastSampleTime = Time.time;
-            }
-            __instance.operational.SetActive(isSatisfied);
-            __instance.UpdateStatus();
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -263,16 +120,16 @@ namespace CustomizeBuildings
     [SerializationConfig(MemberSerialization.OptIn)]
     public class AirConditionerSliders : KMonoBehaviour, IUserControlledCapacity, IThresholdSwitch, ISim200ms    //IActivationRangeTarget
     {
-        public LocString TextLogic;
+        public LocString? TextLogic;
 
         #region OnSpawn
-        private EnergyConsumer energyConsumer;
+        private EnergyConsumer energyConsumer = null!;
         private float factorDPU = 1f;
 
         public override void OnSpawn()
         {
             base.OnSpawn();
-            energyConsumer = this.GetComponent<EnergyConsumer>();
+            energyConsumer = GetComponent<EnergyConsumer>();
             if (CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor <= 0f)
                 CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor = 0.0001f;
             factorDPU = energyConsumer.WattsNeededWhenActive / (10000f * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
@@ -399,8 +256,8 @@ namespace CustomizeBuildings
     [SerializationConfig(MemberSerialization.OptIn)]
     public class SpaceHeaterSlider : SliderTemperatureSideScreen, ISim1000ms
     {
-        [MyCmpGet] private SpaceHeater spaceHeater;
-        [MyCmpGet] private MinimumOperatingTemperature minTemp;
+        [MyCmpGet] private SpaceHeater? spaceHeater;
+        [MyCmpGet] private MinimumOperatingTemperature? minTemp;
 
         public override void Update()
         {

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.115.0] U56-679336-SCRP (release)
+- changed AirConditionerAbsoluteOutput to never reduce storage capacity (mod compatibility)
+
 ## [1.0.114.0] U56-679336-SCRP (release)
 - fixed chilly sealed doors
 

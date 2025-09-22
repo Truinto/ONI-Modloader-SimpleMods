@@ -22,8 +22,9 @@ namespace CustomizeBuildings
             isGas = ElementLoader.FindElementByName(CustomizeBuildingsState.StateManager.State.SteamTurbineOutputElement)?.IsGas ?? false;
             __result.OutputConduitType = isGas ? ConduitType.Gas : ConduitType.Liquid;
 
-            if (CustomizeBuildingsState.StateManager.State.SteamTurbineWattage != SteamTurbineConfig2.MAX_WATTAGE) //850f
+            if (CustomizeBuildingsState.StateManager.State.SteamTurbineWattage != 850f)
             {
+                SteamTurbineConfig2.MAX_WATTAGE = CustomizeBuildingsState.StateManager.State.SteamTurbineWattage;
                 __result.GeneratorWattageRating = CustomizeBuildingsState.StateManager.State.SteamTurbineWattage;
                 __result.GeneratorBaseCapacity = CustomizeBuildingsState.StateManager.State.SteamTurbineWattage;
             }
@@ -45,15 +46,15 @@ namespace CustomizeBuildings
             steamTurbine.destElem = CustomizeBuildingsState.StateManager.State.SteamTurbineOutputElement.ToSimHash(SimHashes.Water); //SimHashes.Water
             steamTurbine.pumpKGRate = CustomizeBuildingsState.StateManager.State.SteamTurbinePumpRateKG; //2f
             steamTurbine.wasteHeatToTurbinePercent = CustomizeBuildingsState.StateManager.State.SteamTurbineHeatTransferPercent; //0.1f
-            
+
             //steamTurbine.requiredMass = CustomizeBuildingsState.StateManager.State.SteamTurbineMinMass; //1f / 1000f;
             steamTurbine.minActiveTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineMinActiveTemperature; //398.15f;
             steamTurbine.idealSourceElementTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineIdealTemperature; //473.15f;
             steamTurbine.outputElementTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineOutputTemperature; //368.15f;
             steamTurbine.maxBuildingTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineOverheatTemperature; //373.15f;
-        
+
             ConduitDispenser conduitDispenser = go.GetComponent<ConduitDispenser>();
-            conduitDispenser.elementFilter = new SimHashes[0];
+            conduitDispenser.elementFilter = [];
             conduitDispenser.conduitType = SteamTurbineConfig2_CreateBuildingDef.isGas ? ConduitType.Gas : ConduitType.Liquid;
         }
     }
