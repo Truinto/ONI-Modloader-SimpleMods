@@ -6,6 +6,7 @@ using HarmonyLib;
 using PeterHan.PLib.Options;
 using System.IO;
 using System;
+using System.Diagnostics;
 
 namespace CustomizeBuildings
 {
@@ -14,6 +15,16 @@ namespace CustomizeBuildings
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : IManualConfig
     {
+        /// <summary>
+        /// static method that returns the current config state.
+        /// Makes it possible for other mods to easily reflect for the config state to read values.
+        /// </summary>
+        /// <returns></returns>
+        public static object GetModConfigState()
+        {
+            return StateManager.State;
+        }
+
         public int version { get; set; } = 59;
 
         #region $Reset Button
