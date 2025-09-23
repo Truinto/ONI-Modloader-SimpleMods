@@ -61,12 +61,12 @@ namespace CustomizeGeyser
                     {
                         modifier.anim = null;
                     }
-                    if (modifier.width != null && modifier.width < 1 || modifier.width > 10)
+                    if (modifier.width is < 1 or > 10)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad width");
                         modifier.width = null;
                     }
-                    if (modifier.height != null && modifier.height < 1 || modifier.height > 10)
+                    if (modifier.height is < 1 or > 10)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad height");
                         modifier.height = null;
@@ -76,50 +76,74 @@ namespace CustomizeGeyser
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " element " + modifier.element + " does not exist");
                         modifier.element = null;
                     }
-                    if (modifier.temperature != null && modifier.temperature < 1f || modifier.temperature > 8000f)
+                    if (modifier.temperature is < 1f or > 8000f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad temperature");
                         modifier.temperature = null;
                     }
-                    if (modifier.minRatePerCycle != null && modifier.minRatePerCycle < 0f)
+                    if (modifier.minRatePerCycle is < 0f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minRatePerCycle");
                         modifier.minRatePerCycle = null;
                     }
-                    // maxRatePerCycle later check for min
-                    if (modifier.maxPressure != null && modifier.maxPressure < 0f)
+                    if (modifier.maxRatePerCycle is < 0f)
+                    {
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxRatePerCycle");
+                        modifier.maxPressure = null;
+                    }
+                    if (modifier.maxPressure is < 0f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxPressure");
                         modifier.maxPressure = null;
                     }
-                    if (modifier.minIterationLength != null && modifier.minIterationLength < 0f)
+                    if (modifier.minIterationLength is < 0f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minIterationLength");
                         modifier.minIterationLength = null;
                     }
-                    // maxIterationLength later check for min
-                    if (modifier.minIterationPercent != null && modifier.minIterationPercent < 0f || modifier.minIterationPercent > 1f)
+                    if (modifier.maxIterationLength is < 0f)
+                    {
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxIterationLength");
+                        modifier.maxIterationLength = null;
+                    }
+                    if (modifier.minIterationPercent is > 1f)
+                        modifier.minIterationPercent /= 100f;
+                    if (modifier.minIterationPercent is < 0f or > 1f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minIterationPercent");
                         modifier.minIterationPercent = null;
                     }
-                    if (modifier.maxIterationPercent != null && modifier.maxIterationPercent > 1f) // maxIterationPercent later check for min
+                    if (modifier.maxIterationPercent is > 1f)
+                        modifier.maxIterationPercent /= 100f;
+                    if (modifier.maxIterationPercent is < 0f or > 1f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxIterationPercent");
                         modifier.maxIterationPercent = null;
                     }
-                    if (modifier.minYearLength != null && modifier.minYearLength < 10f)
+                    if (modifier.minYearLength is < 10f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minYearLength");
                         modifier.minYearLength = null;
                     }
-                    // maxYearLength later check for min
-                    if (modifier.minYearPercent != null && modifier.minYearPercent < 0f || modifier.minYearPercent > 1f)
+                    if (modifier.maxYearLength is < 10f)
+                    {
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxYearLength");
+                        modifier.maxYearLength = null;
+                    }
+                    if (modifier.minYearPercent is > 1f)
+                        modifier.minYearPercent /= 100f;
+                    if (modifier.minYearPercent is < 0f or > 1f)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad minYearPercent");
                         modifier.minYearPercent = null;
                     }
-                    // maxYearPercent later check for min
+                    if (modifier.maxYearPercent is > 1f)
+                        modifier.maxYearPercent /= 100f;
+                    if (modifier.maxYearPercent is < 0f or > 1f)
+                    {
+                        Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad maxYearPercent");
+                        modifier.maxYearPercent = null;
+                    }
                 }
                 #endregion
 
@@ -220,8 +244,7 @@ namespace CustomizeGeyser
                         else
                             diseaseIndex = Db.Get().Diseases.GetIndex((HashedString)modifier.Disease);
 
-                        if (modifier.DiseaseCount == null)
-                            modifier.DiseaseCount = geyserType.diseaseInfo.count;
+                        modifier.DiseaseCount ??= geyserType.diseaseInfo.count;
 
                         if (diseaseIndex == byte.MaxValue || modifier.DiseaseCount <= 0)
                             geyserType.diseaseInfo = Klei.SimUtil.DiseaseInfo.Invalid;
@@ -291,44 +314,36 @@ namespace CustomizeGeyser
                         }
                     }
 
-                    if (modifier.temperature == null)
-                        modifier.temperature = 373.15f;
+                    modifier.temperature ??= 373.15f;
 
-                    if (modifier.minRatePerCycle == null)
-                        modifier.minRatePerCycle = 3000f;
+                    modifier.minRatePerCycle ??= 3000f;
 
                     if (modifier.maxRatePerCycle == null || modifier.maxRatePerCycle < modifier.minRatePerCycle)
                         modifier.maxRatePerCycle = modifier.minRatePerCycle;
 
-                    if (modifier.maxPressure == null)
-                        modifier.maxPressure = 500f;
+                    modifier.maxPressure ??= 500f;
 
-                    if (modifier.minIterationLength == null)
-                        modifier.minIterationLength = 600f;
+                    modifier.minIterationLength ??= 600f;
 
                     if (modifier.maxIterationLength == null || modifier.maxIterationLength < modifier.minIterationLength)
                         modifier.maxIterationLength = modifier.minIterationLength;
 
-                    if (modifier.minIterationPercent == null)
-                        modifier.minIterationPercent = 0.5f;
+                    modifier.minIterationPercent ??= 0.5f;
 
                     if (modifier.maxIterationPercent == null || modifier.maxIterationPercent < modifier.minIterationPercent)
                         modifier.maxIterationPercent = modifier.minIterationPercent;
 
-                    if (modifier.minYearLength == null)
-                        modifier.minYearLength = 75000f;
+                    modifier.minYearLength ??= 75000f;
 
                     if (modifier.maxYearLength == null || modifier.maxYearLength < modifier.minYearLength)
                         modifier.maxYearLength = modifier.minYearLength;
 
-                    if (modifier.minYearPercent == null)
-                        modifier.minYearPercent = 0.6f;
+                    modifier.minYearPercent ??= 0.6f;
 
                     if (modifier.maxYearPercent == null || modifier.maxYearPercent < modifier.minYearPercent || modifier.maxYearPercent > 1f)
                         modifier.maxYearPercent = modifier.minYearPercent;
 
-                    if (modifier.IsGeneric == null)
-                        modifier.IsGeneric = true;
+                    modifier.IsGeneric ??= true;
 
                     if (modifier.Name != null)
                     {
@@ -388,5 +403,4 @@ namespace CustomizeGeyser
             }
         }
     }
-
 }

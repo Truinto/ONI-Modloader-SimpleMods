@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.31.0] U56-679336-SCRP (release)
+- changed error checks to be more forgiving
+
 ## [1.0.30.0] U56-678383-SCRP (release)
 - fixed button Preset: Copy
 
