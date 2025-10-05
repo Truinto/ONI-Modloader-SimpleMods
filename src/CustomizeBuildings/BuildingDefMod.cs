@@ -309,23 +309,23 @@ namespace CustomizeBuildings
             {
                 if (componentEntry.Key.Length < 4) continue;
 
-                Type componentType = null;
-                object component = null;
+                Type? componentType = null;
+                object? component = null;
 
                 if (componentEntry.Key == "BASE") //edit BuildingDef instead
                 {
                     componentType = def.GetType();
                     component = def;
                 }
-                else if (componentEntry.Key.StartsWith("ADD:")) //addicomponent
+                else if (componentEntry.Key.StartsWith("ADD:")) //add component
                 {
-                    componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
+                    componentType = AccessTools.TypeByName(componentEntry.Key.Substring(4));
                     if (componentType != null)
                         component = def.BuildingComplete.AddComponent(componentType);
                 }
                 else if (componentEntry.Key.StartsWith("DEL:")) //delete component
                 {
-                    componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
+                    componentType = AccessTools.TypeByName(componentEntry.Key.Substring(4));
                     if (componentType != null)
                         component = def.BuildingComplete.GetComponent(componentType);
                     UnityEngine.Object.DestroyImmediate(component as UnityEngine.Object);
@@ -333,18 +333,18 @@ namespace CustomizeBuildings
                 }
                 else if (Regex.IsMatch(componentEntry.Key, @"AT\d:")) //edit component at index
                 {
-                    componentType = Type.GetType(componentEntry.Key.Substring(4) + ", Assembly-CSharp", false);
+                    componentType = AccessTools.TypeByName(componentEntry.Key.Substring(4));
                     if (componentType != null)
                         component = def.BuildingComplete.GetComponents(componentType)[int.Parse(componentEntry.Key.Substring(2, 1))];
                 }
                 else if (componentEntry.Key.EndsWith(".Def"))
                 {
-                    componentType = Type.GetType(componentEntry.Key.Replace('.', '+') + ", Assembly-CSharp", false);
+                    componentType = AccessTools.TypeByName(componentEntry.Key.Replace('.', '+'));
                     component = def.BuildingComplete.GetComponent<StateMachineController>()?.cmpdef.defs.FirstOrDefault(f => f.GetType() == componentType);
                 }
                 else //edit component
                 {
-                    componentType = Type.GetType(componentEntry.Key + ", Assembly-CSharp", false);
+                    componentType = AccessTools.TypeByName(componentEntry.Key);
                     if (componentType != null)
                         component = def.BuildingComplete.GetComponent(componentType);
                 }
