@@ -100,8 +100,8 @@ namespace CustomizeBuildings
     #endregion
 
     #region Robominer
-    [HarmonyPatch(typeof(AutoMinerConfig), nameof(AutoMinerConfig.DoPostConfigureComplete))]
-    public class AutoMinerConfig_OnPrefabInit
+    [HarmonyPatch]
+    public class AutoMiner_Range
     {
         public static bool Prepare()
         {
@@ -109,7 +109,10 @@ namespace CustomizeBuildings
                 || CustomizeBuildingsState.StateManager.State.RoboMinerHeight != 9
                 || CustomizeBuildingsState.StateManager.State.RoboMinerOffset != 0;
         }
-        public static void Postfix(GameObject go)
+
+        [HarmonyPatch(typeof(AutoMinerConfig), nameof(AutoMinerConfig.DoPostConfigureComplete))]
+        [HarmonyPostfix]
+        public static void Postfix1(GameObject go)
         {
             int width = CustomizeBuildingsState.StateManager.State.RoboMinerWidth;
             int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
@@ -122,18 +125,10 @@ namespace CustomizeBuildings
             autoMiner.height = height;
             autoMiner.vision_offset = new CellOffset(0, 1);
         }
-    }
 
-    [HarmonyPatch(typeof(AutoMinerConfig), nameof(AutoMinerConfig.AddVisualizer))]
-    public class AutoMinerConfig_AddVisualizer
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.RoboMinerWidth != 16
-                || CustomizeBuildingsState.StateManager.State.RoboMinerHeight != 9
-                || CustomizeBuildingsState.StateManager.State.RoboMinerOffset != 0;
-        }
-        public static void Postfix(GameObject prefab)
+        [HarmonyPatch(typeof(AutoMinerConfig), nameof(AutoMinerConfig.AddVisualizer))]
+        [HarmonyPostfix]
+        public static void Postfix2(GameObject prefab)
         {
             int width = CustomizeBuildingsState.StateManager.State.RoboMinerWidth;
             int height = CustomizeBuildingsState.StateManager.State.RoboMinerHeight;
@@ -160,7 +155,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
+    [HarmonyPatch]
     public class AutoMiner_RoboMinerDigAnyTile
     {
         public static bool Prepare(MethodBase original)
@@ -168,7 +163,9 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
         }
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Transpiler1(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
         {
             var data = new TranspilerTool(instructions, generator, original);
             data.InsertAfterAll(typeof(Element), nameof(Element.hardness), patch);
@@ -176,25 +173,16 @@ namespace CustomizeBuildings
 
             static byte patch(byte __stack)
             {
-                if (__stack is > 150 and < 255)
-                    return 150;
+                if (__stack  < 255)
+                    return 1;
                 return __stack;
             }
         }
-    }
 
-    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.ValidDigCell))]
-    public class AutoMiner_RoboMinerDigAnyTile2
-    {
-        public static bool Prepare()
-        {
-            return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
-        }
-
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
-        {
-            return AutoMiner_RoboMinerDigAnyTile.Transpiler(instructions, generator, original);
-        }
+        [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.ValidDigCell))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Transpiler2(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original) 
+            => Transpiler1(instructions, generator, original);
     }
 
     [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
@@ -205,55 +193,31 @@ namespace CustomizeBuildings
             return CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass;
         }
 
-        [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        //public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        //{
+        //    var data = new TranspilerTool(instructions, generator, original);
+        //    data.Seek(typeof(Grid), nameof(Grid.Solid));
+        //    data.Seek(f => f.IsLdloc(typeof(bool)));
+        //    data.InsertAfter(patch);
+        //    return data;
+
+        //    static bool patch(bool __stack, int cell)
+        //    {
+        //        if (!__stack)
+        //            return false;
+        //        return !Grid.Transparent[cell];
+        //    }
+        //}
+
+        public static void Postfix(int cell, ref bool __result)
         {
-            var data = new TranspilerTool(instructions, generator, original);
-
-            data.Seek(typeof(Grid), nameof(Grid.Solid));
-            data.Seek(f => f.IsLdloc(typeof(bool)));
-            data.InsertAfter(patch);
-            return data;
-
-            static bool patch(bool __stack, int cell)
-            {
-                if (__stack)
-                    return true;
-                return Grid.Transparent[cell];
-            }
-        }
-
-        public static bool Prefix(int cell, ref bool __result)
-        {
-            try
-            {
-                if (CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass && Grid.Transparent[cell])
-                {
-                    __result = false;
-                    return false;
-                }
-
-                if (Grid.Foundation[cell] && Grid.Solid[cell])
-                {
-                    __result = true;
-                    return false;
-                }
-
-                if (Grid.Element[cell].hardness >= (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile ? 255 : 150))
-                {
-                    __result = true;
-                    return false;
-                }
-
-                __result = false;
-                return false;
-            } catch (Exception) { }
-            return true;
+            if (__result)
+                __result = !Grid.Transparent[cell];
         }
     }
 
     [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.UpdateDig))]
-    public class AutoMiner_UpdateDig
+    public class AutoMiner_RegolithTurbo
     {
         public static bool Prepare()
         {
@@ -271,7 +235,7 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.UpdateDig))]
-    public class AutoMiner_UpdateDig2
+    public class AutoMiner_Speed
     {
         public static bool Prepare()
         {

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.117.0] U56-679336-SCRP (release)
+- fixed RoboMinerDigAnyTile being blind to hard materials
+
 ## [1.0.116.0] U56-679336-SCRP (release)
 - fixed AdvancedSettings not reading 3rd party assemblies
 
