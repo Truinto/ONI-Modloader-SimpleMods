@@ -40,8 +40,11 @@ namespace CustomizeGeyser
             for (int i = 0; i < __result.Count; i++)
             {
                 var prefParm = __result[i];
-                prefParm.isGenericGeyser = true;
-                __result[i] = prefParm;
+                if (CustomizeGeyserState.StateManager.State.RandomizerEnabled)
+                {
+                    prefParm.isGenericGeyser = true;
+                    __result[i] = prefParm;
+                }
                 GeyserInfo.IdsBaseGame.Add(prefParm.geyserType.id);
             }
 
@@ -181,7 +184,7 @@ namespace CustomizeGeyser
                             copy.width = (int)modifier.width;
                         if (modifier.height != null)
                             copy.height = (int)modifier.height;
-                        if (modifier.IsGeneric != null)
+                        if (modifier.IsGeneric != null && CustomizeGeyserState.StateManager.State.RandomizerEnabled)
                             copy.isGenericGeyser = (bool)modifier.IsGeneric;
 
                         __result[i] = copy;
@@ -394,7 +397,7 @@ namespace CustomizeGeyser
                                 (float)modifier.maxYearLength,
                                 (float)modifier.minYearPercent,
                                 (float)modifier.maxYearPercent).AddDisease(diseaseInfo),
-                            (bool)modifier.IsGeneric
+                            (bool)modifier.IsGeneric && CustomizeGeyserState.StateManager.State.RandomizerEnabled
                         ));
 
                     Helpers.Print("Added geyser " + modifier.id + " : " + modifier.element);

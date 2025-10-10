@@ -294,11 +294,6 @@ namespace CustomizeGeyser
     {
         public static void LoadStrings()
         {
-
-
-
-
-
             #region Buttons
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "Reset: Custom Default");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Re-installs mod's default settings.");
@@ -326,7 +321,7 @@ namespace CustomizeGeyser
 
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerEnabled", "RandomizerEnabled");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_Title", "Randomizer Enabled");
-            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_ToolTip", "if set to false will disable all other randomize settings");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_ToolTip", "if set to false will disable all other randomize settings (geysers spawn like without the mod)");
 
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerUsesMapSeed", "RandomizerUsesMapSeed");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerUsesMapSeed_Title", "Randomizer Uses Map Seed");
