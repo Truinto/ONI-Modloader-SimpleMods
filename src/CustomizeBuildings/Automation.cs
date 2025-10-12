@@ -8,6 +8,7 @@ using System.Reflection.Emit;
 using System.Reflection;
 using Shared;
 using TemplateClasses;
+using Config;
 
 namespace CustomizeBuildings
 {
@@ -325,7 +326,7 @@ namespace CustomizeBuildings
 
             int count = data.ReplaceAllConstant(10f, CustomizeBuildingsState.StateManager.State.SweepBotKG);
             if (count != 2)
-                throw new Exception($"Sweepy_Sweep replaced {count} constants, instead of 2");
+                PostBootDialog.ToDialog($"Sweepy_Sweep replaced {count} constants, instead of 2");
 
             return data;
         }

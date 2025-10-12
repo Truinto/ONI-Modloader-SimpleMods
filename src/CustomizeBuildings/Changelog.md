@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.118.0] U56-693461-SCRP (release)
+- made transpiler forgiving (print warning instead of error)
+
 ## [1.0.117.0] U56-679336-SCRP (release)
 - fixed RoboMinerDigAnyTile being blind to hard materials
 
