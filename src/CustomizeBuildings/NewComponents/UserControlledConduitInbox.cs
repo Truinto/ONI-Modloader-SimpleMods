@@ -12,14 +12,14 @@ namespace CustomizeBuildings
     {
         [Serialize]
         public float userMaxCapacity = float.PositiveInfinity;
-        private FilteredStorage filteredStorage;
+        private FilteredStorage? filteredStorage;
 
         public override void OnPrefabInit()
         {
             base.OnPrefabInit();
 
             try {
-                filteredStorage = (FilteredStorage)AccessTools.Field(typeof(SolidConduitInbox), "filteredStorage").GetValue(this.GetComponent<SolidConduitInbox>());
+                filteredStorage = (FilteredStorage)AccessTools.Field(typeof(SolidConduitInbox), "filteredStorage").GetValue(GetComponent<SolidConduitInbox>());
                 AccessTools.Field(typeof(FilteredStorage), "capacityControl").SetValue(filteredStorage, this);
             } catch (Exception) {
                 Debug.LogWarning("[CustomizeBuildings] Wups. UserControlledConduitInbox couldn't be set up.");
@@ -32,43 +32,21 @@ namespace CustomizeBuildings
             base.OnCleanUp();
         }
 
-        public float AmountStored
-        {
-            get
-            {
-                return this.GetComponent<Storage>().MassStored();
-            }
-        }
+        bool IUserControlledCapacity.ControlEnabled() => true;
 
-        public LocString CapacityUnits
-        {
-            get
-            {
-                return GameUtil.GetCurrentMassUnit(false);
-            }
-        }
+        public float AmountStored => GetComponent<Storage>().MassStored();
 
-        public float MaxCapacity
-        {
-            get
-            {
-                return this.GetComponent<Storage>().capacityKg;
-            }
-        }
+        public LocString CapacityUnits => GameUtil.GetCurrentMassUnit(false);
 
-        public float MinCapacity
-        {
-            get
-            {
-                return 0f;
-            }
-        }
+        public float MaxCapacity => GetComponent<Storage>().capacityKg;
+
+        public float MinCapacity => 0f;
 
         public float UserMaxCapacity
         {
             get
             {
-                return Mathf.Min(this.userMaxCapacity, this.GetComponent<Storage>().capacityKg);
+                return Mathf.Min(this.userMaxCapacity, GetComponent<Storage>().capacityKg);
             }
             set
             {
@@ -77,13 +55,7 @@ namespace CustomizeBuildings
             }
         }
 
-        public bool WholeValues
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool WholeValues => false;
     }
     
 }

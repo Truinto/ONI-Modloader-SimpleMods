@@ -141,11 +141,11 @@ namespace CustomizeBuildings
         public const float MaxDPU = 100000f;
         [Serialize] public float SetDPU = 100f;
 
+        bool IUserControlledCapacity.ControlEnabled() => true;
         LocString IUserControlledCapacity.CapacityUnits => "kDPU";
         float IUserControlledCapacity.UserMaxCapacity
         {
-            get { return SetDPU; }
-            set { SetDPU = value; }
+            get => SetDPU; set => SetDPU = value;
         }
         float IUserControlledCapacity.AmountStored => this.CurrentDPU;
         float IUserControlledCapacity.MinCapacity => 0f;

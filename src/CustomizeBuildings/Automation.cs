@@ -157,16 +157,83 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch]
-    public class AutoMiner_RoboMinerDigAnyTile
+    public class AutoMiner_RoboMinerDig_AnyTile_ThroughGlass
     {
+        public static void OnLoad()
+        {
+            if (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile && CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass)
+                AutoMiner.DigBlockingCB = DigBlockingCB_AnyTile_ThroughGlass;
+            else if (CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile)
+                AutoMiner.DigBlockingCB = DigBlockingCB_AnyTile;
+            else if (CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass)
+                AutoMiner.DigBlockingCB = DigBlockingCB_ThroughGlass;
+        }
+
+        public static Func<int, bool> DigBlockingCB = delegate (int cell)
+        {
+            bool hasDoor = Grid.HasDoor[cell] && Grid.Foundation[cell] && Grid.ObjectLayers[(int)ObjectLayer.FoundationTile].ContainsKey(cell);
+            if (hasDoor)
+            {
+                var door = Grid.ObjectLayers[(int)ObjectLayer.FoundationTile][cell].GetComponent<Door>();
+                hasDoor = door != null && door.IsOpen() && !door.IsPendingClose();
+            }
+            if (Grid.Foundation[cell] && Grid.Solid[cell] && !hasDoor)
+            {
+                return true;
+            }
+            return Grid.Element[cell].hardness >= 150;
+        };
+
+        public static Func<int, bool> DigBlockingCB_AnyTile = delegate (int cell)
+        {
+            bool hasDoor = Grid.HasDoor[cell] && Grid.Foundation[cell] && Grid.ObjectLayers[(int)ObjectLayer.FoundationTile].ContainsKey(cell);
+            if (hasDoor)
+            {
+                var door = Grid.ObjectLayers[(int)ObjectLayer.FoundationTile][cell].GetComponent<Door>();
+                if (door != null)
+                    return !door.IsOpen() || door.IsPendingClose();
+            }
+            if (Grid.Foundation[cell] && Grid.Solid[cell])
+                return true;
+            return Grid.Element[cell].hardness >= 255;
+        };
+
+        public static Func<int, bool> DigBlockingCB_ThroughGlass = delegate (int cell)
+        {
+            bool hasDoor = Grid.HasDoor[cell] && Grid.Foundation[cell] && Grid.ObjectLayers[(int)ObjectLayer.FoundationTile].ContainsKey(cell);
+            if (hasDoor)
+            {
+                var door = Grid.ObjectLayers[(int)ObjectLayer.FoundationTile][cell].GetComponent<Door>();
+                if (door != null)
+                    return !door.IsOpen() || door.IsPendingClose();
+            }
+            if (Grid.Foundation[cell] && Grid.Solid[cell] && !Grid.Transparent[cell])
+                return true;
+            return Grid.Element[cell].hardness >= 150;
+        };
+
+        public static Func<int, bool> DigBlockingCB_AnyTile_ThroughGlass = delegate (int cell)
+        {
+            bool hasDoor = Grid.HasDoor[cell] && Grid.Foundation[cell] && Grid.ObjectLayers[(int)ObjectLayer.FoundationTile].ContainsKey(cell);
+            if (hasDoor)
+            {
+                var door = Grid.ObjectLayers[(int)ObjectLayer.FoundationTile][cell].GetComponent<Door>();
+                if (door != null)
+                    return !door.IsOpen() || door.IsPendingClose();
+            }
+            if (Grid.Foundation[cell] && Grid.Solid[cell] && !Grid.Transparent[cell])
+                return true;
+            return Grid.Element[cell].hardness >= 255;
+        };
+
         public static bool Prepare(MethodBase original)
         {
             return CustomizeBuildingsState.StateManager.State.RoboMinerDigAnyTile;
         }
 
-        [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
+        [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.ValidDigCell))]
         [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> Transpiler1(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        public static IEnumerable<CodeInstruction> Transpiler2(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
         {
             var data = new TranspilerTool(instructions, generator, original);
             data.InsertAfterAll(typeof(Element), nameof(Element.hardness), patch);
@@ -174,48 +241,41 @@ namespace CustomizeBuildings
 
             static byte patch(byte __stack)
             {
-                if (__stack  < 255)
+                if (__stack < 255)
                     return 1;
                 return __stack;
             }
         }
 
-        [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.ValidDigCell))]
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> Transpiler2(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original) 
-            => Transpiler1(instructions, generator, original);
-    }
-
-    [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
-    public class AutoMiner_RoboMinerDigThroughGlass
-    {
-        public static bool Prepare(MethodBase original)
-        {
-            return CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass;
-        }
-
-        //public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        //[HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
+        //[HarmonyTranspiler]
+        //public static IEnumerable<CodeInstruction> Transpiler1(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
         //{
         //    var data = new TranspilerTool(instructions, generator, original);
-        //    data.Seek(typeof(Grid), nameof(Grid.Solid));
-        //    data.Seek(f => f.IsLdloc(typeof(bool)));
-        //    data.InsertAfter(patch);
+        //    data.InsertAfterAll(typeof(Element), nameof(Element.hardness), patch);
         //    return data;
-
-        //    static bool patch(bool __stack, int cell)
+        //    static byte patch(byte __stack)
         //    {
-        //        if (!__stack)
-        //            return false;
-        //        return !Grid.Transparent[cell];
+        //        if (__stack < 255)
+        //            return 1;
+        //        return __stack;
         //    }
         //}
-
-        public static void Postfix(int cell, ref bool __result)
-        {
-            if (__result)
-                __result = !Grid.Transparent[cell];
-        }
     }
+
+    //[HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.DigBlockingCB))]
+    //public class AutoMiner_RoboMinerDigThroughGlass
+    //{
+    //    public static bool Prepare(MethodBase original)
+    //    {
+    //        return CustomizeBuildingsState.StateManager.State.RoboMinerDigThroughGlass;
+    //    }
+    //    public static void Postfix(int cell, ref bool __result)
+    //    {
+    //        if (__result)
+    //            __result = !Grid.Transparent[cell];
+    //    }
+    //}
 
     [HarmonyPatch(typeof(AutoMiner), nameof(AutoMiner.UpdateDig))]
     public class AutoMiner_RegolithTurbo

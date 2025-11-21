@@ -12,9 +12,8 @@ namespace CustomizeBuildings
     {
         [Serialize]
         public float userMaxCapacity = float.PositiveInfinity;
-#pragma warning disable 649
         [MyCmpReq]
-        private Storage storage;
+        private Storage storage = null!;
 
         public override void OnPrefabInit()
         {
@@ -32,6 +31,8 @@ namespace CustomizeBuildings
         {
             base.OnCleanUp();
         }
+
+        bool IUserControlledCapacity.ControlEnabled() => true;
 
         public float AmountStored
         {

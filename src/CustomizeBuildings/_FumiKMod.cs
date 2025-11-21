@@ -13,7 +13,7 @@ namespace CustomizeBuildings
     public class FumiKMod : KMod.UserMod2
     {
         public const string ModName = "CustomizeBuildings";
-        public static Harmony instance;
+        public static Harmony? instance;
 
         public override void OnLoad(Harmony harmony)
         {
@@ -43,6 +43,7 @@ namespace CustomizeBuildings
             // call OnLoad methods
             Helpers.CallSafe(Miscellaneous.OnLoad);
             Helpers.CallSafe(Speed_Patch.OnLoad);
+            Helpers.CallSafe(AutoMiner_RoboMinerDig_AnyTile_ThroughGlass.OnLoad);
 
             // patch all harmony classes
             base.OnLoad(harmony);

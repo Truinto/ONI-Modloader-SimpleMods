@@ -15,9 +15,9 @@ namespace CustomizeBuildings
         public int Min = 1;
         public LocString Unit = "";
         [MyCmpGet]
-        private RangeVisualizer visualizer;
+        private RangeVisualizer visualizer = null!;
         [MyCmpGet]
-        private SolidTransferArm transferArm;
+        private SolidTransferArm transferArm = null!;
 
         public override void OnPrefabInit()
         {
@@ -37,6 +37,8 @@ namespace CustomizeBuildings
             transferArm = null;
             base.OnCleanUp();
         }
+
+        bool IUserControlledCapacity.ControlEnabled() => true;
 
         public float AmountStored
         {
