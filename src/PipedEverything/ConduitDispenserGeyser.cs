@@ -24,7 +24,6 @@ namespace PipedEverything
         private int UtilityCell;
         private int NextStorageIndex;
         private FlowUtilityNetwork.NetworkItem? NetworkItem;
-        private bool Discharge;
         private int Cooldown;
 
         public override void OnSpawn()
@@ -57,7 +56,7 @@ namespace PipedEverything
 
         private void OnConduitConnectionChanged(object? data)
         {
-            Trigger((int)GameHashes.ConduitConnectionChanged, IsConnected());
+            BoxingTrigger((int)GameHashes.ConduitConnectionChanged, IsConnected());
         }
 
         public void Sim200ms(float dt)

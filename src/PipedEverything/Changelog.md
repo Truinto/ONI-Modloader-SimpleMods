@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.29.0] U57-700386-SCRP (release)
+- patched for update
+
 ## [1.0.28.0] U56-677228-SCRP (release)
 - fix for 'Fast Track'
 

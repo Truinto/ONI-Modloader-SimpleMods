@@ -82,7 +82,7 @@ namespace PipedEverything
         private void OnConduitConnectionChanged(object data)
         {
             this.consuming = this.consuming && this.IsConnected;
-            base.Trigger((int)GameHashes.ConduitConnectionChanged, this.IsConnected);
+            BoxingTrigger((int)GameHashes.ConduitConnectionChanged, this.IsConnected);
         }
 
         private void ConduitUpdate(float dt)

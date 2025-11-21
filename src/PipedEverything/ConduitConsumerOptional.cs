@@ -221,7 +221,7 @@ namespace PipedEverything
 
         private void OnConduitConnectionChanged(object data)
         {
-            base.Trigger(-2094018600, this.IsConnected);
+            BoxingTrigger(-2094018600, this.IsConnected);
         }
 
         public void SetOnState(bool onState)
@@ -285,7 +285,7 @@ namespace PipedEverything
             bool isAllowedElement = true || this.elementFilter.Contains(element.id) || this.elementFilter.Contains(SimHashes.Void); // CapacityForElement returns anyway, if this wasn't true
             if (!isAllowedElement)
             {
-                base.Trigger(-794517298, new BuildingHP.DamageSourceInfo
+                BoxingTrigger(-794517298, new BuildingHP.DamageSourceInfo
                 {
                     damage = 1,
                     source = BUILDINGS.DAMAGESOURCES.BAD_INPUT_ELEMENT,
