@@ -65,7 +65,6 @@ namespace CustomizeGeyser
             StateManager.State.RandomizerPopupGeyserDiscoveryInfo = false;
             StateManager.State.RandomizerHighlanderMode = false;
             StateManager.State.RandomizerHighlanderRetroactive = false;
-            StateManager.State.RandomizerEnabled = false;
             StateManager.State.GeyserMorphEnabled = false;
 
             StateManager.TrySaveConfigurationState();

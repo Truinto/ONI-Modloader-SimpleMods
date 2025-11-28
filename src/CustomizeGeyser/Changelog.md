@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.33.0] U57-701625-SCRP (release)
+- changed GeyserMorph to show unavailable geysers as well
+
 ## [1.0.32.0] U56-693461-SCRP (release)
 - fixed geyser seeding; set RandomizerEnabled to false to restore vanilla geyser seed
 
