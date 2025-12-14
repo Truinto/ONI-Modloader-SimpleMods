@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.30.0] U57-702808-SCRP (release)
+- adding try-catch block around 'CapacityForElement'
+
 ## [1.0.29.0] U57-700386-SCRP (release)
 - patched for update
 
