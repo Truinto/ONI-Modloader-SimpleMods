@@ -56,24 +56,28 @@ namespace PipedEverything
                 filterTags.Add(filter.ToTagSafe());
 
                 var element = filter.ToElement();
-                if (element == null || element.id == SimHashes.Void)
+                if (element.id == 0)
                 {
-                    foreach (var v in filter.GetElements())
+                    if (conduitType is ConduitType.None) // allow Tags only on solid filters
+                        conduitType = ConduitType.Solid;
+                    else if (conduitType is not ConduitType.Solid)
                     {
-                        filters.Add(v.id);
-                        element = v;
-                    }
-                    if (element == null || element.id == SimHashes.Void)
-                    {
-                        if (conduitType == ConduitType.None)
-                            conduitType = ConduitType.Solid;
-                        if (conduitType == ConduitType.Solid)
-                            continue;
                         Helpers.PrintDialog($"Unable to resolve: {filter} in {config.Id}");
                         continue;
                     }
+                    foreach (var v in filter.GetElements())
+                    {
+                        if (v.IsSolid)
+                            filters.Add(v.id);
+                        else
+                        {
+                            Helpers.PrintDialog($"Unable to resolve: {filter} in {config.Id}");
+                            continue;
+                        }
+                    }
+                    continue;
                 }
-
+                
                 if (conduitType == ConduitType.None)
                     conduitType = element.IsGas ? ConduitType.Gas : element.IsLiquid ? ConduitType.Liquid : ConduitType.Solid;
                 else if (conduitType == ConduitType.Gas && !element.IsGas

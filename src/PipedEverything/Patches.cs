@@ -122,14 +122,13 @@ namespace PipedEverything
         {
             var data = new TranspilerTool(instructions, generator, original);
 
-            if (3 != data.InsertAfterAll(typeof(ComplexFabricator), nameof(ComplexFabricator.storeProduced), patch))
-                throw new Exception("storeProduced count invalid");
+            data.ReplaceAllCalls(typeof(ComplexRecipe.RecipeElement), nameof(ComplexRecipe.RecipeElement.storeElement), patch);
 
             return data;
 
-            bool patch(bool forceStore, ComplexFabricator __instance, [LocalParameter(IndexByType = 2)] ComplexRecipe.RecipeElement element3)
+            bool patch(ComplexRecipe.RecipeElement instance, ComplexFabricator __instance)
             {
-                return forceStore || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(element3.material.ToElement()) == true;
+                return instance.storeElement || __instance.GetComponent<PortDisplayController>()?.IsOutputConnected(instance.material.ToElement()) == true;
             }
         }
 

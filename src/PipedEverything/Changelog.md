@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.31.0] U57-704096-SCRP (release)
+- fixed SpawnOrderProduct crash, fix #90
+
 ## [1.0.30.0] U57-702808-SCRP (release)
 - adding try-catch block around 'CapacityForElement'
 

@@ -106,7 +106,7 @@ namespace PipedEverything
 
         public bool IsInputConnected(Element element)
         {
-            if (element == null)
+            if (element == null || element.id == 0)
                 return false;
             var hash = element.id;
             foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
@@ -119,7 +119,7 @@ namespace PipedEverything
 
         public bool IsOutputConnected(Element element)
         {
-            if (element == null)
+            if (element == null || element.id == 0)
                 return false;
             var hash = element.id;
             foreach (var port in element.IsGas ? gasOverlay : element.IsLiquid ? liquidOverlay : solidOverlay)
@@ -132,7 +132,7 @@ namespace PipedEverything
 
         public bool CanStore(Element element)
         {
-            if (element == null)
+            if (element == null || element.id == 0)
                 return false;
             var port = GetPort(false, element.GetConduitType(), element.id);
             return port != null && port.IsConnected() && port.GetCapacity(element.id) > 0f;
