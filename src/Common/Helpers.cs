@@ -82,8 +82,11 @@ namespace Common
         #endregion
 
         #region Conversion
-        public static SimHashes ToSimHash(this string str, SimHashes fallback = SimHashes.Vacuum)
+        public static SimHashes ToSimHash(this string? str, SimHashes fallback = SimHashes.Vacuum)
         {
+            if (str is null or "")
+                return fallback;
+
             ElementLoader.elementTable.TryGetValue(Hash.SDBMLower(str), out var element);
             if (element != null)
                 return element.id;
@@ -122,12 +125,12 @@ namespace Common
         }
 
         /// <summary>Default return value, if ToElement() fails to find any match.</summary>
-        public static Element Void = new() { id = SimHashes.Void };
+        public static Element ElementInvalid = new() { id = 0 };
 
-        public static Element ToElement(this string str)
+        public static Element ToElement(this string? str)
         {
-            if (str == null)
-                return Void;
+            if (str is null or "")
+                return ElementInvalid;
 
             ElementLoader.elementTable.TryGetValue(Hash.SDBMLower(str), out var element);
             if (element != null)
@@ -137,7 +140,7 @@ namespace Common
             if (element != null)
                 return element;
 
-            return Void;
+            return ElementInvalid;
         }
 
         /// <summary>
@@ -146,23 +149,23 @@ namespace Common
         public static Element ToElement(this Tag tag)
         {
             if (ElementLoader.elementTable == null)
-                return Void;
+                return ElementInvalid;
 
             int id = tag.hash;
             if (id is 0)
                 id = Hash.SDBMLower(tag.name);
 
             ElementLoader.elementTable.TryGetValue(id, out Element element);
-            return element ?? Void;
+            return element ?? ElementInvalid;
         }
 
         public static Element ToElement(this SimHashes hash)
         {
             if (ElementLoader.elementTable == null)
-                return Void;
+                return new() { id = hash };
 
             ElementLoader.elementTable.TryGetValue((int)hash, out Element element);
-            return element ?? Void;
+            return element ?? new() { id = hash };
         }
 
         /// <summary>Returns all Element which match a given Tag.</summary>
@@ -181,13 +184,8 @@ namespace Common
             return GetElements(tag.ToTagSafe());
         }
 
-        /// <summary><see cref="TagManager.Create(string)"/> does not set the hash field, which is used for comparison. This will fix it.</summary>
         public static bool IsTag(this Tag tag1, Tag tag2)
         {
-            if (tag1.hash is 0)
-                tag1.hash = Hash.SDBMLower(tag1.name);
-            if (tag2.hash is 0)
-                tag2.hash = Hash.SDBMLower(tag2.name);
             return tag1.hash == tag2.hash;
         }
 
@@ -243,14 +241,14 @@ namespace Common
             return Global.Instance.modManager.mods.FirstOrDefault(s => s.staticID.EqualIgnoreCase(title) || s.title.EqualIgnoreCase(title))?.IsEnabledForActiveDlc() ?? false;
         }
 
-        public static bool EqualIgnoreCase(this string str1, string str2)
+        public static bool EqualIgnoreCase(this string? str1, string? str2)
         {
             if (str1 == null || str2 == null)
                 return false;
             return str1.Equals(str2, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static bool StartsWithIgnoreCase(this string str1, string str2)
+        public static bool StartsWithIgnoreCase(this string? str1, string? str2)
         {
             if (str1 == null || str2 == null)
                 return false;

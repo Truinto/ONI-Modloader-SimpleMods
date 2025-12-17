@@ -97,8 +97,7 @@ namespace CustomizeRecipe
                     {
                         foreach (var output in recipe.results)
                         {
-                            var element = output.material.ToElement();
-                            if (element != null && element.IsLiquid)
+                            if (output.material.ToElement().IsLiquid)
                             {
                                 output.storeElement = true;
                                 fabricator.storeProduced = false;
@@ -137,7 +136,7 @@ namespace CustomizeRecipe
             {
                 if (setting.Building == null || setting.Inputs == null || setting.Outputs == null)
                 {
-                    Config.PostBootDialog.ErrorList.Add("Trying to generate new recipe, but could not parse building, inputs, or outputs: " + recipe.id);
+                    Config.PostBootDialog.ErrorList.Add("Trying to generate new recipe, but could not parse building, inputs, or outputs: " + recipe?.id);
                     return;
                 }
                 Helpers.Print($"Making new Recipe: {setting.Id}");
