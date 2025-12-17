@@ -587,22 +587,16 @@ namespace CustomizePlants
             }
             #endregion
             #region input_element
-            if (setting.input_element != null)
+            if (setting.input_element != null || setting.input_rate != null)
             {
-                ElementConsumer consumer = plant.AddOrGet<ElementConsumer>();
-                Element element = setting.input_element.ToElement();
+                var consumer = plant.AddOrGet<ElementConsumer>();
+                var element = setting.input_element.ToElement();
 
-                if (element == null || element.IsSolid || element.IsVacuum)                //invalid element
+                if (element.id == 0 || element.IsSolid || element.IsVacuum)                //invalid element
                 {
-                    Debug.Log(ToDialog("input_element is bad element: " + setting.input_element));
                     UnityEngine.Object.DestroyImmediate(consumer);
                 }
-                else if (setting.input_rate == null)
-                {
-                    Debug.Log(ToDialog("input_rate is null"));
-                    UnityEngine.Object.DestroyImmediate(consumer);
-                }
-                else if (setting.input_rate <= 0f)   //delete consumer
+                else if (setting.input_rate is null or <= 0f)   //delete consumer
                 {
                     UnityEngine.Object.DestroyImmediate(consumer);
                 }
@@ -625,23 +619,18 @@ namespace CustomizePlants
             }
             #endregion
             #region output_element
-            if (setting.output_element != null)
+            if (setting.output_element != null || setting.output_rate != null)
             {
-                ElementConsumer consumer = plant.GetComponent<ElementConsumer>();
-                ElementConverter converter = plant.AddOrGet<ElementConverter>();
-                Element element = setting.output_element.ToElement();
+                var consumer = plant.GetComponent<ElementConsumer>();
+                var converter = plant.AddOrGet<ElementConverter>();
+                var element = setting.output_element.ToElement();
 
-                if (element == null || element.IsVacuum)    //invalid element
+                if (element.id == 0 || element.IsVacuum)    //invalid element
                 {
-                    Debug.Log(ToDialog("output_element is bad element: " + setting.output_element));
                     UnityEngine.Object.DestroyImmediate(converter);
+                    if (consumer != null) consumer.storeOnConsume = false;
                 }
-                else if (setting.output_rate == null)
-                {
-                    Debug.Log(ToDialog("output_rate is null"));
-                    UnityEngine.Object.DestroyImmediate(converter);
-                }
-                else if (setting.output_rate <= 0f)  //delete converter
+                else if (setting.output_rate is null or <= 0f)  //delete converter
                 {
                     UnityEngine.Object.DestroyImmediate(converter);
                     if (consumer != null) consumer.storeOnConsume = false;
