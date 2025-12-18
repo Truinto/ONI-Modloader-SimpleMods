@@ -44,6 +44,7 @@
 		
 		<Reference Private="false" Include="0Harmony" HintPath="$(GameManaged)\0Harmony.dll" />
 		<Reference Private="false" Include="Newtonsoft.Json" HintPath="$(GameManaged)\Newtonsoft.Json.dll" />
+		<Reference Private="false" Include="FMODUnity.dll" HintPath="$(GameManaged)\FMODUnity.dll" />
 		<Reference Private="false" Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
 		<Reference Private="false" Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
 		<Reference Private="false" Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />

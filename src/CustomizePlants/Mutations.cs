@@ -83,7 +83,7 @@ namespace CustomizePlants
     {
         public static void ProcessMutation(PlantMutation mutation)
         {
-            PlantMutationData setting = CustomizePlantsState.StateManager.State.MutationSettings?.FirstOrDefault(t => t.id == mutation.Id);
+            var setting = CustomizePlantsState.StateManager.State.MutationSettings?.FirstOrDefault(t => t.id == mutation.Id);
             if (setting == null)
                 return;
 
@@ -292,15 +292,15 @@ namespace CustomizePlants
     public class PlantMutationData
     {
         private int hash;
-        public string id;
-        public string name;
-        public string description;
+        public string? id;
+        public string? name;
+        public string? description;
         public bool? originalMutation;
-        public List<string> restrictedPrefabIDs;
-        public List<string> requiredPrefabIDs;
-        public List<AttributeContainer> attributes;
+        public List<string>? restrictedPrefabIDs;
+        public List<string>? requiredPrefabIDs;
+        public List<AttributeContainer>? attributes;
 
-        public string bonusCropID;
+        public string? bonusCropID;
         public float? bonusCropAmount;
         public byte? droppedDiseaseID;
         public int? droppedDiseaseOnGrowAmount;
@@ -311,21 +311,21 @@ namespace CustomizePlants
         public bool? forceSelfHarvestOnGrown;
         public PlantElementAbsorber.ConsumeInfo? ensureIrrigationInfo;
         public Color? plantTint;
-        public List<string> symbolTintTargets;
-        public List<Color> symbolTints;
-        public List<string> symbolOverrideInfo;
-        public List<string> symbolScaleTargets;
-        public List<float> symbolScales;
-        public string bGFXAnim;
-        public string fGFXAnim;
-        public List<string> additionalSoundEvents;
+        public List<string>? symbolTintTargets;
+        public List<Color>? symbolTints;
+        public List<string>? symbolOverrideInfo;
+        public List<string>? symbolScaleTargets;
+        public List<float>? symbolScales;
+        public string? bGFXAnim;
+        public string? fGFXAnim;
+        public List<string>? additionalSoundEvents;
 
         /// <summary>
         /// Holds settings for mutation.
         /// </summary>
         /// <param name="id">Required. Defines which mutation is changed.</param>
         /// 
-        public PlantMutationData(string id, string name = null, string description = null, bool? originalMutation = null, List<string> restrictedPrefabIDs = null, List<string> requiredPrefabIDs = null, List<AttributeContainer> attributes = null, string bonusCropID = null, float? bonusCropAmount = null, byte? droppedDiseaseID = null, int? droppedDiseaseOnGrowAmount = null, int? droppedDiseaseContinuousAmount = null, byte? harvestDiseaseID = null, int? harvestDiseaseAmount = null, bool? forcePrefersDarkness = null, bool? forceSelfHarvestOnGrown = null, PlantElementAbsorber.ConsumeInfo? ensureIrrigationInfo = null, Color? plantTint = null, List<string> symbolTintTargets = null, List<Color> symbolTints = null, List<string> symbolOverrideInfo = null, string sourceAnim = null, string sourceSymbol = null, List<string> symbolScaleTargets = null, List<float> symbolScales = null, string bGFXAnim = null, string fGFXAnim = null, List<string> additionalSoundEvents = null)
+        public PlantMutationData(string id, string? name = null, string? description = null, bool? originalMutation = null, List<string>? restrictedPrefabIDs = null, List<string>? requiredPrefabIDs = null, List<AttributeContainer>? attributes = null, string? bonusCropID = null, float? bonusCropAmount = null, byte? droppedDiseaseID = null, int? droppedDiseaseOnGrowAmount = null, int? droppedDiseaseContinuousAmount = null, byte? harvestDiseaseID = null, int? harvestDiseaseAmount = null, bool? forcePrefersDarkness = null, bool? forceSelfHarvestOnGrown = null, PlantElementAbsorber.ConsumeInfo? ensureIrrigationInfo = null, Color? plantTint = null, List<string>? symbolTintTargets = null, List<Color>? symbolTints = null, List<string>? symbolOverrideInfo = null, string? sourceAnim = null, string? sourceSymbol = null, List<string>? symbolScaleTargets = null, List<float>? symbolScales = null, string? bGFXAnim = null, string? fGFXAnim = null, List<string>? additionalSoundEvents = null)
         {
             this.id = id;
             this.name = name;
@@ -361,7 +361,7 @@ namespace CustomizePlants
 
         public override bool Equals(object obj)
         {
-            return this.GetHashCode() == (obj as PlantMutationData)?.GetHashCode();
+            return GetHashCode() == (obj as PlantMutationData)?.GetHashCode();
         }
 
         public override int GetHashCode()
@@ -376,5 +376,4 @@ namespace CustomizePlants
             return base.ToString();
         }
     }
-
 }

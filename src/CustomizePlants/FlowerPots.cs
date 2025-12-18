@@ -83,12 +83,18 @@ namespace CustomizePlants
         {
             var data = new TranspilerTool(instructions, generator, original);
 
-            data.Seek(typeof(Klei.AI.AttributeInstance), nameof(Klei.AI.AttributeInstance.GetTotalValue));
-            data.InsertAfter(getTotalValue);
+            try
+            {
+                data.Seek(typeof(Klei.AI.AttributeInstance), nameof(Klei.AI.AttributeInstance.GetTotalValue), []);
+                data.InsertAfter(getTotalValue);
+            } catch (Exception e)
+            {
+                Helpers.PrintDialog($"Please report this error: {e}");
+            }
 
             return data;
 
-            float getTotalValue(float modifier, StateMachine.Instance __instance)
+            static float getTotalValue(float modifier, StateMachine.Instance __instance)
             {
                 if (__instance is FertilizationMonitor.Instance fert && fert.storage.GetComponent<KPrefabID>().PrefabTag == FlowerVaseTag)
                     return 0f;

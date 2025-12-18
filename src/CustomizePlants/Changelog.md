@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.53.0] U57-704096-SCRP (release)
+- fixed crash with CheatFlowerVase
+
 ## [1.0.52.0] U57-704096-SCRP (release)
 - changed input_rate and output_rate to be read, even if the corresponding _element is missing, fix #91
 
