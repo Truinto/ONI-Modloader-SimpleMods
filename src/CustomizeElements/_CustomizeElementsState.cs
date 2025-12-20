@@ -1,10 +1,7 @@
-﻿//#define LOCALE
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Common;
-using HarmonyLib;
-using System.IO;
+﻿using System.Collections.Generic;
 using static Common.Helpers;
+
+#pragma warning disable IDE1006 // lowercase
 
 namespace CustomizeElements
 {
@@ -26,27 +23,15 @@ namespace CustomizeElements
             new("Katairite", "BuildableRaw", "BuildableAny"),
             new("Niobium", new AttributeContainer("OverheatTemperature", 100f), new AttributeContainer("Decor", 5f)),
             new("TempConductorSolid", new AttributeContainer("OverheatTemperature", 100f), new AttributeContainer("Decor", 5f)),
-
-            new() { Id = "BleachStone", sublimateId = "ChlorineGas", sublimateFX = "BleachStoneEmissionBubbles", 
-                sublimateRate = 0.00020000001f, sublimate_min = 0.0025000002f, sublimate_overpressure = 1.8f, sublimate_pwr = 0.5f },
-
-            new() { Id = "DirtyWater", sublimateId = "ContaminatedOxygen", sublimateFX = "ContaminatedOxygenBubbleWater",
-                sublimateRate = 4.0000006E-05f, sublimate_min = 0.025f, sublimate_overpressure = 1.8f, sublimate_pwr = 1f },
-
-            new() { Id = "NuclearWaste", sublimateId = "NuclearWaste", sublimateFX = "NuclearWasteDrip",
-                sublimateRate = 0.066f, sublimate_min = 6.6f, sublimate_overpressure = 1000f, sublimate_pwr = 0f },
-
-            new() { Id = "OxyRock", sublimateId = "Oxygen", sublimateFX = "OxygenEmissionBubbles",
-                sublimateRate = 0.010000001f, sublimate_min = 0.0050000004f, sublimate_overpressure = 1.8f, sublimate_pwr = 0.7f },
-
-            new() { Id = "SlimeMold", sublimateId = "ContaminatedOxygen", sublimateFX = "ContaminatedOxygenBubble",
-                sublimateRate = 0.025f, sublimate_min = 0.125f, sublimate_overpressure = 1.8f, sublimate_pwr = 0f },
-
-            new() { Id = "ToxicSand", sublimateId = "ContaminatedOxygen", sublimateFX = "ContaminatedOxygenBubble",
-                sublimateRate = 2.0000001E-05f, sublimate_min = 0.05f, sublimate_overpressure = 1.8f, sublimate_pwr = 0.5f },
+            new() { Id = "BleachStone", sublimateId = "ChlorineGas", sublimateFX = "BleachStoneEmissionBubbles", sublimateRate = 0.00020000001f, sublimate_min = 0.0025000002f, sublimate_overpressure = 1.8f, sublimate_pwr = 0.5f },
+            new() { Id = "DirtyWater", sublimateId = "ContaminatedOxygen", sublimateFX = "ContaminatedOxygenBubbleWater", sublimateRate = 4.0000006E-05f, sublimate_min = 0.025f, sublimate_overpressure = 1.8f, sublimate_pwr = 1f },
+            new() { Id = "NuclearWaste", sublimateId = "NuclearWaste", sublimateFX = "NuclearWasteDrip", sublimateRate = 0.066f, sublimate_min = 6.6f, sublimate_overpressure = 1000f, sublimate_pwr = 0f },
+            new() { Id = "OxyRock", sublimateId = "Oxygen", sublimateFX = "OxygenEmissionBubbles", sublimateRate = 0.010000001f, sublimate_min = 0.0050000004f, sublimate_overpressure = 1.8f, sublimate_pwr = 0.7f },
+            new() { Id = "SlimeMold", sublimateId = "ContaminatedOxygen", sublimateFX = "ContaminatedOxygenBubble", sublimateRate = 0.025f, sublimate_min = 0.125f, sublimate_overpressure = 1.8f, sublimate_pwr = 0f },
+            new() { Id = "ToxicSand", sublimateId = "ContaminatedOxygen", sublimateFX = "ContaminatedOxygenBubble", sublimateRate = 2.0000001E-05f, sublimate_min = 0.05f, sublimate_overpressure = 1.8f, sublimate_pwr = 0.5f },
         ];
 
-        public static Config.Manager<CustomizeElementsState> StateManager;
+        public static Config.Manager<CustomizeElementsState> StateManager = null!;
 
         public static bool OnUpdate(CustomizeElementsState state)
         {

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.5.0] U57-704096-SCRP (release)
+- added default_temperature, default_mass, and default_pressure
+
 ## [1.0.4.0] U52-623711-SC (release)
 - added support of sublimate settings
 

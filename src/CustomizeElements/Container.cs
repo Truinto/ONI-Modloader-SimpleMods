@@ -11,7 +11,7 @@ namespace CustomizeElements
 {
     public class ElementContainer
     {
-        public string Id;
+        public string? Id;
         public float? specificHeatCapacity;
         public float? thermalConductivity;
         public float? molarMass;
@@ -28,16 +28,16 @@ namespace CustomizeElements
         public Element.State? state;
         public byte? hardness;
         public float? lowTemp;
-        public string lowTempTransitionTarget;
-        public string lowTempTransitionOreID;
+        public string? lowTempTransitionTarget;
+        public string? lowTempTransitionOreID;
         public float? lowTempTransitionOreMassConversion;
         public float? highTemp;
-        public string highTempTransitionTarget;
-        public string highTempTransitionOreID;
+        public string? highTempTransitionTarget;
+        public string? highTempTransitionOreID;
         public float? highTempTransitionOreMassConversion;
-        public string sublimateId; // reused
-        public string convertId; // no use
-        public string sublimateFX;
+        public string? sublimateId; // reused
+        public string? convertId; // no use
+        public string? sublimateFX;
         public float? sublimateRate; // reused
         public float? sublimateEfficiency; // no use
         public float? sublimateProbability; // no use
@@ -45,12 +45,17 @@ namespace CustomizeElements
         public float? lightAbsorptionFactor;
         public float? radiationAbsorptionFactor;
         public float? radiationPer1000Mass;
+        public float? default_temperature;
+        public float? default_mass;
+        public float? default_pressure;
+        public string? refinedMetalTarget;
         public float? toxicity;
         //public Dictionary<string, float> elementComposition;
-        public string materialCategory;
-        public List<string> oreTags;
+        public string? materialCategory;
+        public List<string>? oreTags;
         public int? buildMenuSort;
-        public List<AttributeContainer> attributeModifiers;
+        public List<AttributeContainer>? attributeModifiers;
+        public bool? disabled;
 
         public float? sublimate_min; // min amount to transform
         public float? sublimate_overpressure; // max pressure to sublimate in

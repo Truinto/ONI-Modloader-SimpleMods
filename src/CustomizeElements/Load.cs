@@ -69,10 +69,10 @@ namespace CustomizeElements
                     element.lowTemp = setting.lowTemp.Value;
 
                 if (setting.lowTempTransitionTarget != null)
-                    element.lowTempTransitionTarget = setting.lowTempTransitionTarget.ToSimHash();
+                    element.lowTempTransitionTarget = setting.lowTempTransitionTarget.ToSimHash(0);
 
                 if (setting.lowTempTransitionOreID != null)
-                    element.lowTempTransitionOreID = setting.lowTempTransitionOreID.ToSimHash();
+                    element.lowTempTransitionOreID = setting.lowTempTransitionOreID.ToSimHash(0);
 
                 if (setting.lowTempTransitionOreMassConversion != null)
                     element.lowTempTransitionOreMassConversion = setting.lowTempTransitionOreMassConversion.Value;
@@ -81,19 +81,19 @@ namespace CustomizeElements
                     element.highTemp = setting.highTemp.Value;
 
                 if (setting.highTempTransitionTarget != null)
-                    element.highTempTransitionTarget = setting.highTempTransitionTarget.ToSimHash();
+                    element.highTempTransitionTarget = setting.highTempTransitionTarget.ToSimHash(0);
 
                 if (setting.highTempTransitionOreID != null)
-                    element.highTempTransitionOreID = setting.highTempTransitionOreID.ToSimHash();
+                    element.highTempTransitionOreID = setting.highTempTransitionOreID.ToSimHash(0);
 
                 if (setting.highTempTransitionOreMassConversion != null)
                     element.highTempTransitionOreMassConversion = setting.highTempTransitionOreMassConversion.Value;
 
                 if (setting.sublimateId != null)
-                    element.sublimateId = setting.sublimateId.ToSimHash();
+                    element.sublimateId = setting.sublimateId.ToSimHash(0);
 
                 if (setting.convertId != null)
-                    element.convertId = setting.convertId.ToSimHash();
+                    element.convertId = setting.convertId.ToSimHash(0);
 
                 if (setting.sublimateFX != null)
                     element.sublimateFX = (SpawnFXHashes)Hash.SDBMLower(setting.sublimateFX);
@@ -119,6 +119,18 @@ namespace CustomizeElements
                 if (setting.radiationPer1000Mass != null)
                     element.radiationPer1000Mass = setting.radiationPer1000Mass.Value;
 
+                if (setting.default_temperature != null)
+                    element.defaultValues.temperature = setting.default_temperature.Value;
+
+                if (setting.default_mass != null)
+                    element.defaultValues.mass = setting.default_mass.Value;
+
+                if (setting.default_pressure != null)
+                    element.defaultValues.pressure = setting.default_pressure.Value;
+
+                if (setting.refinedMetalTarget != null)
+                    element.refinedMetalTarget = setting.refinedMetalTarget.ToSimHash(0);
+
                 if (setting.toxicity != null)
                     element.toxicity = setting.toxicity.Value;
 
@@ -127,6 +139,9 @@ namespace CustomizeElements
 
                 if (setting.materialCategory != null)
                     element.materialCategory = setting.materialCategory;
+
+                if (setting.disabled != null)
+                    element.disabled = setting.disabled.Value;
 
                 if (setting.oreTags != null)
                 {
@@ -155,61 +170,10 @@ namespace CustomizeElements
                 {
                     foreach (var attribute in setting.attributeModifiers)
                     {
-                        if (attribute.Description == null)
-                            attribute.Description = element.name;
+                        attribute.Description ??= element.name;
                         element.attributeModifiers.Add(attribute);
                     }
                 }
-            }
-
-            Validate();
-        }
-
-        public static void Validate()
-        {
-            Log("------ Start Validating Elements ------");
-            foreach (Element element in ElementLoader.elements)
-            {
-                string text = $"{element.tag.ProperNameStripLink()} ({element.state})";
-                if (element.IsLiquid && element.sublimateId != 0)
-                {
-                    Assert(element.sublimateRate == 0f, text + ": Liquids don't use sublimateRate, use offGasPercentage instead.");
-                    Assert(element.offGasPercentage > 0f, text + ": Missing offGasPercentage");
-                }
-                if (element.IsSolid && element.sublimateId != 0)
-                {
-                    Assert(element.offGasPercentage == 0f, text + ": Solids don't use offGasPercentage, use sublimateRate instead.");
-                    Assert(element.sublimateRate > 0f, text + ": Missing sublimationRate");
-                    Assert(element.sublimateRate * element.sublimateEfficiency > 0.001f, text + ": Sublimation rate and efficiency will result in gas that will be obliterated because its less than 1g. Increase these values and use sublimateProbability if you want a low amount of sublimation");
-                }
-                if (element.highTempTransition != null && element.highTempTransition.lowTempTransition == element)
-                {
-                    Assert(element.highTemp >= element.highTempTransition.lowTemp, text + ": highTemp is higher than transition element's (" + element.highTempTransition.tag.ProperNameStripLink() + ") lowTemp");
-                }
-                Assert(element.defaultValues.mass <= element.maxMass, text + ": Default mass should be less than max mass");
-                //if (false)
-                {
-                    if (element.IsSolid && element.highTempTransition != null && element.highTempTransition.IsLiquid && element.defaultValues.mass > element.highTempTransition.maxMass)
-                    {
-                        Log($"{text} defaultMass {element.defaultValues.mass} > {element.highTempTransition.tag.ProperNameStripLink()}: maxMass {element.highTempTransition.maxMass}");
-                    }
-                    if (element.defaultValues.mass < element.maxMass && element.IsLiquid)
-                    {
-                        Log($"{element.tag.ProperNameStripLink()} has defaultMass: {element.defaultValues.mass} and maxMass {element.maxMass}");
-                    }
-                }
-            }
-            Log("------ End Validating Elements ------");
-
-            static void Log(string message)
-            {
-                Helpers.Print(message);
-            }
-
-            static void Assert(bool condition, string message)
-            {
-                if (condition)
-                    Helpers.Print(message);
             }
         }
     }
