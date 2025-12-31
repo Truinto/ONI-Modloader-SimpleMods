@@ -41,7 +41,7 @@ namespace CustomizeBuildings
             StateManager.State.CritterFeederKG = 2000f;
             StateManager.State.FishFeederKG = 200f;
             StateManager.State.BottleFillerKG = 200f;
-            StateManager.State.CanisterFillerKG = 25f;
+            StateManager.State.CanisterFillerKG = 200f;
             StateManager.State.BottleEmptierKG = 200f;
             StateManager.State.CanisterEmptierKG = 200f;
             StateManager.State.BottleEmptierConduitKG = 200f;
