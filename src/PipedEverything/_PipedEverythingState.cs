@@ -1,9 +1,10 @@
-//#define LOCALE
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common;
 using UnityEngine;
+
+#pragma warning disable IDE1006 // lower case
 
 namespace PipedEverything
 {
@@ -15,6 +16,8 @@ namespace PipedEverything
         public bool GeyserPipesUnlimited { get; set; } = true;
         public float GeyserStorageKG { get; set; } = 1000f;
         public float GeyserGasStorageKG { get; set; } = 100f;
+
+        public float SolidPipeOutput { get; set; } = 20f;
 
         public List<PipeConfig> Configs { get; set; } = new()
         {
@@ -98,6 +101,11 @@ namespace PipedEverything
             new PipeConfig(GlassForgeConfig.ID, true, x: 1, y: 0, SimHashes.Sand) { StorageCapacity = 500f },
 
             new PipeConfig(SupermaterialRefineryConfig.ID, true, x: 0, y: 0, "Solid") { StorageCapacity = 500f },
+
+            new PipeConfig(ApothecaryConfig.ID, true, x: 0, y: 0, SimHashes.Water, SimHashes.LiquidGunk),
+            new PipeConfig(ApothecaryConfig.ID, true, x: 0, y: 1, "Solid") { StorageCapacity = 500f },
+            new PipeConfig(ApothecaryConfig.ID, false, x: 1, y: 0, SimHashes.DirtyWater),
+            new PipeConfig(ApothecaryConfig.ID, false, x: 1, y: 1, "Solid"),
 
             new PipeConfig(UraniumCentrifugeConfig.ID, true, x: 0, y: 0, SimHashes.UraniumOre) { StorageCapacity = 500f },
             new PipeConfig(UraniumCentrifugeConfig.ID, false, x: 0, y: 0, SimHashes.EnrichedUranium) { StorageIndex = 2 },

@@ -15,20 +15,6 @@ namespace PipedEverything
         public const string ModName = "PipedEverything";
         public static Harmony? instance;
 
-        private static float _solidMaxMass = float.NaN;
-        public static float SolidMaxMass
-        {
-            get
-            {
-                if (_solidMaxMass == float.NaN)
-                {
-                    var warpStorage = Assets.TryGetPrefab(WarpConduitSenderConfig.ID).GetComponent<WarpConduitSender>().solidStorage;
-                    _solidMaxMass = warpStorage.capacityKg / 5f;
-                }
-                return _solidMaxMass;
-            }
-        }
-
         public override void OnLoad(Harmony harmony)
         {
             // init

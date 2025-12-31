@@ -14,6 +14,8 @@ namespace PipedEverything
     [SkipSaveFileSerialization]
     public class ConduitDispenserOptionalSolid : KMonoBehaviour, IConduitDispenser
     {
+        private float PackageSize = PipedEverythingState.StateManager.State.SolidPipeOutput;
+
         [SerializeField]
         public CellOffset conduitOffset;
 
@@ -103,8 +105,8 @@ namespace PipedEverything
                     var pickupable = FindSuitableItem();
                     if (pickupable != null)
                     {
-                        if (pickupable.PrimaryElement.Mass > FumiKMod.SolidMaxMass)
-                            pickupable = pickupable.Take(FumiKMod.SolidMaxMass) ?? pickupable;
+                        if (pickupable.PrimaryElement.Mass > PackageSize)
+                            pickupable = pickupable.Take(PackageSize) ?? pickupable;
                         conduitFlow.AddPickupable(this.utilityCell, pickupable);
                     }
                 }

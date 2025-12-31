@@ -22,7 +22,7 @@
 		<Compile Include="$(SolutionDir)Common\ConfigManager.cs" Link="Common/ConfigManager.cs" />
 		<Compile Include="$(SolutionDir)Common\Helpers.cs" Link="Common/Helpers.cs" />
 		<Compile Include="$(SolutionDir)Common\TechHelper.cs" Link="Common/TechHelper.cs" />
-		<Compile Include="$(SharedDir)\General\Attributes.cs" Link="Common/Attributes.cs" />
+		<Compile Include="$(SharedDir)\General\Attributes.cs" Link="Shared/Attributes.cs" />
 	</ItemGroup>
 
 	<!-- Common References -->
@@ -48,6 +48,8 @@
 		<Reference Private="false" Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
 		<Reference Private="false" Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
 		<Reference Private="false" Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
+		<Reference Private="false" Include="UnityEngine.UIModule" HintPath="$(GameManaged)\UnityEngine.UIModule.dll" />
+		<Reference Private="false" Include="UnityEngine.IMGUIModule" HintPath="$(GameManaged)\UnityEngine.IMGUIModule.dll" />
 		<Reference Private="false" Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
 
 		<Reference Private="false" Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod-net472.dll" />

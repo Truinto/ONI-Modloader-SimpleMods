@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.32.0] U57-704096-SCRP (release)
+- added option to set solid pipe output rate (default: 20kg)
+- added Apothecary defaults; requires reset
+
 ## [1.0.31.0] U57-704096-SCRP (release)
 - fixed SpawnOrderProduct crash, fix #90
 

@@ -8,6 +8,6 @@
 		<ModFolder>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev\</ModFolder>
 	</PropertyGroup>
 
-	<Import Condition="'$(MSBuildProjectName)'!='versioncontrol_ONI' And !$(MSBuildProjectName.Contains('UnityMod'))" Project="Directory.Build.common.default" />
 	<Import Condition="Exists('Directory.Build.common.user') And '$(MSBuildProjectName)'!='versioncontrol_ONI' And !$(MSBuildProjectName.Contains('UnityMod'))" Project="Directory.Build.common.user" />
+	<Import Condition="'$(MSBuildProjectName)'!='versioncontrol_ONI' And !$(MSBuildProjectName.Contains('UnityMod'))" Project="Directory.Build.common.default" />
 </Project>

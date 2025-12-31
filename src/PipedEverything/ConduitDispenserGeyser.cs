@@ -10,6 +10,8 @@ namespace PipedEverything
     [SkipSaveFileSerialization]
     public class ConduitDispenserGeyser : KMonoBehaviour, ISim200ms
     {
+        private float PackageSize = PipedEverythingState.StateManager.State.SolidPipeOutput;
+
         [SerializeField]
         public ConduitType ConduitType;
         [SerializeField]
@@ -172,7 +174,7 @@ namespace PipedEverything
                     case SolidConduitFlow solidFlow:
                         if (solidFlow.HasConduit(this.UtilityCell) && solidFlow.IsConduitEmpty(this.UtilityCell))
                         {
-                            float mass = FumiKMod.SolidMaxMass;
+                            float mass = PackageSize;
                             if (PipedEverythingState.StateManager.State.GeyserPipesUnlimited)
                                 mass = Mathf.Max(mass, this.ElementEmitter.outputElement.massGenerationRate);
 
