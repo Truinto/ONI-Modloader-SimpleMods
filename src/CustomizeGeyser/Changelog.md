@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.34.0] U57-704096-SCRP (release)
+- added Geotuner custom tuning framework
+
 ## [1.0.33.0] U57-701625-SCRP (release)
 - changed GeyserMorph to show unavailable geysers as well
 

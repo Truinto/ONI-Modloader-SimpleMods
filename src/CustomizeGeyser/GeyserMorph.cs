@@ -195,8 +195,5 @@ namespace CustomizeGeyser
 
             return textDialog;
         }
-
     }
-
-
 }

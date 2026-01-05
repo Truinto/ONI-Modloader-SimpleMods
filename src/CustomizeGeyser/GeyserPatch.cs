@@ -74,7 +74,7 @@ namespace CustomizeGeyser
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " has bad height");
                         modifier.height = null;
                     }
-                    if (modifier.element != null && modifier.element.ToElement() == null)
+                    if (modifier.element != null && modifier.element.ToElement().id == 0)
                     {
                         Helpers.PrintDialog("Warning: Geyser " + modifier.id + " element " + modifier.element + " does not exist");
                         modifier.element = null;
@@ -270,7 +270,7 @@ namespace CustomizeGeyser
                         continue;
                     }
 
-                    if (modifier.element.ToElement() == null)
+                    if (modifier.element.ToElement().id == 0)
                     {
                         Helpers.PrintDialog("Could not add geyser " + modifier.id + " because element does not exist: " + modifier.element);
                         continue;

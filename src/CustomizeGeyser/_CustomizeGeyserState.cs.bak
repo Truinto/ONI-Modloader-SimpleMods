@@ -33,8 +33,7 @@ namespace CustomizeGeyser
                         Directory.Move(temp, temp2);
                     }
                 }
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Helpers.Print(e.ToString());
             }
@@ -66,7 +65,6 @@ namespace CustomizeGeyser
             StateManager.State.RandomizerPopupGeyserDiscoveryInfo = false;
             StateManager.State.RandomizerHighlanderMode = false;
             StateManager.State.RandomizerHighlanderRetroactive = false;
-            StateManager.State.RandomizerEnabled = false;
             StateManager.State.GeyserMorphEnabled = false;
 
             StateManager.TrySaveConfigurationState();
@@ -105,14 +103,35 @@ namespace CustomizeGeyser
             StateManager.State.Geysers.Clear();
             foreach (var config in GeyserInfo.Config)
             {
-                var x = config.geyserType;
-                StateManager.State.Geysers.Add(new GeyserStruct(x.id, x.element.ToString()));
+                var geyserType = config.geyserType;
+                StateManager.State.Geysers.Add(new GeyserStruct(
+                    id: geyserType.id,
+                    element: geyserType.element.ToString(),
+                    anim: config.anim,
+                    width: config.width,
+                    height: config.height,
+                    temperature: geyserType.temperature,
+                    minRatePerCycle: geyserType.minRatePerCycle,
+                    maxRatePerCycle: geyserType.maxRatePerCycle,
+                    maxPressure: geyserType.maxPressure,
+                    minIterationLength: geyserType.minIterationLength,
+                    maxIterationLength: geyserType.maxIterationLength,
+                    minIterationPercent: geyserType.minIterationPercent,
+                    maxIterationPercent: geyserType.maxIterationPercent,
+                    minYearLength: geyserType.minYearLength,
+                    maxYearLength: geyserType.maxYearLength,
+                    minYearPercent: geyserType.minYearPercent,
+                    maxYearPercent: geyserType.maxYearPercent,
+                    Name: Strings.Get(config.nameStringKey),
+                    Description: Strings.Get(config.descStringKey),
+                    Disease: geyserType.diseaseInfo.idx == byte.MaxValue ? null : Db.Get().Diseases[geyserType.diseaseInfo.idx].Id,
+                    DiseaseCount: geyserType.diseaseInfo.count == 0 ? null : geyserType.diseaseInfo.count,
+                    IsGeneric: config.isGenericGeyser,
+                    shape: geyserType.shape
+                ));
             }
 
             StateManager.TrySaveConfigurationState();
-            OptionsDialog.Last?.CloseDialog();
-            OptionsDialog.Last?.CheckForRestart();
-            OptionsDialog.Last = null;
         };
 
         [Option("CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_Title", "CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_ToolTip", "Buttons", null)]
@@ -144,7 +163,8 @@ namespace CustomizeGeyser
         #endregion
 
         #region Fields
-        public int version { get; set; } = 10;
+
+        public int version { get; set; } = 11;
         [Option("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "Fields", null)]
         public bool Enabled { get; set; } = true;
 
@@ -232,11 +252,50 @@ namespace CustomizeGeyser
 
         [Option("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_Title", "CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_ToolTip", "Fields", null)]
         public bool GeyserTeleportEnabled { get; set; } = true;
+
+        [Option("CustomizeGeyser.LOCSTRINGS.TuningEnabled_Title", "CustomizeGeyser.LOCSTRINGS.TuningEnabled_ToolTip", "Fields", null)]
+        public bool TuningEnabled { get; set; } = true;
+
+        public List<GeoTunerStruct> Tunings { get; set; } = new() // IMPORTANT: the order may change what geyser is selected (if either or both 'geyser' and 'id' are empty)
+        {
+#if DEBUG
+            new("steam", "steam_extra") { name = "Dirty Steam", material = SimHashes.Dirt.ToString(), quantity = 10f, newElement = SimHashes.Dirt.ToString() },
+#endif
+            new("", "ten") { name = "+10%", material = SimHashes.Dirt.ToString(), quantity = 10f, duration = 600f, massPerCycleModifier = 0.1f, temperatureModifier = -5f, iterationDurationModifier = 0.1f, iterationPercentageModifier = 0.1f, yearDurationModifier = 0.1f, yearPercentageModifier = 0.1f, maxPressureModifier = 0.1f, newElement = "" },
+
+            new("steam", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("hot_steam", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("slimy_po2", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("hot_po2", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("methane", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("chlorine_gas", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("chlorine_gas_cool", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("hot_co2", null) { material = SimHashes.ToxicSand.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 5f },
+			new("hot_hydrogen", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("hot_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("salt_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("slush_salt_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("filthy_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("slush_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("liquid_sulfur", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("liquid_co2", null) { material = SimHashes.ToxicSand.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 5f },
+			new("oil_drip", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("small_volcano", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 150f },
+			new("big_volcano", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 150f },
+			new("molten_copper", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_gold", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_iron", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_aluminum", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_cobalt", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_niobium", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_tungsten", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+        };
+
         #endregion
 
         #region _implementation
 
-        public static Config.Manager<CustomizeGeyserState> StateManager;
+        public static Config.Manager<CustomizeGeyserState> StateManager = null!;
         public static bool OnUpdate(CustomizeGeyserState state)
         {
             return true;
@@ -306,7 +365,7 @@ namespace CustomizeGeyser
 
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerEnabled", "RandomizerEnabled");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_Title", "Randomizer Enabled");
-            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_ToolTip", "if set to false will disable all other randomize settings");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerEnabled_ToolTip", "if set to false will disable all other randomize settings (geysers spawn like without the mod)");
 
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.RandomizerUsesMapSeed", "RandomizerUsesMapSeed");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.RandomizerUsesMapSeed_Title", "Randomizer Uses Map Seed");
@@ -337,6 +396,12 @@ namespace CustomizeGeyser
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.GeyserTeleportEnabled", "GeyserTeleportEnabled");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_Title", "Geyser Teleport Enabled");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_ToolTip", "Teleport selected geyser to mouse cursor with DebugTeleport key (default: ALT+Q)");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.TuningEnabled", "TuningEnabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.TuningEnabled_Title", "Enable Tuning");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.TuningEnabled_ToolTip", "Whenever or not to patch Geotuner");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.Tunings", "Tunings");
             #endregion
         }
 

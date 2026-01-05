@@ -6,6 +6,8 @@ using Common;
 using Newtonsoft.Json;
 using PeterHan.PLib.Options;
 
+#pragma warning disable IDE1006 // ignore lowercase
+
 namespace CustomizeGeyser
 {
     [ConfigFile("CustomizeGeyser.json", true, true, typeof(Config.TranslationResolver))]
@@ -163,39 +165,41 @@ namespace CustomizeGeyser
         #endregion
 
         #region Fields
-        public int version { get; set; } = 10;
+
+        public int version { get; set; } = 12;
         [Option("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "Fields", null)]
         public bool Enabled { get; set; } = true;
 
-        public HashSet<GeyserStruct> Geysers { get; set; } = new HashSet<GeyserStruct>() {
-            new GeyserStruct(id: "steam", temperature: 378.15f),
-            new GeyserStruct(id: "slimy_po2", temperature: 378.15f, Disease: "ZombieSpores", DiseaseCount: 5000),
-            new GeyserStruct(id: "molten_tungsten", anim: "geyser_molten_tungsten_kanim", element: "MoltenTungsten",
+        public List<GeyserStruct> Geysers { get; set; } = new()
+        {
+            new(id: "steam", temperature: 378.15f),
+            new(id: "slimy_po2", temperature: 378.15f, Disease: "ZombieSpores", DiseaseCount: 5000),
+            new(id: "molten_tungsten", anim: "geyser_molten_tungsten_kanim", element: "MoltenTungsten",
                 Name: "Tungsten Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Tungsten", "MOLTENTUNGSTEN") + ".",
                 temperature: 3773.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
                 maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
                 minYearPercent: 0.4f, maxYearPercent: 0.8f),
-            new GeyserStruct(id: "molten_aluminum", anim: "geyser_molten_aluminum_kanim", element: "MoltenAluminum",
+            new(id: "molten_aluminum", anim: "geyser_molten_aluminum_kanim", element: "MoltenAluminum",
                 Name: "Aluminum Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Aluminum", "MOLTENALUMINUM") + ".",
                 temperature: 2273.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
                 maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
                 minYearPercent: 0.4f, maxYearPercent: 0.8f),
-            new GeyserStruct(id: "molten_steel", anim: "geyser_molten_iron_kanim", element: "MoltenSteel",
+            new(id: "molten_steel", anim: "geyser_molten_iron_kanim", element: "MoltenSteel",
                 Name: "Steel Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Steel", "MOLTENSTEEL") + ".",
                 temperature: 2773.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
                 maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
                 minYearPercent: 0.4f, maxYearPercent: 0.8f),
-            new GeyserStruct(id: "molten_glass", anim: "geyser_molten_iron_kanim", element: "MoltenGlass",
+            new(id: "molten_glass", anim: "geyser_molten_iron_kanim", element: "MoltenGlass",
                 Name: "Glass Volcano", Description: "A large volcano that periodically erupts with molten " + STRINGS.UI.FormatAsLink("Glass", "MOLTENGLASS") + ".",
                 temperature: 2273.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 150f, minIterationLength: 480f,
                 maxIterationLength: 1080f, minIterationPercent: 0.02f, maxIterationPercent: 0.1f, minYearLength: 15000f, maxYearLength: 135000f,
                 minYearPercent: 0.4f, maxYearPercent: 0.8f),
-            new GeyserStruct(id: "liquid_coolant", anim: "geyser_liquid_water_slush_kanim", element: "SuperCoolant",
+            new(id: "liquid_coolant", anim: "geyser_liquid_water_slush_kanim", element: "SuperCoolant",
                 Name: "Super Coolant Geyser", Description: "A highly pressurized geyser that periodically erupts with hot " + STRINGS.UI.FormatAsLink("Super Coolant", "SUPERCOOLANT") + ".",
                 temperature: 673.15f, minRatePerCycle: 200f, maxRatePerCycle: 400f, maxPressure: 500f, minIterationLength: 60f,
                 maxIterationLength: 1140f, minIterationPercent: 0.1f, maxIterationPercent: 0.9f, minYearLength: 15000f, maxYearLength: 135000f,
                 minYearPercent: 0.4f, maxYearPercent: 0.8f),
-            new GeyserStruct(id: "liquid_ethanol", anim: "geyser_liquid_water_filthy_kanim", element: "Ethanol",
+            new(id: "liquid_ethanol", anim: "geyser_liquid_water_filthy_kanim", element: "Ethanol",
                 Name: "Ethanol Geyser", Description: "A highly pressurized geyser that periodically erupts with boiling " + STRINGS.UI.FormatAsLink("Ethanol", "ETHANOL") + ".",
                 temperature: 343.15f, minRatePerCycle: 2000f, maxRatePerCycle: 4000f, maxPressure: 500f, minIterationLength: 60f,
                 maxIterationLength: 1140f, minIterationPercent: 0.1f, maxIterationPercent: 0.9f, minYearLength: 15000f, maxYearLength: 135000f,
@@ -251,6 +255,45 @@ namespace CustomizeGeyser
 
         [Option("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_Title", "CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_ToolTip", "Fields", null)]
         public bool GeyserTeleportEnabled { get; set; } = true;
+
+        [Option("CustomizeGeyser.LOCSTRINGS.TuningEnabled_Title", "CustomizeGeyser.LOCSTRINGS.TuningEnabled_ToolTip", "Fields", null)]
+        public bool TuningEnabled { get; set; } = true;
+
+        public List<GeoTunerStruct> Tunings { get; set; } = new() // IMPORTANT: the order may change what geyser is selected (if either or both 'geyser' and 'id' are empty)
+        {
+#if DEBUG
+            new("steam", "steam_extra") { name = "Dirty Steam", material = SimHashes.Dirt.ToString(), quantity = 10f, newElement = SimHashes.ContaminatedOxygen.ToString() },
+#endif
+            new("", "ten") { name = "+10%", material = SimHashes.Dirt.ToString(), quantity = 10f, duration = 600f, massPerCycleModifier = 0.1f, temperatureModifier = 10f, iterationDurationModifier = 0.1f, iterationPercentageModifier = 0.1f, yearDurationModifier = 0.1f, yearPercentageModifier = 0.1f, maxPressureModifier = 0.1f, newElement = "" },
+
+            new("steam", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("hot_steam", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("slimy_po2", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("hot_po2", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("methane", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("chlorine_gas", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("chlorine_gas_cool", null) { material = SimHashes.Salt.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("hot_co2", null) { material = SimHashes.ToxicSand.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 5f },
+			new("hot_hydrogen", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("hot_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("salt_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("slush_salt_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("filthy_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("slush_water", null) { material = SimHashes.BleachStone.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 20f },
+			new("liquid_sulfur", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("liquid_co2", null) { material = SimHashes.ToxicSand.ToString(), quantity = 50f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 5f },
+			new("oil_drip", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 15f },
+			new("small_volcano", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 150f },
+			new("big_volcano", null) { material = SimHashes.Katairite.ToString(), quantity = 100f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 150f },
+			new("molten_copper", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_gold", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_iron", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_aluminum", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_cobalt", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_niobium", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+			new("molten_tungsten", null) { material = SimHashes.Phosphorus.ToString(), quantity = 80f, duration = 600f, massPerCycleModifier = 0.2f, temperatureModifier = 50f },
+        };
+
         #endregion
 
         #region _implementation
@@ -258,6 +301,8 @@ namespace CustomizeGeyser
         public static Config.Manager<CustomizeGeyserState> StateManager = null!;
         public static bool OnUpdate(CustomizeGeyserState state)
         {
+            if (state.version < 12)
+                state.TuningEnabled = false;
             return true;
         }
         public object ReadSettings()
@@ -351,11 +396,26 @@ namespace CustomizeGeyser
             Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.GeyserTeleportEnabled", "GeyserTeleportEnabled");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_Title", "Geyser Teleport Enabled");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.GeyserTeleportEnabled_ToolTip", "Teleport selected geyser to mouse cursor with DebugTeleport key (default: ALT+Q)");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.TuningEnabled", "TuningEnabled");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.TuningEnabled_Title", "Enable Tuning");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.TuningEnabled_ToolTip", "Whenever or not to patch Geotuner");
+
+            Helpers.StringsAddProperty("CustomizeGeyser.PROPERTY.Tunings", "Tunings");
             #endregion
         }
 
         public static void ExtraStrings()
         {
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.MassPerCycleModifier", "Mass per cycle: {0}");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.TemperatureModifier", "Temperature: {0}");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.IterationDurationModifier", "Iteration cycle length: {0}");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.IterationPercentageModifier", "Iteration %: {0}");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.YearDurationModifier", "Dormancy cycle length: {0}");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.YearPercentageModifier", "Dormancy %: {0}");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.MaxPressureModifier", "Pressure: {0}");
+            Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.NewElement", "New element: {0}");
+
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Cancel_morphing", "Cancel morphing");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Cancel_morphing_tooltip", "Cancel this morphing order");
             Helpers.StringsAdd("CustomizeGeyser.LOCSTRINGS.Morph_into", "Morph geyser into:");
