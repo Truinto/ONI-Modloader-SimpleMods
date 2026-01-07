@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.35.0] U57-704096-SCRP (release)
+- fixed double option menu
+
 ## [1.0.34.0] U57-704096-SCRP (release)
 - added Geotuner custom tuning framework
 

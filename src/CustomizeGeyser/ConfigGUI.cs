@@ -41,7 +41,7 @@ namespace CustomizeGeyser.ConfigGUI
         public float Max = max;
     }
 
-    [HarmonyPatch(typeof(ModsScreen), nameof(ModsScreen.BuildDisplay))]
+    //[HarmonyPatch(typeof(ModsScreen), nameof(ModsScreen.BuildDisplay))]
     public static class GUIHookPatch
     {
         // see PLibOptions.AddModOptions
