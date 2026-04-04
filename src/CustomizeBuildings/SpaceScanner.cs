@@ -13,7 +13,7 @@ namespace CustomizeBuildings
         [HarmonyPostfix]
         public static void Postfix(ref float __result)
         {
-            __result *= CustomizeBuildingsState.StateManager.State.ScannerQualityMultiplier;
+            __result *= CustomizeBuildingsState.Instance.ScannerQualityMultiplier;
         }
     }
 
@@ -22,18 +22,18 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.TelescopeClearCellRadius != 5
-                || CustomizeBuildingsState.StateManager.State.TelescopeAnalyzeRadius != 3
-                || (CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeTelescope);
+            return CustomizeBuildingsState.Instance.TelescopeClearCellRadius != 5
+                || CustomizeBuildingsState.Instance.TelescopeAnalyzeRadius != 3
+                || (CustomizeBuildingsState.Instance.NoDupeGlobal && CustomizeBuildingsState.Instance.NoDupeTelescope);
         }
 
         public static void Postfix(GameObject go)
         {
             ClusterTelescope.Def def = go.AddOrGetDef<ClusterTelescope.Def>();
-            def.clearScanCellRadius = CustomizeBuildingsState.StateManager.State.TelescopeClearCellRadius;
-            def.analyzeClusterRadius = CustomizeBuildingsState.StateManager.State.TelescopeAnalyzeRadius;
+            def.clearScanCellRadius = CustomizeBuildingsState.Instance.TelescopeClearCellRadius;
+            def.analyzeClusterRadius = CustomizeBuildingsState.Instance.TelescopeAnalyzeRadius;
 
-            if (CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeTelescope)
+            if (CustomizeBuildingsState.Instance.NoDupeGlobal && CustomizeBuildingsState.Instance.NoDupeTelescope)
                 go.AddOrGet<BuildingComplete>().isManuallyOperated = false;
         }
     }
@@ -43,7 +43,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.TelescopeClearCellRadius <= 0;
+            return CustomizeBuildingsState.Instance.TelescopeClearCellRadius <= 0;
         }
 
         public static bool Prefix(ref float ___m_percentClear, ref bool __result)

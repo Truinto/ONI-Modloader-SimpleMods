@@ -14,7 +14,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.LadderCometInvincibility;
+            return CustomizeBuildingsState.Instance.LadderCometInvincibility;
         }
         public static void Postfix(GameObject go)
         {
@@ -34,7 +34,7 @@ namespace CustomizeBuildings
     {
         internal static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.LadderCometInvincibility | CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility;
+            return CustomizeBuildingsState.Instance.LadderCometInvincibility | CustomizeBuildingsState.Instance.RocketPlatformInvincibility;
         }
 
         internal static bool Prefix(int cell)
@@ -63,7 +63,7 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.TransitTubeAnywhere;
+            return CustomizeBuildingsState.Instance.TransitTubeAnywhere;
         }
         private static void Postfix(BuildingDef __result)
         {
@@ -82,7 +82,7 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.TransitTubeUTurns;
+            return CustomizeBuildingsState.Instance.TransitTubeUTurns;
         }
         private static bool Prefix(ref bool __result)
         {
@@ -96,15 +96,15 @@ namespace CustomizeBuildings
     {
         private static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.TransitTubeJoulesPerLaunch != 10000f || CustomizeBuildingsState.StateManager.State.TransitTubeJouleCapacity != 40000f;
+            return CustomizeBuildingsState.Instance.TransitTubeJoulesPerLaunch != 10000f || CustomizeBuildingsState.Instance.TransitTubeJouleCapacity != 40000f;
         }
         private static void Postfix(GameObject go)
         {
             TravelTubeEntrance travelTubeEntrance = go.GetComponent<TravelTubeEntrance>();
             if (travelTubeEntrance != null)
             {
-                travelTubeEntrance.joulesPerLaunch = CustomizeBuildingsState.StateManager.State.TransitTubeJoulesPerLaunch;
-                travelTubeEntrance.jouleCapacity = CustomizeBuildingsState.StateManager.State.TransitTubeJouleCapacity;
+                travelTubeEntrance.joulesPerLaunch = CustomizeBuildingsState.Instance.TransitTubeJoulesPerLaunch;
+                travelTubeEntrance.jouleCapacity = CustomizeBuildingsState.Instance.TransitTubeJouleCapacity;
                 //travelTubeEntrance.jouleCapacity = 4000f;
             }
         }

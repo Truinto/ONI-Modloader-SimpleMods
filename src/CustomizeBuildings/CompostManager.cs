@@ -15,7 +15,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent > 0f;
+            return CustomizeBuildingsState.Instance.CompostFreshnessPercent > 0f;
         }
 
         [HarmonyPatch(typeof(CompostConfig), nameof(CompostConfig.ConfigureBuildingTemplate))]
@@ -109,8 +109,8 @@ namespace CustomizeBuildings
 
             // sort through fresh food first and count calories; when enough calories are available, mark stale food for compost
             foods.Sort();
-            float calories = dupes * 1000f * CustomizeBuildingsState.StateManager.State.CompostCaloriesPerDupe;
-            float minimumFreshness = CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent;
+            float calories = dupes * 1000f * CustomizeBuildingsState.Instance.CompostCaloriesPerDupe;
+            float minimumFreshness = CustomizeBuildingsState.Instance.CompostFreshnessPercent;
             foreach (var foodstuff in foods)
             {
                 Helpers.PrintDebug($"CompostManager food2={foodstuff.Pickupable.PrefabID()} percent={foodstuff.Freshness} calories={foodstuff.Pickupable.GetComponent<Edible>().Calories}");
@@ -162,15 +162,15 @@ namespace CustomizeBuildings
         {
             get
             {
-                return CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent * 100f;
+                return CustomizeBuildingsState.Instance.CompostFreshnessPercent * 100f;
             }
             set
             {
                 float newvalue = value / 100f;
-                if (newvalue != CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent)
+                if (newvalue != CustomizeBuildingsState.Instance.CompostFreshnessPercent)
                 {
-                    CustomizeBuildingsState.StateManager.State.CompostFreshnessPercent = value / 100f;
-                    CustomizeBuildingsState.StateManager.TrySaveConfigurationState();
+                    CustomizeBuildingsState.Instance.CompostFreshnessPercent = value / 100f;
+                    CustomizeBuildingsState.Instance.TrySave();
                 }
             }
         }

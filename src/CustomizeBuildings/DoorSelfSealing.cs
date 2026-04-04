@@ -8,6 +8,9 @@ using System.Reflection;
 
 namespace CustomizeBuildings
 {
+    /// <summary>
+    /// Unstuck dupes in doors.
+    /// </summary>
     [HarmonyPatch(typeof(FallMonitor.Instance), nameof(FallMonitor.Instance.UpdateFalling))]
     [HarmonyPriority(Priority.Low)]
     public static class DoorEntomb_Patch
@@ -15,54 +18,45 @@ namespace CustomizeBuildings
         public static bool Prepare()
         {
             if (Helpers.IsModActive("PeterHan.AIImprovements", true))
-                Helpers.Print("Didn't patch DoorEntomb_Patch because PeterHan.AIImprovements is enabled.");
-
-            return CustomizeBuildingsState.StateManager.State.DoorSelfSealing && !Helpers.IsModActive("PeterHan.AIImprovements", true);
-        }
-
-        public static bool Prefix(FallMonitor.Instance __instance, Navigator ___navigator)
-        {
-            if (___navigator.IsMoving() || ___navigator.CurrentNavType == NavType.Tube || Grid.HasDoor[Grid.PosToCell(__instance.transform.GetPosition())])
             {
-                __instance.sm.isEntombed.Set(false, __instance);
-                __instance.sm.isFalling.Set(false, __instance);
+                Helpers.Print("Didn't patch DoorEntomb_Patch because PeterHan.AIImprovements is enabled.");
                 return false;
             }
 
-            return true;
+            return CustomizeBuildingsState.Instance.DoorSelfSealing;
         }
-    }
 
-    [HarmonyPatch(typeof(Door), nameof(Door.OnPrefabInit))]
-    public static class DoorOnPrefabInit_Patch
-    {
-        public static void Postfix(ref Door __instance)
+        public static void Postfix(FallMonitor.Instance __instance)
         {
-            __instance.overrideAnims = new KAnimFile[]
+            if (!__instance.navigator.IsMoving() && Grid.HasDoor[Grid.PosToCell(__instance.transform.GetPosition())])
             {
-                Assets.GetAnim("anim_use_remote_kanim")
-            };
-        }
-    }
-
-    [HarmonyPatch(typeof(Door), nameof(Door.OnCleanUp))]
-    public static class DoorOnCleanUp_Patch
-    {
-        public static void Postfix(Door __instance)
-        {
-            foreach (int cell in __instance.building.PlacementCells)
-            {
-                SimMessages.ClearCellProperties(cell, 3);
+                __instance.sm.isEntombed.Set(false, __instance);
+                __instance.sm.isFalling.Set(false, __instance);
             }
         }
     }
 
+    //[HarmonyPatch(typeof(Door), nameof(Door.OnCleanUp))]
+    //public static class DoorOnCleanUp_Patch
+    //{
+    //    public static void Postfix(Door __instance)
+    //    {
+    //        foreach (int cell in __instance.building.PlacementCells)
+    //        {
+    //            SimMessages.ClearCellProperties(cell, 3);
+    //        }
+    //    }
+    //}
+
+    /// <summary>
+    /// While dupe is stuck in door, they can breath. This is to not trigger the air alert in this brief moment.
+    /// </summary>
     [HarmonyPatch(typeof(SimTemperatureTransfer), nameof(SimTemperatureTransfer.OnCellChanged))]
     public static class DuplicantVacuum_Patch
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.DoorSelfSealing;
+            return CustomizeBuildingsState.Instance.DoorSelfSealing;
         }
 
         public static bool Prefix(SimTemperatureTransfer __instance)
@@ -82,24 +76,24 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.DoorSelfSealing;
+            return CustomizeBuildingsState.Instance.DoorSelfSealing;
         }
 
-        public static bool Prefix(Door __instance, bool is_door_open, IList<int> cells)
+        public static bool Prefix(bool is_door_open, IList<int> cells, Door __instance)
         {
             if (__instance == null || __instance.doorType == Door.DoorType.Internal || __instance.CurrentState == Door.ControlState.Opened)
                 return true;
 
-            PrimaryElement pElement = __instance.GetComponent<PrimaryElement>();
-            float mass = pElement.Mass / (float)cells.Count;
+            var pElement = __instance.GetComponent<PrimaryElement>();
+            float mass = pElement.Mass / cells.Count;
             for (int i = 0; i < cells.Count; i++)
             {
                 int cell = cells[i];
                 World.Instance.groundRenderer.MarkDirty(cell);
-                SimMessages.SetCellProperties(cell, 4);
                 if (is_door_open)
                 {
                     var handleOpen = Game.Instance.callbackManager.Add(new Game.CallbackInfo(__instance.OnSimDoorOpened, false));
+                    SimMessages.Dig(cell, handleOpen.index, skipEvent: true);
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorOpen, mass, pElement.Temperature, byte.MaxValue, 0, handleOpen.index);
                     //SimMessages.ClearCellProperties(cell, 3);
                 }
@@ -109,8 +103,98 @@ namespace CustomizeBuildings
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorClose, mass, pElement.Temperature, byte.MaxValue, 0, handleClose.index);
                     //SimMessages.SetCellProperties(cell, 3);
                 }
+                SimMessages.SetCellProperties(cell, 4);
+                if (__instance.insulationModifier != 1f)
+                    SimMessages.SetInsulation(cell, __instance.insulationModifier);
             }
             return false;
+        }
+    }
+
+    public class DoorPressureMod : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == PressureDoorConfig.ID;
+        }
+
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
+        {
+            var door = def.BuildingComplete.GetComponent<Door>();
+            if (door != null)
+            {
+                door.insulationModifier = CustomizeBuildingsState.Instance.DoorPressureInsulationFactor;
+                door.poweredAnimSpeed = CustomizeBuildingsState.Instance.DoorPressureSpeedPowered;
+                door.unpoweredAnimSpeed = CustomizeBuildingsState.Instance.DoorPressureSpeedUnpowered;
+            }
+        }
+    }
+
+    public class DoorBunkerMod : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == BunkerDoorConfig.ID;
+        }
+
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
+        {
+            var door = def.BuildingComplete.GetComponent<Door>();
+            if (door != null)
+            {
+                door.poweredAnimSpeed = CustomizeBuildingsState.Instance.DoorBunkerSpeedPowered;
+                door.unpoweredAnimSpeed = CustomizeBuildingsState.Instance.DoorBunkerSpeedUnpowered;
+            }
+        }
+    }
+
+    public class DoorManualMod : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == ManualPressureDoorConfig.ID;
+        }
+
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
+        {
+            var door = def.BuildingComplete.GetComponent<Door>();
+            if (door != null)
+            {
+                door.unpoweredAnimSpeed = CustomizeBuildingsState.Instance.DoorManualSpeed;
+            }
+        }
+    }
+
+    public class DoorInsulatedMod : IBuildingCompleteMod
+    {
+        public bool Enabled(string id)
+        {
+            return id == InsulatedDoorConfig.ID;
+        }
+
+        public void EditDef(BuildingDef def)
+        {
+        }
+
+        public void EditGO(BuildingDef def)
+        {
+            var door = def.BuildingComplete.GetComponent<Door>();
+            if (door != null)
+            {
+                door.unpoweredAnimSpeed = CustomizeBuildingsState.Instance.DoorInsulatedSpeed;
+            }
         }
     }
 }

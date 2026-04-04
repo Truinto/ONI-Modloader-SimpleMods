@@ -18,7 +18,7 @@ namespace CustomizeGeyser
     /// <summary>
     /// Save data, to remember which tuning has been selected.
     /// </summary>
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class GeoTunerSelectMod : KMonoBehaviour
     {
         [Serialize] public string? Id;
@@ -84,7 +84,7 @@ namespace CustomizeGeyser
         public static GeoTunerConfig.GeotunedGeyserSettings GetSettingsForGeyser(string? id, Geyser geyser)
         {
             int idHash = Hash.SDBMLower(id);
-            if (CustomizeGeyserState.StateManager.State.Tunings.TryGet(f => f.idHash == idHash && f.IsValidForGeyser(geyser), out var tuning))
+            if (CustomizeGeyserState.StateManager.State.Tunings.TryGet(f => f.idHash == idHash && f.IsValidForGeyser(geyser), out GeoTunerStruct? tuning))
                 return tuning;
             if (GeoTunerConfig.geotunerGeyserSettings.TryGetValue(geyser.configuration.typeId, out var value))
                 return value;

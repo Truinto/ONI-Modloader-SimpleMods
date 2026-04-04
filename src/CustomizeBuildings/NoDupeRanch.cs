@@ -10,8 +10,8 @@ namespace CustomizeBuildings
         public bool Enabled(string id)
         {
             return id == RanchStationConfig.ID 
-                && CustomizeBuildingsState.StateManager.State.NoDupeGlobal 
-                && CustomizeBuildingsState.StateManager.State.NoDupeRanchStation;
+                && CustomizeBuildingsState.Instance.NoDupeGlobal 
+                && CustomizeBuildingsState.Instance.NoDupeRanchStation;
         }
 
         public void EditDef(BuildingDef def)

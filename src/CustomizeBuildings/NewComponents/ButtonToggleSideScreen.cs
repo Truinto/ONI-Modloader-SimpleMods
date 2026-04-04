@@ -10,7 +10,7 @@ using UnityEngine;
 namespace CustomizeBuildings
 {
     //[SkipSaveFileSerialization]
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public abstract class ButtonToggleSideScreen : KMonoBehaviour, ISidescreenButtonControl
     {
         [Serialize] public bool Enabled = false;

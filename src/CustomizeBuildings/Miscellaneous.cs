@@ -84,7 +84,7 @@ namespace CustomizeBuildings
 
             #endregion
 
-            if (CustomizeBuildingsState.StateManager.State.MaterialIgnoreInsufficientMaterial)
+            if (CustomizeBuildingsState.Instance.MaterialIgnoreInsufficientMaterial)
                 AccessTools.Property(typeof(GenericGameSettings), nameof(GenericGameSettings.allowInsufficientMaterialBuild))
                     .SetValue(GenericGameSettings.instance, true);
         }
@@ -92,33 +92,33 @@ namespace CustomizeBuildings
         private static void setTuning(string setting, ref float target)
         {
             var pi = AccessTools.Property(typeof(CustomizeBuildingsState), setting);
-            float state = (float)pi.GetValue(CustomizeBuildingsState.StateManager.State);
+            float state = (float)pi.GetValue(CustomizeBuildingsState.Instance);
 
-            if (CustomizeBuildingsState.StateManager.State.TuningGlobal && !float.IsNaN(state))
+            if (CustomizeBuildingsState.Instance.TuningGlobal && !float.IsNaN(state))
             {
                 target = state;
             }
             else
             {
                 Helpers.PrintDebug($"TUNING was set from {state} to {target}");
-                pi.SetValue(CustomizeBuildingsState.StateManager.State, target);
+                pi.SetValue(CustomizeBuildingsState.Instance, target);
             }
         }
 
         private static void setTuning(string setting, ref int target)
         {
             var pi = AccessTools.Property(typeof(CustomizeBuildingsState), setting);
-            object obj = pi.GetValue(CustomizeBuildingsState.StateManager.State);
+            object obj = pi.GetValue(CustomizeBuildingsState.Instance);
             float state = obj is int ? (int)obj : (float)obj;
 
-            if (CustomizeBuildingsState.StateManager.State.TuningGlobal && !float.IsNaN(state))
+            if (CustomizeBuildingsState.Instance.TuningGlobal && !float.IsNaN(state))
             {
                 target = (int)state;
             }
             else
             {
                 Helpers.PrintDebug($"TUNING was set from {state} to {target}");
-                pi.SetValue(CustomizeBuildingsState.StateManager.State, target);
+                pi.SetValue(CustomizeBuildingsState.Instance, target);
             }
         }
     }
@@ -128,7 +128,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.MaterialAutoSelect;
+            return CustomizeBuildingsState.Instance.MaterialAutoSelect;
         }
 
         public static bool Prefix(MaterialSelector __instance, Recipe ___activeRecipe, ref bool __result)
@@ -154,7 +154,7 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure != 1.8f &&
+            return CustomizeBuildingsState.Instance.ElectrolizerMaxPressure != 1.8f &&
                 (id == ElectrolyzerConfig.ID || id == RustDeoxidizerConfig.ID || id == MineralDeoxidizerConfig.ID);
         }
 
@@ -166,11 +166,11 @@ namespace CustomizeBuildings
         {
             Electrolyzer electrolyzer = def.BuildingComplete.GetComponent<Electrolyzer>();
             if (electrolyzer != null)
-                electrolyzer.maxMass = CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure;
+                electrolyzer.maxMass = CustomizeBuildingsState.Instance.ElectrolizerMaxPressure;
 
             RustDeoxidizer rustDeoxidizer = def.BuildingComplete.GetComponent<RustDeoxidizer>();
             if (rustDeoxidizer != null)
-                rustDeoxidizer.maxMass = CustomizeBuildingsState.StateManager.State.ElectrolizerMaxPressure;
+                rustDeoxidizer.maxMass = CustomizeBuildingsState.Instance.ElectrolizerMaxPressure;
         }
     }
 
@@ -178,8 +178,8 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id == LaunchPadConfig.ID && CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility
-                || id == GantryConfig.ID && CustomizeBuildingsState.StateManager.State.RocketPlatformInvincibility;
+            return id == LaunchPadConfig.ID && CustomizeBuildingsState.Instance.RocketPlatformInvincibility
+                || id == GantryConfig.ID && CustomizeBuildingsState.Instance.RocketPlatformInvincibility;
         }
 
         public void EditDef(BuildingDef def)

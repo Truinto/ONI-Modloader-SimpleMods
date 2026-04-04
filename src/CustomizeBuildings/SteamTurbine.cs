@@ -14,19 +14,19 @@ namespace CustomizeBuildings
 
         internal static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.SteamTurbineEnabled;
+            return CustomizeBuildingsState.Instance.SteamTurbineEnabled;
         }
 
         internal static void Postfix(ref BuildingDef __result)
         {
-            isGas = ElementLoader.FindElementByName(CustomizeBuildingsState.StateManager.State.SteamTurbineOutputElement)?.IsGas ?? false;
+            isGas = ElementLoader.FindElementByName(CustomizeBuildingsState.Instance.SteamTurbineOutputElement)?.IsGas ?? false;
             __result.OutputConduitType = isGas ? ConduitType.Gas : ConduitType.Liquid;
 
-            if (CustomizeBuildingsState.StateManager.State.SteamTurbineWattage != 850f)
+            if (CustomizeBuildingsState.Instance.SteamTurbineWattage != 850f)
             {
-                SteamTurbineConfig2.MAX_WATTAGE = CustomizeBuildingsState.StateManager.State.SteamTurbineWattage;
-                __result.GeneratorWattageRating = CustomizeBuildingsState.StateManager.State.SteamTurbineWattage;
-                __result.GeneratorBaseCapacity = CustomizeBuildingsState.StateManager.State.SteamTurbineWattage;
+                SteamTurbineConfig2.MAX_WATTAGE = CustomizeBuildingsState.Instance.SteamTurbineWattage;
+                __result.GeneratorWattageRating = CustomizeBuildingsState.Instance.SteamTurbineWattage;
+                __result.GeneratorBaseCapacity = CustomizeBuildingsState.Instance.SteamTurbineWattage;
             }
         }
     }
@@ -36,22 +36,22 @@ namespace CustomizeBuildings
     {
         internal static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.SteamTurbineEnabled;
+            return CustomizeBuildingsState.Instance.SteamTurbineEnabled;
         }
 
         internal static void Postfix(GameObject go)
         {
             SteamTurbine steamTurbine = go.GetComponent<SteamTurbine>();
-            steamTurbine.srcElem = CustomizeBuildingsState.StateManager.State.SteamTurbineSourceElement.ToSimHash(SimHashes.Steam); //SimHashes.Steam
-            steamTurbine.destElem = CustomizeBuildingsState.StateManager.State.SteamTurbineOutputElement.ToSimHash(SimHashes.Water); //SimHashes.Water
-            steamTurbine.pumpKGRate = CustomizeBuildingsState.StateManager.State.SteamTurbinePumpRateKG; //2f
-            steamTurbine.wasteHeatToTurbinePercent = CustomizeBuildingsState.StateManager.State.SteamTurbineHeatTransferPercent; //0.1f
+            steamTurbine.srcElem = CustomizeBuildingsState.Instance.SteamTurbineSourceElement.ToSimHash(SimHashes.Steam); //SimHashes.Steam
+            steamTurbine.destElem = CustomizeBuildingsState.Instance.SteamTurbineOutputElement.ToSimHash(SimHashes.Water); //SimHashes.Water
+            steamTurbine.pumpKGRate = CustomizeBuildingsState.Instance.SteamTurbinePumpRateKG; //2f
+            steamTurbine.wasteHeatToTurbinePercent = CustomizeBuildingsState.Instance.SteamTurbineHeatTransferPercent; //0.1f
 
-            //steamTurbine.requiredMass = CustomizeBuildingsState.StateManager.State.SteamTurbineMinMass; //1f / 1000f;
-            steamTurbine.minActiveTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineMinActiveTemperature; //398.15f;
-            steamTurbine.idealSourceElementTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineIdealTemperature; //473.15f;
-            steamTurbine.outputElementTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineOutputTemperature; //368.15f;
-            steamTurbine.maxBuildingTemperature = CustomizeBuildingsState.StateManager.State.SteamTurbineOverheatTemperature; //373.15f;
+            //steamTurbine.requiredMass = CustomizeBuildingsState.Instance.SteamTurbineMinMass; //1f / 1000f;
+            steamTurbine.minActiveTemperature = CustomizeBuildingsState.Instance.SteamTurbineMinActiveTemperature; //398.15f;
+            steamTurbine.idealSourceElementTemperature = CustomizeBuildingsState.Instance.SteamTurbineIdealTemperature; //473.15f;
+            steamTurbine.outputElementTemperature = CustomizeBuildingsState.Instance.SteamTurbineOutputTemperature; //368.15f;
+            steamTurbine.maxBuildingTemperature = CustomizeBuildingsState.Instance.SteamTurbineOverheatTemperature; //373.15f;
 
             ConduitDispenser conduitDispenser = go.GetComponent<ConduitDispenser>();
             conduitDispenser.elementFilter = [];
@@ -65,7 +65,7 @@ namespace CustomizeBuildings
     //    internal static bool? isLiquid;
     //    internal static void Prefix(Turbine.Instance __instance)
     //    {
-    //        if (!isLiquid.HasValue) isLiquid = ElementLoader.FindElementByName(CustomizeBuildingsState.StateManager.State.SteamTurbineSourceElement)?.IsLiquid ?? false;
+    //        if (!isLiquid.HasValue) isLiquid = ElementLoader.FindElementByName(CustomizeBuildingsState.Instance.SteamTurbineSourceElement)?.IsLiquid ?? false;
     //        if (isLiquid.Value)
     //            __instance.isInputBlocked = false;
     //    }

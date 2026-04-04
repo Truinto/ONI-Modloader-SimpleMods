@@ -5,6 +5,7 @@
 		<TargetFramework>net48</TargetFramework>
 		<Title>$(MSBuildProjectName)</Title>
 		<RootNamespace>$(MSBuildProjectName)</RootNamespace>
+		<DefineConstants>$(DefineConstants);ErrorToConsole</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>false</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
@@ -23,6 +24,8 @@
 		<Compile Include="$(SolutionDir)Common\Helpers.cs" Link="Common/Helpers.cs" />
 		<Compile Include="$(SolutionDir)Common\TechHelper.cs" Link="Common/TechHelper.cs" />
 		<Compile Include="$(SharedDir)\General\Attributes.cs" Link="Shared/Attributes.cs" />
+		<Compile Include="$(SharedDir)\General\JsonNewtonsoft.cs" Link="Shared/JsonNewtonsoft.cs" />
+		<Compile Include="$(SharedDir)\General\BaseSettings.cs" Link="Shared/BaseSettings.cs" />
 	</ItemGroup>
 
 	<!-- Common References -->
@@ -52,7 +55,7 @@
 		<Reference Private="false" Include="UnityEngine.IMGUIModule" HintPath="$(GameManaged)\UnityEngine.IMGUIModule.dll" />
 		<Reference Private="false" Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
 
-		<Reference Private="false" Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod-net472.dll" />
+		<Reference Private="false" Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod.dll" />
 		<Reference Private="false" Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Private="false" Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Private="false" Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
@@ -63,7 +66,7 @@
 		<None Remove="$(ProjectDir)_MERGE" />
 		<None Include="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
 		
-		<TargetMergeItems Include="$(SolutionDir)@Shared/UnityMod-net472.dll" />
+		<TargetMergeItems Include="$(SolutionDir)@Shared/UnityMod.dll" />
 		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibOptions.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
 		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibCore.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
 		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibUI.dll" Condition="$(DefineConstants.Contains('MERGE'))" />

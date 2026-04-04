@@ -12,9 +12,9 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            if (id is BottleEmptierConduitLiquidConfig.ID && CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f)
+            if (id is BottleEmptierConduitLiquidConfig.ID && CustomizeBuildingsState.Instance.PipeLiquidMaxPressure != 10f)
                 return true;
-            if (id is BottleEmptierConduitGasConfig.ID && CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f)
+            if (id is BottleEmptierConduitGasConfig.ID && CustomizeBuildingsState.Instance.PipeGasMaxPressure != 1f)
                 return true;
             return false;
         }
@@ -30,8 +30,8 @@ namespace CustomizeBuildings
             {
                 emptier.emptyRate =
                     emptier.isGasEmptier
-                    ? CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent
-                    : CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+                    ? CustomizeBuildingsState.Instance.PipeGasMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent
+                    : CustomizeBuildingsState.Instance.PipeLiquidMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent;
             }
         }
     }
@@ -50,9 +50,9 @@ namespace CustomizeBuildings
         public void EditGO(BuildingDef def)
         {
             var sender = def.BuildingComplete.GetComponent<WarpConduitSender>();
-            sender.gasStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * 2f;
-            sender.liquidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * 2f;
-            sender.solidStorage.capacityKg = CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize * 5f;
+            sender.gasStorage.capacityKg = CustomizeBuildingsState.Instance.PipeGasMaxPressure * 2f;
+            sender.liquidStorage.capacityKg = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure * 2f;
+            sender.solidStorage.capacityKg = CustomizeBuildingsState.Instance.ConveyorRailPackageSize * 5f;
         }
     }
 
@@ -71,16 +71,16 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f || CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f;
+            return CustomizeBuildingsState.Instance.PipeLiquidMaxPressure != 10f || CustomizeBuildingsState.Instance.PipeGasMaxPressure != 1f;
         }
 
         public static void Postfix(Game __instance)
         {
-            if (CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f)
-                __instance.liquidConduitFlow.MaxMass = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
+            if (CustomizeBuildingsState.Instance.PipeLiquidMaxPressure != 10f)
+                __instance.liquidConduitFlow.MaxMass = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure;
 
-            if (CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f)
-                __instance.gasConduitFlow.MaxMass = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
+            if (CustomizeBuildingsState.Instance.PipeGasMaxPressure != 1f)
+                __instance.gasConduitFlow.MaxMass = CustomizeBuildingsState.Instance.PipeGasMaxPressure;
         }
     }
 
@@ -89,14 +89,14 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f;
+            return CustomizeBuildingsState.Instance.PipeLiquidMaxPressure != 10f;
         }
 
         public static void Postfix(GameObject go)
         {
             var valveBase = go.AddOrGet<ValveBase>();
             if (valveBase != null)
-                valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
+                valveBase.maxFlow = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure;
         }
     }
 
@@ -105,14 +105,14 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f;
+            return CustomizeBuildingsState.Instance.PipeGasMaxPressure != 1f;
         }
 
         public static void Postfix(GameObject go)
         {
             var valveBase = go.AddOrGet<ValveBase>();
             if (valveBase != null)
-                valveBase.maxFlow = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
+                valveBase.maxFlow = CustomizeBuildingsState.Instance.PipeGasMaxPressure;
 
         }
     }
@@ -122,12 +122,12 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f;
+            return CustomizeBuildingsState.Instance.PipeLiquidMaxPressure != 10f;
         }
 
         public static void Postfix(GameObject go)
         {
-            go.AddOrGet<OperationalValve>().maxFlow = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure;
+            go.AddOrGet<OperationalValve>().maxFlow = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure;
         }
     }
 
@@ -136,12 +136,12 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f;
+            return CustomizeBuildingsState.Instance.PipeGasMaxPressure != 1f;
         }
 
         public static void Postfix(GameObject go)
         {
-            go.AddOrGet<OperationalValve>().maxFlow = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure;
+            go.AddOrGet<OperationalValve>().maxFlow = CustomizeBuildingsState.Instance.PipeGasMaxPressure;
         }
     }
 
@@ -150,14 +150,14 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f;
+            return CustomizeBuildingsState.Instance.PipeLiquidMaxPressure != 10f || CustomizeBuildingsState.Instance.PipeThroughputPercent != 1.0f;
         }
 
         public static void Postfix(GameObject go)
         {
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.conduitType = ConduitType.Liquid;
-            conduitConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            conduitConsumer.consumptionRate = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent;
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = conduitConsumer.consumptionRate * 2f;
         }
@@ -168,14 +168,14 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f;
+            return CustomizeBuildingsState.Instance.PipeGasMaxPressure != 1f || CustomizeBuildingsState.Instance.PipeThroughputPercent != 1.0f;
         }
 
         public static void Postfix(GameObject go)
         {
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.conduitType = ConduitType.Gas;
-            conduitConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            conduitConsumer.consumptionRate = CustomizeBuildingsState.Instance.PipeGasMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent;
             Storage storage = go.AddOrGet<Storage>();
             storage.capacityKg = conduitConsumer.consumptionRate * 2f;
         }
@@ -186,8 +186,8 @@ namespace CustomizeBuildings
         public bool Enabled(string id)
         {
             return id is ContactConductivePipeBridgeConfig.ID
-                && (CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure != 10f
-                    || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f);
+                && (CustomizeBuildingsState.Instance.PipeLiquidMaxPressure != 10f
+                    || CustomizeBuildingsState.Instance.PipeThroughputPercent != 1.0f);
         }
 
         public void EditDef(BuildingDef def)
@@ -197,14 +197,14 @@ namespace CustomizeBuildings
         public void EditGO(BuildingDef def)
         {
             var pipeDef = def.BuildingComplete.GetDef<ContactConductivePipeBridge.Def>();
-            pipeDef.pumpKGRate = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            pipeDef.pumpKGRate = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent;
 
             //var storage = def.BuildingComplete.GetComponent<Storage>();
-            //storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            //storage.capacityKg = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent;
 
             var conduitConsumer = def.BuildingComplete.GetComponent<ConduitConsumer>();
             if (conduitConsumer != null)
-                conduitConsumer.capacityKG = CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+                conduitConsumer.capacityKG = CustomizeBuildingsState.Instance.PipeLiquidMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent;
         }
     }
 
@@ -213,7 +213,7 @@ namespace CustomizeBuildings
         public bool Enabled(string id)
         {
             return id is SolidLimitValveConfig.ID
-                && (CustomizeBuildingsState.StateManager.State.ConveyorMeterLimit != 500f);
+                && (CustomizeBuildingsState.Instance.ConveyorMeterLimit != 500f);
         }
 
         public void EditDef(BuildingDef def)
@@ -223,7 +223,7 @@ namespace CustomizeBuildings
         public void EditGO(BuildingDef def)
         {
             var limitValve = def.BuildingComplete.GetComponent<LimitValve>();
-            limitValve.maxLimitKg = CustomizeBuildingsState.StateManager.State.ConveyorMeterLimit;
+            limitValve.maxLimitKg = CustomizeBuildingsState.Instance.ConveyorMeterLimit;
         }
     }
 
@@ -232,13 +232,13 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure != 1f
-                    || CustomizeBuildingsState.StateManager.State.PipeThroughputPercent != 1.0f;
+            return CustomizeBuildingsState.Instance.PipeGasMaxPressure != 1f
+                    || CustomizeBuildingsState.Instance.PipeThroughputPercent != 1.0f;
         }
 
         public static bool Prefix(ref float __result)
         {
-            __result = CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure * CustomizeBuildingsState.StateManager.State.PipeThroughputPercent;
+            __result = CustomizeBuildingsState.Instance.PipeGasMaxPressure * CustomizeBuildingsState.Instance.PipeThroughputPercent;
             return false;
         }
     }
@@ -248,7 +248,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidPump != 10f;
+            return CustomizeBuildingsState.Instance.PipeLiquidPump != 10f;
         }
 
         public static void Postfix(GameObject go)
@@ -267,9 +267,9 @@ namespace CustomizeBuildings
                 return;
             }
 
-            storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidPump * 2;
+            storage.capacityKg = CustomizeBuildingsState.Instance.PipeLiquidPump * 2;
 
-            elementConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeLiquidPump;
+            elementConsumer.consumptionRate = CustomizeBuildingsState.Instance.PipeLiquidPump;
         }
     }
 
@@ -278,7 +278,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasPump != 0.5f;
+            return CustomizeBuildingsState.Instance.PipeGasPump != 0.5f;
         }
 
         public static void Postfix(GameObject go)
@@ -297,9 +297,9 @@ namespace CustomizeBuildings
                 return;
             }
 
-            storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasPump * 2;
+            storage.capacityKg = CustomizeBuildingsState.Instance.PipeGasPump * 2;
 
-            elementConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeGasPump;
+            elementConsumer.consumptionRate = CustomizeBuildingsState.Instance.PipeGasPump;
         }
     }
 
@@ -308,7 +308,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeLiquidPumpMini != 1f;
+            return CustomizeBuildingsState.Instance.PipeLiquidPumpMini != 1f;
         }
 
         public static void Postfix(GameObject go)
@@ -327,9 +327,9 @@ namespace CustomizeBuildings
                 return;
             }
 
-            storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeLiquidPumpMini * 2;
+            storage.capacityKg = CustomizeBuildingsState.Instance.PipeLiquidPumpMini * 2;
 
-            elementConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeLiquidPumpMini;
+            elementConsumer.consumptionRate = CustomizeBuildingsState.Instance.PipeLiquidPumpMini;
         }
     }
 
@@ -338,7 +338,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.PipeGasPumpMini != 0.05f;
+            return CustomizeBuildingsState.Instance.PipeGasPumpMini != 0.05f;
         }
 
         public static void Postfix(GameObject go)
@@ -357,9 +357,9 @@ namespace CustomizeBuildings
                 return;
             }
 
-            storage.capacityKg = CustomizeBuildingsState.StateManager.State.PipeGasPumpMini * 2;
+            storage.capacityKg = CustomizeBuildingsState.Instance.PipeGasPumpMini * 2;
 
-            elementConsumer.consumptionRate = CustomizeBuildingsState.StateManager.State.PipeGasPumpMini;
+            elementConsumer.consumptionRate = CustomizeBuildingsState.Instance.PipeGasPumpMini;
         }
     }
 
@@ -368,12 +368,12 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize != 20f;
+            return CustomizeBuildingsState.Instance.ConveyorRailPackageSize != 20f;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
-            float newMass = CustomizeBuildingsState.StateManager.State.ConveyorRailPackageSize;
+            float newMass = CustomizeBuildingsState.Instance.ConveyorRailPackageSize;
             List<CodeInstruction> list = instr.ToList<CodeInstruction>();
 
             // if ((double) suitableItem.PrimaryElement.Mass > 20.0)

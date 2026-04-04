@@ -34,8 +34,7 @@ namespace CustomizeBuildings
             Helpers.ActiveLocale = Helpers.StringsLoad();
 
             // load settings
-            Helpers.CallSafe(CustomizeBuildingsState.BeforeUpdate);
-            CustomizeBuildingsState.StateManager = new(CustomizeBuildingsState.GetStaticConfigPath(), true, CustomizeBuildingsState.OnUpdate, null);
+            _ = CustomizeBuildingsState.Instance;
 
             // init options menu
             new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));

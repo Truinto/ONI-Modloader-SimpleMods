@@ -446,7 +446,7 @@ namespace SharedStorage
         //}
     }
 
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class SharedStorage : Storage
     {
         //public static List<GameObject> Shared = new();

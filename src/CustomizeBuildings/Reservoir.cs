@@ -15,7 +15,7 @@ namespace CustomizeBuildings
     {
         public static void Postfix(ref BuildingDef __result)
         {
-            if (CustomizeBuildingsState.StateManager.State.ReservoirNoGround)
+            if (CustomizeBuildingsState.Instance.ReservoirNoGround)
             {
                 __result.BuildLocationRule = BuildLocationRule.Anywhere;
                 __result.ContinuouslyCheckFoundation = false;
@@ -28,13 +28,13 @@ namespace CustomizeBuildings
         public static void Postfix(GameObject go)
         {
             Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = Math.Min((float)CustomizeBuildingsState.StateManager.State.LiquidReservoirKG, (float)99000f);
-            if (CustomizeBuildingsState.StateManager.State.SealInsulateStorages)
+            storage.capacityKg = Math.Min((float)CustomizeBuildingsState.Instance.LiquidReservoirKG, (float)99000f);
+            if (CustomizeBuildingsState.Instance.SealInsulateStorages)
                 storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.capacityKG = storage.capacityKg;
 
-            if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
+            if (CustomizeBuildingsState.Instance.ReservoirManualDelivery)
             {
                 storage.allowItemRemoval = true;
                 storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
@@ -59,7 +59,7 @@ namespace CustomizeBuildings
     {
         public static void Postfix(ref BuildingDef __result)
         {
-            if (!CustomizeBuildingsState.StateManager.State.ReservoirNoGround) return;
+            if (!CustomizeBuildingsState.Instance.ReservoirNoGround) return;
             __result.BuildLocationRule = BuildLocationRule.Anywhere;
             __result.ContinuouslyCheckFoundation = false;
 
@@ -71,13 +71,13 @@ namespace CustomizeBuildings
         public static void Postfix(GameObject go)
         {
             Storage storage = go.AddOrGet<Storage>();
-            storage.capacityKg = Math.Min((float)CustomizeBuildingsState.StateManager.State.GasReservoirKG, (float)99000f);
-            if (CustomizeBuildingsState.StateManager.State.SealInsulateStorages)
+            storage.capacityKg = Math.Min((float)CustomizeBuildingsState.Instance.GasReservoirKG, (float)99000f);
+            if (CustomizeBuildingsState.Instance.SealInsulateStorages)
                 storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
             ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.capacityKG = storage.capacityKg;
 
-            if (CustomizeBuildingsState.StateManager.State.ReservoirManualDelivery)
+            if (CustomizeBuildingsState.Instance.ReservoirManualDelivery)
             {
                 storage.allowItemRemoval = true;
                 storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
@@ -109,7 +109,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class ReservoirToggleSideScreen_Store : ButtonToggleSideScreen
     {
         public static ButtonMenuTextOverride Text = new()
@@ -127,7 +127,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class ReservoirToggleSideScreen : ButtonToggleSideScreen
     {
         [MyCmpGet] private Storage storage;

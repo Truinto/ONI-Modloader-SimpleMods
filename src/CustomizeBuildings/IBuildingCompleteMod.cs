@@ -17,8 +17,8 @@ namespace CustomizeBuildings
 
     public static class Mods
     {
-        private static List<IBuildingCompleteMod>? mods;
+        private static List<IBuildingCompleteMod>? _Mods;
 
-        public static List<IBuildingCompleteMod> Get => mods ??= Assembly.GetExecutingAssembly().GetTypes().Where(w => typeof(IBuildingCompleteMod).IsAssignableFrom(w) && w.IsClass).Select(s => (IBuildingCompleteMod)Activator.CreateInstance(s)).ToList();
+        public static List<IBuildingCompleteMod> Get => _Mods ??= Assembly.GetExecutingAssembly().GetTypes().Where(w => typeof(IBuildingCompleteMod).IsAssignableFrom(w) && w.IsClass).Select(s => (IBuildingCompleteMod)Activator.CreateInstance(s)).ToList();
     }
 }

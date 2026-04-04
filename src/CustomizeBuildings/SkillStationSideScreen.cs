@@ -16,14 +16,14 @@ namespace CustomizeBuildings
 {
     internal static class SkillStationCosts
     {
-        internal static bool IsEnabled => CustomizeBuildingsState.StateManager.State.SkillStationEnabled;
-        internal static float CostTime => CustomizeBuildingsState.StateManager.State.SkillStationCostTime;
-        internal static float CostReset => CustomizeBuildingsState.StateManager.State.SkillStationCostReset;
-        internal static float CostRemoveTrait => CustomizeBuildingsState.StateManager.State.SkillStationCostRemoveTrait;
-        internal static float CostAddTrait => CustomizeBuildingsState.StateManager.State.SkillStationCostAddTrait;
-        internal static float CostBadTrait => CustomizeBuildingsState.StateManager.State.SkillStationCostBadTrait;
-        internal static float CostAddAptitude => CustomizeBuildingsState.StateManager.State.SkillStationCostAddAptitude;
-        internal static float CostAddAttribute => CustomizeBuildingsState.StateManager.State.SkillStationCostAddAttribute;
+        internal static bool IsEnabled => CustomizeBuildingsState.Instance.SkillStationEnabled;
+        internal static float CostTime => CustomizeBuildingsState.Instance.SkillStationCostTime;
+        internal static float CostReset => CustomizeBuildingsState.Instance.SkillStationCostReset;
+        internal static float CostRemoveTrait => CustomizeBuildingsState.Instance.SkillStationCostRemoveTrait;
+        internal static float CostAddTrait => CustomizeBuildingsState.Instance.SkillStationCostAddTrait;
+        internal static float CostBadTrait => CustomizeBuildingsState.Instance.SkillStationCostBadTrait;
+        internal static float CostAddAptitude => CustomizeBuildingsState.Instance.SkillStationCostAddAptitude;
+        internal static float CostAddAttribute => CustomizeBuildingsState.Instance.SkillStationCostAddAttribute;
 
         /// <summary>
         /// Returns true if minion can spend <paramref name="cost"/> without going into negative skill points.
@@ -300,7 +300,7 @@ namespace CustomizeBuildings
                     if (attribute != null)
                     {
                         int level = attribute.GetLevel();
-                        int levelplus = CustomizeBuildingsState.StateManager.State.SkillStationAttributeStep;
+                        int levelplus = CustomizeBuildingsState.Instance.SkillStationAttributeStep;
                         attribute.SetLevel(level + levelplus);
                         attribute.Apply(attributes);
                         minion.AddExperience(-SkillStationCosts.CostAddAttribute);

@@ -13,7 +13,7 @@ namespace CustomizeBuildings
     {
         bool IBuildingCompleteMod.Enabled(string id)
         {
-            return id == HEPBatteryConfig.ID && CustomizeBuildingsState.StateManager.State.RadBattery != 1000f;
+            return id == HEPBatteryConfig.ID && CustomizeBuildingsState.Instance.RadBattery != 1000f;
         }
 
         public void EditDef(BuildingDef def)
@@ -23,7 +23,7 @@ namespace CustomizeBuildings
         public void EditGO(BuildingDef def)
         {
             var HEP = def.BuildingComplete.GetComponent<HighEnergyParticleStorage>();
-            HEP.capacity = CustomizeBuildingsState.StateManager.State.RadBattery;
+            HEP.capacity = CustomizeBuildingsState.Instance.RadBattery;
         }
     }
 }

@@ -223,8 +223,8 @@ namespace CustomizeBuildings
         public bool Enabled(string id)
         {
             return id is IceCooledFanConfig.ID 
-                && CustomizeBuildingsState.StateManager.State.NoDupeGlobal 
-                && CustomizeBuildingsState.StateManager.State.NoDupeIceCooledFan;
+                && CustomizeBuildingsState.Instance.NoDupeGlobal 
+                && CustomizeBuildingsState.Instance.NoDupeIceCooledFan;
         }
 
         public void EditDef(BuildingDef def)

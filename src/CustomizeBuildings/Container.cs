@@ -103,15 +103,16 @@ namespace CustomizeBuildings
             return ec;
         }
     }
-    public class BuildingStruct(float? PowerConsumption = null, string MaterialCategory = null, float? OverheatTemperature = null,
-            float? ExhaustKilowattsWhenActive = null, float? SelfHeatKilowattsWhenActive = null, float? GeneratorWattageRating = null,
-            float? GeneratorBaseCapacity = null, float? BaseDecor = null, float? BaseDecorRadius = null, BuildLocationRule? LocationRule = null,
-            PermittedRotations? Rotations = null, bool? Floodable = null, bool? IsFoundation = null, float[] ConstructionMass = null,
-            float? ThermalConductivity = null, ObjectLayer? ObjectLayer = null, ObjectLayer? TileLayer = null, ObjectLayer? ReplacementLayer = null,
-            Grid.SceneLayer? SceneLayer = null)
+    public class BuildingStruct(string id, float? PowerConsumption = null, string? MaterialCategory = null,
+            float? OverheatTemperature = null, float? ExhaustKilowattsWhenActive = null, float? SelfHeatKilowattsWhenActive = null,
+            float? GeneratorWattageRating = null, float? GeneratorBaseCapacity = null, float? BaseDecor = null, float? BaseDecorRadius = null,
+            BuildLocationRule? LocationRule = null, PermittedRotations? Rotations = null, bool? Floodable = null, bool? IsFoundation = null,
+            float[]? ConstructionMass = null, float? ThermalConductivity = null, ObjectLayer? ObjectLayer = null, ObjectLayer? TileLayer = null,
+            ObjectLayer? ReplacementLayer = null, Grid.SceneLayer? SceneLayer = null)
     {
+        public string? Id = id;
         public float? PowerConsumption = PowerConsumption;
-        public string MaterialCategory = MaterialCategory;
+        public string? MaterialCategory = MaterialCategory;
         public float? OverheatTemperature = OverheatTemperature;
         public float? ExhaustKilowattsWhenActive = ExhaustKilowattsWhenActive;
         public float? SelfHeatKilowattsWhenActive = SelfHeatKilowattsWhenActive;
@@ -123,7 +124,7 @@ namespace CustomizeBuildings
         public PermittedRotations? Rotations = Rotations;
         public bool? Floodable = Floodable;
         public bool? IsFoundation = IsFoundation;
-        public float[] ConstructionMass = ConstructionMass;
+        public float[]? ConstructionMass = ConstructionMass;
         public float? ThermalConductivity = ThermalConductivity;
         public ObjectLayer? ObjectLayer = ObjectLayer;
         public ObjectLayer? TileLayer = TileLayer;
@@ -132,9 +133,8 @@ namespace CustomizeBuildings
     }
     public class BuildingAdv
     {
-        public readonly string Id;
-        [JsonIgnore]
-        public readonly int hash;
+        public string Id;
+        [JsonIgnore] public int _Hash;
         public int? Index;
         public bool MaterialAppend;
         public string MaterialOverride;
@@ -142,7 +142,7 @@ namespace CustomizeBuildings
         public BuildingAdv(string Id, int? Index = null, bool MaterialAppend = true, string MaterialOverride = null)
         {
             this.Id = Id;
-            this.hash = Hash.SDBMLower(Id);
+            this._Hash = Hash.SDBMLower(Id);
             this.Index = Index;
             this.MaterialAppend = MaterialAppend;
             this.MaterialOverride = MaterialOverride;
@@ -150,7 +150,7 @@ namespace CustomizeBuildings
 
         public bool AppliesTo(Tag tag)
         {
-            return this.hash == tag.GetHash();
+            return this._Hash == tag.GetHash();
         }
     }
 

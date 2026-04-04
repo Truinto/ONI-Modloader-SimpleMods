@@ -14,8 +14,8 @@ namespace CustomizeBuildings
         private static void Postfix(GameObject go)
         {
             BatterySmart batterySmart = go.AddOrGet<BatterySmart>();
-            batterySmart.capacity = (float)CustomizeBuildingsState.StateManager.State.BatterySmartKJ;
-            if (CustomizeBuildingsState.StateManager.State.BatterySmartNoRunOff)
+            batterySmart.capacity = (float)CustomizeBuildingsState.Instance.BatterySmartKJ;
+            if (CustomizeBuildingsState.Instance.BatterySmartNoRunOff)
                 batterySmart.joulesLostPerSecond = 0f;
         }
     }
@@ -26,7 +26,7 @@ namespace CustomizeBuildings
         private static void Postfix(GameObject go)
         {
             Battery battery = go.AddOrGet<Battery>();
-            battery.capacity = (float)CustomizeBuildingsState.StateManager.State.BatteryLargeKJ;
+            battery.capacity = (float)CustomizeBuildingsState.Instance.BatteryLargeKJ;
         }
     }
 
@@ -42,7 +42,7 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id == BatteryModuleConfig.ID && CustomizeBuildingsState.StateManager.State.SpaceBattery != 100000f;
+            return id == BatteryModuleConfig.ID && CustomizeBuildingsState.Instance.SpaceBattery != 100000f;
         }
 
         public void EditDef(BuildingDef def)
@@ -54,7 +54,7 @@ namespace CustomizeBuildings
             var ModuleBattery = def.BuildingComplete.GetComponent<ModuleBattery>();
             if (ModuleBattery != null)
             {
-                ModuleBattery.capacity = CustomizeBuildingsState.StateManager.State.SpaceBattery;
+                ModuleBattery.capacity = CustomizeBuildingsState.Instance.SpaceBattery;
                 ModuleBattery.joulesLostPerSecond = 0f;
             }
         }

@@ -11,7 +11,7 @@ using HarmonyLib;
 
 namespace CustomizeBuildings
 {
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class SliderTemperatureSideScreen : KMonoBehaviour, IThresholdSwitch
     {
         [Serialize] public float SetTemperature = 273.15f + 80f;

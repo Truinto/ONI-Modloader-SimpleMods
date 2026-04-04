@@ -15,7 +15,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.ValveEnableTemperatureFilter;
+            return CustomizeBuildingsState.Instance.ValveEnableTemperatureFilter;
         }
 
         public static void Prefix(GameObject go)
@@ -30,7 +30,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.ValveEnableTemperatureFilter;
+            return CustomizeBuildingsState.Instance.ValveEnableTemperatureFilter;
         }
 
         public static void Prefix(GameObject go)
@@ -40,7 +40,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class ValveBaseTemperature : ValveBase
     {
         [MyCmpAdd] private SliderTemperatureSideScreen temperatureSlider;
@@ -107,7 +107,7 @@ namespace CustomizeBuildings
     /// <summary>
     /// 
     /// </summary>
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class FilterableCustomTagSelection
     {
         public static Dictionary<string, Dictionary<Tag, HashSet<Tag>>> Tags = new();

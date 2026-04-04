@@ -11,7 +11,7 @@ namespace CustomizeBuildings
 
         private static bool Prefix(Switch __instance)
         {
-            if (!CustomizeBuildingsState.StateManager.State.NoDupeSwitches) return true;
+            if (!CustomizeBuildingsState.Instance.NoDupeSwitches) return true;
 
             AccessTools.Method(typeof(Switch), "Toggle").Invoke(__instance, null);
             return false;
@@ -24,7 +24,7 @@ namespace CustomizeBuildings
 
         private static bool Prefix(float amount, Valve __instance)
         {
-            if (!CustomizeBuildingsState.StateManager.State.NoDupeValves) return true;
+            if (!CustomizeBuildingsState.Instance.NoDupeValves) return true;
 
             __instance.desiredFlow = Mathf.Clamp(amount, 0.0f, __instance.valveBase.MaxFlow);
 
@@ -42,7 +42,7 @@ namespace CustomizeBuildings
 
         private static bool Prefix(int targetIdx, Toggleable __instance)
         {
-            if (!CustomizeBuildingsState.StateManager.State.NoDupeToogleBuildings)
+            if (!CustomizeBuildingsState.Instance.NoDupeToogleBuildings)
                 return true;
             if (__instance.targets[targetIdx].Value != null)
                 return true;
@@ -61,7 +61,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeToogleDoors;
+            return CustomizeBuildingsState.Instance.NoDupeToogleDoors;
         }
 
         public static bool Prefix(Door.ControlState nextState, Door __instance)

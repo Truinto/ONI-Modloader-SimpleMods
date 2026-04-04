@@ -54,7 +54,7 @@ namespace CustomizeBuildings
         {
             get
             {
-                return CustomizeBuildingsState.StateManager.State.IUserControlledMax;
+                return CustomizeBuildingsState.Instance.IUserControlledMax;
             }
         }
 
@@ -70,7 +70,7 @@ namespace CustomizeBuildings
         {
             get
             {
-                return Mathf.Min(this.userMaxCapacity, CustomizeBuildingsState.StateManager.State.IUserControlledMax);
+                return Mathf.Min(this.userMaxCapacity, CustomizeBuildingsState.Instance.IUserControlledMax);
             }
             set
             {

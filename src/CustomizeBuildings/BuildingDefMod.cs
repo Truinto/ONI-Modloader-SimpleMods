@@ -1,26 +1,25 @@
-﻿using HarmonyLib;
-using UnityEngine;
-using System.Reflection.Emit;
+﻿using Common;
+using Config;
+using HarmonyLib;
+using Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Text.RegularExpressions;
-using Common;
-using Config;
 using System.Reflection;
-using Shared;
-using System.CodeDom;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 
 namespace CustomizeBuildings
 {
     [HarmonyPatch(typeof(BuildingConfigManager), nameof(BuildingConfigManager.RegisterBuilding))]
     public class BuildingConfigManager_RegisterBuilding
     {
+        /// <summary>
+        /// Apply general modifications. For specific modifications, look at <see cref="Assets_AddBuildingDef"/>.
+        /// </summary>
         public static BuildingDef BuildingDefOverride(BuildingDef buildingDef)
         {
-            //Debug.Log(buildingDef.BuildLocationRule.GetType().FullName);
-            //Debug.Log(buildingDef.BuildingComplete.GetType().AssemblyQualifiedName);
-
+            // apply all IBuildingCompleteMod to BuildingDef
             foreach (var mod in Mods.Get)
             {
                 if (mod.Enabled(buildingDef.PrefabID))
@@ -32,133 +31,135 @@ namespace CustomizeBuildings
                 }
             }
 
-            if (!CustomizeBuildingsState.StateManager.State.BuildingBaseSettingGlobalFlag)
+            // check global flag
+            if (!CustomizeBuildingsState.Instance.BuildingBaseSettingGlobalFlag)
                 return buildingDef;
 
-            CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.PrefabID, out var entry);
-            if (entry == null)
-                CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(buildingDef.Name.StripLinks(), out entry);
-
-            if (entry == null)
-                return buildingDef;
-
-            #region checks
-
-            if (entry.PowerConsumption != null)
+            // apply BaseSettings
+            string buildingName = buildingDef.Name.StripLinks();
+            foreach (var entry in CustomizeBuildingsState.Instance.BuildingBaseSettings)
             {
-                buildingDef.EnergyConsumptionWhenActive = (float)entry.PowerConsumption;
-                buildingDef.RequiresPowerInput = entry.PowerConsumption != 0f;
-            }
+                if (entry.Id != buildingDef.PrefabID && entry.Id != buildingName && entry.Id != "*")
+                    continue;
 
-            if (entry.OverheatTemperature != null)
-            {
-                buildingDef.OverheatTemperature = (float)entry.OverheatTemperature;
-            }
+                #region checks
 
-            if (entry.ExhaustKilowattsWhenActive != null)
-            {
-                buildingDef.ExhaustKilowattsWhenActive = (float)entry.ExhaustKilowattsWhenActive;
-            }
-
-            if (entry.SelfHeatKilowattsWhenActive != null)
-            {
-                buildingDef.SelfHeatKilowattsWhenActive = (float)entry.SelfHeatKilowattsWhenActive;
-            }
-
-            if (entry.GeneratorWattageRating != null)
-            {
-                buildingDef.GeneratorWattageRating = (float)entry.GeneratorWattageRating;
-            }
-
-            if (entry.GeneratorBaseCapacity != null)
-            {
-                buildingDef.GeneratorBaseCapacity = (float)entry.GeneratorBaseCapacity;
-            }
-
-            if (entry.BaseDecor != null)
-            {
-                buildingDef.BaseDecor = (float)entry.BaseDecor;
-            }
-
-            if (entry.BaseDecorRadius != null)
-            {
-                buildingDef.BaseDecorRadius = (float)entry.BaseDecorRadius;
-            }
-
-            if (entry.LocationRule != null)
-            {
-                buildingDef.BuildLocationRule = (BuildLocationRule)entry.LocationRule;
-                if (entry.LocationRule == BuildLocationRule.Anywhere)
-                    buildingDef.ContinuouslyCheckFoundation = false;
-            }
-
-            if (entry.Rotations != null)
-            {
-                buildingDef.PermittedRotations = (PermittedRotations)entry.Rotations;
-            }
-
-            if (entry.Floodable != null)
-            {
-                buildingDef.Floodable = (bool)entry.Floodable;
-            }
-
-            if (entry.IsFoundation != null)
-            {
-                buildingDef.IsFoundation = (bool)entry.IsFoundation;
-            }
-
-            if (entry.ThermalConductivity != null)
-            {
-                buildingDef.ThermalConductivity = (float)entry.ThermalConductivity;
-            }
-
-            if (entry.MaterialCategory != null)
-            {
-                buildingDef.MaterialCategory = entry.MaterialCategory.Split(' ');
-            }
-
-            if (entry.ConstructionMass != null)
-            {
-                buildingDef.Mass = entry.ConstructionMass;
-            }
-
-            if (buildingDef.MaterialCategory.Length != buildingDef.Mass.Length)
-            {
-                float[] newmass = new float[buildingDef.MaterialCategory.Length];
-                for (int i = 0; i < newmass.Length; i++)
+                if (entry.PowerConsumption != null)
                 {
-                    if (i < buildingDef.Mass.Length)
-                        newmass[i] = buildingDef.Mass[i];
-                    else
-                        newmass[i] = 1f;
+                    buildingDef.EnergyConsumptionWhenActive = (float)entry.PowerConsumption;
+                    buildingDef.RequiresPowerInput = entry.PowerConsumption != 0f;
                 }
-                buildingDef.Mass = newmass;
+
+                if (entry.OverheatTemperature != null)
+                {
+                    buildingDef.OverheatTemperature = (float)entry.OverheatTemperature;
+                }
+
+                if (entry.ExhaustKilowattsWhenActive != null)
+                {
+                    buildingDef.ExhaustKilowattsWhenActive = (float)entry.ExhaustKilowattsWhenActive;
+                }
+
+                if (entry.SelfHeatKilowattsWhenActive != null)
+                {
+                    buildingDef.SelfHeatKilowattsWhenActive = (float)entry.SelfHeatKilowattsWhenActive;
+                }
+
+                if (entry.GeneratorWattageRating != null)
+                {
+                    buildingDef.GeneratorWattageRating = (float)entry.GeneratorWattageRating;
+                }
+
+                if (entry.GeneratorBaseCapacity != null)
+                {
+                    buildingDef.GeneratorBaseCapacity = (float)entry.GeneratorBaseCapacity;
+                }
+
+                if (entry.BaseDecor != null)
+                {
+                    buildingDef.BaseDecor = (float)entry.BaseDecor;
+                }
+
+                if (entry.BaseDecorRadius != null)
+                {
+                    buildingDef.BaseDecorRadius = (float)entry.BaseDecorRadius;
+                }
+
+                if (entry.LocationRule != null)
+                {
+                    buildingDef.BuildLocationRule = (BuildLocationRule)entry.LocationRule;
+                    if (entry.LocationRule == BuildLocationRule.Anywhere)
+                        buildingDef.ContinuouslyCheckFoundation = false;
+                }
+
+                if (entry.Rotations != null)
+                {
+                    buildingDef.PermittedRotations = (PermittedRotations)entry.Rotations;
+                }
+
+                if (entry.Floodable != null)
+                {
+                    buildingDef.Floodable = (bool)entry.Floodable;
+                }
+
+                if (entry.IsFoundation != null)
+                {
+                    buildingDef.IsFoundation = (bool)entry.IsFoundation;
+                }
+
+                if (entry.ThermalConductivity != null)
+                {
+                    buildingDef.ThermalConductivity = (float)entry.ThermalConductivity;
+                }
+
+                if (entry.MaterialCategory != null)
+                {
+                    buildingDef.MaterialCategory = entry.MaterialCategory.Split(' ');
+                }
+
+                if (entry.ConstructionMass != null)
+                {
+                    buildingDef.Mass = entry.ConstructionMass;
+                }
+
+                if (buildingDef.MaterialCategory.Length != buildingDef.Mass.Length)
+                {
+                    float[] newmass = new float[buildingDef.MaterialCategory.Length];
+                    for (int i = 0; i < newmass.Length; i++)
+                    {
+                        if (i < buildingDef.Mass.Length)
+                            newmass[i] = buildingDef.Mass[i];
+                        else
+                            newmass[i] = 1f;
+                    }
+                    buildingDef.Mass = newmass;
+                }
+
+                if (entry.ObjectLayer != null)
+                {
+                    buildingDef.ObjectLayer = entry.ObjectLayer.Value;
+                }
+
+                if (entry.TileLayer != null)
+                {
+                    buildingDef.TileLayer = entry.TileLayer.Value;
+                }
+
+                if (entry.ReplacementLayer != null)
+                {
+                    buildingDef.ReplacementLayer = entry.ReplacementLayer.Value;
+                }
+
+                if (entry.SceneLayer != null)
+                {
+                    buildingDef.SceneLayer = entry.SceneLayer.Value;
+                }
+
+                // public bool Cancellable = true;
+                // public bool OnePerWorld = false;
+
+                #endregion
             }
-
-            if (entry.ObjectLayer != null)
-            {
-                buildingDef.ObjectLayer = entry.ObjectLayer.Value;
-            }
-
-            if (entry.TileLayer != null)
-            {
-                buildingDef.TileLayer = entry.TileLayer.Value;
-            }
-
-            if (entry.ReplacementLayer != null)
-            {
-                buildingDef.ReplacementLayer = entry.ReplacementLayer.Value;
-            }
-
-            if (entry.SceneLayer != null)
-            {
-                buildingDef.SceneLayer = entry.SceneLayer.Value;
-            }
-
-            // public bool Cancellable = true;
-            // public bool OnePerWorld = false;
-
-            #endregion
 
             return buildingDef;
         }
@@ -177,10 +178,14 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(Assets), nameof(Assets.AddBuildingDef))]
     public class Assets_AddBuildingDef
     {
+        /// <summary>
+        /// Apply building specific modifications. For BaseSettings, look at <see cref="BuildingConfigManager_RegisterBuilding"/>.
+        /// </summary>
         public static void Prefix(BuildingDef def)
         {
             Helpers.Print($"Loading {def.PrefabID}, {def.Name.StripLinks()}");
 
+            // apply all IBuildingCompleteMod to GameObject
             foreach (var mod in Mods.Get)
             {
                 if (mod.Enabled(def.PrefabID))
@@ -192,27 +197,29 @@ namespace CustomizeBuildings
                 }
             }
 
-            if (def.PrefabID == RefrigeratorConfig.ID
-                && CustomizeBuildingsState.StateManager.State.BuildingBaseSettings.TryGetValue(RefrigeratorConfig.ID, out var baseSetting))
+            // fix for refrigerator
+            if (def.PrefabID == RefrigeratorConfig.ID)
             {
-                if (baseSetting.PowerConsumption.HasValue)
-                    def.BuildingComplete.GetDef<RefrigeratorController.Def>().powerSaverEnergyUsage = baseSetting.PowerConsumption.Value / 6f;
+                foreach (var setting in CustomizeBuildingsState.Instance.BuildingBaseSettings)
+                {
+                    if (setting.Id is RefrigeratorConfig.ID or "*" && setting.PowerConsumption.HasValue)
+                        def.BuildingComplete.GetDef<RefrigeratorController.Def>().powerSaverEnergyUsage = setting.PowerConsumption.Value / 6f;
+                }
             }
 
-            if (!CustomizeBuildingsState.StateManager.State.BuildingAdvancedGlobalFlag)
-                return;
-
-            MachineMuliplier(def);
-            OutputTemp(def);
-            SuperAdvanced(def);
+            // process advanced features
+            if (CustomizeBuildingsState.Instance.BuildingAdvancedGlobalFlag)
+            {
+                MachineMuliplier(def);
+                OutputTemp(def);
+                SuperAdvanced(def);
+            }
         }
 
         public static void MachineMuliplier(BuildingDef def)
         {
-            float multiplier;
-            bool flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(def.PrefabID, out multiplier);
-            if (!flag)
-                flag = CustomizeBuildingsState.StateManager.State.BuildingAdvancedMachineMultiplier.TryGetValue(def.Name.StripLinks(), out multiplier);
+            bool flag = CustomizeBuildingsState.Instance.BuildingAdvancedMachineMultiplier.TryGetValue(def.PrefabID, out float multiplier)
+                || CustomizeBuildingsState.Instance.BuildingAdvancedMachineMultiplier.TryGetValue(def.Name.StripLinks(), out multiplier);
 
             if (flag)
             {
@@ -269,15 +276,14 @@ namespace CustomizeBuildings
                 {
                     elementDropper[i].emitMass *= multiplier;
                 }
-
             }
         }
 
         public static void OutputTemp(BuildingDef def)
         {
-            CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(def.PrefabID, out var setting);
+            CustomizeBuildingsState.Instance.BuildingAdvancedOutputTemp.TryGetValue(def.PrefabID, out var setting);
             if (setting == null)
-                CustomizeBuildingsState.StateManager.State.BuildingAdvancedOutputTemp.TryGetValue(def.Name.StripLinks(), out setting);
+                CustomizeBuildingsState.Instance.BuildingAdvancedOutputTemp.TryGetValue(def.Name.StripLinks(), out setting);
 
             if (setting == null)
                 return;
@@ -295,11 +301,11 @@ namespace CustomizeBuildings
 
         public static void SuperAdvanced(BuildingDef def)
         {
-            if (CustomizeBuildingsState.StateManager.State.AdvancedSettings == null) return;
+            if (CustomizeBuildingsState.Instance.AdvancedSettings == null) return;
 
-            CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(def.PrefabID, out var buildingEntry);
+            CustomizeBuildingsState.Instance.AdvancedSettings.TryGetValue(def.PrefabID, out var buildingEntry);
             if (buildingEntry == null)
-                CustomizeBuildingsState.StateManager.State.AdvancedSettings.TryGetValue(def.Name.StripLinks(), out buildingEntry);
+                CustomizeBuildingsState.Instance.AdvancedSettings.TryGetValue(def.Name.StripLinks(), out buildingEntry);
 
             if (buildingEntry == null)
                 return;
@@ -390,9 +396,7 @@ namespace CustomizeBuildings
                         PostBootDialog.ErrorList.Add($"{def.PrefabID}, {componentEntry.Key}, {fieldEntry.Key} encountered an error: '{e.Message}' when trying to write: {fieldEntry.Value}");
                     }
                 }
-
             }
-            CustomizeBuildingsState.StateManager.State.AdvancedSettings.Remove(def.PrefabID);
         }
     }
 }

@@ -18,95 +18,95 @@ namespace CustomizeBuildings
 
         public static void Prefix(BuildingDef def)
         {
-            bool seal_container = CustomizeBuildingsState.StateManager.State.SealInsulateStorages;
+            bool seal_container = CustomizeBuildingsState.Instance.SealInsulateStorages;
 
             if (def.PrefabID == NoseconeHarvestConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.DrillConeKG);
+                setStorage(CustomizeBuildingsState.Instance.DrillConeKG);
 
             else if (def.PrefabID is ModularLaunchpadPortGasConfig.ID or ModularLaunchpadPortGasUnloaderConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.RocketPortGas);
+                setStorage(CustomizeBuildingsState.Instance.RocketPortGas);
 
             else if (def.PrefabID is ModularLaunchpadPortLiquidConfig.ID or ModularLaunchpadPortLiquidUnloaderConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.RocketPortLiquid);
+                setStorage(CustomizeBuildingsState.Instance.RocketPortLiquid);
 
             else if (def.PrefabID is ModularLaunchpadPortSolidConfig.ID or ModularLaunchpadPortSolidUnloaderConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.RocketPortSolid);
+                setStorage(CustomizeBuildingsState.Instance.RocketPortSolid);
 
             else if (def.PrefabID == StorageLockerConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.LockerKG);
+                setStorage(CustomizeBuildingsState.Instance.LockerKG);
 
             else if (def.PrefabID == StorageLockerSmartConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.LockerSmartKG);
+                setStorage(CustomizeBuildingsState.Instance.LockerSmartKG);
 
             else if (def.PrefabID == StorageTileConfig.ID)
             {
-                setStorage(CustomizeBuildingsState.StateManager.State.StorageTileKG);
+                setStorage(CustomizeBuildingsState.Instance.StorageTileKG);
                 var tileDef = def.BuildingComplete.GetDef<StorageTile.Def>();
                 if (tileDef != null)
-                    tileDef.MaxCapacity = CustomizeBuildingsState.StateManager.State.StorageTileKG;
+                    tileDef.MaxCapacity = CustomizeBuildingsState.Instance.StorageTileKG;
             }
             else if (def.PrefabID == RationBoxConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.RationBoxKG);
+                setStorage(CustomizeBuildingsState.Instance.RationBoxKG);
 
             else if (def.PrefabID == RefrigeratorConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.FridgeKG);
+                setStorage(CustomizeBuildingsState.Instance.FridgeKG);
 
             else if (def.PrefabID == CreatureFeederConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.CritterFeederKG);
+                setStorage(CustomizeBuildingsState.Instance.CritterFeederKG);
 
             else if (def.PrefabID == FishFeederConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.FishFeederKG);
+                setStorage(CustomizeBuildingsState.Instance.FishFeederKG);
 
             else if (def.PrefabID == LiquidBottlerConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.BottleFillerKG); //200f
+                setStorage(CustomizeBuildingsState.Instance.BottleFillerKG); //200f
 
             else if (def.PrefabID == GasBottlerConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.CanisterFillerKG); //25f
+                setStorage(CustomizeBuildingsState.Instance.CanisterFillerKG); //25f
 
             else if (def.PrefabID == BottleEmptierConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.BottleEmptierKG); //200f
+                setStorage(CustomizeBuildingsState.Instance.BottleEmptierKG); //200f
 
             else if (def.PrefabID == BottleEmptierGasConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.CanisterEmptierKG); //200f
+                setStorage(CustomizeBuildingsState.Instance.CanisterEmptierKG); //200f
 
             else if (def.PrefabID == BottleEmptierConduitLiquidConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.BottleEmptierConduitKG); //200f
+                setStorage(CustomizeBuildingsState.Instance.BottleEmptierConduitKG); //200f
 
             else if (def.PrefabID == BottleEmptierConduitGasConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.CanisterEmptierConduitKG); //200f
+                setStorage(CustomizeBuildingsState.Instance.CanisterEmptierConduitKG); //200f
 
             else if (def.PrefabID == SolidConduitInboxConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.ConveyorLoaderKG);
+                setStorage(CustomizeBuildingsState.Instance.ConveyorLoaderKG);
 
             else if (def.PrefabID == SolidConduitOutboxConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.ConveyorReceptacleKG);
+                setStorage(CustomizeBuildingsState.Instance.ConveyorReceptacleKG);
 
             else if (def.PrefabID == CO2EngineConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.CO2EngineKG); //100f
+                setStorage(CustomizeBuildingsState.Instance.CO2EngineKG); //100f
 
             else if (def.PrefabID == SugarEngineConfig.ID)
-                setStorage(CustomizeBuildingsState.StateManager.State.SugarEngineKG); //450f
+                setStorage(CustomizeBuildingsState.Instance.SugarEngineKG); //450f
 
             else if (def.PrefabID is SteamEngineConfig.ID or SteamEngineClusterConfig.ID) //900f, 150f
-                setStorage(CustomizeBuildingsState.StateManager.State.SteamEngineKG);
+                setStorage(CustomizeBuildingsState.Instance.SteamEngineKG);
 
             else if (def.PrefabID == KeroseneEngineClusterSmallConfig.ID) //450f
-                setStorage(CustomizeBuildingsState.StateManager.State.SmallPetroleumEngineKG);
+                setStorage(CustomizeBuildingsState.Instance.SmallPetroleumEngineKG);
 
             else if (def.PrefabID == HEPEngineConfig.ID) //4000f
-                setRads(CustomizeBuildingsState.StateManager.State.HEPEngineStorage);
+                setRads(CustomizeBuildingsState.Instance.HEPEngineStorage);
 
             else if (def.PrefabID is LiquidFuelTankClusterConfig.ID or LiquidFuelTankClusterConfig.ID) //900f
-                setStorage(CustomizeBuildingsState.StateManager.State.LiquidFuelTankKG);
+                setStorage(CustomizeBuildingsState.Instance.LiquidFuelTankKG);
 
             else if (def.PrefabID == SmallOxidizerTankConfig.ID) //450f
-                setStorage(CustomizeBuildingsState.StateManager.State.SmallOxidizerTankKG);
+                setStorage(CustomizeBuildingsState.Instance.SmallOxidizerTankKG);
 
             else if (def.PrefabID is OxidizerTankConfig.ID or OxidizerTankClusterConfig.ID) //2700f, 900f
-                setStorage(CustomizeBuildingsState.StateManager.State.LargeSolidOxidizerTankKG);
+                setStorage(CustomizeBuildingsState.Instance.LargeSolidOxidizerTankKG);
 
             else if (def.PrefabID is OxidizerTankLiquidConfig.ID or OxidizerTankLiquidClusterConfig.ID) //2700f, 450f
-                setStorage(CustomizeBuildingsState.StateManager.State.LiquidOxidizerTankKG);
+                setStorage(CustomizeBuildingsState.Instance.LiquidOxidizerTankKG);
 
             else if (def.PrefabID == SpiceGrinderConfig.ID)
                 foreach (var spiceStorage in def.BuildingComplete.GetComponents<Storage>())
@@ -166,7 +166,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.ConveyorLoaderAcceptLiquidsGas;
+            return CustomizeBuildingsState.Instance.ConveyorLoaderAcceptLiquidsGas;
         }
 
         public static void Postfix(GameObject go)
@@ -184,7 +184,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.ConveyorLoaderHasSlider;
+            return CustomizeBuildingsState.Instance.ConveyorLoaderHasSlider;
         }
 
         public static void Postfix(GameObject go)
@@ -198,7 +198,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.ConveyorReceptacleHasSlider;
+            return CustomizeBuildingsState.Instance.ConveyorReceptacleHasSlider;
         }
 
         public static void Postfix(GameObject go)
@@ -212,7 +212,7 @@ namespace CustomizeBuildings
     {
         public static void Prefix(Storage __instance)
         {
-            if (CustomizeBuildingsState.StateManager.State.AirfilterDropsCanisters)
+            if (CustomizeBuildingsState.Instance.AirfilterDropsCanisters)
             {
                 __instance.DropAll(false, false, new Vector3(), true);
             }
@@ -224,12 +224,12 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch != 200f;
+            return CustomizeBuildingsState.Instance.RailgunMaxLaunch != 200f;
         }
 
         public static bool Prefix(ref float __result)
         {
-            __result = CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch;
+            __result = CustomizeBuildingsState.Instance.RailgunMaxLaunch;
             return false;
         }
     }
@@ -239,15 +239,15 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch != 200f;
+            return CustomizeBuildingsState.Instance.RailgunMaxLaunch != 200f;
         }
 
         public static void Postfix(GameObject go)
         {
             var particleStorage = go.AddOrGet<HighEnergyParticleStorage>();
-            particleStorage.capacity = CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch * 1.05f;
+            particleStorage.capacity = CustomizeBuildingsState.Instance.RailgunMaxLaunch * 1.05f;
 
-            go.AddOrGet<Storage>().capacityKg = Math.Max(1200f, CustomizeBuildingsState.StateManager.State.RailgunMaxLaunch * 2f);
+            go.AddOrGet<Storage>().capacityKg = Math.Max(1200f, CustomizeBuildingsState.Instance.RailgunMaxLaunch * 2f);
         }
     }
 }

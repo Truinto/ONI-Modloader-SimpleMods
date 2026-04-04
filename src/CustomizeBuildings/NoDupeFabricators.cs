@@ -36,7 +36,7 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal;
+            return CustomizeBuildingsState.Instance.NoDupeGlobal;
         }
 
         public void EditDef(BuildingDef def)
@@ -48,71 +48,71 @@ namespace CustomizeBuildings
             switch (def.PrefabID)
             {
                 case ApothecaryConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeApothecary)
+                    if (CustomizeBuildingsState.Instance.NoDupeApothecary)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case ClothingFabricatorConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeClothingFabricator)
+                    if (CustomizeBuildingsState.Instance.NoDupeClothingFabricator)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case CookingStationConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeCookingStation)
+                    if (CustomizeBuildingsState.Instance.NoDupeCookingStation)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case EggCrackerConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeEggCracker)
+                    if (CustomizeBuildingsState.Instance.NoDupeEggCracker)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case GlassForgeConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeGlassForge)
+                    if (CustomizeBuildingsState.Instance.NoDupeGlassForge)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case GourmetCookingStationConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeGourmetCookingStation)
+                    if (CustomizeBuildingsState.Instance.NoDupeGourmetCookingStation)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case MetalRefineryConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeMetalRefinery)
+                    if (CustomizeBuildingsState.Instance.NoDupeMetalRefinery)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case MicrobeMusherConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeMicrobeMusher)
+                    if (CustomizeBuildingsState.Instance.NoDupeMicrobeMusher)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case RockCrusherConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeRockCrusher)
+                    if (CustomizeBuildingsState.Instance.NoDupeRockCrusher)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case DiamondPressConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeDiamondPress)
+                    if (CustomizeBuildingsState.Instance.NoDupeDiamondPress)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case SuitFabricatorConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeSuitFabricator)
+                    if (CustomizeBuildingsState.Instance.NoDupeSuitFabricator)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case SupermaterialRefineryConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeSupermaterialRefinery)
+                    if (CustomizeBuildingsState.Instance.NoDupeSupermaterialRefinery)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case SludgePressConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeSludgePress)
+                    if (CustomizeBuildingsState.Instance.NoDupeSludgePress)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case MilkPressConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeMilkPress)
+                    if (CustomizeBuildingsState.Instance.NoDupeMilkPress)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case ChemicalRefineryConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeChemicalRefinery)
+                    if (CustomizeBuildingsState.Instance.NoDupeChemicalRefinery)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case MissileFabricatorConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeMissileFabricator)
+                    if (CustomizeBuildingsState.Instance.NoDupeMissileFabricator)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
                 case DeepfryerConfig.ID:
-                    if (CustomizeBuildingsState.StateManager.State.NoDupeDeepfryer)
+                    if (CustomizeBuildingsState.Instance.NoDupeDeepfryer)
                         NoDupeHelper.SetAutomatic(def.BuildingComplete);
                     break;
             }
@@ -126,7 +126,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeOilRefinery;
+            return CustomizeBuildingsState.Instance.NoDupeGlobal && CustomizeBuildingsState.Instance.NoDupeOilRefinery;
         }
 
         public static void Postfix(GameObject go)
@@ -150,7 +150,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeOilWellCap;
+            return CustomizeBuildingsState.Instance.NoDupeGlobal && CustomizeBuildingsState.Instance.NoDupeOilWellCap;
         }
 
         [HarmonyPriority(Priority.LowerThanNormal)]
@@ -184,7 +184,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupePayloadOpener;
+            return CustomizeBuildingsState.Instance.NoDupeGlobal && CustomizeBuildingsState.Instance.NoDupePayloadOpener;
         }
 
         public static void Postfix()
@@ -214,7 +214,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeCompost;
+            return CustomizeBuildingsState.Instance.NoDupeGlobal && CustomizeBuildingsState.Instance.NoDupeCompost;
         }
 
         public static void Postfix(Compost.States __instance)
@@ -238,7 +238,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.NoDupeGlobal && CustomizeBuildingsState.StateManager.State.NoDupeDesalinator;
+            return CustomizeBuildingsState.Instance.NoDupeGlobal && CustomizeBuildingsState.Instance.NoDupeDesalinator;
         }
 
         public static void Postfix(Desalinator.States __instance)

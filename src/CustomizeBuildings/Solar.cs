@@ -11,7 +11,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.SolarMaxPower != 380f;
+            return CustomizeBuildingsState.Instance.SolarMaxPower != 380f;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
@@ -21,7 +21,7 @@ namespace CustomizeBuildings
             {
                 if (codeInstruction.opcode == OpCodes.Ldc_R4 && (float)codeInstruction.operand == 380f)
                 {
-                    codeInstruction.operand = CustomizeBuildingsState.StateManager.State.SolarMaxPower;
+                    codeInstruction.operand = CustomizeBuildingsState.Instance.SolarMaxPower;
                     flag1 = false;
                 }
                 yield return codeInstruction;
@@ -37,12 +37,12 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.SolarMaxPower != 380f;
+            return CustomizeBuildingsState.Instance.SolarMaxPower != 380f;
         }
 
         public static void Postfix(BuildingDef __result)
         {
-            __result.GeneratorWattageRating = CustomizeBuildingsState.StateManager.State.SolarMaxPower;
+            __result.GeneratorWattageRating = CustomizeBuildingsState.Instance.SolarMaxPower;
         }
     }
 
@@ -51,7 +51,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.SolarEnergyMultiplier != 1f;
+            return CustomizeBuildingsState.Instance.SolarEnergyMultiplier != 1f;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
@@ -61,7 +61,7 @@ namespace CustomizeBuildings
             {
                 if (codeInstruction.opcode == OpCodes.Ldc_R4 && (float)codeInstruction.operand == 0.00053f)
                 {
-                    codeInstruction.operand = 0.00053f * CustomizeBuildingsState.StateManager.State.SolarEnergyMultiplier;
+                    codeInstruction.operand = 0.00053f * CustomizeBuildingsState.Instance.SolarEnergyMultiplier;
                     flag1 = false;
                 }
                 yield return codeInstruction;

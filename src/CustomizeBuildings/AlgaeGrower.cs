@@ -12,13 +12,13 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.AlgaeTerrariumPatch && CustomizeBuildingsState.StateManager.State.AlgaeTerrarium != null;
+            return CustomizeBuildingsState.Instance.AlgaeTerrariumPatch && CustomizeBuildingsState.Instance.AlgaeTerrarium != null;
         }
 
         public static void Postfix(GameObject go)
         {
             go.RemoveComponents<ElementConverter>();
-            var setting = CustomizeBuildingsState.StateManager.State.AlgaeTerrarium;
+            var setting = CustomizeBuildingsState.Instance.AlgaeTerrarium;
             var ec = go.AddComponent<ElementConverter>();
             setting.Set(ec);
 
@@ -53,7 +53,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.AlgaeTerrariumPatch;
+            return CustomizeBuildingsState.Instance.AlgaeTerrariumPatch;
         }
 
         public static bool Prefix(Tag tag, AlgaeHabitat.SMInstance __instance, ref bool __result)

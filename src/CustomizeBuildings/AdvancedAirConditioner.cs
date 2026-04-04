@@ -16,7 +16,7 @@ namespace CustomizeBuildings
         public bool Enabled(string id)
         {
             return id is AirConditionerConfig.ID or LiquidConditionerConfig.ID
-                && CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+                && CustomizeBuildingsState.Instance.AirConditionerAbsoluteOutput;
         }
 
         public void EditDef(BuildingDef def)
@@ -29,8 +29,8 @@ namespace CustomizeBuildings
             var storage = def.BuildingComplete.AddOrGet<Storage>();
             storage.capacityKg = Math.Max(storage.capacityKg, 2f *
                 (def.PrefabID is AirConditionerConfig.ID ?
-                CustomizeBuildingsState.StateManager.State.PipeGasMaxPressure :
-                CustomizeBuildingsState.StateManager.State.PipeLiquidMaxPressure));
+                CustomizeBuildingsState.Instance.PipeGasMaxPressure :
+                CustomizeBuildingsState.Instance.PipeLiquidMaxPressure));
         }
     }
 
@@ -40,7 +40,7 @@ namespace CustomizeBuildings
     {
         public static bool Prepare()
         {
-            return CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+            return CustomizeBuildingsState.Instance.AirConditionerAbsoluteOutput;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -90,12 +90,12 @@ namespace CustomizeBuildings
     [HarmonyPatch(typeof(AirConditioner), nameof(AirConditioner.UpdateState))]
     public static class AirConditioner_Patch2
     {
-        public static float factor = CustomizeBuildingsState.StateManager.State.AirConditionerHeatEfficiency;
+        public static float factor = CustomizeBuildingsState.Instance.AirConditionerHeatEfficiency;
 
         public static bool Prepare()
         {
-            factor = CustomizeBuildingsState.StateManager.State.AirConditionerHeatEfficiency;
-            return factor != 1f || CustomizeBuildingsState.StateManager.State.AirConditionerAbsoluteOutput;
+            factor = CustomizeBuildingsState.Instance.AirConditionerHeatEfficiency;
+            return factor != 1f || CustomizeBuildingsState.Instance.AirConditionerAbsoluteOutput;
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
@@ -117,7 +117,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class AirConditionerSliders : KMonoBehaviour, IUserControlledCapacity, IThresholdSwitch, ISim200ms    //IActivationRangeTarget
     {
         public LocString? TextLogic;
@@ -130,9 +130,9 @@ namespace CustomizeBuildings
         {
             base.OnSpawn();
             energyConsumer = GetComponent<EnergyConsumer>();
-            if (CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor <= 0f)
-                CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor = 0.0001f;
-            factorDPU = energyConsumer.WattsNeededWhenActive / (10000f * CustomizeBuildingsState.StateManager.State.AirConditionerAbsolutePowerFactor);
+            if (CustomizeBuildingsState.Instance.AirConditionerAbsolutePowerFactor <= 0f)
+                CustomizeBuildingsState.Instance.AirConditionerAbsolutePowerFactor = 0.0001f;
+            factorDPU = energyConsumer.WattsNeededWhenActive / (10000f * CustomizeBuildingsState.Instance.AirConditionerAbsolutePowerFactor);
         }
         #endregion
 
@@ -238,7 +238,7 @@ namespace CustomizeBuildings
         public bool Enabled(string id)
         {
             return id is SpaceHeaterConfig.ID or LiquidHeaterConfig.ID or "GasRefrigerationUnit" or "LiquidRefrigerationUnit"
-                && CustomizeBuildingsState.StateManager.State.SpaceHeaterTargetTemperature;
+                && CustomizeBuildingsState.Instance.SpaceHeaterTargetTemperature;
         }
 
         public void EditDef(BuildingDef def)
@@ -253,7 +253,7 @@ namespace CustomizeBuildings
         }
     }
 
-    [SerializationConfig(MemberSerialization.OptIn)]
+    [SerializationConfig(KSerialization.MemberSerialization.OptIn)]
     public class SpaceHeaterSlider : SliderTemperatureSideScreen, ISim1000ms
     {
         [MyCmpGet] private SpaceHeater? spaceHeater;
