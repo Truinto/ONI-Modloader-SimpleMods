@@ -56,19 +56,19 @@ namespace EggCritterSurplus
 
     public class EggCritterSurplus : KMonoBehaviour, IUserControlledCapacity, ISim4000ms//, ICheckboxControl
     {
-        private int creatureCount;
-        [Serialize] public float threshold = 8;
-        [Serialize] public bool attackSurplus;
-        private static StatusItem capacityStatusItem;
+        private int _CreatureCount;
+        [Serialize] public float Threshold = 8;
+        [Serialize] public bool Attack_Surplus;
+        private static StatusItem? _CapacityStatusItem;
 
         public override void OnPrefabInit()
         {
             base.OnPrefabInit();
 
-            if (EggCritterSurplus.capacityStatusItem == null)
+            if (EggCritterSurplus._CapacityStatusItem == null)
             {
-                EggCritterSurplus.capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
-                EggCritterSurplus.capacityStatusItem.resolveStringCallback = (str, data) =>
+                EggCritterSurplus._CapacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+                EggCritterSurplus._CapacityStatusItem.resolveStringCallback = (str, data) =>
                 {
                     IUserControlledCapacity controlledCapacity = (IUserControlledCapacity)data;
                     string newValue1 = Util.FormatWholeNumber(Mathf.Floor(controlledCapacity.AmountStored));
@@ -77,12 +77,12 @@ namespace EggCritterSurplus
                     return str;
                 };
             }
-            this.GetComponent<KSelectable>()?.SetStatusItem(Db.Get().StatusItemCategories.Main, EggCritterSurplus.capacityStatusItem, this);
+            GetComponent<KSelectable>()?.SetStatusItem(Db.Get().StatusItemCategories.Main, EggCritterSurplus._CapacityStatusItem, this);
         }
 
         #region ICheckboxControl
-        public bool GetCheckboxValue() => this.attackSurplus;
-        public void SetCheckboxValue(bool value) => this.attackSurplus = value;
+        public bool GetCheckboxValue() => this.Attack_Surplus;
+        public void SetCheckboxValue(bool value) => this.Attack_Surplus = value;
         public string CheckboxTitleKey => STRINGS.UI.UISIDESCREENS.CAPTURE_POINT_SIDE_SCREEN.TITLE.key.String;
         public string CheckboxLabel => new LocString("Wrangle critters as well");
         public string CheckboxTooltip => new LocString("Mark youngest eggs for sweeping. If checked, then also mark critters for wrangle.");
@@ -91,22 +91,25 @@ namespace EggCritterSurplus
         #region IUserControlledCapacity
         public float UserMaxCapacity
         {
-            get => (float)this.threshold;
-            set => this.threshold = Mathf.RoundToInt(value);
+            get => (float)this.Threshold;
+            set => this.Threshold = Mathf.RoundToInt(value);
         }
-        public float AmountStored => (float)this.creatureCount;
+        public float AmountStored => (float)this._CreatureCount;
         public float MinCapacity => 0f;
         public float MaxCapacity => 100f;
         public bool WholeValues => true;
         public LocString CapacityUnits => STRINGS.UI.UISIDESCREENS.CAPTURE_POINT_SIDE_SCREEN.UNITS_SUFFIX;
+        public bool ControlEnabled()
+        {
+            return true;
+        }
         #endregion
 
-        public static FieldInfo _isMarkedForClear = AccessTools.Field(typeof(Clearable), "isMarkedForClear");
         public bool IsMarkedForSweeping(GameObject egg)
         {
             var clearable = egg.GetComponent<Clearable>();
             if (clearable != null)
-                return (bool)_isMarkedForClear.GetValue(clearable);
+                return clearable.isMarkedForClear;
             return true;    //we don't want to work with it, if Clearable were to be missing
         }
         public bool IsInStorage(GameObject egg)
@@ -142,15 +145,15 @@ namespace EggCritterSurplus
 
                 int eggCount = room.eggs.Count;
                 int critterCount = room.creatures.Count;
-                this.creatureCount = eggCount + critterCount;
+                this._CreatureCount = eggCount + critterCount;
 
-                if (threshold >= this.creatureCount) return;
+                if (Threshold >= this._CreatureCount) return;
 
                 List<Indexer> ageList = new List<Indexer>();
 
                 for (int i = room.eggs.Count - 1; i >= 0; i--)
                 {
-                    GameObject egg = room.eggs[i]?.gameObject;
+                    var egg = room.eggs[i]?.gameObject;
                     float incubation = egg != null ? Db.Get().Amounts.Incubation.Lookup(egg).value : -2f;
 
                     if (egg == null)
@@ -176,9 +179,9 @@ namespace EggCritterSurplus
                     }
                 }
 
-                if (threshold >= eggCount + critterCount) return;
+                if (Threshold >= eggCount + critterCount) return;
 
-                ageList = ageList.OrderBy(r => r.value).ToList();  //OrderByAscending
+                ageList = ageList.OrderBy(r => r.Value).ToList();  //OrderByAscending
 
                 //Debug.Log("Egg Age List: ");
                 //for (int i = 0; i < ageList.Count; i++)
@@ -186,37 +189,37 @@ namespace EggCritterSurplus
                 //    Debug.Log("No: " + i + "age: " + ageList[i].value + "index: " + ageList[i].index);
                 //}
 
-                var priority = this.GetComponent<Prioritizable>()?.GetMasterPriority() ?? new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
+                var priority = GetComponent<Prioritizable>()?.GetMasterPriority() ?? new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
 
                 for (int i = 0; i < ageList.Count; i++)
                 {
-                    if (ageList[i].value >= 0f)
+                    if (ageList[i].Value >= 0f)
                     {
-                        var clearable = room.eggs[ageList[i].index].GetComponent<Clearable>();
+                        var clearable = room.eggs[ageList[i].Index].GetComponent<Clearable>();
                         clearable.MarkForClear();
                         clearable.GetComponent<Prioritizable>()?.SetMasterPriority(priority);
                         eggCount--;
-                        if (threshold >= eggCount + critterCount)
+                        if (Threshold >= eggCount + critterCount)
                             return;
                     }
                 }
 
-                if (!attackSurplus) return;
+                if (!Attack_Surplus) return;
 
                 for (int i = 0; i < room.creatures.Count; i++)
                 {
-                    Capturable capturable = room.creatures[i]?.GetComponent<Capturable>();
+                    var capturable = room.creatures[i]?.GetComponent<Capturable>();
                     if (capturable != null && (capturable.IsMarkedForCapture || capturable.HasTag(GameTags.Creatures.Bagged) || capturable.HasTag(GameTags.Stored)))
                     {
                         critterCount--;
                     }
                 }
 
-                if (threshold >= eggCount + critterCount) return;
+                if (Threshold >= eggCount + critterCount) return;
 
                 for (int i = 0; i < room.creatures.Count; i++)
                 {
-                    Capturable capturable = room.creatures[i]?.GetComponent<Capturable>();
+                    var capturable = room.creatures[i]?.GetComponent<Capturable>();
                     if (capturable != null &&
                             !capturable.IsMarkedForCapture &&
                             !capturable.HasTag(GameTags.Trapped) &&
@@ -228,7 +231,7 @@ namespace EggCritterSurplus
                         capturable.MarkForCapture(true, priority);
                         //capturable.allowCapture = flag;
                         critterCount--;
-                        if (threshold >= eggCount + critterCount)
+                        if (Threshold >= eggCount + critterCount)
                             return;
                     }
                 }
@@ -237,18 +240,17 @@ namespace EggCritterSurplus
             {
                 Debug.Log("Wups, this shouldn't happen: " + e.ToString());
             }
-
         }
 
         public struct Indexer
         {
-            public int index;
-            public float value;
+            public int Index;
+            public float Value;
 
             public Indexer(int index, float value)
             {
-                this.index = index;
-                this.value = value;
+                this.Index = index;
+                this.Value = value;
             }
         }
     }
