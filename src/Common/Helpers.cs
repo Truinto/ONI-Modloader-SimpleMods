@@ -105,7 +105,7 @@ namespace Common
 
         public static Tag ToTag(this SimHashes hash)
         {
-            if (ElementLoader.FindElementByHash(hash)?.tag is Tag tag)
+            if (ElementLoader.elementTable != null && ElementLoader.FindElementByHash(hash)?.tag is Tag tag)
                 return tag;
 
             tag = TagManager.Create(hash.ToString());

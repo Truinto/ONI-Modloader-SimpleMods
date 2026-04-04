@@ -1,5 +1,6 @@
 ## custom
 non-public/
+.idea/
 launchSettings.json
 *.ffs_db
 

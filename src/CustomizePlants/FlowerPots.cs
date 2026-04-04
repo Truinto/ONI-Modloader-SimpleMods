@@ -15,7 +15,7 @@ namespace CustomizePlants
     {
         public static void SetPlantablePlotAllTags(GameObject go)
         {
-            PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
+            var plantablePlot = go.AddOrGet<PlantablePlot>();
             plantablePlot.possibleDepositTagsList.Clear();
             plantablePlot.AddDepositTag(GameTags.CropSeed);
             plantablePlot.AddDepositTag(GameTags.WaterSeed);
@@ -35,7 +35,7 @@ namespace CustomizePlants
 
         public static void EnableCheats(GameObject go)
         {
-            PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
+            var plantablePlot = go.AddOrGet<PlantablePlot>();
             plantablePlot.accepts_irrigation = false;
             plantablePlot.accepts_fertilizer = false;
         }
@@ -71,15 +71,14 @@ namespace CustomizePlants
             return CustomizePlantsState.StateManager.State.CheatFlowerVase;
         }
 
-        public static IEnumerable<MethodBase> TargetMethods()
-        {
-            yield return AccessTools.Method(typeof(IrrigationMonitor.Instance), nameof(IrrigationMonitor.Instance.UpdateIrrigation));
-            yield return AccessTools.Method(typeof(IrrigationMonitor.Instance), nameof(IrrigationMonitor.Instance.UpdateAbsorbing));
-            yield return AccessTools.Method(typeof(FertilizationMonitor.Instance), nameof(FertilizationMonitor.Instance.UpdateFertilization));
-            yield return AccessTools.Method(typeof(FertilizationMonitor.Instance), nameof(FertilizationMonitor.Instance.StartAbsorbing));
-        }
+        [HarmonyPatch(typeof(IrrigationMonitor.Instance), nameof(IrrigationMonitor.Instance.UpdateIrrigation))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> IrrigationTranspiler1(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+            => IrrigationTranspiler2(instructions, generator, original);
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        [HarmonyPatch(typeof(IrrigationMonitor.Instance), nameof(IrrigationMonitor.Instance.UpdateAbsorbing))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> IrrigationTranspiler2(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
         {
             var data = new TranspilerTool(instructions, generator, original);
 
@@ -94,15 +93,40 @@ namespace CustomizePlants
 
             return data;
 
-            static float getTotalValue(float modifier, StateMachine.Instance __instance)
+            static float getTotalValue(float modifier, IrrigationMonitor.Instance __instance)
             {
-                if (__instance is FertilizationMonitor.Instance fert && fert.storage.GetComponent<KPrefabID>().PrefabTag == FlowerVaseTag)
-                    return 0f;
-                if (__instance is IrrigationMonitor.Instance irr && irr.storage.GetComponent<KPrefabID>().PrefabTag == FlowerVaseTag)
+                if (__instance.storage.GetComponent<KPrefabID>().PrefabTag == FlowerVaseTag)
                     return 0f;
                 return modifier;
             }
         }
+
+
+        [HarmonyPatch(typeof(FertilizationMonitor.Instance), nameof(FertilizationMonitor.Instance.UpdateFertilization))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> FertilizationTranspiler1(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+            => FertilizationTranspiler2(instructions, generator, original);
+
+        [HarmonyPatch(typeof(FertilizationMonitor.Instance), nameof(FertilizationMonitor.Instance.StartAbsorbing))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> FertilizationTranspiler2(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+        {
+            var data = new TranspilerTool(instructions, generator, original);
+            
+            data.Last();
+            data.Rewind(typeof(FertilizationMonitor.Instance), nameof(FertilizationMonitor.Instance.consumedElements));
+            data.ReplaceCall(patch);
+
+            return data;
+
+            static PlantElementAbsorber.ConsumeInfo[] patch(FertilizationMonitor.Instance instance)
+            {
+                if (instance.storage.GetComponent<KPrefabID>().PrefabTag == FlowerVaseTag)
+                    return _EmptyConsume;
+                return instance.consumedElements;
+            }
+        }
+        private static readonly PlantElementAbsorber.ConsumeInfo[] _EmptyConsume = [ new(SimHashes.Vacuum.ToTag(), 0f) ];
     }
 
     [HarmonyPatch]

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.54.0] U58-720697-SCRP (release)
+- fixed CheatFlowerVase for update
+
 ## [1.0.53.0] U57-704096-SCRP (release)
 - fixed crash with CheatFlowerVase
 
