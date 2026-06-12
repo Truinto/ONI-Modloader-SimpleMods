@@ -1,4 +1,4 @@
-﻿using KSerialization;
+using KSerialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace CustomizeBuildings
 
         public string SidescreenButtonText => this.Enabled ? GetButtonTextOverride().Text : GetButtonTextOverride().CancelText;
         public string SidescreenButtonTooltip => this.Enabled ? GetButtonTextOverride().ToolTip : GetButtonTextOverride().CancelToolTip;
+        public string? SidescreenTitle => null;
         public int ButtonSideScreenSortOrder() => this.SortOrder;
         public virtual int HorizontalGroupID() => -1;
         public bool SidescreenEnabled() => true;

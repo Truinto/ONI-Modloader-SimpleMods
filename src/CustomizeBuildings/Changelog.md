@@ -1,12 +1,14 @@
 # Changelog
 
-## [1.0.120.0] U58-720697-SCRP (release)
+## [1.0.120.1] U59-736649-SCRP (release)
 - overhaul of config deserialization
 - BuildingBaseSetting now has an Id field; added automatic import for old configuration
 - changed BuildingBaseSetting to allow duplicate IDs; all matches will be applied
 - added wildcard '*' that matches all IDs to BuildingBaseSetting
 - fixed insulated door
 - added a bunch of new door settings (insulation, speed)
+- fixed ButtonToggleSideScreen interface for update
+- fixed SimMessages.Dig call signature for update
 
 ## [1.0.119.0] U57-700386-SCRP (release)
 - patched for update
