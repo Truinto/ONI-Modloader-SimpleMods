@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.55.0]  U59-736649-SCRP (release)
+- fixed patch signature for update
+
 ## [1.0.54.0] U58-720697-SCRP (release)
 - fixed CheatFlowerVase for update
 

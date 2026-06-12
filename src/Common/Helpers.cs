@@ -901,16 +901,16 @@ namespace Common
             UnityEngine.Object.DestroyImmediate(go);
         }
 
-        public static void RemoveComponent<UComponent>(this GameObject go) where UComponent : UnityEngine.Object
+        public static void RemoveComponent<TComponent>(this GameObject go) where TComponent : UnityEngine.Object
         {
-            UComponent comp = go.GetComponent<UComponent>();
+            TComponent comp = go.GetComponent<TComponent>();
             if (comp != null)
                 UnityEngine.Object.DestroyImmediate(comp);
         }
 
-        public static void RemoveComponents<UComponent>(this GameObject go) where UComponent : UnityEngine.Object
+        public static void RemoveComponents<TComponent>(this GameObject go) where TComponent : UnityEngine.Object
         {
-            UComponent[] comps = go.GetComponents<UComponent>();
+            TComponent[] comps = go.GetComponents<TComponent>();
 
             foreach (var comp in comps)
                 UnityEngine.Object.DestroyImmediate(comp);
@@ -926,12 +926,12 @@ namespace Common
             }
         }
 
-        public static void RemoveDef<Def>(this GameObject go) where Def : StateMachine.BaseDef
+        public static void RemoveDef<TDef>(this GameObject go) where TDef : StateMachine.BaseDef
         {
             StateMachineController controller = go.GetComponent<StateMachineController>();
             if (controller != null)
             {
-                var def = go.GetDef<Def>();
+                var def = go.GetDef<TDef>();
                 if (def != null)
                     controller.cmpdef.defs.Remove(def);
             }

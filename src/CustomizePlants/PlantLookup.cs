@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Linq;
@@ -11,7 +11,10 @@ using System.Reflection;
 namespace CustomizePlants
 {
     // prints out list of all objects that run ExtendEntityToBasicPlant
-    [HarmonyPatch(typeof(EntityTemplates), "ExtendEntityToBasicPlant")]
+    [HarmonyPatch(typeof(EntityTemplates), nameof(EntityTemplates.ExtendEntityToBasicPlant),
+        typeof(GameObject), typeof(float), typeof(float), typeof(float), typeof(float), typeof(SimHashes[]),
+        typeof(bool), typeof(float), typeof(float), typeof(string), typeof(bool), typeof(bool), typeof(bool),
+        typeof(bool), typeof(bool), typeof(float), typeof(float), typeof(float), typeof(string), typeof(string))]
     public static class PlantLookupPatch
     {
         public static System.Text.RegularExpressions.Regex FindBetweenLink = new(@">(.*)<", System.Text.RegularExpressions.RegexOptions.Compiled);

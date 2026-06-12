@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33205.214
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoRemains", "NoRemains\NoRemains.csproj", "{7370C020-5572-4A33-B1A9-2C42BEDA65C1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedStorage", "SharedStor
 		{B1EBE5C7-520D-40A5-BEA5-970853895E9E} = {B1EBE5C7-520D-40A5-BEA5-970853895E9E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityMod", "..\..\Truinto-Silksong\@Shared\UnityMod\UnityMod.csproj", "{586CA69F-FB2B-961A-BDDE-1D76C72DACA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityMod", "@Shared\UnityMod\UnityMod.csproj", "{362F5392-CAD5-5409-3147-A17AA7164558}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,10 +125,10 @@ Global
 		{D87113BB-CFFD-4518-950B-5475A4DA06AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D87113BB-CFFD-4518-950B-5475A4DA06AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D87113BB-CFFD-4518-950B-5475A4DA06AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{586CA69F-FB2B-961A-BDDE-1D76C72DACA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{586CA69F-FB2B-961A-BDDE-1D76C72DACA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{586CA69F-FB2B-961A-BDDE-1D76C72DACA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{586CA69F-FB2B-961A-BDDE-1D76C72DACA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{362F5392-CAD5-5409-3147-A17AA7164558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{362F5392-CAD5-5409-3147-A17AA7164558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{362F5392-CAD5-5409-3147-A17AA7164558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{362F5392-CAD5-5409-3147-A17AA7164558}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
