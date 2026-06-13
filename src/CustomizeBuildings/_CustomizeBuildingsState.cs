@@ -20,7 +20,7 @@ namespace CustomizeBuildings
     public class CustomizeBuildingsState : BaseSettings<CustomizeBuildingsState>, IManualConfig
     {
         [JsonInclude] public int? version;
-        public override int Version { get; set; } = 60;
+        public override int Version { get; set; } = 61;
 
         #region $Reset Button
         [JsonIgnore]
@@ -352,7 +352,7 @@ namespace CustomizeBuildings
         public bool DoorSelfSealing { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.DoorPressureInsulationFactor_Title", "CustomizeBuildings.LOCSTRINGS.DoorPressureInsulationFactor_ToolTip", "Door", "F1")]
         [Limit(0, 1)]
-        public float DoorPressureInsulationFactor { get; set; } = 0.5f;
+        public float DoorPressureInsulationFactor { get; set; } = 1.0f;
         [Option("CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedUnpowered_Title", "CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedUnpowered_ToolTip", "Door", "F2")]
         public float DoorPressureSpeedUnpowered { get; set; } = 0.65f;
         [Option("CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedPowered_Title", "CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedPowered_ToolTip", "Door", "F0")]
@@ -850,6 +850,8 @@ namespace CustomizeBuildings
                 SpaceBattery = 100000f;
             if (Version < 56)
                 SkillStationEnabled = false;
+            if (Version < 57)
+                DoorPressureInsulationFactor = 1f;
             if (BuildingBaseSettings_Old != null) // version 60
             {
                 BuildingBaseSettings = new();

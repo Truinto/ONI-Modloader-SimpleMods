@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.122.0] U59-737195-SCRP (release)
+- fixed pressure door insulation not being applied correctly
+
 ## [1.0.121.0] U59-737195-SCRP (release)
 - fixed crash when dupes would walk through self-sealing-doors
 

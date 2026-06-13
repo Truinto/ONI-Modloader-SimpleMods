@@ -96,7 +96,7 @@ namespace CustomizeBuildings
                 int cell = cells[i];
                 World.Instance.groundRenderer.MarkDirty(cell);
                 SimMessages.SetCellProperties(cell, 4);
-                SimMessages.SetInsulation(cell, 0f);
+                SimMessages.SetInsulation(cell, __instance.insulationModifier);
                 if (is_door_open)
                 {
                     var handleOpen = Game.Instance.callbackManager.Add(new Game.CallbackInfo(__instance.OnSimDoorOpened, false));
