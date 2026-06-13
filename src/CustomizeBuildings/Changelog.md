@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.121.0] U59-737195-SCRP (release)
+- fixed crash when dupes would walk through self-sealing-doors
+
 ## [1.0.120.1] U59-736649-SCRP (release)
 - overhaul of config deserialization
 - BuildingBaseSetting now has an Id field; added automatic import for old configuration

@@ -71,6 +71,11 @@ namespace CustomizeBuildings
         }
     }
 
+    /// <summary>
+    /// ReplaceAndDisplaceElement => makes cells block elements
+    /// SetInsulation => temperature transfer multiplier where 1.0 is normal and 0.0 is no transfer
+    /// </summary>
+    //[HarmonyPatch(typeof(Door), nameof(Door.SetSimState))]
     [HarmonyPatch(typeof(Door), nameof(Door.SetSimState))]
     public static class DoorSelfSealing_Patch
     {
@@ -90,22 +95,18 @@ namespace CustomizeBuildings
             {
                 int cell = cells[i];
                 World.Instance.groundRenderer.MarkDirty(cell);
+                SimMessages.SetCellProperties(cell, 4);
+                SimMessages.SetInsulation(cell, 0f);
                 if (is_door_open)
                 {
                     var handleOpen = Game.Instance.callbackManager.Add(new Game.CallbackInfo(__instance.OnSimDoorOpened, false));
-                    SimMessages.Dig(cell, handleOpen.index, skipEvent: true);
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorOpen, mass, pElement.Temperature, byte.MaxValue, 0, handleOpen.index);
-                    //SimMessages.ClearCellProperties(cell, 3);
                 }
                 else
                 {
                     var handleClose = Game.Instance.callbackManager.Add(new Game.CallbackInfo(__instance.OnSimDoorClosed, false));
                     SimMessages.ReplaceAndDisplaceElement(cell, pElement.ElementID, CellEventLogger.Instance.DoorClose, mass, pElement.Temperature, byte.MaxValue, 0, handleClose.index);
-                    //SimMessages.SetCellProperties(cell, 3);
                 }
-                SimMessages.SetCellProperties(cell, 4);
-                if (__instance.insulationModifier != 1f)
-                    SimMessages.SetInsulation(cell, __instance.insulationModifier);
             }
             return false;
         }
