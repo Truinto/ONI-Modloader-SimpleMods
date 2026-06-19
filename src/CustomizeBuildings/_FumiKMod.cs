@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using HarmonyLib;
 using KMod;
 using PeterHan.PLib.Options;
@@ -40,6 +40,7 @@ namespace CustomizeBuildings
             new POptions().RegisterOptions(this, typeof(CustomizeBuildingsState));
 
             // call OnLoad methods
+            Config.PostBootDialog.DoOnLoadLast = true;
             Helpers.CallSafe(Miscellaneous.OnLoad);
             Helpers.CallSafe(Speed_Patch.OnLoad);
             Helpers.CallSafe(AutoMiner_RoboMinerDig_AnyTile_ThroughGlass.OnLoad);

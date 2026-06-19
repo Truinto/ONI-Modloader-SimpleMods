@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.123.0] U59-737790-SCRP (release)
+- fixed SetCellProperties again
+- fixed crash caused by Door Switch animation (special thanks to Aze)
+
 ## [1.0.122.0] U59-737195-SCRP (release)
 - fixed pressure door insulation not being applied correctly
 

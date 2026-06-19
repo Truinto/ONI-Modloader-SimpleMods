@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Common;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace CustomizeBuildings
 {
@@ -75,10 +76,15 @@ namespace CustomizeBuildings
     /// ReplaceAndDisplaceElement => makes cells block elements
     /// SetInsulation => temperature transfer multiplier where 1.0 is normal and 0.0 is no transfer
     /// </summary>
-    //[HarmonyPatch(typeof(Door), nameof(Door.SetSimState))]
     [HarmonyPatch(typeof(Door), nameof(Door.SetSimState))]
     public static class DoorSelfSealing_Patch
     {
+        public static void OnLoadLast()
+        {
+            if (Door.OVERRIDE_ANIMS[0] == null)
+                Door.OVERRIDE_ANIMS[0] = Assets.GetAnim("anim_use_remote_kanim");
+        }
+
         public static bool Prepare()
         {
             return CustomizeBuildingsState.Instance.DoorSelfSealing;
@@ -116,7 +122,10 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id == PressureDoorConfig.ID;
+            return id == PressureDoorConfig.ID &&
+                (CustomizeBuildingsState.Instance.DoorPressureInsulationFactor != 1f
+                || CustomizeBuildingsState.Instance.DoorPressureSpeedPowered != 5f
+                || CustomizeBuildingsState.Instance.DoorPressureSpeedUnpowered != 0.65f);
         }
 
         public void EditDef(BuildingDef def)
@@ -139,7 +148,9 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id == BunkerDoorConfig.ID;
+            return id == BunkerDoorConfig.ID &&
+                (CustomizeBuildingsState.Instance.DoorBunkerSpeedPowered != 0.1f
+                || CustomizeBuildingsState.Instance.DoorBunkerSpeedUnpowered != 0.01f);
         }
 
         public void EditDef(BuildingDef def)
@@ -161,7 +172,7 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id == ManualPressureDoorConfig.ID;
+            return id == ManualPressureDoorConfig.ID && CustomizeBuildingsState.Instance.DoorManualSpeed != 1f;
         }
 
         public void EditDef(BuildingDef def)
@@ -182,7 +193,7 @@ namespace CustomizeBuildings
     {
         public bool Enabled(string id)
         {
-            return id == InsulatedDoorConfig.ID;
+            return id == InsulatedDoorConfig.ID && CustomizeBuildingsState.Instance.DoorInsulatedSpeed != 1f;
         }
 
         public void EditDef(BuildingDef def)
