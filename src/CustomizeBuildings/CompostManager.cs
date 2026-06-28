@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ namespace CustomizeBuildings
         }
     }
 
-    public struct FoodStuff : IComparable<FoodStuff>
+    public readonly struct FoodStuff : IComparable<FoodStuff>
     {
         public FoodStuff(float Freshness, Pickupable Pickupable)
         {
@@ -61,17 +61,22 @@ namespace CustomizeBuildings
 
     public class CompostManager : KMonoBehaviour, ISim4000ms
     {
-        public static GameObject Master;
-        public static CompostManager Instance;
-        public static MethodInfo _markForCompost = AccessTools.Method(typeof(Compostable), "OnToggleCompost");
+        public static GameObject? Master;
+        public static CompostManager? Instance;
 
         public int NextIndex;
-        private readonly List<FoodStuff> foods = new();
+        private readonly List<FoodStuff> _Foods = new();
 
         public override void OnPrefabInit()
         {
             base.OnPrefabInit();
             CompostManager.Instance = this;
+        }
+
+        public void MarkForCompost(Pickupable pickupable, Compostable compostable)
+        {
+            pickupable.storage?.Drop(base.gameObject);
+            EntitySplitter.Split(pickupable, pickupable.TotalAmount, compostable.compostPrefab);
         }
 
         public void Sim4000ms(float dt)
@@ -90,7 +95,7 @@ namespace CustomizeBuildings
                 return;
 
             // get all edible food and record freshness
-            foods.Clear();
+            _Foods.Clear();
             foreach (var food in world.worldInventory.GetPickupables(GameTags.Edible) ?? Array.Empty<Pickupable>())
             {
                 var rottable = food.GetSMI<Rottable.Instance>();
@@ -104,14 +109,14 @@ namespace CustomizeBuildings
                 if (compostable == null || compostable.isMarkedForCompost)
                     continue;
 
-                foods.Add(new FoodStuff(freshness, food));
+                _Foods.Add(new FoodStuff(freshness, food));
             }
 
             // sort through fresh food first and count calories; when enough calories are available, mark stale food for compost
-            foods.Sort();
+            _Foods.Sort();
             float calories = dupes * 1000f * CustomizeBuildingsState.Instance.CompostCaloriesPerDupe;
             float minimumFreshness = CustomizeBuildingsState.Instance.CompostFreshnessPercent;
-            foreach (var foodstuff in foods)
+            foreach (var foodstuff in _Foods)
             {
                 Helpers.PrintDebug($"CompostManager food2={foodstuff.Pickupable.PrefabID()} percent={foodstuff.Freshness} calories={foodstuff.Pickupable.GetComponent<Edible>().Calories}");
                 if (calories > 0)
@@ -124,7 +129,7 @@ namespace CustomizeBuildings
                 if (foodstuff.Freshness < minimumFreshness)
                 {
                     Helpers.PrintDebug($"composting");
-                    _markForCompost.Invoke(foodstuff.Pickupable.GetComponent<Compostable>(), null);
+                    MarkForCompost(foodstuff.Pickupable, foodstuff.Pickupable.GetComponent<Compostable>());
                 }
             }
 
@@ -133,7 +138,7 @@ namespace CustomizeBuildings
                 return;
 
             // mark stale ingredients for compost; ingredients don't have calories
-            foreach (var food in world.worldInventory.GetPickupables(GameTags.CookingIngredient)?.ToArray() ?? Array.Empty<Pickupable>())
+            foreach (var food in world.worldInventory.GetPickupables(GameTags.CookingIngredient)?.ToArray() ?? [])
             {
                 var rottable = food.GetSMI<Rottable.Instance>();
                 if (rottable.IsNullOrStopped())
@@ -149,7 +154,7 @@ namespace CustomizeBuildings
                 if (freshness < minimumFreshness)
                 {
                     Helpers.PrintDebug($"composting");
-                    _markForCompost.Invoke(compostable, null);
+                    MarkForCompost(food, compostable);
                 }
             }
         }
@@ -160,10 +165,7 @@ namespace CustomizeBuildings
         #region IThresholdSwitch
         public float Threshold
         {
-            get
-            {
-                return CustomizeBuildingsState.Instance.CompostFreshnessPercent * 100f;
-            }
+            get => CustomizeBuildingsState.Instance.CompostFreshnessPercent * 100f;
             set
             {
                 float newvalue = value / 100f;

@@ -20,7 +20,7 @@ namespace CustomizeBuildings
     public class CustomizeBuildingsState : BaseSettings<CustomizeBuildingsState>, IManualConfig
     {
         [JsonInclude] public int? version;
-        public override int Version { get; set; } = 61;
+        public override int Version { get; set; } = 62;
 
         #region $Reset Button
         [JsonIgnore]
@@ -69,6 +69,10 @@ namespace CustomizeBuildings
             SweepyTidySpeedKG = 10f;
 
             SpaceBattery = 100000f;
+            TidalTurbinePower = 300f;
+            TidalTurbineExhaleRate = 166.66667f;
+            TidalTurbineInhaleRate = 500f;
+            TidalTurbineProduce = 0f;
             CO2EngineKG = 100f;
             SugarEngineKG = 450f;
             SteamEngineKG = isVanilla ? 900f : 150f;
@@ -228,6 +232,18 @@ namespace CustomizeBuildings
         public float RadBattery { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "Power", "F0")]
         public float SpaceBattery { get; set; } = 100000f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_ToolTip", "Power", "F0")]
+        public float TidalTurbinePower { get; set; } = 300f;
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_ToolTip", "Power", "F5")]
+        public float TidalTurbineExhaleRate { get; set; } = 166.66667f;
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_ToolTip", "Power", "F0")]
+        public float TidalTurbineInhaleRate { get; set; } = 500f;
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_ToolTip", "Power", "F0")]
+        public float TidalTurbineProduce { get; set; } = 0f;
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_ToolTip", "Power", null)]
+        public string TidalTurbineProduceFilter { get; set; } = "AnyWater";
+
         #endregion
 
         #region Storage
@@ -1252,6 +1268,26 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceBattery", "SpaceBattery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "Space Battery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbinePower", "TidalTurbinePower");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_Title", "Tidal Turbine Power");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_ToolTip", "Output power while active in W (default: 300)");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineExhaleRate", "TidalTurbineExhaleRate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_Title", "Tidal Turbine Exhale Rate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_ToolTip", "Rate of exhale in kg/s (default: 166.66667)");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineInhaleRate", "TidalTurbineInhaleRate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_Title", "Tidal Turbine Inhale Rate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_ToolTip", "Rate of inhale in kg/s (default: 500)");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineProduce", "TidalTurbineProduce");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_Title", "Tidal Turbine Produce");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_ToolTip", "How much material is produced per second");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineProduceFilter", "TidalTurbineProduceFilter");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_Title", "Tidal Turbine Produce Filter");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_ToolTip", "Only elements matching any of these tags can be produced. Use ; to separate them.");
             #endregion
             #region Power Cable
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireSmallWatts", "WireSmallWatts");

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.124.0] U59-737790-SCRPAN (release)
+- added TidalTurbinePower, TidalTurbineExhaleRate, TidalTurbineInhaleRate to change basic variables
+- added TidalTurbineProduce which is a new mechanic that makes Tidal Geysers multiple its material (default: off)
+- added TidalTurbineProduceFilter to limit the which elements this works with (default: all water based)
+- fixed auto composter popup
+
 ## [1.0.123.0] U59-737790-SCRP (release)
 - fixed SetCellProperties again
 - fixed crash caused by Door Switch animation (special thanks to Aze)

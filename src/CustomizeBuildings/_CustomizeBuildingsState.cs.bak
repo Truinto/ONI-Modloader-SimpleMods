@@ -20,7 +20,7 @@ namespace CustomizeBuildings
     public class CustomizeBuildingsState : BaseSettings<CustomizeBuildingsState>, IManualConfig
     {
         [JsonInclude] public int? version;
-        public override int Version { get; set; } = 60;
+        public override int Version { get; set; } = 61;
 
         #region $Reset Button
         [JsonIgnore]
@@ -69,6 +69,9 @@ namespace CustomizeBuildings
             SweepyTidySpeedKG = 10f;
 
             SpaceBattery = 100000f;
+            TidalTurbinePower = 300f;
+            TidalTurbineExhaleRate = 166.66667f;
+            TidalTurbineInhaleRate = 500f;
             CO2EngineKG = 100f;
             SugarEngineKG = 450f;
             SteamEngineKG = isVanilla ? 900f : 150f;
@@ -228,6 +231,19 @@ namespace CustomizeBuildings
         public float RadBattery { get; set; } = 1000f;
         [Option("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "Power", "F0")]
         public float SpaceBattery { get; set; } = 100000f;
+
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_ToolTip", "Power", "F0")]
+        public float TidalTurbinePower { get; set; } = 300f;
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_ToolTip", "Power", "F5")]
+        public float TidalTurbineExhaleRate { get; set; } = 166.66667f;
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_ToolTip", "Power", "F0")]
+        public float TidalTurbineInhaleRate { get; set; } = 500f;
+
+        [Option("Tidal Turbine Produce", "How much material is produced per second", "Power", "F0")]
+        public float TidalTurbineProduce { get; set; } = 0f;
+        [Option("Tidal Turbine Produce Filter", "Only elements matching any of these tags can be produced. Use ; to separate them.", "Power")]
+        public string TidalTurbineProduceFilter { get; set; } = "AnyWater";
+
         #endregion
 
         #region Storage
@@ -352,7 +368,7 @@ namespace CustomizeBuildings
         public bool DoorSelfSealing { get; set; } = true;
         [Option("CustomizeBuildings.LOCSTRINGS.DoorPressureInsulationFactor_Title", "CustomizeBuildings.LOCSTRINGS.DoorPressureInsulationFactor_ToolTip", "Door", "F1")]
         [Limit(0, 1)]
-        public float DoorPressureInsulationFactor { get; set; } = 0.5f;
+        public float DoorPressureInsulationFactor { get; set; } = 1.0f;
         [Option("CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedUnpowered_Title", "CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedUnpowered_ToolTip", "Door", "F2")]
         public float DoorPressureSpeedUnpowered { get; set; } = 0.65f;
         [Option("CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedPowered_Title", "CustomizeBuildings.LOCSTRINGS.DoorPressureSpeedPowered_ToolTip", "Door", "F0")]
@@ -764,7 +780,7 @@ namespace CustomizeBuildings
             .Input("Dirt", 0.030000001f).Input("Water", 0.3f)
             .Output("Oxygen", 0.040000003f).Output("Algae", 0.29033336f).Store(false, true);
 
-        public Dictionary<string, Dictionary<string, Dictionary<string, object>>>? AdvancedSettings { get; set; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, object>>>? AdvancedSettings { get; set; } = null;
 
         //    = new Dictionary<string, Dictionary<string, Dictionary<string, object>>>() {
         //        { "LiquidHeater", new Dictionary<string, Dictionary<string, object>> { { "SpaceHeater", new Dictionary<string, object> { { "targetTemperature", 1000f} }  } } }
@@ -850,6 +866,8 @@ namespace CustomizeBuildings
                 SpaceBattery = 100000f;
             if (Version < 56)
                 SkillStationEnabled = false;
+            if (Version < 57)
+                DoorPressureInsulationFactor = 1f;
             if (BuildingBaseSettings_Old != null) // version 60
             {
                 BuildingBaseSettings = new();
@@ -1250,6 +1268,18 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.SpaceBattery", "SpaceBattery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_Title", "Space Battery");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.SpaceBattery_ToolTip", "");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbinePower", "TidalTurbinePower");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_Title", "Tidal Turbine Power");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbinePower_ToolTip", "Output power while active in W (default: 300)");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineExhaleRate", "TidalTurbineExhaleRate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_Title", "Tidal Turbine Exhale Rate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineExhaleRate_ToolTip", "Rate of exhale in kg/s (default: 166.66667)");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineInhaleRate", "TidalTurbineInhaleRate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_Title", "Tidal Turbine Inhale Rate");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_ToolTip", "Rate of inhale in kg/s (default: 500)");
             #endregion
             #region Power Cable
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireSmallWatts", "WireSmallWatts");

@@ -8,19 +8,19 @@ using UnityEngine;
 namespace CustomizeBuildings
 {
     [HarmonyPatch(typeof(SteamTurbineConfig2), "CreateBuildingDef")]
-    internal class SteamTurbineConfig2_CreateBuildingDef
+    public class SteamTurbineConfig2_CreateBuildingDef
     {
-        internal static bool isGas;
+        public static bool IsGas;
 
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.Instance.SteamTurbineEnabled;
         }
 
-        internal static void Postfix(ref BuildingDef __result)
+        public static void Postfix(ref BuildingDef __result)
         {
-            isGas = ElementLoader.FindElementByName(CustomizeBuildingsState.Instance.SteamTurbineOutputElement)?.IsGas ?? false;
-            __result.OutputConduitType = isGas ? ConduitType.Gas : ConduitType.Liquid;
+            IsGas = ElementLoader.FindElementByName(CustomizeBuildingsState.Instance.SteamTurbineOutputElement)?.IsGas ?? false;
+            __result.OutputConduitType = IsGas ? ConduitType.Gas : ConduitType.Liquid;
 
             if (CustomizeBuildingsState.Instance.SteamTurbineWattage != 850f)
             {
@@ -32,14 +32,14 @@ namespace CustomizeBuildings
     }
 
     [HarmonyPatch(typeof(SteamTurbineConfig2), "DoPostConfigureComplete")]
-    internal class SteamTurbineConfig2_DoPostConfigureComplete
+    public class SteamTurbineConfig2_DoPostConfigureComplete
     {
-        internal static bool Prepare()
+        public static bool Prepare()
         {
             return CustomizeBuildingsState.Instance.SteamTurbineEnabled;
         }
 
-        internal static void Postfix(GameObject go)
+        public static void Postfix(GameObject go)
         {
             SteamTurbine steamTurbine = go.GetComponent<SteamTurbine>();
             steamTurbine.srcElem = CustomizeBuildingsState.Instance.SteamTurbineSourceElement.ToSimHash(SimHashes.Steam); //SimHashes.Steam
@@ -55,15 +55,15 @@ namespace CustomizeBuildings
 
             ConduitDispenser conduitDispenser = go.GetComponent<ConduitDispenser>();
             conduitDispenser.elementFilter = [];
-            conduitDispenser.conduitType = SteamTurbineConfig2_CreateBuildingDef.isGas ? ConduitType.Gas : ConduitType.Liquid;
+            conduitDispenser.conduitType = SteamTurbineConfig2_CreateBuildingDef.IsGas ? ConduitType.Gas : ConduitType.Liquid;
         }
     }
 
     //[HarmonyPatch(typeof(Turbine.Instance), nameof(Turbine.Instance.UpdateStatusItems))]
-    //internal class SteamTurbineInputBlockedFix_Patch
+    //public class SteamTurbineInputBlockedFix_Patch
     //{
-    //    internal static bool? isLiquid;
-    //    internal static void Prefix(Turbine.Instance __instance)
+    //    public static bool? isLiquid;
+    //    public static void Prefix(Turbine.Instance __instance)
     //    {
     //        if (!isLiquid.HasValue) isLiquid = ElementLoader.FindElementByName(CustomizeBuildingsState.Instance.SteamTurbineSourceElement)?.IsLiquid ?? false;
     //        if (isLiquid.Value)
