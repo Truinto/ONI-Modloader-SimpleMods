@@ -25,13 +25,10 @@ namespace CustomizeRecipe
             OptionsDialog.Last = null;
         };
 
-        [Option("CustomizeRecipe.LOCSTRINGS.CheatFast_Title", "CustomizeRecipe.LOCSTRINGS.CheatFast_ToolTip", "", null)]
         public bool CheatFast { get; set; } = false;
 
-        [Option("CustomizeRecipe.LOCSTRINGS.CheatFree_Title", "CustomizeRecipe.LOCSTRINGS.CheatFree_ToolTip", "", null)]
         public bool CheatFree { get; set; } = false;
 
-        [Option("CustomizeRecipe.LOCSTRINGS.AllowZeroInput_Title", "CustomizeRecipe.LOCSTRINGS.AllowZeroInput_ToolTip", "", null)]
         public bool AllowZeroInput { get; set; } = false;
 
         public List<RecipeData> RecipeSettings { get; set; } = new List<RecipeData>() {

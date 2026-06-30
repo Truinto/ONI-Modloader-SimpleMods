@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -88,7 +88,7 @@ namespace CustomizeRecipe
                     output.storeElement = true;
                 if (recipe.inheritElement)
                     output.inheritElement = true;
-                if (output.facadeID is not null or "")
+                if (output.facadeID is not (null or ""))
                     output.facadeID = recipe.facadeID;
                 if (recipe.doNotConsume)
                     output.doNotConsume = recipe.doNotConsume;
