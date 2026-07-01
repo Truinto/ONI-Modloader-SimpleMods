@@ -140,6 +140,7 @@ namespace PipedEverything
             new PipeConfig(RefrigeratorConfig.ID, true, x: 0, y: 0, "Solid") { StorageCapacity = float.PositiveInfinity },
             new PipeConfig(EspressoMachineConfig.ID, true, x: 0, y: 0, SpiceNutConfig.ID),
             new PipeConfig(SodaFountainConfig.ID, true, x: 0, y: 1, SimHashes.CarbonDioxide),
+            new PipeConfig(WaterCoolerConfig.ID, true, x: 0, y: 1, SimHashes.Water),
 
             // Advanced Generator+
             new PipeConfig("RefinedCarbonGenerator", true, x: 0, y: 0, SimHashes.RefinedCarbon),
