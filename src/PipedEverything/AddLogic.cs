@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -77,7 +77,7 @@ namespace PipedEverything
                     }
                     continue;
                 }
-                
+
                 if (conduitType == ConduitType.None)
                     conduitType = element.IsGas ? ConduitType.Gas : element.IsLiquid ? ConduitType.Liquid : ConduitType.Solid;
                 else if (conduitType == ConduitType.Gas && !element.IsGas
@@ -172,13 +172,37 @@ namespace PipedEverything
 
             if (config.OriginalPort is Port.Utility)
             {
-                if (config.Input)
-                    def.UtilityInputOffset = new(config.OffsetX, config.OffsetY);
+                // option to remove conduit
+                string filter = config.Filter.Length == 1 ? config.Filter[0] : "";
+                if (filter == "DESTROY")
+                {
+                    if (config.Input)
+                    {
+                        def.InputConduitType = ConduitType.None;
+                        def.BuildingComplete.RemoveComponent<ConduitConsumer>();
+                    }
+                    else
+                    {
+                        def.OutputConduitType = ConduitType.None;
+                        def.BuildingComplete.RemoveComponent<ConduitDispenser>();
+                    }
+                }
                 else
-                    def.UtilityOutputOffset = new(config.OffsetX, config.OffsetY);
+                {
+                    // option to change element (for wrong-element damage)
+                    if (config.Input && filter is not (null or ""))
+                        def.BuildingComplete.GetComponent<ConduitConsumer>()?.capacityTag = filter.ToTag();
+
+                    // change X, Y of Utility port
+                    if (config.Input)
+                        def.UtilityInputOffset = new(config.OffsetX, config.OffsetY);
+                    else
+                        def.UtilityOutputOffset = new(config.OffsetX, config.OffsetY);
+                }
             }
             else
             {
+                // change X, Y of Extra port
                 int index = (int)config.OriginalPort;
                 if (config.Input)
                 {

@@ -12,7 +12,7 @@ namespace PipedEverything
     {
         public int version { get; set; } = 11;
 
-        public bool GeyserPipes { get; set; } = true;
+        public bool GeyserPipes { get; set; } = false;
         public bool GeyserPipesUnlimited { get; set; } = true;
         public float GeyserStorageKG { get; set; } = 1000f;
         public float GeyserGasStorageKG { get; set; } = 100f;

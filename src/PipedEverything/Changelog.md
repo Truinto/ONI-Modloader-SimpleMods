@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.33.0] U59-737790-SCRPAN (release)
+- changed so that filter can override the capacity tag of original port; the filter "DESTROY" removes the port instead
+
 ## [1.0.32.0] U57-704096-SCRP (release)
 - added option to set solid pipe output rate (default: 20kg)
 - added Apothecary defaults; requires reset
