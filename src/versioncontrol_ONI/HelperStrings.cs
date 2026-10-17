@@ -37,7 +37,7 @@ namespace versioncontrol_ONI
             return -1;
         }
 
-        public static string GetQuotationString(this string line, int occurrence, char delimiter = '"')
+        public static string? GetQuotationString(this string line, int occurrence, char delimiter = '"')
         {
             occurrence--;
 

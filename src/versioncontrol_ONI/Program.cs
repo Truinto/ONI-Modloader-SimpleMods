@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -6,9 +6,8 @@ using System.Text.RegularExpressions;
 namespace versioncontrol_ONI
 {
     // reads changelog and updates AssemblyInfo and info.json with new version
-    public class Program
+    public partial class Program
     {
-
         public class Data
         {
             public string? Path_Log;
@@ -19,10 +18,10 @@ namespace versioncontrol_ONI
             public string? GameVersion;
             public string? GameVersion_Prefix;
             public string? AssemblyVersion;
-            public string? ProjectName;
+            public string? Project_Name;
             public int GameVersion_Int;
-            public bool B_exp1;
-            public bool Overwrite_state;
+            public bool B_Expansion1;
+            public bool Overwrite_State;
             public bool NewVersion;
             public bool Auto_Increase;
         }
@@ -54,7 +53,7 @@ namespace versioncontrol_ONI
                 UpdateAssembly(data);
 
                 // auto complete state source
-                LanguageFillOut.Run(data.Path_State, data.Overwrite_state);
+                LanguageFillOut.Run(data.Path_State, data.Overwrite_State);
 
                 Console.WriteLine("versioncontrol done!");
                 return 0;
@@ -90,10 +89,10 @@ namespace versioncontrol_ONI
                         data.Path_State = args[i + 1];
                         break;
                     case "-projectname":
-                        data.ProjectName = args[i + 1];
+                        data.Project_Name = args[i + 1];
                         break;
                     case "-stateoverwrite":
-                        data.Overwrite_state = true;
+                        data.Overwrite_State = true;
                         break;
                     case "-autoincrease":
                         data.Auto_Increase = true;
@@ -107,11 +106,25 @@ namespace versioncontrol_ONI
         /// </summary>
         private static void ReadLog(Data data)
         {
-            data.Path_Log ??= (Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\..\LocalLow\Klei\Oxygen Not Included\Player.log");
+            // ensure log path or return
+            const string log_path = "/AppData/LocalLow/Klei/Oxygen Not Included/Player.log";
+            const string wine_path = "/.steam/steam/steamapps/compatdata/457140/pfx/drive_c/users/steamuser";
             if (!File.Exists(data.Path_Log))
-                return;
+            {
+                string home_path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                data.Path_Log = home_path + log_path;
+                if (!File.Exists(data.Path_Log))
+                {
+                    data.Path_Log = home_path + wine_path + log_path;
+                    if (!File.Exists(data.Path_Log))
+                    {
+                        data.Path_Log = null;
+                        return;
+                    }
+                }
+            }
 
-            var rx_build = new Regex("Build: (([0-9A-z]+)-(.+)-(.+))$", RegexOptions.Compiled);
+            var rx_build = Rx_BuildVersion();
 
             //Console.WriteLine("Reading log file...");
             using var log = File.OpenText(data.Path_Log);
@@ -124,7 +137,7 @@ namespace versioncontrol_ONI
 
                 if (line.Contains("[INFO] Expansion1: True", StringComparison.Ordinal))
                 {
-                    data.B_exp1 = true;
+                    data.B_Expansion1 = true;
                     break;
                 }
 
@@ -148,7 +161,7 @@ namespace versioncontrol_ONI
             if (data.Path_MD == null)
                 return;
 
-            var rx = new Regex(@"\[([\d\.]+)\]");
+            var rx = Rx_Number();
 
             var changelog = File.ReadAllLines(data.Path_MD);
             for (int i = 0; i < changelog.Length; i++)
@@ -177,7 +190,7 @@ namespace versioncontrol_ONI
             if (data.Path_Info == null || data.AssemblyVersion == null)
                 return;
 
-            var match = Regex.Match(File.ReadAllText(data.Path_Info), "^version: ([\\d\\.]+)", RegexOptions.Multiline);
+            var match = Rx_ModInfoVersion().Match(File.ReadAllText(data.Path_Info));
             if (!match.Success)
                 return;
 
@@ -198,7 +211,7 @@ namespace versioncontrol_ONI
                 return;
 
             string? path_mod = new FileInfo(data.Path_Info).Directory?.FullName ?? "";
-            var match = Regex.Match(File.ReadAllText(data.Path_Info), "^minimumSupportedBuild: (\\d+)", RegexOptions.Multiline);
+            var match = Rx_ModInfoBuild().Match(File.ReadAllText(data.Path_Info));
             if (!match.Success)
                 return;
 
@@ -234,14 +247,14 @@ namespace versioncontrol_ONI
                 }
                 else
                 {
-                    modinfo = new string[]
-                    {
-                            "supportedContent: " + (data.B_exp1 ? "EXPANSION1_ID" : "VANILLA_ID"),
-                            "minimumSupportedBuild: " + data.GameVersion_Int,
-                            "APIVersion: 2",
-                            //projectname == null ? "" : "staticID: " + projectname,
-                            data.AssemblyVersion == null ? "" : "version: " + data.AssemblyVersion
-                    };
+                    modinfo =
+                    [
+                        "supportedContent: " + (data.B_Expansion1 ? "EXPANSION1_ID" : "VANILLA_ID"),
+                        "minimumSupportedBuild: " + data.GameVersion_Int,
+                        "APIVersion: 2",
+                        //projectname == null ? "" : "staticID: " + projectname,
+                        data.AssemblyVersion == null ? "" : "version: " + data.AssemblyVersion
+                    ];
                 }
                 File.WriteAllLines(data.Path_Info, modinfo);
                 Console.WriteLine("updated info file");
@@ -268,6 +281,14 @@ namespace versioncontrol_ONI
             File.WriteAllLines(data.Path_Assembly, assembly);
             Console.WriteLine("updated assembly file");
         }
+
+        [GeneratedRegex("Build: (([0-9A-z]+)-(.+)-(.+))$")]
+        private static partial Regex Rx_BuildVersion();
+        [GeneratedRegex("^version: ([\\d\\.]+)", RegexOptions.Multiline)]
+        private static partial Regex Rx_ModInfoVersion();
+        [GeneratedRegex("^minimumSupportedBuild: (\\d+)", RegexOptions.Multiline)]
+        private static partial Regex Rx_ModInfoBuild();
+        [GeneratedRegex(@"\[([\d\.]+)\]")]
+        private static partial Regex Rx_Number();
     }
 }
-

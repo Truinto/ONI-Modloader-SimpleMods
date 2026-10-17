@@ -75,6 +75,9 @@ dotnet_diagnostic.CA1806.severity = none
 # CA2211: Nicht konstante Felder dürfen nicht sichtbar sein
 dotnet_diagnostic.CA2211.severity = none
 
+# Roslyn RCSxxxx
+dotnet_analyzer_diagnostic.category-roslynator.severity = none
+
 #### .NET-Codierungskonventionen ####
 
 # Using-Direktiven organisieren

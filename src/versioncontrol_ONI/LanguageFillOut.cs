@@ -19,22 +19,19 @@ namespace versioncontrol_ONI
      * - number of decimal places is copied from default value
      * - if variable ends with 'Percent' uses format 'P'
      */
-    public class LanguageFillOut
+    public partial class LanguageFillOut
     {
-        public static Regex rex_variable = new(@"public\s+[\w\.<>\[\],\s]*\s+(\w+)\s+", RegexOptions.Compiled);
-        public static Regex rex_numbers = new(@"\d+\.?(\d*)f;", RegexOptions.Compiled);
-
         public static Dictionary<string, Data> AllData = new(50);
         public static string? Namespace;
 
         public class Data
         {
-            public bool HasRegion => Region != null && Region != "";
+            public bool HasRegion => Region is not null and not "";
             public string? Region;
             public string? PropertyName;
             public string? Title;
             public string? ToolTip;
-            public string? format;
+            public string? Format;
         }
 
         public static void Run(string? pathStateSource, bool overwrite = false)
@@ -70,10 +67,10 @@ namespace versioncontrol_ONI
                 }
                 else if (line[i].Contains("Helpers.StringsAdd(", StringComparison.Ordinal)) // read already existing strings
                 {
-                    string q1 = line[i].GetQuotationString(1) ?? "";
+                    var q1 = line[i].GetQuotationString(1) ?? "";
                     int dot = q1.LastIndexOf('.') + 1;
                     int score = q1.LastIndexOf('_');
-                    string q2 = line[i].GetQuotationString(2);
+                    var q2 = line[i].GetQuotationString(2);
 
                     if (dot > 0 && score > dot && q2 != null)
                     {
@@ -90,7 +87,7 @@ namespace versioncontrol_ONI
                 else if (line[i].Contains("public ", StringComparison.Ordinal) && !line[i].Contains(" static ", StringComparison.Ordinal) && !line[i].Contains(" class ", StringComparison.Ordinal))
                 {
                     // try to match field that is public and non static
-                    var variable_match = rex_variable.Match(line[i]);
+                    var variable_match = Rx_Variable().Match(line[i]);
                     if (variable_match.Success && variable_match.Groups.Count == 2 && variable_match.Groups[1].Value != "")
                     {
                         // if field matches, create new variable entry
@@ -104,12 +101,12 @@ namespace versioncontrol_ONI
 
                         // try to find format, is null when no match
                         string format = "null";
-                        var float_match = rex_numbers.Match(line[i]);
+                        var float_match = Rx_Numbers().Match(line[i]);
                         if (float_match.Success && float_match.Groups.Count == 2)
                             format = $"\"F{float_match.Groups[1].Length}\"";
                         if (variable.EndsWith("Percent", StringComparison.Ordinal))
                             format = format.Replace('F', 'P');
-                        AllData[variable].format = format;
+                        AllData[variable].Format = format;
 
                         // apply current region
                         AllData[variable].Region = region;
@@ -231,7 +228,7 @@ namespace versioncontrol_ONI
 
                 else if (region != null && trimmed.StartsWith("Helpers.StringsAdd("))
                 {
-                    if (!dic[region].Remove(trimmed.GetQuotationString(1)))
+                    if (!dic[region].Remove(trimmed.GetQuotationString(1) ?? ""))
                         line.Insert(i++, "#warning unused language key");
                 }
 
@@ -277,9 +274,9 @@ namespace versioncontrol_ONI
             {
                 if (line[i].Contains("[Option("))
                 {
-                    string title = line[i].GetQuotationString(1);
-                    string tooltip = line[i].GetQuotationString(2);
-                    string region = line[i].GetQuotationString(3) ?? "$";
+                    var title = line[i].GetQuotationString(1);
+                    var tooltip = line[i].GetQuotationString(2);
+                    var region = line[i].GetQuotationString(3) ?? "$";
                     if (title != null && tooltip != null)
                     {
                         if (!result.ContainsKey(region))
@@ -292,6 +289,11 @@ namespace versioncontrol_ONI
 
             return result;
         }
+
+        [GeneratedRegex(@"public\s+[\w\.<>\[\],\s]*\s+(\w+)\s+", RegexOptions.Compiled)]
+        private static partial Regex Rx_Variable();
+        [GeneratedRegex(@"\d+\.?(\d*)f;", RegexOptions.Compiled)]
+        private static partial Regex Rx_Numbers();
     }
 
     public class Parser
@@ -301,5 +303,4 @@ namespace versioncontrol_ONI
             //System.CodeDom.Compiler.CodeParser.Parse();
         }
     }
-
 }

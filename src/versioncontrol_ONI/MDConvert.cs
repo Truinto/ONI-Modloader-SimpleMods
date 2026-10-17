@@ -6,10 +6,8 @@ using System.Text.RegularExpressions;
 
 namespace versioncontrol_ONI
 {
-    public class MDConvert
+    public partial class MDConvert
     {
-        public static Regex RegexURL = new(@"\[\*\*(.*?)\*\*\]\((.*?)\)", RegexOptions.Compiled);
-
         public static void Convert(string path)
         {
             var lines = File.ReadAllLines(path).ToList();
@@ -48,8 +46,11 @@ namespace versioncontrol_ONI
                     continue;
                 }
 
-                lines[i] = RegexURL.Replace(lines[i], @"[url=\2]\1[/url]"); //"[**Link**](https://)"
+                lines[i] = Rx_Url().Replace(lines[i], @"[url=\2]\1[/url]"); //"[**Link**](https://)"
             }
         }
+
+        [GeneratedRegex(@"\[\*\*(.*?)\*\*\]\((.*?)\)", RegexOptions.Compiled)]
+        private static partial Regex Rx_Url();
     }
 }

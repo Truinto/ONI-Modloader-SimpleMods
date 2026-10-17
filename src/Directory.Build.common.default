@@ -19,13 +19,13 @@
 
 	<!-- Shared Libs -->
 	<ItemGroup>
-		<Compile Include="$(SolutionDir)Common\BootDialog.cs" Link="Common/BootDialog.cs" />
-		<Compile Include="$(SolutionDir)Common\ConfigManager.cs" Link="Common/ConfigManager.cs" />
-		<Compile Include="$(SolutionDir)Common\Helpers.cs" Link="Common/Helpers.cs" />
-		<Compile Include="$(SolutionDir)Common\TechHelper.cs" Link="Common/TechHelper.cs" />
-		<Compile Include="$(SharedDir)\General\Attributes.cs" Link="Shared/Attributes.cs" />
-		<Compile Include="$(SharedDir)\General\JsonNewtonsoft.cs" Link="Shared/JsonNewtonsoft.cs" />
-		<Compile Include="$(SharedDir)\General\BaseSettings.cs" Link="Shared/BaseSettings.cs" />
+		<Compile Include="$(SolutionDir)Common/BootDialog.cs" Link="Common/BootDialog.cs" />
+		<Compile Include="$(SolutionDir)Common/ConfigManager.cs" Link="Common/ConfigManager.cs" />
+		<Compile Include="$(SolutionDir)Common/Helpers.cs" Link="Common/Helpers.cs" />
+		<Compile Include="$(SolutionDir)Common/TechHelper.cs" Link="Common/TechHelper.cs" />
+		<Compile Include="$(SharedDir)/General/Attributes.cs" Link="Shared/Attributes.cs" />
+		<Compile Include="$(SharedDir)/General/JsonNewtonsoft.cs" Link="Shared/JsonNewtonsoft.cs" />
+		<Compile Include="$(SharedDir)/General/BaseSettings.cs" Link="Shared/BaseSettings.cs" />
 	</ItemGroup>
 
 	<!-- Common References -->
@@ -42,23 +42,23 @@
 
 	<!-- Project References -->
 	<ItemGroup>
-		<Reference Private="false" Include="Assembly-CSharp" HintPath="$(GameManaged)\Assembly-CSharp.dll" Publicize="true" />
-		<Reference Private="false" Include="Assembly-CSharp-firstpass" HintPath="$(GameManaged)\Assembly-CSharp-firstpass.dll" Publicize="true" />
+		<Reference Private="false" Include="Assembly-CSharp" HintPath="$(GameManaged)/Assembly-CSharp.dll" Publicize="true" />
+		<Reference Private="false" Include="Assembly-CSharp-firstpass" HintPath="$(GameManaged)/Assembly-CSharp-firstpass.dll" Publicize="true" />
 		
-		<Reference Private="false" Include="0Harmony" HintPath="$(GameManaged)\0Harmony.dll" />
-		<Reference Private="false" Include="Newtonsoft.Json" HintPath="$(GameManaged)\Newtonsoft.Json.dll" />
-		<Reference Private="false" Include="FMODUnity.dll" HintPath="$(GameManaged)\FMODUnity.dll" />
-		<Reference Private="false" Include="UnityEngine" HintPath="$(GameManaged)\UnityEngine.dll" />
-		<Reference Private="false" Include="UnityEngine.CoreModule" HintPath="$(GameManaged)\UnityEngine.CoreModule.dll" />
-		<Reference Private="false" Include="UnityEngine.UI" HintPath="$(GameManaged)\UnityEngine.UI.dll" />
-		<Reference Private="false" Include="UnityEngine.UIModule" HintPath="$(GameManaged)\UnityEngine.UIModule.dll" />
-		<Reference Private="false" Include="UnityEngine.IMGUIModule" HintPath="$(GameManaged)\UnityEngine.IMGUIModule.dll" />
-		<Reference Private="false" Include="Unity.TextMeshPro" HintPath="$(GameManaged)\Unity.TextMeshPro.dll" />
+		<Reference Private="false" Include="0Harmony" HintPath="$(GameManaged)/0Harmony.dll" />
+		<Reference Private="false" Include="Newtonsoft.Json" HintPath="$(GameManaged)/Newtonsoft.Json.dll" />
+		<Reference Private="false" Include="FMODUnity.dll" HintPath="$(GameManaged)/FMODUnity.dll" />
+		<Reference Private="false" Include="UnityEngine" HintPath="$(GameManaged)/UnityEngine.dll" />
+		<Reference Private="false" Include="UnityEngine.CoreModule" HintPath="$(GameManaged)/UnityEngine.CoreModule.dll" />
+		<Reference Private="false" Include="UnityEngine.UI" HintPath="$(GameManaged)/UnityEngine.UI.dll" />
+		<Reference Private="false" Include="UnityEngine.UIModule" HintPath="$(GameManaged)/UnityEngine.UIModule.dll" />
+		<Reference Private="false" Include="UnityEngine.IMGUIModule" HintPath="$(GameManaged)/UnityEngine.IMGUIModule.dll" />
+		<Reference Private="false" Include="Unity.TextMeshPro" HintPath="$(GameManaged)/Unity.TextMeshPro.dll" />
 
-		<Reference Private="false" Include="UnityMod" HintPath="$(SolutionDir)@Shared\UnityMod.dll" />
-		<Reference Private="false" Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib\PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
-		<Reference Private="false" Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib\PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
-		<Reference Private="false" Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib\PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Private="false" Include="UnityMod" HintPath="$(SolutionDir)@Shared/UnityMod.dll" />
+		<Reference Private="false" Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib/PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Private="false" Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib/PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
+		<Reference Private="false" Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib/PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 	</ItemGroup>
 
 	<!-- Other Files -->
@@ -80,9 +80,13 @@
 	</ItemGroup>
 
 	<!-- Update build version and run code editing (if enabled) -->
-	<Target Name="Versioning" BeforeTargets="PreBuildEvent">
-		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI\versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties\AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)\mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
-		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI\versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties\AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)\mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
+	<Target Condition="!$([MSBuild]::IsOSPlatform('Linux'))" Name="Versioning" BeforeTargets="PreBuildEvent">
+		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
+		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
+	</Target>
+	<Target Condition="$([MSBuild]::IsOSPlatform('Linux'))" Name="Versioning" BeforeTargets="PreBuildEvent">
+		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
+		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
 	</Target>
 
 </Project>
