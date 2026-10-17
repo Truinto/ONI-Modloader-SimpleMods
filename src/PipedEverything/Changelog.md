@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.35.0] U59-744825-SCRPAN (release)
+- fixed default config causing a warning
+
 ## [1.0.34.0] U59-744825-SCRPAN (release)
 - updated json logic
 - added PRegistry PipedEverything.PostMod to override port settings

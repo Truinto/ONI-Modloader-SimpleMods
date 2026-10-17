@@ -7,13 +7,11 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-#pragma warning disable IDE1006 // lower case
-
 namespace PipedEverything
 {
     public class PipedEverythingState : BaseSettings<PipedEverythingState>
     {
-        public override int Version { get; set; } = 12;
+        public override int Version { get; set; } = 13;
 
         public bool GeyserPipes { get; set; } = false;
         public bool GeyserPipesUnlimited { get; set; } = true;
@@ -141,7 +139,7 @@ namespace PipedEverything
             new PipeConfig(SweepBotStationConfig.ID, false, x: 0, y: 0, "Solid") { StorageIndex = 1 },
             new PipeConfig(SweepBotStationConfig.ID, false, x: 0, y: 0, "Liquid") { StorageIndex = 1 },
             new PipeConfig(RefrigeratorConfig.ID, true, x: 0, y: 0, "Solid") { StorageCapacity = float.PositiveInfinity },
-            new PipeConfig(EspressoMachineConfig.ID, true, x: 0, y: 0, SpiceNutConfig.ID),
+            new PipeConfig(EspressoMachineConfig.ID, true, x: 0, y: 0, "Solid"),
             new PipeConfig(SodaFountainConfig.ID, true, x: 0, y: 1, SimHashes.CarbonDioxide),
             new PipeConfig(WaterCoolerConfig.ID, true, x: 0, y: 1, SimHashes.Water),
 
@@ -227,6 +225,15 @@ namespace PipedEverything
                 addIfNew(new PipeConfig(PeatGeneratorConfig.ID, true, x: 0, y: 0, "Solid") { StorageCapacity = float.PositiveInfinity });
                 addIfNew(new PipeConfig(PeatGeneratorConfig.ID, false, x: 1, y: 1, SimHashes.CarbonDioxide));
                 addIfNew(new PipeConfig(PeatGeneratorConfig.ID, false, x: 1, y: 0, SimHashes.DirtyWater));
+            }
+
+            if (Version < 13)
+            {
+                foreach (var config in Configs)
+                {
+                    if (config.Filter.Length == 1 && config.Filter[0] == SpiceNutConfig.ID)
+                        config.Filter[0] = "Solid";
+                }
             }
 
             return true;
