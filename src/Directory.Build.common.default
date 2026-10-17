@@ -80,13 +80,9 @@
 	</ItemGroup>
 
 	<!-- Update build version and run code editing (if enabled) -->
-	<Target Condition="!$([MSBuild]::IsOSPlatform('Linux'))" Name="Versioning" BeforeTargets="PreBuildEvent">
+	<Target Name="Versioning" BeforeTargets="PreBuildEvent">
 		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
 		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
-	</Target>
-	<Target Condition="$([MSBuild]::IsOSPlatform('Linux'))" Name="Versioning" BeforeTargets="PreBuildEvent">
-		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
-		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
 	</Target>
 
 </Project>

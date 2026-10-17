@@ -2,7 +2,7 @@
   "profiles": {
     "versioncontrol_ONI": {
       "commandName": "Project",
-      "commandLineArgs": "-md \"E:\\Github\\ONI-Modloader-SimpleMods\\src\\CustomizeElements\\Changelog.md\"\r\n-asbly \"E:\\Github\\ONI-Modloader-SimpleMods\\src\\CustomizeElements\\Properties\\AssemblyInfo.cs\"\r\n-info \"C:\\Users\\Fumihiko\\Documents\\Klei\\OxygenNotIncluded\\mods\\dev\\CustomizeElements\\mod_info.yaml\"\r\n-projectname \"CustomizeElements\""
+      "commandLineArgs": "-md \"C:\\Github\\Truinto-ONI\\src\\PipedEverything\\Changelog.md\" \r\n-asbly \"C:\\Github\\Truinto-ONI\\src\\PipedEverything\\Properties/AssemblyInfo.cs\" \r\n-info \"C:\\Users\\Fumihiko/Documents/Klei/OxygenNotIncluded/mods/dev/PipedEverything/mod_info.yaml\" \r\n-projectname \"PipedEverything\"\r\n-state \"C:\\Github\\Truinto-ONI\\src\\PipedEverything\\_PipedEverythingState.cs\""
     }
   }
 }
