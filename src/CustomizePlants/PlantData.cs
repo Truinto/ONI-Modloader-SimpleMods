@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 
+#pragma warning disable IDE1006 // ignore naming styles for compatibility reasons
+
 namespace CustomizePlants
 {
     public class PlantData
     {
         private int hash;
         public string id;
-        public string? fruitId;
+        public List<Crop.CropVal.ProductInfo>? fruits;
         public float? fruit_grow_time;
-        public int? fruit_amount;
+        public bool? fruit_renewable;
         public Dictionary<string, float>? irrigation;
         public float? illumination;
         public string[]? safe_elements;
@@ -36,9 +38,9 @@ namespace CustomizePlants
         /// Holds settings for one plant.
         /// </summary>
         /// <param name="id">Required. Defines which plant is affected.</param>
-        /// <param name="fruitId">Must be valid Tag or listed in SpecialCropSettings.</param>
+        /// <param name="fruits">List of { "cropId": "SomeId", "quantity": 1.0 }</param>
         /// <param name="fruit_grow_time">Time for the crop to grow in seconds.</param>
-        /// <param name="fruit_amount">Number of objects or amount in kg, depends on Tag.</param>
+        /// <param name="fruit_renewable">Renewable flag?</param>
         /// <param name="irrigation">List of irrigation needed. May be any liquid or solid element. Amount in kg per cycle</param>
         /// <param name="illumination">If equal 0 removes existing component. If less than 0 requires darkness. Otherwise number is light threshold required.</param>
         /// <param name="safe_elements">List of gas elements plant has to be in. If empty all elements are suitable.</param>
@@ -61,12 +63,12 @@ namespace CustomizePlants
         /// <param name="radiation_radius">Radius of radiation (if any).</param>
         /// <param name="radiation_threshold_min">Minimum radiation threshold.</param>
         /// <param name="radiation_threshold_max">Maximum radiation threshold.</param>
-        public PlantData(string id, string? fruitId = null, float? fruit_grow_time = null, int? fruit_amount = null, Dictionary<string, float>? irrigation = null, float? illumination = null, string[]? safe_elements = null, float[]? temperatures = null, float[]? pressures = null, int? decor_value = null, int? decor_radius = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string? disease = null, int? disease_amount = null, int? disease_once = null, string? input_element = null, float? input_rate = null, string? output_element = null, float? output_rate = null, float? radiation = null, int? radiation_radius = null, float? radiation_threshold_min = null, float? radiation_threshold_max = null)
+        public PlantData(string id, List<Crop.CropVal.ProductInfo>? fruits = null, float? fruit_grow_time = null, bool? fruit_renewable = null, Dictionary<string, float>? irrigation = null, float? illumination = null, string[]? safe_elements = null, float[]? temperatures = null, float[]? pressures = null, int? decor_value = null, int? decor_radius = null, float? submerged_threshold = null, bool? can_tinker = null, bool? require_solid_tile = null, float? max_age = null, string? disease = null, int? disease_amount = null, int? disease_once = null, string? input_element = null, float? input_rate = null, string? output_element = null, float? output_rate = null, float? radiation = null, int? radiation_radius = null, float? radiation_threshold_min = null, float? radiation_threshold_max = null)
         {
             this.id = id;
-            this.fruitId = fruitId;
+            this.fruits = fruits;
             this.fruit_grow_time = fruit_grow_time;
-            this.fruit_amount = fruit_amount;
+            this.fruit_renewable = fruit_renewable;
             this.irrigation = irrigation;
             this.illumination = illumination;
             this.safe_elements = safe_elements;
@@ -112,7 +114,5 @@ namespace CustomizePlants
         {
             return base.ToString();
         }
-
     }
-
 }

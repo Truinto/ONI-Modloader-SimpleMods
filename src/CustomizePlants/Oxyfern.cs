@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using UnityEngine;
+using Common;
 
 namespace CustomizePlants
 {
@@ -13,16 +14,16 @@ namespace CustomizePlants
     {
         public static bool Prepare()
         {
-            return CustomizePlantsState.StateManager.State.OxyfernOxygenPerSecond != 0.03125f;
+            return CustomizePlantsState.Instance.OxyfernOxygenPerSecond != 0.03125f;
         }
 
         public static void Postfix(GameObject __result)
         {
-            float oxyfernOxygenPerSecond = CustomizePlantsState.StateManager.State.OxyfernOxygenPerSecond;
+            float oxyfernOxygenPerSecond = CustomizePlantsState.Instance.OxyfernOxygenPerSecond;
             ElementConverter elementConverter = __result.GetComponent<ElementConverter>();
             if (elementConverter == null)
             {
-                Debug.LogWarning("OxyfernConfig_CreatePrefab elementConverter was null");
+                Helpers.Print("OxyfernConfig_CreatePrefab elementConverter was null");
                 return;
             }
 
@@ -39,12 +40,12 @@ namespace CustomizePlants
     {
         public static bool Prepare()
         {
-            return CustomizePlantsState.StateManager.State.OxyfernOxygenPerSecond != 0.03125f;
+            return CustomizePlantsState.Instance.OxyfernOxygenPerSecond != 0.03125f;
         }
 
         public static bool Prefix(Oxyfern __instance, ReceptacleMonitor ___receptacleMonitor)
         {
-            float oxyfernOxygenPerSecond = CustomizePlantsState.StateManager.State.OxyfernOxygenPerSecond;
+            float oxyfernOxygenPerSecond = CustomizePlantsState.Instance.OxyfernOxygenPerSecond;
 
             ElementConsumer elementConsumer = __instance.GetComponent<ElementConsumer>();
             if (elementConsumer != null)
@@ -56,7 +57,7 @@ namespace CustomizePlants
                 return false;
             }
             else
-                Debug.LogWarning("Oxyfern_SetConsumptionRate elementConsumer was null");
+                Helpers.Print("Oxyfern_SetConsumptionRate elementConsumer was null");
             return true;
         }
     }

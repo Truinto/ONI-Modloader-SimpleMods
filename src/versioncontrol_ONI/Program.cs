@@ -107,17 +107,18 @@ namespace versioncontrol_ONI
         private static void ReadLog(Data data)
         {
             // ensure log path or return
-            const string log_path = "/AppData/LocalLow/Klei/Oxygen Not Included/Player.log";
-            const string wine_path = "/.steam/steam/steamapps/compatdata/457140/pfx/drive_c/users/steamuser";
+            const string win_path = "/AppData/LocalLow/Klei/Oxygen Not Included/Player.log";
+            const string linux_path = "/.config/unity3d/Klei/Oxygen Not Included/Player.log";
             if (!File.Exists(data.Path_Log))
             {
                 string home_path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                data.Path_Log = home_path + log_path;
+                data.Path_Log = home_path + win_path;
                 if (!File.Exists(data.Path_Log))
                 {
-                    data.Path_Log = home_path + wine_path + log_path;
+                    data.Path_Log = home_path + linux_path;
                     if (!File.Exists(data.Path_Log))
                     {
+                        Console.WriteLine("unable to find log file");
                         data.Path_Log = null;
                         return;
                     }
@@ -126,10 +127,9 @@ namespace versioncontrol_ONI
 
             var rx_build = Rx_BuildVersion();
 
-            //Console.WriteLine("Reading log file...");
             using var log = File.OpenText(data.Path_Log);
             int counter = 0;
-            while (!log.EndOfStream && counter++ < 50)
+            while (!log.EndOfStream && counter++ < 200)
             {
                 var line = log.ReadLine();
                 if (line == null)
@@ -249,10 +249,8 @@ namespace versioncontrol_ONI
                 {
                     modinfo =
                     [
-                        "supportedContent: " + (data.B_Expansion1 ? "EXPANSION1_ID" : "VANILLA_ID"),
                         "minimumSupportedBuild: " + data.GameVersion_Int,
                         "APIVersion: 2",
-                        //projectname == null ? "" : "staticID: " + projectname,
                         data.AssemblyVersion == null ? "" : "version: " + data.AssemblyVersion
                     ];
                 }

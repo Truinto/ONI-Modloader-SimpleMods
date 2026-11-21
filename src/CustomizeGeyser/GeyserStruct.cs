@@ -4,6 +4,7 @@ using System;
 
 namespace CustomizeGeyser
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006", Justification = "Legacy compatibility.")]
     public class GeyserStruct
     {
         private int hash;
@@ -84,7 +85,7 @@ namespace CustomizeGeyser
 
         public override bool Equals(object obj)
         {
-            return this.GetHashCode() == (obj as GeyserStruct)?.GetHashCode();
+            return GetHashCode() == (obj as GeyserStruct)?.GetHashCode();
         }
 
         public override int GetHashCode()

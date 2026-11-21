@@ -1,26 +1,30 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using System;
 using System.Linq;
 using System.IO;
 using PeterHan.PLib.Options;
-using Newtonsoft.Json;
 using Common;
+using Shared;
+using Config;
+
+#pragma warning disable IDE1006 // ignore naming styles for compatibility reasons
 
 namespace CustomizePlants
 {
     [ConfigFile("CustomizePlants.json", true, true, typeof(Config.TranslationResolver))]
     [RestartRequired]
-    public class CustomizePlantsState : IManualConfig
+    public class CustomizePlantsState : BaseSettings<CustomizePlantsState>, IManualConfig
     {
-        public int version { get; set; } = 33;
+        public override int Version { get; set; } = 44;
 
         #region $Buttons
         [Option("CustomizePlants.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizePlants.LOCSTRINGS.ResetToCustomDefault_ToolTip", "", null)]
         [JsonIgnore]
         public System.Action<object> ResetToCustomDefault => delegate (object nix)
         {
-            StateManager.TrySaveConfigurationState(new CustomizePlantsState());
+            new CustomizePlantsState().TrySave();
 
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
@@ -31,9 +35,9 @@ namespace CustomizePlants
         [JsonIgnore]
         public System.Action<object> PresetClear => delegate (object nix)
         {
-            StateManager.State.PlantSettings.Clear();
+            Instance.PlantSettings.Clear();
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
 
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
@@ -46,11 +50,11 @@ namespace CustomizePlants
         {
             foreach (string plant in PLANTS.NAMES)
             {
-                if (!StateManager.State.PlantSettings.Any(a => a.id == plant))
-                    StateManager.State.PlantSettings.Add(new PlantData(plant));
+                if (!Instance.PlantSettings.Any(a => a.id == plant))
+                    Instance.PlantSettings.Add(new PlantData(plant));
             }
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
 
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last = null;
@@ -62,18 +66,18 @@ namespace CustomizePlants
         {
             foreach (string plant in PLANTS.NAMES)
             {
-                if (!StateManager.State.PlantSettings.Any(a => a.id == plant))
-                    StateManager.State.PlantSettings.Add(new PlantData(plant));
+                if (!Instance.PlantSettings.Any(a => a.id == plant))
+                    Instance.PlantSettings.Add(new PlantData(plant));
             }
 
             foreach (var prefab in Assets.Prefabs)
             {
-                var setting = StateManager.State.PlantSettings.FirstOrDefault(f => f.id == prefab.name);
+                var setting = Instance.PlantSettings.FirstOrDefault(f => f.id == prefab.name);
                 if (setting != null)
                     PlantHelper.ReadPlant(prefab.gameObject, ref setting);
             }
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
 
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last = null;
@@ -83,13 +87,14 @@ namespace CustomizePlants
         [JsonIgnore]
         public System.Action<object> PresetHalf => delegate (object nix)
         {
-            foreach (var setting in StateManager.State.PlantSettings)
+            foreach (var setting in Instance.PlantSettings)
             {
+                if (setting.irrigation == null) continue;
                 foreach (var key in setting.irrigation.Keys.ToList())
                     setting.irrigation[key] *= 0.5f;
             }
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
 
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last = null;
@@ -99,7 +104,7 @@ namespace CustomizePlants
         #region Advanced
         public HashSet<PlantData> PlantSettings { get; set; } = new HashSet<PlantData>() {
             new(id: BasicSingleHarvestPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Dirt", 5f} }, temperatures: [218.15f, 278.15f, 308.15f, 398.15f]),
-            new(id: MushroomPlantConfig.ID, irrigation: new Dictionary<string, float>() { }, fruitId: MushroomConfig.ID, fruit_amount: 1, fruit_grow_time: 6*600, input_element: "CarbonDioxide", input_rate: 0.001f),
+            new(id: MushroomPlantConfig.ID, irrigation: new Dictionary<string, float>() { }, fruits: new() {new(MushroomConfig.ID, 1f)}, fruit_grow_time: 6*600, input_element: "CarbonDioxide", input_rate: 0.001f),
             new(id: PrickleFlowerConfig.ID, irrigation: new Dictionary<string, float>() { {"Water", 5f} }),
             new(id: SeaLettuceConfig.ID, irrigation: new Dictionary<string, float>() { {"SaltWater", 5f} }),
             new(id: BeanPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Ethanol", 5f} }),
@@ -110,7 +115,6 @@ namespace CustomizePlants
             new(id: ColdBreatherConfig.ID, irrigation: new Dictionary<string, float>() { }, radiation: 0f, radiation_radius: 6),
             new(id: GasGrassConfig.ID, illumination: 100f),
             new(id: PrickleGrassConfig.ID, safe_elements: ["Oxygen", "ContaminatedOxygen", "CarbonDioxide", "ChlorineGas"], input_element: "ChlorineGas", input_rate: 0.01f),
-            new(id: LeafyPlantConfig.ID, irrigation: new Dictionary<string, float>() { {"Water", 10f} }, fruitId: "placeholder1", fruit_grow_time: 4*600f),
             new(id: CactusPlantConfig.ID, pressures: [0f, 0f, 2f, 30f], safe_elements: ["Oxygen", "ContaminatedOxygen", "CarbonDioxide", "Methane"], input_element: "Methane", input_rate: 0.01f, output_element: "CarbonDioxide", output_rate: 0.01f),
             new(id: EvilFlowerConfig.ID, pressures: [0f, 0f, 5f], safe_elements: ["CarbonDioxide", "ChlorineGas"], output_element: "ChlorineGas", output_rate: 0.012f)
         };
@@ -154,59 +158,41 @@ namespace CustomizePlants
 
         #region _implementation
 
-        public static Config.Manager<CustomizePlantsState> StateManager;
+        public override string DefaultPath => Path.Combine(Util.RootFolder(), "mods", $"{FumiKMod.ModName}.json");
 
-        public static bool OnUpdate(CustomizePlantsState state)
+        protected override bool OnUpdate()
         {
-            if (state.version < 17)
-            {
-                state.AutomaticallyAddModPlants = false;
-                state.ModPlants.Clear();
-            }
-            if (state.version < 23)
-            {
-                var wheeze = state.PlantSettings.FirstOrDefault(f => f.id == ColdBreatherConfig.ID);
-                if (wheeze != null)
-                    wheeze.radiation = 0f;
-            }
-            if (state.version < 24)
-            {
-                state.MutationSettings.Clear();
-            }
-            if (state.version < 25)
-            {
-                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "Customize Plants.json");
-                if (File.Exists(modpath))
-                    File.Delete(modpath);
-            }
             return true;
         }
-        
+
+        protected override bool OnError(Exception e)
+        {
+            var text = e.ToString();
+            Helpers.Print(text);
+            if (text.Length > 1000)
+                text = text.Substring(0, 1000);
+            PostBootDialog.ToDialog(text);
+            return false;
+        }
+
         public object ReadSettings()
         {
-            return StateManager.State;
+            return BaseSettings<CustomizePlantsState>.Instance;
         }
 
         public void WriteSettings(object settings)
         {
             if (settings is CustomizePlantsState state)
-                StateManager.TrySaveConfigurationState(state);
+                state.TrySave();
             else
-                StateManager.TrySaveConfigurationState();
+                TrySave();
         }
 
         public string GetConfigPath()
         {
-            return GetStaticConfigPath();
+            return DefaultPath;
         }
 
-        public static string GetStaticConfigPath()
-        {
-            string path = FumiKMod.ModName;
-            //if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
-            //    path += "_" + Helpers.ActiveLocale;
-            return Config.PathHelper.CreatePath(path);
-        }
         #endregion
     }
 
@@ -215,7 +201,7 @@ namespace CustomizePlants
         public static void LoadStrings()
         {
             #region 
-            Helpers.StringsAddProperty("CustomizePlants.PROPERTY.version", "version");
+            Helpers.StringsAddProperty("CustomizePlants.PROPERTY.Version", "Version");
 
             Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.ResetToCustomDefault_Title", "Reset: Custom Default");
             Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Re-installs mod's default settings.");
@@ -231,6 +217,8 @@ namespace CustomizePlants
 
             Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.PresetHalf_Title", "Preset: Half");
             Helpers.StringsAdd("CustomizePlants.LOCSTRINGS.PresetHalf_ToolTip", "Goes through the list and halfs all irrigations. Restart when you are done.");
+            #endregion
+            #region _implementation
             #endregion
             #region Advanced
             Helpers.StringsAddProperty("CustomizePlants.PROPERTY.PlantSettings", "PlantSettings");
@@ -283,5 +271,4 @@ namespace CustomizePlants
             #endregion
         }
     }
-
 }

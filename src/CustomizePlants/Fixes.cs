@@ -18,7 +18,7 @@ namespace CustomizePlants
         public static void SuppressMyCmpReqException()
         {
             var mycmp = MyAttributes.s_attributeMgrs.Get<MyCmp>();
-            mycmp.m_methodInfosByAttribute[typeof(MyCmpReq)] = mycmp.m_methodInfosByAttribute[typeof(MyCmpGet)];
+            mycmp!.m_methodInfosByAttribute[typeof(MyCmpReq)] = mycmp.m_methodInfosByAttribute[typeof(MyCmpGet)];
         }
 
         [HarmonyPatch(typeof(FallingWater), nameof(FallingWater.AddParticle),
@@ -27,7 +27,7 @@ namespace CustomizePlants
         {
             public static bool Prepare()
             {
-                return CustomizePlantsState.StateManager.State.ApplyBugFixes;
+                return CustomizePlantsState.Instance.ApplyBugFixes;
             }
 
             public static bool Prefix(float base_mass)
@@ -41,17 +41,17 @@ namespace CustomizePlants
         [HarmonyPatch(typeof(ColdBreather), nameof(ColdBreather.OnReplanted))]
         public static class Patch_ColdBreatherOnReplanted
         {
-            public static float? _cache = CustomizePlantsState.StateManager.State.PlantSettings.FirstOrDefault(f => f.id == ColdBreatherConfig.ID)?.radiation;
+            public static float? Cache = CustomizePlantsState.Instance.PlantSettings.FirstOrDefault(f => f.id == ColdBreatherConfig.ID)?.radiation;
 
             public static bool Prepare()
             {
-                return CustomizePlantsState.StateManager.State.ApplyBugFixes;
+                return CustomizePlantsState.Instance.ApplyBugFixes;
             }
 
             public static void Postfix(RadiationEmitter ___radiationEmitter)
             {
-                if (_cache != null)
-                    ___radiationEmitter.emitRads = _cache.Value;
+                if (Cache != null)
+                    ___radiationEmitter.emitRads = Cache.Value;
             }
         }
 
@@ -69,10 +69,9 @@ namespace CustomizePlants
                     }
                     Printed = true;
                 }
-
             }
 
-            public static Exception Finalizer(Exception __exception)
+            public static Exception? Finalizer(Exception? __exception)
             {
                 if (__exception != null)
                     Debug.Log(__exception.StackTrace);

@@ -17,7 +17,7 @@ namespace CustomizePlants
         [HarmonyPostfix]
         public static void Postfix1(GameObject __result)
         {
-            __result.GetComponent<ColdBreather>().deltaEmitTemperature = CustomizePlantsState.StateManager.State.WheezewortTempDelta;
+            __result.GetComponent<ColdBreather>().deltaEmitTemperature = CustomizePlantsState.Instance.WheezewortTempDelta;
             __result.AddOrGet<ElementConsumer>().consumptionRate = 1f;
         }
 

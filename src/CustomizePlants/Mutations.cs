@@ -11,6 +11,8 @@ using Klei.AI;
 using UnityEngine;
 using static Common.Helpers;
 
+#pragma warning disable IDE1006 // ignore naming styles for compatibility reasons
+
 namespace CustomizePlants
 {
     [HarmonyPatch(typeof(MutantPlant), nameof(MutantPlant.ApplyMutations))]
@@ -18,7 +20,7 @@ namespace CustomizePlants
     {
         public static bool Prepare()
         {
-            return CustomizePlantsState.StateManager.State.CheatMutationAnalyze;
+            return CustomizePlantsState.Instance.CheatMutationAnalyze;
         }
 
         public static void Postfix(MutantPlant __instance)
@@ -32,7 +34,7 @@ namespace CustomizePlants
     {
         public static bool Prepare()
         {
-            return CustomizePlantsState.StateManager.State.MutantPlantsDropSeeds;
+            return CustomizePlantsState.Instance.MutantPlantsDropSeeds;
         }
 
         public static void Prefix(MutantPlant target, out SeedProducer.SeedInfo? __state)
@@ -59,13 +61,13 @@ namespace CustomizePlants
                 return;
             }
 
-            if (CustomizePlantsState.StateManager.State.print_mutations)
+            if (CustomizePlantsState.Instance.print_mutations)
             {
                 MutationHelper.PrintMutations(mutations);
                 return;
             }
 
-            foreach (var data in CustomizePlantsState.StateManager.State.MutationSettings.Where(w => !mutations.Any(a => a.Id == w.id)))
+            foreach (var data in CustomizePlantsState.Instance.MutationSettings.Where(w => !mutations.Any(a => a.Id == w.id)))
             {
                 Helpers.Print("Added new Mutation: " + data.id);
                 mutations.Add(new PlantMutation(data.id, data.name, data.description));
@@ -83,7 +85,7 @@ namespace CustomizePlants
     {
         public static void ProcessMutation(PlantMutation mutation)
         {
-            var setting = CustomizePlantsState.StateManager.State.MutationSettings?.FirstOrDefault(t => t.id == mutation.Id);
+            var setting = CustomizePlantsState.Instance.MutationSettings?.FirstOrDefault(t => t.id == mutation.Id);
             if (setting == null)
                 return;
 
@@ -194,7 +196,7 @@ namespace CustomizePlants
 
         public static void PrintMutations(List<PlantMutation> mutations)
         {
-            CustomizePlantsState.StateManager.State.MutationSettings.Clear();
+            CustomizePlantsState.Instance.MutationSettings.Clear();
             foreach (var mutation in mutations)
             {
                 PlantMutationData data = new PlantMutationData();
@@ -281,11 +283,11 @@ namespace CustomizePlants
                     data.additionalSoundEvents = additionalSoundEvents;
                 #endregion
 
-                CustomizePlantsState.StateManager.State.MutationSettings.Add(data);
+                CustomizePlantsState.Instance.MutationSettings.Add(data);
             }
 
-            CustomizePlantsState.StateManager.State.print_mutations = false;
-            CustomizePlantsState.StateManager.TrySaveConfigurationState();
+            CustomizePlantsState.Instance.print_mutations = false;
+            CustomizePlantsState.Instance.TrySave();
         }
     }
 

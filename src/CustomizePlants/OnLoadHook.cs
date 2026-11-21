@@ -8,12 +8,14 @@ using UnityEngine;
 using static Config.PostBootDialog;
 using System.Reflection;
 using System.IO;
+using Common;
+using static ResearchTypes;
 
 namespace CustomizePlants
 {
     public static class PLANTS
     {
-        public static readonly string[] NAMES = [ // TODO: add new ones
+        public static readonly string[] NAMES = [
             BasicSingleHarvestPlantConfig.ID,
             SeaLettuceConfig.ID,
             BasicFabricMaterialPlantConfig.ID,
@@ -42,6 +44,32 @@ namespace CustomizePlants
             CritterTrapPlantConfig.ID,
             CylindricaConfig.ID,
             FilterPlantConfig.ID,
+            FlyTrapPlantConfig.ID,
+            FilamentPlantConfig.ID,
+            DinofernConfig.ID,
+            DewPalmConfig.ID,
+            ClamConfig.ID,
+            DewDripperPlantConfig.ID,
+            IceFlowerConfig.ID,
+            HardSkinBerryPlantConfig.ID,
+            GardenFoodPlantConfig.ID,
+            GardenDecorPlantConfig.ID,
+            CarrotPlantConfig.ID,
+            ButterflyPlantConfig.ID,
+            BulbloomConfig.ID,
+            KelpPlantConfig.ID,
+            SpaceTreeConfig.ID,
+            SpaceTreeBranchConfig.ID,
+            OxyCoralConfig.ID,
+            SeaTreeRootConfig.ID,
+            SeaTreeBranchConfig.ID,
+            PlanktonCoralConfig.ID,
+            SaltySticksPlantConfig.ID,
+            WaterCupsPlantConfig.ID,
+            VineMotherConfig.ID,
+            VineBranchConfig.ID,
+            UrchinPlantConfig.ID,
+            TubeWormConfig.ID,
         ];
 
         public static readonly Type[] CLASSES = [
@@ -73,11 +101,40 @@ namespace CustomizePlants
             typeof(CritterTrapPlantConfig),
             typeof(CylindricaConfig),
             typeof(FilterPlantConfig),
+            typeof(FlyTrapPlantConfig),
+            typeof(FilamentPlantConfig),
+            typeof(DinofernConfig),
+            typeof(DewPalmConfig),
+            typeof(ClamConfig),
+            typeof(DewDripperPlantConfig),
+            typeof(IceFlowerConfig),
+            typeof(HardSkinBerryPlantConfig),
+            typeof(GardenFoodPlantConfig),
+            typeof(GardenDecorPlantConfig),
+            typeof(CarrotPlantConfig),
+            typeof(ButterflyPlantConfig),
+            typeof(BulbloomConfig),
+            typeof(KelpPlantConfig),
+            typeof(SpaceTreeConfig),
+            typeof(SpaceTreeBranchConfig),
+            typeof(OxyCoralConfig),
+            typeof(SeaTreeRootConfig),
+            typeof(SeaTreeBranchConfig),
+            typeof(PlanktonCoralConfig),
+            typeof(SaltySticksPlantConfig),
+            typeof(WaterCupsPlantConfig),
+            typeof(VineMotherConfig),
+            typeof(VineBranchConfig),
+            typeof(UrchinPlantConfig),
+            typeof(TubeWormConfig),
         ];
 
         public static readonly Type[] CLASSES_NOPREVIEW = [
             typeof(ForestTreeBranchConfig),
             typeof(SuperWormPlantConfig),
+            typeof(SpaceTreeBranchConfig),
+            typeof(SeaTreeBranchConfig),
+            typeof(VineBranchConfig),
         ];
     }
 
@@ -86,7 +143,7 @@ namespace CustomizePlants
     {
         public static void Prefix(KPrefabID prefab)
         {
-            if (prefab != null && !CustomizePlantsState.StateManager.State.IgnoreList.Contains(prefab.gameObject.name))
+            if (prefab != null && !CustomizePlantsState.Instance.IgnoreList.Contains(prefab.gameObject.name))
                 PlantHelper.ProcessPlant(prefab.gameObject);
         }
     }
@@ -100,7 +157,7 @@ namespace CustomizePlants
             if (IsPatched) return;
             IsPatched = true;
 
-            var harmony = new Harmony("com.fumihiko.oni.customizeplants");
+            var harmony = FumiKMod.Instance;
             var postfix = new HarmonyMethod(typeof(OnLoadPatch).GetMethod(nameof(OnLoadPatch.PlantPostfix)));
 
             foreach (Type type in PLANTS.CLASSES_NOPREVIEW)
@@ -109,9 +166,9 @@ namespace CustomizePlants
                 harmony.Patch(original, prefix: null, postfix: postfix);
             }
 
-            if (CustomizePlantsState.StateManager.State.ModPlants != null)
+            if (CustomizePlantsState.Instance.ModPlants != null)
             {
-                foreach (string config in CustomizePlantsState.StateManager.State.ModPlants)
+                foreach (string config in CustomizePlantsState.Instance.ModPlants)
                 {
                     try
                     {
@@ -126,20 +183,19 @@ namespace CustomizePlants
 
                             foreach (string dll in dlls)
                             {
-                                Debug.Log("ModPlants: loading external dll: " + dll);
+                                Helpers.Print("ModPlants: loading external dll: " + dll);
                                 Assembly.LoadFile(dll);
                             }
                         }
 
                         Type type = Type.GetType(config, true);
-                        MethodInfo original = type.GetMethod("CreatePrefab");
-                        if (original == null) throw new NullReferenceException("ModPlants: CreatePrefab is NULL");
+                        MethodInfo original = type.GetMethod("CreatePrefab") ?? throw new NullReferenceException("ModPlants: CreatePrefab is NULL");
                         harmony.Patch(original, prefix: null, postfix: postfix);
                     }
                     catch (Exception e)
                     {
-                        Debug.LogWarning(e.Message);
-                        Debug.LogWarning(ToDialog("ModPlants: " + config + " is not a valid qualifier."));
+                        Helpers.Print(e.Message);
+                        Helpers.Print(ToDialog("ModPlants: " + config + " is not a valid qualifier."));
                     }
                 }
             }
@@ -149,7 +205,5 @@ namespace CustomizePlants
         {
             PlantHelper.ProcessPlant(__result);
         }
-
     }
-
 }

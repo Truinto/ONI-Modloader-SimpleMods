@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.0.55.0]  U59-736649-SCRP (release)
+## [1.0.56.0] U60-764025-SCRPAN (release)
+- updated fruits logic for new update
+
+## [1.0.55.0] U59-736649-SCRP (release)
 - fixed patch signature for update
 
 ## [1.0.54.0] U58-720697-SCRP (release)

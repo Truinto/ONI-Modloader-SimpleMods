@@ -7,12 +7,12 @@ namespace CustomizePlants
     public class FumiKMod : KMod.UserMod2
     {
         public const string ModName = "CustomizePlants";
-        public static Harmony instance;
+        public static Harmony Instance = null!;
 
         public override void OnLoad(Harmony harmony)
         {
             // init
-            instance = harmony;
+            Instance = harmony;
             Helpers.ModName = ModName;
 
             // predefine strings
@@ -25,7 +25,7 @@ namespace CustomizePlants
             Helpers.ActiveLocale = Helpers.StringsLoad();
 
             // load settings
-            CustomizePlantsState.StateManager = new(CustomizePlantsState.GetStaticConfigPath(), true, CustomizePlantsState.OnUpdate, null);
+            _ = CustomizePlantsState.Instance;
 
             // init options menu
             new POptions().RegisterOptions(this, typeof(CustomizePlantsState));

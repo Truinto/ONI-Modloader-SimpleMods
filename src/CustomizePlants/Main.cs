@@ -65,13 +65,13 @@ namespace CustomizePlants
             ElementConverter converter = go.GetComponent<ElementConverter>();
             if (go.GetComponent<ReceptacleMonitor>()?.Replanted ?? false)
             {
-                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate;
-                if (converter != null) converter.SetWorkSpeedMultiplier(1);
+                consumer?.consumptionRate = prefab_consumer.consumptionRate;
+                converter?.SetWorkSpeedMultiplier(1);
             }
             else
             {
-                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate * 0.25f;
-                if (converter != null) converter.SetWorkSpeedMultiplier(0.25f);
+                consumer?.consumptionRate = prefab_consumer.consumptionRate * 0.25f;
+                converter?.SetWorkSpeedMultiplier(0.25f);
             }
         }
 
@@ -121,13 +121,13 @@ namespace CustomizePlants
             ElementConverter converter = __instance.GetComponent<ElementConverter>();
             if (__instance.GetComponent<ReceptacleMonitor>()?.Replanted ?? false)
             {
-                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate;
-                if (converter != null) converter.SetWorkSpeedMultiplier(1);
+                consumer?.consumptionRate = prefab_consumer.consumptionRate;
+                converter?.SetWorkSpeedMultiplier(1);
             }
             else
             {
-                if (consumer != null) consumer.consumptionRate = prefab_consumer.consumptionRate * 0.25f;
-                if (converter != null) converter.SetWorkSpeedMultiplier(0.25f);
+                consumer?.consumptionRate = prefab_consumer.consumptionRate * 0.25f;
+                converter?.SetWorkSpeedMultiplier(0.25f);
             }
             return false;
         }
@@ -152,87 +152,6 @@ namespace CustomizePlants
     }
     #endregion
 
-    #region Multi-Fruit
-    [HarmonyPatch(typeof(Crop), nameof(Crop.SpawnConfiguredFruit))]
-    public static class Crop_SpawnConfiguredFruit
-    {
-        public static bool Prefix(Crop __instance)
-        {
-            Dictionary<string, int> setting;
-            if (CustomizePlantsState.StateManager.State.SpecialCropSettings == null ||
-                CustomizePlantsState.StateManager.State.SpecialCropSettings.TryGetValue(__instance.cropId, out setting) == false)
-                return true;
-
-            foreach (KeyValuePair<string, int> entry in setting)
-            {
-                __instance.SpawnSomeFruit(entry.Key, entry.Value);
-            }
-
-            __instance.Trigger((int)GameHashes.CropPicked, __instance);
-            return false;
-        }
-
-        public static void SpawnFruit(Crop inst, string fruitId, int amount)
-        {
-            if (inst == null || string.IsNullOrEmpty(fruitId))
-                return;
-
-            GameObject gameObject = Scenario.SpawnPrefab(Grid.PosToCell(inst.gameObject), 0, 0, fruitId, Grid.SceneLayer.Ore);
-            if (gameObject != null)
-            {
-                float y = 0.75f;
-                gameObject.transform.SetPosition(gameObject.transform.GetPosition() + new Vector3(0.0f, y, 0.0f));
-                gameObject.SetActive(true);
-                PrimaryElement component1 = gameObject.GetComponent<PrimaryElement>();
-                component1.Units = amount;
-                component1.Temperature = inst.gameObject.GetComponent<PrimaryElement>().Temperature;
-                Edible component2 = gameObject.GetComponent<Edible>();
-                if ((bool)component2)
-                    ReportManager.Instance.ReportValue(ReportManager.ReportType.CaloriesCreated, component2.Calories, StringFormatter.Replace(STRINGS.UI.ENDOFDAYREPORT.NOTES.HARVESTED, "{0}", component2.GetProperName()), STRINGS.UI.ENDOFDAYREPORT.NOTES.HARVESTED_CONTEXT);
-            }
-            else
-                Debug.LogWarning("Tried to spawn an invalid crop prefab: " + fruitId);
-        }
-    }
-
-    [HarmonyPatch(typeof(Crop), nameof(Crop.InformationDescriptors))]
-    public static class Crop_InformationDescriptors
-    {
-        public static bool Prefix(Crop __instance, ref List<Descriptor> __result)
-        {
-            Dictionary<string, int> setting;
-            if (CustomizePlantsState.StateManager.State.SpecialCropSettings == null ||
-                CustomizePlantsState.StateManager.State.SpecialCropSettings.TryGetValue(__instance.cropId, out setting) == false)
-                return true;
-
-            __result = new List<Descriptor>();
-
-            foreach (KeyValuePair<string, int> entry in setting)
-            {
-                Tag tag = new Tag(entry.Key);
-                GameObject prefab = Assets.GetPrefab(tag);
-                Edible edible = prefab.GetComponent<Edible>();
-                float calories1 = 0.0f;
-                string str1 = string.Empty;
-                if (edible != null)
-                    calories1 = edible.FoodInfo.CaloriesPerUnit;
-                float calories2 = calories1 * entry.Value;
-                InfoDescription infoDescription = prefab.GetComponent<InfoDescription>();
-                if (infoDescription != null)
-                    str1 = infoDescription.description;
-                string str2 = !GameTags.DisplayAsCalories.Contains(tag) ? (!GameTags.DisplayAsUnits.Contains(tag) ? GameUtil.GetFormattedMass(entry.Value, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}") : GameUtil.GetFormattedUnits(entry.Value, GameUtil.TimeSlice.None, false)) : GameUtil.GetFormattedCalories(calories2, GameUtil.TimeSlice.None, true);
-
-                __result.Add(new Descriptor(string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.YIELD, prefab.GetProperName(), str2), string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.TOOLTIPS.YIELD, str1, GameUtil.GetFormattedCalories(calories1, GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories(calories2, GameUtil.TimeSlice.None, true)), Descriptor.DescriptorType.Effect, false));
-            }
-
-            if ((__instance.GetComponent<SeedProducer>()?.seedInfo.productionType ?? SeedProducer.ProductionType.DigOnly) == SeedProducer.ProductionType.Harvest)
-                __result.Add(new Descriptor(string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), string.Format(STRINGS.UI.UISIDESCREENS.PLANTERSIDESCREEN.TOOLTIPS.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Effect, false));
-
-            return false;
-        }
-    }
-    #endregion
-
     public static class PlantHelper
     {
         public static StandardCropPlant.AnimSet DecorAnim = new() { grow = "idle", grow_pst = "idle", harvest = "idle", idle_full = "idle", wilt_base = "wilt1" };   //wilt1, grow_seed
@@ -242,7 +161,7 @@ namespace CustomizePlants
             var match = PlantLookupPatch.FindBetweenLink.Match(plant.GetProperName() ?? "null");
             string? displayName = match.Success ? match.Groups[1].Value : null;
 
-            PlantData? setting = CustomizePlantsState.StateManager.State.PlantSettings?.FirstOrDefault(t => t.id == plant.PrefabID() || t.id == displayName);
+            PlantData? setting = CustomizePlantsState.Instance.PlantSettings?.FirstOrDefault(t => t.id == plant.PrefabID() || t.id == displayName);
             if (setting == null) return;
 
             #region trait fix
@@ -265,7 +184,7 @@ namespace CustomizePlants
             }
             #endregion
             #region decor plant fixes; including seeds
-            if (setting.fruitId != null)    //decor plant fixes
+            if (setting.fruits != null)    //decor plant fixes
             {
                 var grass = plant.GetComponent<PrickleGrass>();
                 if (grass != null || plant.PrefabID() == ColdBreatherConfig.ID || plant.PrefabID() == EvilFlowerConfig.ID)
@@ -302,8 +221,7 @@ namespace CustomizePlants
                         {
                             mutantseed.SpeciesID = plant.GetComponent<KPrefabID>().PrefabTag;
                             var mutantcompost = Assets.TryGetPrefab("Compost" + plant.GetComponent<KPrefabID>().name)?.AddOrGet<MutantPlant>();
-                            if (mutantcompost != null)
-                                mutantcompost.SpeciesID = mutantseed.SpeciesID;
+                            mutantcompost?.SpeciesID = mutantseed.SpeciesID;
                         }
                     }
                 }
@@ -317,37 +235,35 @@ namespace CustomizePlants
             #endregion
 
             #region fruitId
-            if (setting.fruitId != null || setting.fruit_grow_time != null || setting.fruit_amount != null)    //actual setting fruit
+            if (setting.fruits != null || setting.fruit_grow_time != null || setting.fruit_renewable != null)    //actual setting fruit
             {
                 Crop crop = plant.GetComponent<Crop>();
                 if (crop != null)
                 {
-                    Crop.CropVal cropval = crop.cropVal;   // this is a copy
-                    if (setting.fruitId != null) cropval.cropId = setting.fruitId;
-                    if (cropval.cropId is null or "") cropval.cropId = "WoodLog";
+                    Crop.CropVal cropval = crop.cropVal;
+                    if (setting.fruits != null) cropval.products = setting.fruits;
                     if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
                     if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
-                    if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
-                    if (cropval.numProduced < 1) cropval.numProduced = 1;
-                    crop.Configure(cropval);
+                    if (setting.fruit_renewable != null) cropval.renewable = (bool)setting.fruit_renewable;
 
-                    EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
+                    EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldFactor.Id, 1f);
                     EnsureAmount(modifiers, baseTrait, Db.Get().Amounts.Maturity, maxValue: cropval.cropDuration / 600f);
                 }
                 else
                 {
                     GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, plant.PrefabID().ToString());
                     crop = plant.AddOrGet<Crop>();
-                    Crop.CropVal cropval = crop.cropVal;   // this is a copy
-                    if (setting.fruitId != null) cropval.cropId = setting.fruitId;
-                    if (cropval.cropId is null or "") cropval.cropId = "WoodLog";
-                    if (setting.fruit_grow_time != null) cropval.cropDuration = (float)setting.fruit_grow_time;
-                    if (cropval.cropDuration < 1f) cropval.cropDuration = 1f;
-                    if (setting.fruit_amount != null) cropval.numProduced = (int)setting.fruit_amount;
-                    if (cropval.numProduced < 1) cropval.numProduced = 1;
-                    crop.Configure(cropval);
+                    Crop.CropVal cropval = crop.cropVal = new(
+                        products: setting.fruits ?? new() { new("Dirt", 1f) },
+                        cropDuration: setting.fruit_grow_time ?? 180f,
+                        renewable: setting.fruit_renewable ?? true
+                    );
+                    plant.GetComponent<KPrefabID>().prefabInitFn += (GameObject inst) =>
+                    {
+                        inst.GetComponent<Crop>().Configure(cropval);
+                    };
 
-                    EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced);
+                    EnsureAttribute(modifiers, baseTrait, Db.Get().PlantAttributes.YieldFactor.Id, 1f);
                     EnsureAmount(modifiers, baseTrait, Db.Get().Amounts.Maturity, maxValue: cropval.cropDuration / 600f);
 
                     plant.AddOrGet<Growing>();
@@ -383,7 +299,7 @@ namespace CustomizePlants
                     else if (element.IsLiquid)
                         irrigation.Add(new PlantElementAbsorber.ConsumeInfo(tag, entry.Value / 600f));
                     else
-                        Debug.Log(ToDialog("Irrigation for " + setting.id + " defines bad element: " + tag));
+                        Helpers.Print(ToDialog("Irrigation for " + setting.id + " defines bad element: " + tag));
                 }
                 if (irrigation.Count > 0)
                     EntityTemplates.ExtendPlantToIrrigated(plant, irrigation.ToArray());
@@ -479,8 +395,7 @@ namespace CustomizePlants
                 decorprovider.SetValues(decorvalues);
 
                 var grass = plant.GetComponent<PrickleGrass>();
-                if (grass != null)
-                    grass.positive_decor_effect = decorvalues;
+                grass?.positive_decor_effect = decorvalues;
             }
             #endregion
             #region temperatures
@@ -540,13 +455,12 @@ namespace CustomizePlants
                     drowning.livesUnderWater = false;
                     drowning.canDrownToDeath = false;
                 }
-
             }
             #endregion
             #region can_tinker
             if (setting.can_tinker != null)
             {
-                if (setting.can_tinker == true)
+                if (setting.can_tinker is true)
                     Tinkerable.MakeFarmTinkerable(plant);
             }
             #endregion
@@ -554,7 +468,7 @@ namespace CustomizePlants
             if (setting.require_solid_tile != null)
             {
                 UprootedMonitor uproot = plant.AddOrGet<UprootedMonitor>();
-                if (setting.require_solid_tile == false)
+                if (setting.require_solid_tile is false)
                     UnityEngine.Object.DestroyImmediate(uproot);
             }
             #endregion
@@ -628,12 +542,12 @@ namespace CustomizePlants
                 if (element.id == 0 || element.IsVacuum)    //invalid element
                 {
                     UnityEngine.Object.DestroyImmediate(converter);
-                    if (consumer != null) consumer.storeOnConsume = false;
+                    consumer?.storeOnConsume = false;
                 }
                 else if (setting.output_rate is null or <= 0f)  //delete converter
                 {
                     UnityEngine.Object.DestroyImmediate(converter);
-                    if (consumer != null) consumer.storeOnConsume = false;
+                    consumer?.storeOnConsume = false;
                 }
                 else
                 {
@@ -653,7 +567,6 @@ namespace CustomizePlants
                     plant.AddOrGet<Storage>();
                     plant.AddOrGet<SaltPlant>();
                 }
-
             }
             #endregion
             #region radiation
@@ -690,10 +603,10 @@ namespace CustomizePlants
 
             #region fruitId
             Crop crop = plant.GetComponent<Crop>();
-            if (crop != null)
+            if (crop?.cropVal != null)
             {
-                setting.fruitId = crop.cropVal.cropId;
-                setting.fruit_amount = crop.cropVal.numProduced;
+                setting.fruits = crop.cropVal.products;
+                setting.fruit_renewable = crop.cropVal.renewable;
                 setting.fruit_grow_time = crop.cropVal.cropDuration;
             }
             #endregion
@@ -795,6 +708,5 @@ namespace CustomizePlants
                     maxAttribute.Value = maxValue.Value;
             }
         }
-
     }
 }

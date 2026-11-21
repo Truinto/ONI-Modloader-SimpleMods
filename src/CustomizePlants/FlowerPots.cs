@@ -46,7 +46,7 @@ namespace CustomizePlants
     {
         public static bool Prepare()
         {
-            return CustomizePlantsState.StateManager.State.WildFlowerVase;
+            return CustomizePlantsState.Instance.WildFlowerVase;
         }
 
         public static bool Prefix(PlantablePlot __instance)
@@ -68,7 +68,7 @@ namespace CustomizePlants
 
         public static bool Prepare()
         {
-            return CustomizePlantsState.StateManager.State.CheatFlowerVase;
+            return CustomizePlantsState.Instance.CheatFlowerVase;
         }
 
         [HarmonyPatch(typeof(IrrigationMonitor.Instance), nameof(IrrigationMonitor.Instance.UpdateIrrigation))]
@@ -134,7 +134,7 @@ namespace CustomizePlants
     {
         public static bool Prepare()
         {
-            return CustomizePlantsState.StateManager.State.SeedsGoIntoAnyFlowerPots;
+            return CustomizePlantsState.Instance.SeedsGoIntoAnyFlowerPots;
         }
 
         public static IEnumerable<MethodBase> TargetMethods()

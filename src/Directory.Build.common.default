@@ -2,7 +2,7 @@
 <Project>
 
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<Title>$(MSBuildProjectName)</Title>
 		<RootNamespace>$(MSBuildProjectName)</RootNamespace>
 		<DefineConstants>$(DefineConstants);ErrorToConsole</DefineConstants>
@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<!-- Common References -->
-	<ItemGroup>
+<!--	<ItemGroup>
 		<Reference Private="false" Include="System" />
 		<Reference Private="false" Include="System.Core" />
 		<Reference Private="false" Include="System.Xml" />
@@ -38,7 +38,7 @@
 		<Reference Private="false" Include="Microsoft.CSharp" />
 		<Reference Private="false" Include="System.Data" />
 		<Reference Private="false" Include="System.Net.Http" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<!-- Project References -->
 	<ItemGroup>
@@ -55,7 +55,7 @@
 		<Reference Private="false" Include="UnityEngine.IMGUIModule" HintPath="$(GameManaged)/UnityEngine.IMGUIModule.dll" />
 		<Reference Private="false" Include="Unity.TextMeshPro" HintPath="$(GameManaged)/Unity.TextMeshPro.dll" />
 
-		<Reference Private="false" Include="UnityMod" HintPath="$(SolutionDir)@Shared/UnityMod.dll" />
+		<Reference Private="false" Include="UnityMod-net2.1" HintPath="$(SolutionDir)@Shared/UnityMod-net2.1.dll" />
 		<Reference Private="false" Include="PLibUI" HintPath="$(SolutionDir)PeterHanLib/PLibUI.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Private="false" Include="PLibCore" HintPath="$(SolutionDir)PeterHanLib/PLibCore.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
 		<Reference Private="false" Include="PLibOptions" HintPath="$(SolutionDir)PeterHanLib/PLibOptions.dll" Condition="Exists('$(ProjectDir)_MERGE')" />
@@ -66,7 +66,7 @@
 		<None Remove="$(ProjectDir)_MERGE" />
 		<None Include="$(ProjectDir)Changelog.md" CopyToOutputDirectory="PreserveNewest" />
 		
-		<TargetMergeItems Include="$(SolutionDir)@Shared/UnityMod.dll" />
+		<TargetMergeItems Include="$(SolutionDir)@Shared/UnityMod-net2.1.dll" />
 		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibOptions.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
 		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibCore.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
 		<TargetMergeItems Include="$(SolutionDir)PeterHanLib/PLibUI.dll" Condition="$(DefineConstants.Contains('MERGE'))" />
@@ -75,14 +75,13 @@
 		<TargetCopyDelete Include="$(ModFolder)$(TargetName)/$(TargetName).pdb" Condition="$(Configuration.Contains('Release'))" />
 		<TargetCopyDelete Include="$(ModFolder)$(TargetName)/$(TargetName).xml" Condition="$(Configuration.Contains('Release'))" />
 		
-		<TargetZipItems Include="$(ModFolder)$(TargetName)/*" />
 		<TargetZipTarget Include="$(SolutionDir)/publish/$(TargetName).zip" />
 	</ItemGroup>
 
 	<!-- Update build version and run code editing (if enabled) -->
-	<Target Name="Versioning" BeforeTargets="PreBuildEvent">
-		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
-		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(SolutionDir)versioncontrol_ONI/versioncontrol_ONI.exe&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
+	<Target Name="Versioning" BeforeTargets="PreBuildEvent" Condition="Exists('$(Versioncontrol_ONI)')">
+		<Exec Condition=" $(DefineConstants.Contains('LOCALE'))" Command="&quot;$(Versioncontrol_ONI)&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot; -state &quot;$(ProjectDir)_$(TargetName)State.cs&quot;" />
+		<Exec Condition="!$(DefineConstants.Contains('LOCALE'))" Command="&quot;$(Versioncontrol_ONI)&quot; -md &quot;$(ProjectDir)Changelog.md&quot; -asbly &quot;$(ProjectDir)Properties/AssemblyInfo.cs&quot; -info &quot;$(ModFolder)$(TargetName)/mod_info.yaml&quot; -projectname &quot;$(TargetName)&quot;" />
 	</Target>
 
 </Project>

@@ -1,0 +1,18 @@
+<Solution>
+  <Project Path="@Shared/UnityMod/UnityMod.csproj" />
+  <Project Path="CarePackageMod/CarePackageMod.csproj" />
+  <Project Path="CustomizeBuildings/CustomizeBuildings.csproj" />
+  <Project Path="CustomizeCritter/CustomizeCritter.csproj" />
+  <Project Path="CustomizeElements/CustomizeElements.csproj" />
+  <Project Path="CustomizeGeyser/CustomizeGeyser.csproj" />
+  <Project Path="CustomizeModifier/CustomizeModifier.csproj" />
+  <Project Path="CustomizePlants/CustomizePlants.csproj" />
+  <Project Path="CustomizeRecipe/CustomizeRecipe.csproj" />
+  <Project Path="EggCritterSurplus/EggCritterSurplus.csproj" />
+  <Project Path="NoRemains/NoRemains.csproj" />
+  <Project Path="PipedEverything/PipedEverything.csproj" />
+  <Project Path="SharedStorage/SharedStorage.csproj" />
+  <Project Path="versioncontrol_ONI/versioncontrol_ONI.csproj">
+    <BuildType Project="Release" />
+  </Project>
+</Solution>
