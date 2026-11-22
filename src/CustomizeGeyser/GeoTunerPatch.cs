@@ -28,7 +28,7 @@ namespace CustomizeGeyser
     [HarmonyPatch]
     public static class GeoTunerPatch
     {
-        public static bool Prepare() => CustomizeGeyserState.StateManager.State.TuningEnabled;
+        public static bool Prepare() => CustomizeGeyserState.Instance.TuningEnabled;
 
         [HarmonyPatch(typeof(GeoTunerConfig), nameof(GeoTunerConfig.ConfigureBuildingTemplate))]
         [HarmonyPostfix]
@@ -84,7 +84,7 @@ namespace CustomizeGeyser
         public static GeoTunerConfig.GeotunedGeyserSettings GetSettingsForGeyser(string? id, Geyser geyser)
         {
             int idHash = Hash.SDBMLower(id);
-            if (CustomizeGeyserState.StateManager.State.Tunings.TryGet(f => f.idHash == idHash && f.IsValidForGeyser(geyser), out GeoTunerStruct? tuning))
+            if (CustomizeGeyserState.Instance.Tunings.TryGet(f => f.idHash == idHash && f.IsValidForGeyser(geyser), out GeoTunerStruct? tuning))
                 return tuning;
             if (GeoTunerConfig.geotunerGeyserSettings.TryGetValue(geyser.configuration.typeId, out var value))
                 return value;
@@ -109,7 +109,6 @@ namespace CustomizeGeyser
             return true;
         }
 
-
         /// <summary>
         /// Need to add new rows for custom tuning options. It will be stored in GeoTunerSelectMod.
         /// </summary>
@@ -125,7 +124,7 @@ namespace CustomizeGeyser
                 if (geyser.GetComponent<Studyable>().Studied)
                 {
                     bool any = false;
-                    foreach (var tuning in CustomizeGeyserState.StateManager.State.Tunings)
+                    foreach (var tuning in CustomizeGeyserState.Instance.Tunings)
                     {
                         if (tuning.IsValidForGeyser(geyser))
                         {
@@ -207,7 +206,7 @@ namespace CustomizeGeyser
 
                 // generate side screen info
                 var settingsForGeyser = tuning ?? GetSettingsForGeyser(null, geyser);
-                var sb = GlobalStringBuilderPool.Alloc();
+                var sb = KleiStringBuilder.BorrowFromPool();
                 sb.Append(UI.UISIDESCREENS.GEOTUNERSIDESCREEN.STUDIED_TOOLTIP_MATERIAL.Replace("{MATERIAL}", settingsForGeyser.material.ProperName()));
                 sb.Append($" {settingsForGeyser.quantity} kg");
                 sb.Append("\n\n");
@@ -267,7 +266,7 @@ namespace CustomizeGeyser
                 sb.Append("\n\n");
                 sb.Append(UI.UISIDESCREENS.GEOTUNERSIDESCREEN.STUDIED_TOOLTIP_VISIT_GEYSER);
 
-                return GlobalStringBuilderPool.ReturnAndFree(sb);
+                return sb.TakeContent();
             };
 
             // tooltip (awaiting new geotuners)
@@ -309,10 +308,7 @@ namespace CustomizeGeyser
                 }
 
                 // set new future id ('selection' should never be null)
-                if (selection != null)
-                {
-                    selection.FutureId = tuning?.id;
-                }
+                selection?.FutureId = tuning?.id;
 
                 //if (geyser != @this.targetGeotuner.GetFutureGeyser()) // always assign in case the tuning modifier is different
                 @this.targetGeotuner.AssignFutureGeyser(geyser);
@@ -328,7 +324,6 @@ namespace CustomizeGeyser
                 return false;
             };
         }
-
 
         /// <summary>
         /// Set new assigned geyser and apply the correct tuning.
@@ -346,11 +341,8 @@ namespace CustomizeGeyser
 
             // set Id from FutureId
             var selection = __instance.GetComponent<GeoTunerSelectMod>();
-            if (selection != null)
-            {
-                selection.Id = selection.FutureId;
-                //selection.FutureId = null; // FutureId must not be cleared; this is checked for button highlighting; btw, same for FutureGeyser
-            }
+            selection?.Id = selection.FutureId;
+            //selection.FutureId = null; // FutureId must not be cleared; this is checked for button highlighting; btw, same for FutureGeyser
 
             // chose no modification, clear any existing modifiers, then exit
             if (futureGeyser == null)
@@ -361,7 +353,7 @@ namespace CustomizeGeyser
 
                 // remove old geyser + modification
                 assignedGeyser.RemoveModification(__instance.smi.currentGeyserModification);
-                assignedGeyser.Unsubscribe((int)GameHashes.GeyserEruption, __instance.smi.OnEruptionStateChanged);
+                assignedGeyser.Unsubscribe_obsolete((int)GameHashes.GeyserEruption, __instance.smi.OnEruptionStateChanged);
                 __instance.sm.AssignedGeyser.Set(null, __instance);
                 __instance.smi.currentGeyserModification = default;
                 GeoTuner.RefreshStorageRequirements(__instance);
@@ -398,7 +390,7 @@ namespace CustomizeGeyser
                 if (assignedGeyser != null)
                 {
                     assignedGeyser.RemoveModification(__instance.smi.currentGeyserModification);
-                    assignedGeyser.Unsubscribe((int)GameHashes.GeyserEruption, __instance.smi.OnEruptionStateChanged);
+                    assignedGeyser.Unsubscribe_obsolete((int)GameHashes.GeyserEruption, __instance.smi.OnEruptionStateChanged);
                 }
 
                 // set new geyser + modification (normally happens in RefreshModification)
@@ -419,7 +411,6 @@ namespace CustomizeGeyser
             __instance.Trigger((int)GameHashes.UIRefresh);
             return false;
         }
-
 
         /// <summary>
         /// This patch allows the switch chore to apply, even if the change happens on the same geyser.
@@ -450,8 +441,10 @@ namespace CustomizeGeyser
             return false;
         }
 
-        [HarmonyPatch(typeof(Geyser), nameof(Geyser.GetDescriptors))]
-        [HarmonyPrefix]
+        // TODO: Looks like this was replaced with Geyser.CollectDescriptors.
+        // It's a lot different and I can't figure out what was changed. I will just leave this disabled for now.
+        //[HarmonyPatch(typeof(Geyser), nameof(Geyser.GetDescriptors))]
+        //[HarmonyPrefix]
         public static bool Patch9(GameObject go, Geyser __instance, ref List<Descriptor> __result)
         {
             __result = new List<Descriptor>();
@@ -506,8 +499,7 @@ namespace CustomizeGeyser
                 string.Format(UI.BUILDINGEFFECTS.GEYSER_PERIOD, GameUtil.GetFormattedTime(__instance.configuration.GetOnDuration()), GameUtil.GetFormattedTime(__instance.configuration.GetIterationLength())),
                 string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.GEYSER_PERIOD, GameUtil.GetFormattedTime(__instance.configuration.GetOnDuration()), GameUtil.GetFormattedTime(__instance.configuration.GetIterationLength()))));
 
-
-            if (__instance.GetComponent<Studyable>()?.Studied != true)
+            if (__instance.GetComponent<Studyable>()?.Studied is not true)
             {
                 __result.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.GEYSER_YEAR_UNSTUDIED), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.GEYSER_YEAR_UNSTUDIED)));
                 __result.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.GEYSER_YEAR_AVR_OUTPUT_UNSTUDIED), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.GEYSER_YEAR_AVR_OUTPUT_UNSTUDIED)));

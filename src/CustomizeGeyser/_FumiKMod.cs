@@ -12,12 +12,12 @@ namespace CustomizeGeyser
     public class FumiKMod : KMod.UserMod2
     {
         public const string ModName = "CustomizeGeyser";
-        public static Harmony instance;
+        public static Harmony Instance = null!;
 
         public override void OnLoad(Harmony harmony)
         {
             // init
-            instance = harmony;
+            Instance = harmony;
             Helpers.ModName = ModName;
 
             // predefine strings
@@ -30,14 +30,12 @@ namespace CustomizeGeyser
             Helpers.ActiveLocale = Helpers.StringsLoad();
 
             // load settings
-            //Helpers.CallSafe(CustomizeBuildingsState.BeforeUpdate);
-            CustomizeGeyserState.StateManager = new(CustomizeGeyserState.GetStaticConfigPath(), true, CustomizeGeyserState.OnUpdate, null);
+            _ = CustomizeGeyserState.Instance;
 
             // init options menu
             new POptions().RegisterOptions(this, typeof(CustomizeGeyserState));
 
             // call OnLoad methods
-            Helpers.CallSafe(CustomizeGeyserState.OnLoad);
 
             // patch all harmony classes
             base.OnLoad(harmony);

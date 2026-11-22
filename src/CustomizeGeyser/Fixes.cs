@@ -17,7 +17,7 @@ namespace CustomizeGeyser
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> Transpiler1(IEnumerable<CodeInstruction> instr)
         {
-            var original = AccessTools.Method(typeof(Debug), nameof(Debug.LogError), new Type[] { typeof(object) });
+            var original = AccessTools.Method(typeof(Debug), nameof(Debug.LogError), [typeof(object)]);
 
             foreach (var line in instr)
             {

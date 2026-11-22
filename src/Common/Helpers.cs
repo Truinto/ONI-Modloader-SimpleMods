@@ -2,6 +2,7 @@
 using Config;
 using HarmonyLib;
 using Klei.AI;
+using static ProcGen.Mob;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -533,7 +534,9 @@ namespace Common
             }
         }
 
-        public static string PathLocale => Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_" + Locale + ".pot");
+        public static string AssemblyDirectory => Directory.GetParent(Assembly.GetExecutingAssembly().Location)?.FullName ?? Path.Combine(Util.RootFolder(), "mods");
+
+        public static string PathLocale => Path.Combine(AssemblyDirectory, "strings_" + Locale + ".pot");
 
         public static Dictionary<string, string> StringsDic = new();
 
@@ -543,7 +546,7 @@ namespace Common
         [System.Diagnostics.Conditional("LOCALE")]
         public static void StringsPrint(string? path = null)
         {
-            using (StreamWriter sw = new(path ?? Path.Combine(Config.PathHelper.AssemblyDirectory, "strings_NEW.pot"), StringsAppend))
+            using (StreamWriter sw = new(path ?? Path.Combine(AssemblyDirectory, "strings_NEW.pot"), StringsAppend))
             {
                 foreach (var keyPair in StringsDic)
                 {

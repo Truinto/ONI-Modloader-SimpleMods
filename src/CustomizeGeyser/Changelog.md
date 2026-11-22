@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.36.0] U60-764025-SCRPAN (release)
+- fixed for new update
+
 ## [1.0.35.0] U57-704096-SCRP (release)
 - fixed double option menu
 

@@ -5,48 +5,23 @@ using System.Linq;
 using Common;
 using Newtonsoft.Json;
 using PeterHan.PLib.Options;
+using Shared;
 
 #pragma warning disable IDE1006 // ignore lowercase
 
 namespace CustomizeGeyser
 {
-    [ConfigFile("CustomizeGeyser.json", true, true, typeof(Config.TranslationResolver))]
+    [ConfigFile("CustomizeGeyser.json", true, true, null)]
     [RestartRequired]
-    public class CustomizeGeyserState : IManualConfig
+    public class CustomizeGeyserState : BaseSettings<CustomizeGeyserState>, IManualConfig
     {
-        public static void OnLoad()
-        {
-            try
-            {
-                string temp = Path.Combine(Config.PathHelper.AssemblyDirectory, "templates");
-                string temp2 = Path.Combine(Config.PathHelper.AssemblyDirectory, "templates2");
-
-                if (CustomizeGeyserState.StateManager.State.RandomizerEnabled)
-                {
-                    if (Directory.Exists(temp2))
-                    {
-                        Directory.Move(temp2, temp);
-                    }
-                }
-                else
-                {
-                    if (Directory.Exists(temp))
-                    {
-                        Directory.Move(temp, temp2);
-                    }
-                }
-            } catch (Exception e)
-            {
-                Helpers.Print(e.ToString());
-            }
-        }
-
         #region Buttons
         [Option("CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_Title", "CustomizeGeyser.LOCSTRINGS.ResetToCustomDefault_ToolTip", "Buttons", null)]
         [JsonIgnore]
         public System.Action<object> ResetToCustomDefault => delegate (object nix)
         {
-            StateManager.TrySaveConfigurationState(new CustomizeGeyserState());
+            new CustomizeGeyserState().TrySave();
+
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
             OptionsDialog.Last = null;
@@ -56,20 +31,20 @@ namespace CustomizeGeyser
         [JsonIgnore]
         public System.Action<object> ResetToAllOff => delegate (object nix)
         {
-            StateManager.State.Geysers.Clear();
-            StateManager.State.RNGTable.Clear();
+            Instance.Geysers.Clear();
+            Instance.RNGTable.Clear();
             foreach (var idBase in GeyserInfo.IdsBaseGame)
-                StateManager.State.RNGTable.Add(idBase, 1);
+                Instance.RNGTable.Add(idBase, 1);
 
-            StateManager.State.RandomizerEnabled = false;
-            StateManager.State.RandomizerUsesMapSeed = true;
-            StateManager.State.RandomizerRerollsCycleRate = false;
-            StateManager.State.RandomizerPopupGeyserDiscoveryInfo = false;
-            StateManager.State.RandomizerHighlanderMode = false;
-            StateManager.State.RandomizerHighlanderRetroactive = false;
-            StateManager.State.GeyserMorphEnabled = false;
+            Instance.RandomizerEnabled = false;
+            Instance.RandomizerUsesMapSeed = true;
+            Instance.RandomizerRerollsCycleRate = false;
+            Instance.RandomizerPopupGeyserDiscoveryInfo = false;
+            Instance.RandomizerHighlanderMode = false;
+            Instance.RandomizerHighlanderRetroactive = false;
+            Instance.GeyserMorphEnabled = false;
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
             OptionsDialog.Last = null;
@@ -81,17 +56,17 @@ namespace CustomizeGeyser
         {
             foreach (var geyser in GeyserInfo.IdsBaseGame)
             {
-                if (!StateManager.State.Geysers.Any(a => a.id == geyser))
-                    StateManager.State.Geysers.Add(new GeyserStruct(geyser));
+                if (!Instance.Geysers.Any(a => a.id == geyser))
+                    Instance.Geysers.Add(new GeyserStruct(geyser));
             }
 
-            foreach (var geyser in StateManager.State.Geysers)
+            foreach (var geyser in Instance.Geysers)
             {
                 geyser.minYearPercent = 1f;
                 geyser.maxYearPercent = 1f;
             }
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
             OptionsDialog.Last = null;
@@ -102,11 +77,11 @@ namespace CustomizeGeyser
         [JsonIgnore]
         public System.Action<object> PresetCopy => delegate (object nix)
         {
-            StateManager.State.Geysers.Clear();
+            Instance.Geysers.Clear();
             foreach (var config in GeyserInfo.Config)
             {
                 var geyserType = config.geyserType;
-                StateManager.State.Geysers.Add(new GeyserStruct(
+                Instance.Geysers.Add(new GeyserStruct(
                     id: geyserType.id,
                     element: geyserType.element.ToString(),
                     anim: config.anim,
@@ -133,7 +108,7 @@ namespace CustomizeGeyser
                 ));
             }
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
         };
 
         [Option("CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_Title", "CustomizeGeyser.LOCSTRINGS.EnableAllGeysers_ToolTip", "Buttons", null)]
@@ -142,22 +117,22 @@ namespace CustomizeGeyser
         {
             foreach (var config in GeyserInfo.Config)
             {
-                if (!StateManager.State.RNGTable.ContainsKey(config.geyserType.id))
+                if (!Instance.RNGTable.ContainsKey(config.geyserType.id))
                 {
-                    StateManager.State.RNGTable[config.geyserType.id] = 1;
+                    Instance.RNGTable[config.geyserType.id] = 1;
                 }
             }
 
-            //foreach (var geyser in StateManager.State.Geysers)
-            //    if (!StateManager.State.RNGTable.ContainsKey(geyser.id))
-            //        StateManager.State.RNGTable[geyser.id] = 1;
+            //foreach (var geyser in Instance.Geysers)
+            //    if (!Instance.RNGTable.ContainsKey(geyser.id))
+            //        Instance.RNGTable[geyser.id] = 1;
 
-            foreach (var key in StateManager.State.RNGTable.Keys.ToArray())
+            foreach (var key in Instance.RNGTable.Keys.ToArray())
             {
-                StateManager.State.RNGTable[key] = 1;
+                Instance.RNGTable[key] = 1;
             }
 
-            StateManager.TrySaveConfigurationState();
+            Instance.TrySave();
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
             OptionsDialog.Last = null;
@@ -166,7 +141,8 @@ namespace CustomizeGeyser
 
         #region Fields
 
-        public int version { get; set; } = 12;
+        public override int Version { get; set; } = 13;
+
         [Option("CustomizeGeyser.LOCSTRINGS.Enabled_Title", "CustomizeGeyser.LOCSTRINGS.Enabled_ToolTip", "Fields", null)]
         public bool Enabled { get; set; } = true;
 
@@ -298,37 +274,39 @@ namespace CustomizeGeyser
 
         #region _implementation
 
-        public static Config.Manager<CustomizeGeyserState> StateManager = null!;
-        public static bool OnUpdate(CustomizeGeyserState state)
+        public override string DefaultPath => Path.Combine(Util.RootFolder(), "mods", $"{FumiKMod.ModName}.json");
+
+        protected override bool OnUpdate()
         {
-            if (state.version < 12)
-                state.TuningEnabled = false;
             return true;
         }
+
+        protected override bool OnError(Exception e)
+        {
+            var text = e.ToString();
+            Helpers.Print(text);
+            if (text.Length > 1000)
+                text = text.Substring(0, 1000);
+            Config.PostBootDialog.ToDialog(text);
+            return false;
+        }
+
         public object ReadSettings()
         {
-            return StateManager.State;
+            return BaseSettings<CustomizeGeyserState>.Instance;
         }
 
         public void WriteSettings(object settings)
         {
             if (settings is CustomizeGeyserState state)
-                StateManager.TrySaveConfigurationState(state);
+                state.TrySave();
             else
-                StateManager.TrySaveConfigurationState();
+                TrySave();
         }
 
         public string GetConfigPath()
         {
-            return GetStaticConfigPath();
-        }
-
-        public static string GetStaticConfigPath()
-        {
-            string path = FumiKMod.ModName;
-            //if (Helpers.ActiveLocale.NotEmpty() && Helpers.ActiveLocale != "en")
-            //    path += "_" + Helpers.ActiveLocale;
-            return Config.PathHelper.CreatePath(path);
+            return DefaultPath;
         }
 
         #endregion

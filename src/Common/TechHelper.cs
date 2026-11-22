@@ -149,7 +149,7 @@ namespace Common
             Strings.Add($"STRINGS.CREATURES.SPECIES.SEEDS.{str}.DESC", description);
         }
 
-        public static string ConvertCategory(HashedString hash)
+        public static string? ConvertCategory(HashedString hash)
         {
             foreach (var obj in Enum.GetValues(typeof(PlanScreens)))
             {

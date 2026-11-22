@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 
+#pragma warning disable IDE1006 // ignore naming styles for compatibility reasons
+
 namespace CustomizeGeyser
 {
     public class GeoTunerStruct(string? geyser, string? id)

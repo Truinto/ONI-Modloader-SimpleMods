@@ -27,7 +27,7 @@ namespace CustomizeGeyser
     {
         internal static bool Prepare()
         {
-            return CustomizeGeyserState.StateManager.State.Enabled;
+            return CustomizeGeyserState.Instance.Enabled;
         }
 
         //public static readonly string[] GeyserKAnimsVanilla = { "geyser_gas_steam_kanim", "geyser_gas_steam_hot_kanim", "geyser_liquid_water_hot_kanim", "geyser_liquid_water_slush_kanim", "geyser_liquid_water_filthy_kanim", "geyser_liquid_salt_water_kanim", "geyser_liquid_salt_water_kanim", "geyser_molten_volcano_small_kanim", "geyser_molten_volcano_big_kanim", "geyser_liquid_co2_kanim", "geyser_gas_co2_hot_kanim", "geyser_gas_hydrogen_hot_kanim", "geyser_gas_po2_hot_kanim", "geyser_gas_po2_slimy_kanim", "geyser_gas_chlorine_kanim", "geyser_gas_methane_kanim", "geyser_molten_copper_kanim", "geyser_molten_iron_kanim", "geyser_molten_gold_kanim", "geyser_molten_aluminum_kanim", "geyser_molten_tungsten_kanim", "geyser_molten_niobium_kanim", "geyser_molten_cobalt_kanim", "geyser_liquid_oil_kanim", "geyser_liquid_sulfur_kanim" };
@@ -40,7 +40,7 @@ namespace CustomizeGeyser
             for (int i = 0; i < __result.Count; i++)
             {
                 var prefParm = __result[i];
-                if (CustomizeGeyserState.StateManager.State.RandomizerEnabled)
+                if (CustomizeGeyserState.Instance.RandomizerEnabled)
                 {
                     prefParm.isGenericGeyser = true;
                     __result[i] = prefParm;
@@ -48,7 +48,7 @@ namespace CustomizeGeyser
                 GeyserInfo.IdsBaseGame.Add(prefParm.geyserType.id);
             }
 
-            foreach (var modifier in CustomizeGeyserState.StateManager.State.Geysers)
+            foreach (var modifier in CustomizeGeyserState.Instance.Geysers)
             {
                 if (modifier.id == null) continue;
 
@@ -184,7 +184,7 @@ namespace CustomizeGeyser
                             copy.width = (int)modifier.width;
                         if (modifier.height != null)
                             copy.height = (int)modifier.height;
-                        if (modifier.IsGeneric != null && CustomizeGeyserState.StateManager.State.RandomizerEnabled)
+                        if (modifier.IsGeneric != null && CustomizeGeyserState.Instance.RandomizerEnabled)
                             copy.isGenericGeyser = (bool)modifier.IsGeneric;
 
                         __result[i] = copy;
@@ -397,7 +397,7 @@ namespace CustomizeGeyser
                                 (float)modifier.maxYearLength,
                                 (float)modifier.minYearPercent,
                                 (float)modifier.maxYearPercent).AddDisease(diseaseInfo),
-                            (bool)modifier.IsGeneric && CustomizeGeyserState.StateManager.State.RandomizerEnabled
+                            (bool)modifier.IsGeneric && CustomizeGeyserState.Instance.RandomizerEnabled
                         ));
 
                     Helpers.Print("Added geyser " + modifier.id + " : " + modifier.element);

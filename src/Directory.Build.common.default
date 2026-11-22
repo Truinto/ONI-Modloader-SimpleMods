@@ -20,7 +20,6 @@
 	<!-- Shared Libs -->
 	<ItemGroup>
 		<Compile Include="$(SolutionDir)Common/BootDialog.cs" Link="Common/BootDialog.cs" />
-		<Compile Include="$(SolutionDir)Common/ConfigManager.cs" Link="Common/ConfigManager.cs" />
 		<Compile Include="$(SolutionDir)Common/Helpers.cs" Link="Common/Helpers.cs" />
 		<Compile Include="$(SolutionDir)Common/TechHelper.cs" Link="Common/TechHelper.cs" />
 		<Compile Include="$(SharedDir)/General/Attributes.cs" Link="Shared/Attributes.cs" />

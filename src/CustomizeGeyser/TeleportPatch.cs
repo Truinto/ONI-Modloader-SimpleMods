@@ -14,7 +14,7 @@ namespace CustomizeGeyser
     {
         public static bool Prepare()
         {
-            return CustomizeGeyserState.StateManager.State.GeyserTeleportEnabled;
+            return CustomizeGeyserState.Instance.GeyserTeleportEnabled;
         }
 
         public static void Postfix(KButtonEvent e)

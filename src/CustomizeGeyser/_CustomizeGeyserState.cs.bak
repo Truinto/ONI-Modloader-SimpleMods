@@ -19,7 +19,7 @@ namespace CustomizeGeyser
                 string temp = Path.Combine(Config.PathHelper.AssemblyDirectory, "templates");
                 string temp2 = Path.Combine(Config.PathHelper.AssemblyDirectory, "templates2");
 
-                if (CustomizeGeyserState.StateManager.State.RandomizerEnabled)
+                if (CustomizeGeyserState.Instance.RandomizerEnabled)
                 {
                     if (Directory.Exists(temp2))
                     {
@@ -54,18 +54,18 @@ namespace CustomizeGeyser
         [JsonIgnore]
         public System.Action<object> ResetToAllOff => delegate (object nix)
         {
-            StateManager.State.Geysers.Clear();
-            StateManager.State.RNGTable.Clear();
+            Instance.Geysers.Clear();
+            Instance.RNGTable.Clear();
             foreach (var idBase in GeyserInfo.IdsBaseGame)
-                StateManager.State.RNGTable.Add(idBase, 1);
+                Instance.RNGTable.Add(idBase, 1);
 
-            StateManager.State.RandomizerEnabled = false;
-            StateManager.State.RandomizerUsesMapSeed = true;
-            StateManager.State.RandomizerRerollsCycleRate = false;
-            StateManager.State.RandomizerPopupGeyserDiscoveryInfo = false;
-            StateManager.State.RandomizerHighlanderMode = false;
-            StateManager.State.RandomizerHighlanderRetroactive = false;
-            StateManager.State.GeyserMorphEnabled = false;
+            Instance.RandomizerEnabled = false;
+            Instance.RandomizerUsesMapSeed = true;
+            Instance.RandomizerRerollsCycleRate = false;
+            Instance.RandomizerPopupGeyserDiscoveryInfo = false;
+            Instance.RandomizerHighlanderMode = false;
+            Instance.RandomizerHighlanderRetroactive = false;
+            Instance.GeyserMorphEnabled = false;
 
             StateManager.TrySaveConfigurationState();
             OptionsDialog.Last?.CloseDialog();
@@ -79,11 +79,11 @@ namespace CustomizeGeyser
         {
             foreach (var geyser in GeyserInfo.IdsBaseGame)
             {
-                if (!StateManager.State.Geysers.Any(a => a.id == geyser))
-                    StateManager.State.Geysers.Add(new GeyserStruct(geyser));
+                if (!Instance.Geysers.Any(a => a.id == geyser))
+                    Instance.Geysers.Add(new GeyserStruct(geyser));
             }
 
-            foreach (var geyser in StateManager.State.Geysers)
+            foreach (var geyser in Instance.Geysers)
             {
                 geyser.minYearPercent = 1f;
                 geyser.maxYearPercent = 1f;
@@ -100,11 +100,11 @@ namespace CustomizeGeyser
         [JsonIgnore]
         public System.Action<object> PresetCopy => delegate (object nix)
         {
-            StateManager.State.Geysers.Clear();
+            Instance.Geysers.Clear();
             foreach (var config in GeyserInfo.Config)
             {
                 var geyserType = config.geyserType;
-                StateManager.State.Geysers.Add(new GeyserStruct(
+                Instance.Geysers.Add(new GeyserStruct(
                     id: geyserType.id,
                     element: geyserType.element.ToString(),
                     anim: config.anim,
@@ -140,19 +140,19 @@ namespace CustomizeGeyser
         {
             foreach (var config in GeyserInfo.Config)
             {
-                if (!StateManager.State.RNGTable.ContainsKey(config.geyserType.id))
+                if (!Instance.RNGTable.ContainsKey(config.geyserType.id))
                 {
-                    StateManager.State.RNGTable[config.geyserType.id] = 1;
+                    Instance.RNGTable[config.geyserType.id] = 1;
                 }
             }
 
-            //foreach (var geyser in StateManager.State.Geysers)
-            //    if (!StateManager.State.RNGTable.ContainsKey(geyser.id))
-            //        StateManager.State.RNGTable[geyser.id] = 1;
+            //foreach (var geyser in Instance.Geysers)
+            //    if (!Instance.RNGTable.ContainsKey(geyser.id))
+            //        Instance.RNGTable[geyser.id] = 1;
 
-            foreach (var key in StateManager.State.RNGTable.Keys.ToArray())
+            foreach (var key in Instance.RNGTable.Keys.ToArray())
             {
-                StateManager.State.RNGTable[key] = 1;
+                Instance.RNGTable[key] = 1;
             }
 
             StateManager.TrySaveConfigurationState();

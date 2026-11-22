@@ -13,7 +13,7 @@ namespace CustomizeGeyser
     {
         public static bool Prepare()
         {
-            return CustomizeGeyserState.StateManager.State.GeyserMorphEnabled;
+            return CustomizeGeyserState.Instance.GeyserMorphEnabled;
         }
 
         public static void Postfix(GameObject __result)
@@ -24,23 +24,23 @@ namespace CustomizeGeyser
     
     public class GeyserMorph : Workable
     {
-        public string meterTrackerSymbol;
-        public string meterAnim;
-        private Chore chore;
-        private Guid statusItemGuid;
-        private bool showCmd = true;
+        public string? MeterTrackerSymbol;
+        public string? MeterAnim;
+        private Chore? _GeyserChore;
+        private Guid _StatusItemGuid;
+        private bool _ShowCmd = true;
 
-        private string buttonText;
-        private int currentGeyserIndex;
+        private string? _ButtonText;
+        private int _CurrentGeyserIndex;
         [Serialize]
-        private Tag currentGeyserSelectionTag;
+        private Tag _CurrentGeyserSelectionTag;
 
         public override void OnPrefabInit()
         {
             base.OnPrefabInit();
             Subscribe((int)GameHashes.RefreshUserMenu, OnRefreshUserMenu);
 
-            this.overrideAnims = new KAnimFile[1] { Assets.GetAnim((HashedString) "anim_use_machine_kanim") };
+            this.overrideAnims = [Assets.GetAnim((HashedString) "anim_use_machine_kanim")];
             this.faceTargetWhenWorking = true;
             this.synchronizeAnims = false;
             this.workerStatusItem = Db.Get().DuplicantStatusItems.Studying;
@@ -50,31 +50,31 @@ namespace CustomizeGeyser
             this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
             this.skillExperienceSkillGroup = Db.Get().SkillGroups.Research.Id;
             this.skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
-            SetWorkTime( Math.Max(CustomizeGeyserState.StateManager.State.GeyserMorphWorktime, 3) );
+            SetWorkTime( Math.Max(CustomizeGeyserState.Instance.GeyserMorphWorktime, 3) );
         }
 
         public override void OnSpawn()
         {
             base.OnSpawn();
-            if (!currentGeyserSelectionTag.IsValid)
+            if (!_CurrentGeyserSelectionTag.IsValid)
             {
                 string name = this.gameObject.PrefabID().Name;
                 if (name is null or "")
                     name = this.gameObject.name;
-                currentGeyserSelectionTag = name.Replace("GeyserGeneric_", "");
+                _CurrentGeyserSelectionTag = name.Replace("GeyserGeneric_", "");
             }
 
-            string selection = currentGeyserSelectionTag.Name;
-            currentGeyserIndex = GeyserInfo.GeyserTypes.FindIndex(x => x.id == selection);
+            string selection = _CurrentGeyserSelectionTag.Name;
+            _CurrentGeyserIndex = GeyserInfo.GeyserTypes.FindIndex(x => x.id == selection);
             
-            if (currentGeyserIndex < 0)
+            if (_CurrentGeyserIndex < 0)
             {
                 selection = "GeyserGeneric_" + selection;
-                currentGeyserIndex = GeyserInfo.GeyserTypes.FindIndex(x => x.id == selection);
+                _CurrentGeyserIndex = GeyserInfo.GeyserTypes.FindIndex(x => x.id == selection);
             }
 
-            if (currentGeyserIndex < 0)
-                currentGeyserIndex = 0;
+            if (_CurrentGeyserIndex < 0)
+                _CurrentGeyserIndex = 0;
 
             UpdateButton();
             //this.morphedIndicator = new MeterController(this.GetComponent<KBatchedAnimController>(), this.meterTrackerSymbol, this.meterAnim, Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[1] { this.meterTrackerSymbol });
@@ -82,29 +82,29 @@ namespace CustomizeGeyser
 
         private void OnRefreshUserMenu(object data)
         {
-            if (!this.showCmd)
+            if (!this._ShowCmd)
                 return;
 
-            Game.Instance.userMenu.AddButton(this.gameObject, this.chore != null ?
+            Game.Instance.userMenu.AddButton(this.gameObject, this._GeyserChore != null ?
                   new KIconButtonMenu.ButtonInfo("action_morph_geyser", Strings.Get("CustomizeGeyser.LOCSTRINGS.Cancel_morphing"), new System.Action(ToggleChore), tooltipText: Strings.Get("CustomizeGeyser.LOCSTRINGS.Cancel_morphing_tooltip"))
                 : new KIconButtonMenu.ButtonInfo("action_morph_geyser", Strings.Get("CustomizeGeyser.LOCSTRINGS.Morph_into"), new System.Action(ToggleChore), tooltipText: Strings.Get("CustomizeGeyser.LOCSTRINGS.Morph_into_tooltip")), 1f);
 
-            Game.Instance.userMenu.AddButton(this.gameObject, new KIconButtonMenu.ButtonInfo("action_morph_type", buttonText, new System.Action(NextGeyser), tooltipText: Strings.Get("CustomizeGeyser.LOCSTRINGS.Next_geyser_tooltip")), 2f);
+            Game.Instance.userMenu.AddButton(this.gameObject, new KIconButtonMenu.ButtonInfo("action_morph_type", _ButtonText, new System.Action(NextGeyser), tooltipText: Strings.Get("CustomizeGeyser.LOCSTRINGS.Next_geyser_tooltip")), 2f);
 
         }
 
         public void NextGeyser()
         {
-            currentGeyserIndex++;
-            if (currentGeyserIndex >= GeyserInfo.GeyserTypes.Count) currentGeyserIndex = 0;
+            _CurrentGeyserIndex++;
+            if (_CurrentGeyserIndex >= GeyserInfo.GeyserTypes.Count) _CurrentGeyserIndex = 0;
 
-            this.currentGeyserSelectionTag = "geyser_" + GeyserInfo.GeyserTypes[currentGeyserIndex].id.Replace("GeyserGeneric_", "");
+            this._CurrentGeyserSelectionTag = "geyser_" + GeyserInfo.GeyserTypes[_CurrentGeyserIndex].id.Replace("GeyserGeneric_", "");
             UpdateButton();
         }
 
         private void UpdateButton()
         {
-            buttonText = currentGeyserSelectionTag.ProperName();
+            _ButtonText = _CurrentGeyserSelectionTag.ProperName();
         }
 
         public void ToggleChore()
@@ -112,7 +112,7 @@ namespace CustomizeGeyser
             Helpers.PrintDebug("DEBUG ToggleChore");
 
             //if (KMonoBehaviour.isLoadingScene) return;
-            if (this.chore == null)
+            if (this._GeyserChore == null)
             {
                 if (DebugHandler.InstantBuildMode)
                 {
@@ -120,8 +120,8 @@ namespace CustomizeGeyser
                 }
                 else
                 {
-                    this.chore = new WorkChore<GeyserMorph>(chore_type: Db.Get().ChoreTypes.Research, target: this, only_when_operational: false);
-                    this.statusItemGuid = GetComponent<KSelectable>().AddStatusItem(this.workerStatusItem);
+                    this._GeyserChore = new WorkChore<GeyserMorph>(chore_type: Db.Get().ChoreTypes.Research, target: this, only_when_operational: false);
+                    this._StatusItemGuid = GetComponent<KSelectable>().AddStatusItem(this.workerStatusItem);
                 }
             }
             else
@@ -133,19 +133,19 @@ namespace CustomizeGeyser
 
         public void CancelChore()
         {
-            if (this.chore == null)
+            if (this._GeyserChore == null)
                 return;
-            this.chore.Cancel("GeyserMorph.CancelChore");
-            this.chore = null;
-            this.statusItemGuid = GetComponent<KSelectable>().RemoveStatusItem(this.workerStatusItem, false);
+            this._GeyserChore.Cancel("GeyserMorph.CancelChore");
+            this._GeyserChore = null;
+            this._StatusItemGuid = GetComponent<KSelectable>().RemoveStatusItem(this.workerStatusItem, false);
         }
 
-        public override void OnCompleteWork(WorkerBase worker)
+        public override void OnCompleteWork(WorkerBase? worker)
         {
-            Helpers.Print($"GeyserMorph OnCompleteWork {currentGeyserIndex} {GeyserInfo.GeyserTypes[currentGeyserIndex].id}");
+            Helpers.Print($"GeyserMorph OnCompleteWork {_CurrentGeyserIndex} {GeyserInfo.GeyserTypes[_CurrentGeyserIndex].id}");
             CancelChore();
             //this.TriggerTextDialog();
-            ChangeGeyserElement(this.gameObject, GeyserInfo.GeyserTypes[currentGeyserIndex].id);
+            ChangeGeyserElement(this.gameObject, GeyserInfo.GeyserTypes[_CurrentGeyserIndex].id);
         }
 
 		public static bool ChangeGeyserElement(GameObject go, string? new_id = null)

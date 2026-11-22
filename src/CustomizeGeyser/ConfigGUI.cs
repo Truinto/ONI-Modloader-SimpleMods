@@ -141,8 +141,8 @@ namespace CustomizeGeyser.ConfigGUI
 
     public class ConfigGUI : MonoBehaviour
     {
-        private static ConfigGUI? _instance;
-        public static ConfigGUI Instance => _instance ?? (ConfigGUI)new GameObject(typeof(ConfigGUI).FullName).AddComponent(typeof(ConfigGUI));
+        private static ConfigGUI? _Instance;
+        public static ConfigGUI Instance => _Instance ?? (ConfigGUI)new GameObject(typeof(ConfigGUI).FullName).AddComponent(typeof(ConfigGUI));
 
         public static void ShowGUI()
         {
@@ -161,13 +161,13 @@ namespace CustomizeGeyser.ConfigGUI
 
         public void Awake()
         {
-            _instance = this;
+            _Instance = this;
             DontDestroyOnLoad(this);
             StyleLine = new GUIStyle() { fixedHeight = 1, margin = new RectOffset(0, 0, 4, 4), };
             StyleLine.normal.background = new Texture2D(1, 1);
         }
 
-        public Rect windowRect = new(20, 20, 200, 50);
+        public Rect WindowRect = new(20, 20, 200, 50);
         public GUIStyle StyleLine = null!;
         public bool IsVisible;
 
@@ -176,8 +176,8 @@ namespace CustomizeGeyser.ConfigGUI
             if (!IsVisible)
                 return;
             // https://docs.unity3d.com/6000.0/Documentation/ScriptReference/GUI.Window.html
-            windowRect = GUILayout.Window(0, windowRect, DoMyWindow, "Debug Window");
-            void DoMyWindow(int windowID)
+            WindowRect = GUILayout.Window(0, WindowRect, doMyWindow, "Debug Window");
+            void doMyWindow(int windowID)
             {
                 GUILayout.Label("Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar Foo bar.\nSecond line.");
 

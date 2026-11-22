@@ -12,17 +12,17 @@ namespace CustomizeGeyser
 {
 	public class RandomizerTable
 	{
-		public static HashedString[] geysers = null;
-		public static int[] weights = null;
-		public static HashedString[] ignoreTypes = new HashedString[0];
-		public static int sum = 0;
-		public static string[] ignoreMissing = new string[] { "liquid_sulfur", "molten_niobium", "molten_cobalt", "molten_tungsten", "molten_aluminum", };
+		public static HashedString[] Geysers = [];
+		public static int[] Weights = [];
+		public static HashedString[] IgnoreTypes = [];
+		public static int Sum = 0;
+		public static string[] IgnoreMissing = ["liquid_sulfur", "molten_niobium", "molten_cobalt", "molten_tungsten", "molten_aluminum",];
 
 		public static void FixErrors()
 		{
 			List<string> itemsToRemove = new List<string>();
 
-			foreach (string entry in CustomizeGeyserState.StateManager.State.RNGTable.Keys)
+			foreach (string entry in CustomizeGeyserState.Instance.RNGTable.Keys)
 			{
 				if (!GeyserInfo.GeyserTypes.Any(a => a.id == entry))
 					itemsToRemove.Add(entry);
@@ -38,8 +38,8 @@ namespace CustomizeGeyser
 
 			foreach (string entry in itemsToRemove)
 			{
-				CustomizeGeyserState.StateManager.State.RNGTable.Remove(entry);
-				if (!ignoreMissing.Contains(entry))
+				CustomizeGeyserState.Instance.RNGTable.Remove(entry);
+				if (!IgnoreMissing.Contains(entry))
 					Helpers.PrintDialog("GeyserRandomizer: Geyser in config non existent, check spelling: " + entry);
 			}
 		}
@@ -49,9 +49,9 @@ namespace CustomizeGeyser
 #if DEBUG_1
 			Helpers.Print("Running Initialize()...");
 #endif
-			if (CustomizeGeyserState.StateManager.State.RNGTable == null)
+			if (CustomizeGeyserState.Instance.RNGTable == null)
             {
-				CustomizeGeyserState.StateManager.State.RandomizerEnabled = false;
+				CustomizeGeyserState.Instance.RandomizerEnabled = false;
 				return;
 			}
 
@@ -61,28 +61,28 @@ namespace CustomizeGeyser
             FixErrors();
 
 			int count = 0;
-			foreach (KeyValuePair<string, int> entry in CustomizeGeyserState.StateManager.State.RNGTable)
+			foreach (KeyValuePair<string, int> entry in CustomizeGeyserState.Instance.RNGTable)
 			{
 				if (entry.Value > 0) count++;
 			}
 
-			geysers = new HashedString[count];
-			weights = new int[count];
-			ignoreTypes = new HashedString[CustomizeGeyserState.StateManager.State.RNGTable.Count - count];
+			Geysers = new HashedString[count];
+			Weights = new int[count];
+			IgnoreTypes = new HashedString[CustomizeGeyserState.Instance.RNGTable.Count - count];
 
-            sum = 0; int i = 0; int j = 0;
-			foreach (KeyValuePair<string, int> entry in CustomizeGeyserState.StateManager.State.RNGTable)
+            Sum = 0; int i = 0; int j = 0;
+			foreach (KeyValuePair<string, int> entry in CustomizeGeyserState.Instance.RNGTable)
 			{
 				if (entry.Value > 0)
 				{
-					geysers[i] = (HashedString)entry.Key;
-					weights[i] = entry.Value;
-					sum += entry.Value;
+					Geysers[i] = (HashedString)entry.Key;
+					Weights[i] = entry.Value;
+					Sum += entry.Value;
 					i++;
 				}
 				else
 				{
-					ignoreTypes[j++] = (HashedString)entry.Key;
+					IgnoreTypes[j++] = (HashedString)entry.Key;
 				}
 			}
 		}
@@ -94,12 +94,12 @@ namespace CustomizeGeyser
 	
 		public static string GetRandomGeyserType(Transform transform)
         {
-			System.Random RNG = transform != null ? GetRNG(transform) : new System.Random();
+			System.Random rng = transform != null ? GetRNG(transform) : new System.Random();
 
-			int random = RNG.Next(sum);  // 0 <= random < sum
+			int random = rng.Next(Sum);  // 0 <= random < sum
 			int pick = 0;
-			for (int j = 0; j <= random;) j += weights[pick++];
-			return GeyserConfigurator.FindType(geysers[pick - 1]).id;
+			for (int j = 0; j <= random;) j += Weights[pick++];
+			return GeyserConfigurator.FindType(Geysers[pick - 1]).id;
 		}
 
 		public static System.Random GetRNG(Transform transform)
@@ -112,7 +112,7 @@ namespace CustomizeGeyser
 	[HarmonyPatch(typeof(Geyser), "OnSpawn")]
 	public class Geyser_OnSpawn
 	{
-		public static bool isFirst = true;
+		public static bool IsFirst = true;
 
 		public static void Prefix(Geyser __instance)
 		{
@@ -121,18 +121,18 @@ namespace CustomizeGeyser
 #endif
 //			if (RandomizerTable.geysers == null) RandomizerTable.Initialize();
 //
-//			if (CustomizeGeyserState.StateManager.State.RandomizerEnabled && (__instance.configuration == null || __instance.configuration.typeId == HashedString.Invalid))
+//			if (CustomizeGeyserState.Instance.RandomizerEnabled && (__instance.configuration == null || __instance.configuration.typeId == HashedString.Invalid))
 //			{
 //				var config = __instance.GetComponent<GeyserConfigurator>();
 //
-//				config.presetType = RandomizerTable.GetRandomGeyserType(CustomizeGeyserState.StateManager.State.RandomizerUsesMapSeed ? __instance.transform : null);
+//				config.presetType = RandomizerTable.GetRandomGeyserType(CustomizeGeyserState.Instance.RandomizerUsesMapSeed ? __instance.transform : null);
 //
 //				if (isFirst)
-//					config.presetType = GeyserInfo.GeyserTypes.Find(x => x.id == CustomizeGeyserState.StateManager.State.RandomizerSetFirstGeyser)?.id ?? config.presetType;
+//					config.presetType = GeyserInfo.GeyserTypes.Find(x => x.id == CustomizeGeyserState.Instance.RandomizerSetFirstGeyser)?.id ?? config.presetType;
 //#if DEBUG_1
 //				Helpers.Print("Changed geyser to: " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
 //#endif
-//				if (CustomizeGeyserState.StateManager.State.RandomizerPopupGeyserDiscoveryInfo)
+//				if (CustomizeGeyserState.Instance.RandomizerPopupGeyserDiscoveryInfo)
 //				{
 //					KMod.Manager.Dialog(null, "Geysers discovered", "You just discovered a geyser: " + __instance.GetComponent<GeyserConfigurator>().presetType.ConvertGeyserId());
 //				}
@@ -148,24 +148,24 @@ namespace CustomizeGeyser
 	{
 		public static bool Prepare()
 		{
-			return CustomizeGeyserState.StateManager.State.RandomizerEnabled && CustomizeGeyserState.StateManager.State.RNGTable != null;
+			return CustomizeGeyserState.Instance.RandomizerEnabled && CustomizeGeyserState.Instance.RNGTable != null;
 		}
 
 		public static void Postfix(GeyserConfigurator __instance, ref GeyserConfigurator.GeyserInstanceConfiguration __result)
 		{
-			if (CustomizeGeyserState.StateManager.State.RandomizerRerollsCycleRate)
+			if (CustomizeGeyserState.Instance.RandomizerRerollsCycleRate)
 			{
-				System.Random RNG;
-				if (CustomizeGeyserState.StateManager.State.RandomizerUsesMapSeed)
-					RNG = new System.Random(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)__instance.transform.GetPosition().x + (int)__instance.transform.GetPosition().y);
+				System.Random rng;
+				if (CustomizeGeyserState.Instance.RandomizerUsesMapSeed)
+					rng = new System.Random(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)__instance.transform.GetPosition().x + (int)__instance.transform.GetPosition().y);
 				else
-					RNG = new System.Random();
+					rng = new System.Random();
 
-				__result.rateRoll = (float)RNG.NextDouble();
-				__result.iterationLengthRoll = (float)RNG.NextDouble();
-				__result.iterationPercentRoll = (float)RNG.NextDouble();
-				__result.yearLengthRoll = (float)RNG.NextDouble();
-				__result.yearPercentRoll = (float)RNG.NextDouble();
+				__result.rateRoll = (float)rng.NextDouble();
+				__result.iterationLengthRoll = (float)rng.NextDouble();
+				__result.iterationPercentRoll = (float)rng.NextDouble();
+				__result.yearLengthRoll = (float)rng.NextDouble();
+				__result.yearPercentRoll = (float)rng.NextDouble();
 			}
 		}
 	}
@@ -181,7 +181,7 @@ namespace CustomizeGeyser
 
         public static bool Prepare()
 		{
-			return CustomizeGeyserState.StateManager.State.RandomizerEnabled && CustomizeGeyserState.StateManager.State.RNGTable != null;
+			return CustomizeGeyserState.Instance.RandomizerEnabled && CustomizeGeyserState.Instance.RNGTable != null;
 		}
 
         [HarmonyPriority(410)] //slightly higher priority since it clears events and other might want to hook in as well
@@ -208,7 +208,7 @@ namespace CustomizeGeyser
 			Helpers.Print("Attached to GeyserGeneric");
 #endif
 
-			if (RandomizerTable.geysers == null) RandomizerTable.Initialize();
+			if (RandomizerTable.Geysers == null) RandomizerTable.Initialize();
 		}
 
         public static void PrefabInitGenericGeysers(GameObject go)
@@ -216,17 +216,17 @@ namespace CustomizeGeyser
 #if DEBUG_1
 			Helpers.Print("PrefabInitGenericGeysers");
 #endif
-            if (RandomizerTable.sum > 0)
+            if (RandomizerTable.Sum > 0)
 			{
 				string geyserTag = RandomizerTable.GetRandomGeyserType(go.transform);
 
-				if (CustomizeGeyserState.StateManager.State.RandomizerPopupGeyserDiscoveryInfo)
+				if (CustomizeGeyserState.Instance.RandomizerPopupGeyserDiscoveryInfo)
 					KMod.Manager.Dialog(null, "Geysers discovered", "You just discovered a geyser: " + geyserTag);
 				Helpers.Print("Discovered a new geyser: " + geyserTag);
 
 				GameUtil.KInstantiate(Assets.GetPrefab(
 					(Tag)("GeyserGeneric_" + geyserTag)	 //change Tag to whatever you want to spawn; Tag is "GeyserGeneric_" + geyserType.id
-				), go.transform.GetPosition(), Grid.SceneLayer.BuildingBack, (string)null, 0).SetActive(true);
+				), go.transform.GetPosition(), Grid.SceneLayer.BuildingBack, null, 0).SetActive(true);
 				go.DeleteObject();
 			}
 			else
@@ -245,7 +245,7 @@ namespace CustomizeGeyser
     {
         public static bool Prepare()
         {
-            return CustomizeGeyserState.StateManager.State.RandomizerEnabled && CustomizeGeyserState.StateManager.State.RNGTable != null;
+            return CustomizeGeyserState.Instance.RandomizerEnabled && CustomizeGeyserState.Instance.RNGTable != null;
         }
 
         public static void Postfix(GameObject __result)
@@ -263,14 +263,14 @@ namespace CustomizeGeyser
 #endif
 			try
 			{
-				if (CustomizeGeyserState.StateManager.State.RandomizerHighlanderMode || (bool)SaveGame.Instance?.BaseName?.Contains("Highlander"))
+				if (CustomizeGeyserState.Instance.RandomizerHighlanderMode || SaveGame.Instance?.BaseName?.Contains("Highlander") is true)
 				{
 					HashedString id = go.GetComponent<GeyserConfigurator>()?.presetType ?? "none";
 					int i;
 					bool flag = false;
-					for (i = 0; i < RandomizerTable.geysers.Length; i++)
+					for (i = 0; i < RandomizerTable.Geysers.Length; i++)
 					{
-						if (RandomizerTable.geysers[i] == id)
+						if (RandomizerTable.Geysers[i] == id)
 						{
 							flag = true;
 							break;
@@ -280,15 +280,15 @@ namespace CustomizeGeyser
 					Helpers.Print("Attached to geyser [" + i + "] id: " + id + " flag is " + flag);
 #endif
 
-					if (flag && RandomizerTable.weights[i] >= 1)
+					if (flag && RandomizerTable.Weights[i] >= 1)
 					{
-						RandomizerTable.weights[i]--;
-						RandomizerTable.sum--;
+						RandomizerTable.Weights[i]--;
+						RandomizerTable.Sum--;
 #if DEBUG_1
-						Helpers.Print("Reduced weight of [" + i + "] to " + RandomizerTable.weights[i]);
+						Helpers.Print("Reduced weight of [" + i + "] to " + RandomizerTable.Weights[i]);
 #endif
 					}
-					else if (CustomizeGeyserState.StateManager.State.RandomizerHighlanderRetroactive)
+					else if (CustomizeGeyserState.Instance.RandomizerHighlanderRetroactive)
 					{
 #if DEBUG_1
 						Helpers.Print("Weight of [" + i + "] is 0, changing back to GeyserGeneric");
@@ -303,7 +303,7 @@ namespace CustomizeGeyser
 			}
 		}
 
-		public static bool ChangeGeyserElement(GameObject go, string new_id = null)
+		public static bool ChangeGeyserElement(GameObject go, string? new_id = null)
         {
             return GeyserMorph.ChangeGeyserElement(go, new_id);
         }
@@ -311,12 +311,12 @@ namespace CustomizeGeyser
 	
 
 
-	[HarmonyPatch(typeof(SaveLoader), "Load", new Type[] { typeof(string) })]
+	[HarmonyPatch(typeof(SaveLoader), "Load", typeof(string))]
 	public class OnSaveLoad
 	{
 		public static bool Prepare()
 		{
-			return CustomizeGeyserState.StateManager.State.RandomizerEnabled && CustomizeGeyserState.StateManager.State.RNGTable != null;
+			return CustomizeGeyserState.Instance.RandomizerEnabled && CustomizeGeyserState.Instance.RNGTable != null;
 		}
 		
 		public static void Prefix()
@@ -331,7 +331,7 @@ namespace CustomizeGeyser
     {
         public static bool Prepare()
         {
-            return CustomizeGeyserState.StateManager.State.RandomizerEnabled && CustomizeGeyserState.StateManager.State.RNGTable != null;
+            return CustomizeGeyserState.Instance.RandomizerEnabled && CustomizeGeyserState.Instance.RNGTable != null;
         }
 
         public static void Prefix()
