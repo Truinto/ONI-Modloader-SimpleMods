@@ -14,7 +14,7 @@ using System.Text;
 
 namespace CustomizeBuildings
 {
-    [ConfigFile("CustomizeBuildings.json", true, true, typeof(Config.TranslationResolver))]
+    [ConfigFile("CustomizeBuildings.json", true, true, null)]
     [RestartRequired]
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : BaseSettings<CustomizeBuildingsState>, IManualConfig
@@ -146,6 +146,7 @@ namespace CustomizeBuildings
             DrillConeSpeed = 7.5f;
             WireSmallWatts = 1000;
             WireRefinedWatts = 2000;
+            WireRubberWatts = 4000;
             WireHeavyWatts = 20000;
             WireRefinedHeavyWatts = 50000;
             PowerTransformerLarge = 4000;
@@ -510,6 +511,8 @@ namespace CustomizeBuildings
         public int WireSmallWatts { get; set; } = 1000;
         [Option("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_ToolTip", "Power Cable")]
         public int WireRefinedWatts { get; set; } = 2000;
+        [Option("CustomizeBuildings.LOCSTRINGS.WireRubberWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireRubberWatts_ToolTip", "Power Cable", null)]
+        public int WireRubberWatts { get; set; } = 4000;
         [Option("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_ToolTip", "Power Cable")]
         public int WireHeavyWatts { get; set; } = 20000;
         [Option("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_ToolTip", "Power Cable")]
@@ -751,7 +754,6 @@ namespace CustomizeBuildings
         #region Advanced
         [Option("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_Title", "CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_ToolTip", "Miscellaneous")]
         public bool BuildingBaseSettingGlobalFlag { get; set; } = true;
-        public Dictionary<string, BuildingStruct>? BuildingBaseSettings_Old = null;
         public List<BuildingStruct> BuildingBaseSettings { get; set; } = new() {
             new(WireHighWattageConfig.ID, LocationRule: BuildLocationRule.Anywhere),
             new(WireRefinedHighWattageConfig.ID, LocationRule: BuildLocationRule.Anywhere, BaseDecor: -5f, BaseDecorRadius: 1f),
@@ -792,11 +794,6 @@ namespace CustomizeBuildings
 
         protected override string BeforeUpdate(int oldVersion, string json)
         {
-            if (oldVersion < 60)
-            {
-                json = json.Replace("\"version\"", "\"Version\"");
-                json = json.Replace("\"BuildingBaseSettings\": {", "\"BuildingBaseSettings_Old\": {");
-            }
             return json;
 
             void changeToList(string property) // replace Dictionary with List
@@ -845,15 +842,6 @@ namespace CustomizeBuildings
         {
             if (Version < 29)
                 AutoSweeperPickupAnything = false;
-            if (Version < 36)
-            {
-                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "CustomizeBuildings.json");
-                if (File.Exists(modpath))
-                    File.Delete(modpath);
-                modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "CustomizeBuildingsMerged");
-                if (Directory.Exists(modpath))
-                    Directory.Delete(modpath, true);
-            }
             if (Version < 44 && DrillConeKG < 1000f)
                 DrillConeKG = 1000f;
             if (Version < 52 && SpaceBattery < 100000f)
@@ -862,17 +850,6 @@ namespace CustomizeBuildings
                 SkillStationEnabled = false;
             if (Version < 57)
                 DoorPressureInsulationFactor = 1f;
-            if (BuildingBaseSettings_Old != null) // version 60
-            {
-                BuildingBaseSettings = new();
-                foreach (var item in BuildingBaseSettings_Old)
-                {
-                    item.Value.Id = item.Key;
-                    BuildingBaseSettings.Add(item.Value);
-                    Helpers.PrintDebug($"DEBUG- added {item.Value.Id}");
-                }
-                BuildingBaseSettings_Old = null;
-            }
             return true;
         }
 
@@ -1289,15 +1266,19 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireSmallWatts_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRefinedWatts", "WireRefinedWatts");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_Title", "Wire Refined Watts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_Title", "Conductive Wire Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_ToolTip", "");
 
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRubberWatts", "WireRubberWatts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRubberWatts_Title", "Insulated Conductive Wire Watts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRubberWatts_ToolTip", "");
+
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireHeavyWatts", "WireHeavyWatts");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_Title", "Wire Heavy Watts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_Title", "Heavi-Watt Wire Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRefinedHeavyWatts", "WireRefinedHeavyWatts");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "Wire Refined Heavy Watts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "Heavi-Watt Conductive Wire Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PowerTransformerLarge", "PowerTransformerLarge");

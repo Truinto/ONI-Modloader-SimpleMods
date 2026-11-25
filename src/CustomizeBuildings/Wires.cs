@@ -11,16 +11,11 @@ namespace CustomizeBuildings
     {
         public static void Postfix(Wire.WattageRating rating, ref float __result)
         {
-            if (CustomizeBuildingsState.Instance.WireSmallWatts == 1000 &&
-                CustomizeBuildingsState.Instance.WireRefinedWatts == 2000 &&
-                CustomizeBuildingsState.Instance.WireHeavyWatts == 20000 &&
-                CustomizeBuildingsState.Instance.WireRefinedHeavyWatts == 50000)
-                return;
-
             __result = rating switch
             {
                 Wire.WattageRating.Max1000 => CustomizeBuildingsState.Instance.WireSmallWatts,
                 Wire.WattageRating.Max2000 => CustomizeBuildingsState.Instance.WireRefinedWatts,
+                Wire.WattageRating.Max4000 => CustomizeBuildingsState.Instance.WireRubberWatts,
                 Wire.WattageRating.Max20000 => CustomizeBuildingsState.Instance.WireHeavyWatts,
                 Wire.WattageRating.Max50000 => CustomizeBuildingsState.Instance.WireRefinedHeavyWatts,
                 _ => __result,

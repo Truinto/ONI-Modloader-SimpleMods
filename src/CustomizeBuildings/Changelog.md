@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.128.0] U60-764025-SCRPAN (release)
+- added WireRubberWatts
+
 ## [1.0.127.0] U59-737790-SCRPAN (release)
 - fixed reset button
 

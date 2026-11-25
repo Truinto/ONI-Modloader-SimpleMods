@@ -14,13 +14,12 @@ using System.Text;
 
 namespace CustomizeBuildings
 {
-    [ConfigFile("CustomizeBuildings.json", true, true, typeof(Config.TranslationResolver))]
+    [ConfigFile("CustomizeBuildings.json", true, true, null)]
     [RestartRequired]
     [ModInfo(null, collapse: true)]
     public class CustomizeBuildingsState : BaseSettings<CustomizeBuildingsState>, IManualConfig
     {
-        [JsonInclude] public int? version;
-        public override int Version { get; set; } = 61;
+        public override int Version { get; set; } = 62;
 
         #region $Reset Button
         [JsonIgnore]
@@ -72,6 +71,7 @@ namespace CustomizeBuildings
             TidalTurbinePower = 300f;
             TidalTurbineExhaleRate = 166.66667f;
             TidalTurbineInhaleRate = 500f;
+            TidalTurbineProduce = 0f;
             CO2EngineKG = 100f;
             SugarEngineKG = 450f;
             SteamEngineKG = isVanilla ? 900f : 150f;
@@ -205,7 +205,7 @@ namespace CustomizeBuildings
         [JsonIgnore]
         public System.Action<object> ResetToCustomDefault => delegate (object nix)
         {
-            TrySave();
+            new CustomizeBuildingsState().TrySave();
 
             OptionsDialog.Last?.CloseDialog();
             OptionsDialog.Last?.CheckForRestart();
@@ -238,10 +238,9 @@ namespace CustomizeBuildings
         public float TidalTurbineExhaleRate { get; set; } = 166.66667f;
         [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_ToolTip", "Power", "F0")]
         public float TidalTurbineInhaleRate { get; set; } = 500f;
-
-        [Option("Tidal Turbine Produce", "How much material is produced per second", "Power", "F0")]
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_ToolTip", "Power", "F0")]
         public float TidalTurbineProduce { get; set; } = 0f;
-        [Option("Tidal Turbine Produce Filter", "Only elements matching any of these tags can be produced. Use ; to separate them.", "Power")]
+        [Option("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_Title", "CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_ToolTip", "Power", null)]
         public string TidalTurbineProduceFilter { get; set; } = "AnyWater";
 
         #endregion
@@ -511,6 +510,8 @@ namespace CustomizeBuildings
         public int WireSmallWatts { get; set; } = 1000;
         [Option("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_ToolTip", "Power Cable")]
         public int WireRefinedWatts { get; set; } = 2000;
+        [Option("Insulated Conductive Wire Watts", "", "Power Cable")]
+        public int WireRubberWatts { get; set; } = 2000;
         [Option("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_ToolTip", "Power Cable")]
         public int WireHeavyWatts { get; set; } = 20000;
         [Option("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_ToolTip", "Power Cable")]
@@ -752,7 +753,6 @@ namespace CustomizeBuildings
         #region Advanced
         [Option("CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_Title", "CustomizeBuildings.LOCSTRINGS.BuildingBaseSettingGlobalFlag_ToolTip", "Miscellaneous")]
         public bool BuildingBaseSettingGlobalFlag { get; set; } = true;
-        public Dictionary<string, BuildingStruct>? BuildingBaseSettings_Old = null;
         public List<BuildingStruct> BuildingBaseSettings { get; set; } = new() {
             new(WireHighWattageConfig.ID, LocationRule: BuildLocationRule.Anywhere),
             new(WireRefinedHighWattageConfig.ID, LocationRule: BuildLocationRule.Anywhere, BaseDecor: -5f, BaseDecorRadius: 1f),
@@ -789,15 +789,10 @@ namespace CustomizeBuildings
 
         #region _implementation
 
-        public override string DefaultPath => Path.Combine(Util.RootFolder(), "mods", "CustomizeBuildings.json");
+        public override string DefaultPath => Path.Combine(Util.RootFolder(), "mods", $"{FumiKMod.ModName}.json");
 
         protected override string BeforeUpdate(int oldVersion, string json)
         {
-            if (oldVersion < 60)
-            {
-                json = json.Replace("\"version\"", "\"Version\"");
-                json = json.Replace("\"BuildingBaseSettings\": {", "\"BuildingBaseSettings_Old\": {");
-            }
             return json;
 
             void changeToList(string property) // replace Dictionary with List
@@ -844,22 +839,8 @@ namespace CustomizeBuildings
 
         protected override bool OnUpdate()
         {
-            if (version != null)
-            {
-                Version = version.Value;
-                version = null;
-            }
             if (Version < 29)
                 AutoSweeperPickupAnything = false;
-            if (Version < 36)
-            {
-                string modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "CustomizeBuildings.json");
-                if (File.Exists(modpath))
-                    File.Delete(modpath);
-                modpath = Path.Combine(Config.PathHelper.ModsDirectory, "config", "CustomizeBuildingsMerged");
-                if (Directory.Exists(modpath))
-                    Directory.Delete(modpath, true);
-            }
             if (Version < 44 && DrillConeKG < 1000f)
                 DrillConeKG = 1000f;
             if (Version < 52 && SpaceBattery < 100000f)
@@ -868,17 +849,6 @@ namespace CustomizeBuildings
                 SkillStationEnabled = false;
             if (Version < 57)
                 DoorPressureInsulationFactor = 1f;
-            if (BuildingBaseSettings_Old != null) // version 60
-            {
-                BuildingBaseSettings = new();
-                foreach (var item in BuildingBaseSettings_Old)
-                {
-                    item.Value.Id = item.Key;
-                    BuildingBaseSettings.Add(item.Value);
-                    Helpers.PrintDebug($"DEBUG- added {item.Value.Id}");
-                }
-                BuildingBaseSettings_Old = null;
-            }
             return true;
         }
 
@@ -1280,6 +1250,14 @@ namespace CustomizeBuildings
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineInhaleRate", "TidalTurbineInhaleRate");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_Title", "Tidal Turbine Inhale Rate");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineInhaleRate_ToolTip", "Rate of inhale in kg/s (default: 500)");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineProduce", "TidalTurbineProduce");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_Title", "Tidal Turbine Produce");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduce_ToolTip", "How much material is produced per second");
+
+            Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.TidalTurbineProduceFilter", "TidalTurbineProduceFilter");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_Title", "Tidal Turbine Produce Filter");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.TidalTurbineProduceFilter_ToolTip", "Only elements matching any of these tags can be produced. Use ; to separate them.");
             #endregion
             #region Power Cable
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireSmallWatts", "WireSmallWatts");
@@ -1287,15 +1265,15 @@ namespace CustomizeBuildings
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireSmallWatts_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRefinedWatts", "WireRefinedWatts");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_Title", "Wire Refined Watts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_Title", "Conductive Wire Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedWatts_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireHeavyWatts", "WireHeavyWatts");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_Title", "Wire Heavy Watts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_Title", "Heavi-Watt Wire Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireHeavyWatts_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.WireRefinedHeavyWatts", "WireRefinedHeavyWatts");
-            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "Wire Refined Heavy Watts");
+            Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_Title", "Heavi-Watt Conductive Wire Watts");
             Helpers.StringsAdd("CustomizeBuildings.LOCSTRINGS.WireRefinedHeavyWatts_ToolTip", "");
 
             Helpers.StringsAddProperty("CustomizeBuildings.PROPERTY.PowerTransformerLarge", "PowerTransformerLarge");
